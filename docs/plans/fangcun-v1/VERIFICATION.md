@@ -202,3 +202,11 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
 ## M2-R04
 
 `swift test --package-path InnerBalanceCore --filter M2ReviewR04Tests`。[修复前 1 test / 14 issues](evidence/m2-r04-red-recheck.txt)，[修复后通过](evidence/m2-r04-green-recheck.txt)。测试通过完整 provider→pipeline→store，主睡眠距 now 两小时，在 +60 秒及 3 小时边界前后身份不变；18/24 小时独立更新 freshness；新增 RHR 和目标配置变化产生修订；有效期不延长；空增量更新检查时间但不伪造证据读取时间。第一版测试数组被 Swift 推断成 Any 的编译失败已纠正，另存 [编写日志](evidence/m2-r04-red.txt)，不当作问题重现。
+
+## M2-R05
+
+真实 HK callback 与测试共用 `handleObserverUpdate`，先仅抽取原先提前 completion 的顺序，运行 `-only-testing:InnerBalanceTests/ReadinessObserverTests`：[red](evidence/m2-r05-red-order.txt)，3 tests 中 2 项失败、3 issues。Swift 6 外部 block 的 Sendable/region 转移编译失败单独留存 [第一次](evidence/m2-r05-red.txt)、[第二次](evidence/m2-r05-red-recheck.txt)，不冒充行为重现。
+
+最终 [green](evidence/m2-r05-green-final.txt)：6 tests 全通过。包括收到→处理→落盘→ACK；错误、实际 Task.cancel 后的协作清理；20 个并发调用一次性确认；两个合并 observer 回调在睡眠已查完后追加事件，经过真实 pipeline/store 的补读取到新样本、落盘重启可读，然后分别一次 ACK。未申请真实健康授权。
+
+中间测试的并发计数 closure 被默认推断为 MainActor，测试把它用于后台 task group 后触发 executor 断言；崩溃栈定位到测试 closure。将该合成计数 closure 明确为 @Sendable 后通过，未禁用隔离检查。[中间失败](evidence/m2-r05-green.txt) 保留，Xcode 在重启测试后未退出，停止了本次卡住的测试进程，随后干净重跑成功；不计作真机问题。

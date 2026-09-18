@@ -11,6 +11,8 @@ final class ReadinessHealthKitProvider: ReadinessHealthDataProviding {
   static let permittedMetrics: [ReadinessMetric] = [.hrvSDNN, .restingHeartRate, .sleep, .workout]
   private let store: HKHealthStore
   private var observers: [HKObserverQuery] = []
+  private(set) var lastObserverOutcome: ReadinessObserverOutcome?
+  var observerNeedsRefresh: Bool { lastObserverOutcome.map { $0 != .processed } ?? false }
   private let pageSize = 500
   init(store: HKHealthStore = HKHealthStore()) { self.store = store }
 
@@ -53,18 +55,43 @@ final class ReadinessHealthKitProvider: ReadinessHealthDataProviding {
     }
   }
 
-  /// Installed once by a future lifecycle owner. Does not enable guaranteed background delivery.
-  func startObserving(onChange: @escaping @MainActor @Sendable () async -> Void) throws {
+  /// Explicit opt-in by a future lifecycle owner; no background delivery/authorization is enabled here.
+  func startObserving(pipeline: ReadinessPipeline,
+    context: @escaping @MainActor @Sendable () -> ReadinessObservationContext) throws {
+    try startObserving(onChange: {
+      let value = context()
+      _ = try await pipeline.refresh(now: value.now, calendar: value.calendar,
+        configuration: value.configuration, interventions: value.interventions, healthDataChanged: true)
+    })
+  }
+
+  private func startObserving(onChange: @escaping @MainActor @Sendable () async throws -> Void) throws {
     guard observers.isEmpty else { return }
     for metric in Self.permittedMetrics {
-      let query = HKObserverQuery(sampleType: try Self.type(for: metric), predicate: nil) { _, completion, error in
-        // Acknowledge promptly; the coordinator owns coalescing and durable anchors.
-        completion()
-        if error == nil { Task { @MainActor in await onChange() } }
+      let query = HKObserverQuery(sampleType: try Self.type(for: metric), predicate: nil) { [weak self] _, completion, error in
+        _ = Self.handleObserverUpdate(error: error, completion: completion, onChange: onChange,
+          onOutcome: { [weak self] outcome in self?.lastObserverOutcome = outcome })
       }
       observers.append(query); store.execute(query)
     }
   }
+
+  /// The real HK callback and tests share this owner. Every path finishes processing before one ACK.
+  nonisolated static func handleObserverUpdate(error: Error?, completion: @escaping () -> Void,
+    onChange: @escaping @MainActor @Sendable () async throws -> Void,
+    onOutcome: @escaping @MainActor @Sendable (ReadinessObserverOutcome) -> Void = { _ in }) -> Task<Void, Never> {
+    let acknowledgement = ReadinessObserverCompletion(completion)
+    return Task { @MainActor in
+      defer { acknowledgement.call() }
+      guard error == nil else { onOutcome(.queryFailed); return }
+      do {
+        try await onChange()
+        onOutcome(.processed)
+      } catch is CancellationError { onOutcome(.cancelled) }
+      catch { onOutcome(.processingFailed) }
+    }
+  }
+
   func stopObserving() { observers.forEach(store.stop); observers.removeAll() }
 
   nonisolated private static func type(for metric: ReadinessMetric) throws -> HKSampleType {
@@ -121,4 +148,14 @@ final class ReadinessHealthKitProvider: ReadinessHealthDataProviding {
       syncVersion: (sample.metadata?[HKMetadataKeySyncVersion] as? NSNumber)?.intValue ?? 0,
       activityType: activity, metadata: metadata, queriedAt: queriedAt)
   }
+}
+
+
+nonisolated enum ReadinessObserverOutcome: Sendable { case processed, queryFailed, processingFailed, cancelled }
+
+struct ReadinessObservationContext: Sendable {
+  var now: Date
+  var calendar: Calendar
+  var configuration: ReadinessConfiguration = .init()
+  var interventions: [ReadinessInterval] = []
 }

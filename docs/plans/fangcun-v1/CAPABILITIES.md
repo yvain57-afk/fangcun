@@ -52,3 +52,9 @@ SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`�
 | Widget / 系统通知运行 | implemented_unverified | 保留 M0 探针状态；M5 尚未开始 |
 
 工程默认阈值未校准；不宣称医学标准或产品健康判断效度。本轮不新增授权类型、后台模式、遥测或后端。
+
+## M2-R1 补修能力
+
+- 新增删除依赖、分页状态、语义单飞、稳定修订：合成提供层与本机文件回归通过，不代表健康模型已经校准。
+- Observer 顺序：共用实际 callback owner 的 6 项模拟器测试通过，含取消/错误/合并事件和存储；SDK 编译层面可用。
+- Observer 真实 HealthKit 后台送达、系统终止、锁屏/低电量时机仍 `implemented_unverified`，没有新增 background delivery 授权。物理 Watch 后台/同步仍 `blocked`，缺少可用配对验证条件。

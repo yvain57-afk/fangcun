@@ -58,3 +58,11 @@
 ## M2-R04：证据身份与刷新时刻分离
 
 审阅成立。仅指纹投影使用固定逻辑 RHR 上界 sleepEnd+3h；真实抽取仍严格使用 min(now, sleepEnd+3h)，输出 feature.window 仍报告实际截止时间，未接受未来样本或改变门槛。新增可选 lastRefreshAttemptAt / lastSuccessfulRefreshAt 表示刷新尝试/成功检查时间；assessment.queriedAt 保留样本携带的证据读取时间。旧文件缺字段可解码为空，无迁移清库。
+
+## M2-R05：完成处理之后确认 observer
+
+审阅成立。SDK completion 由专用一次性锁保护适配器持有；处理任务使用 defer 在正常、读取错误、处理失败和取消收尾之后确认。Swift 6 SDK 的旧 block typedef 没有 Sendable 注解，无法直接标成 @Sendable 或 sending：仅这一外部回调适配器使用 @unchecked Sendable，所有私有可变状态由 NSLock 保护，取出置空后在锁外调用；没有关闭工程并发检查。
+
+公开的 startObserving 接受 pipeline 和实时 context，事件强制走 healthDataChanged 的 pending 补刷新入口。保留最近 observer outcome；失败时 observerNeedsRefresh 为真。读取失败由 pipeline 存入评估，未提交的 cursor 不推进；存储失败不能伪称已经持久化。注册仍是显式调用，未接到 App 生命周期，未启用后台投递权限，未承诺系统唤醒。
+
+2026-09-18 核对本机 HKObserverQuery.h 及 Apple [completion handler](https://developer.apple.com/documentation/healthkit/hkobserverquerycompletionhandler) / [observer queries](https://developer.apple.com/documentation/healthkit/executing-observer-queries)；确认是在处理资料完成后确认。官网普通页面依赖 JS，读取其官方 Markdown 版本核验正文。
