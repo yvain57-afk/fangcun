@@ -42,6 +42,16 @@ final class HomeEvidencePipelineUITests: XCTestCase {
       if fixture == "failed" {
         XCTAssertEqual(app.staticTexts["today.measuredAt"].value as? String, "none")
       }
+      if fixture == "workoutProtected" {
+        XCTAssertTrue(app.staticTexts["today.evidenceSummary"].label.contains("不将它们解释为正常"))
+      }
+      if fixture == "previousSleep" {
+        let detail = app.buttons["today.evidence"]
+        for _ in 0..<5 where !detail.isHittable { app.scrollViews.firstMatch.swipeUp() }
+        XCTAssertTrue(detail.label.contains("最近主睡眠"))
+        XCTAssertTrue(detail.label.contains("9月16日"))
+        XCTAssertFalse(detail.label.contains("昨晚"))
+      }
       capture("m1-" + fixture, app)
       app.terminate()
     }

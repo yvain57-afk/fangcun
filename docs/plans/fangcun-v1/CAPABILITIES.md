@@ -27,3 +27,15 @@ xcrun swiftc -typecheck -swift-version 6 -sdk "$(xcrun --sdk watchsimulator --sh
 核对本机 WatchKit 头文件及 [Apple extended runtime 文档](https://developer.apple.com/documentation/watchkit/using-extended-runtime-sessions)（2026-09-18 读取官方 Markdown）。正念扩展会话属于 frontmost；必须在 active 时启动，需相应后台模式，可能因系统/资源限制失效。不能据此保证离开 App 后持续运行。当前正式 Watch 仅有既有 workout-processing，M0 不擅自开启 mindfulness。
 
 SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`；不阻止 M1 数据修正。
+
+## M2 前逐项状态复核
+
+| 实验 | 状态 | 证据层级与仍缺条件 |
+|---|---|---|
+| 扩展运行 API 小实验 | implemented_unverified | Watch SDK typecheck passed；需要真实 Watch、mindfulness 配置后验证腕下/退出/失效/触感。此运行验证 blocked |
+| Widget target 小实验 | implemented_unverified | 独立 WidgetProbe appex build passed；需 M5 嵌入、签名安装及系统 family/刷新测试 |
+| 通知动作小实验 | implemented_unverified | iOS/watchOS category/action typecheck passed；需 M5 授权、系统投递与动作回调测试 |
+| WC 传输小实验 | implemented_unverified | 三种传输 API typecheck passed；需配对物理 Watch，覆盖断连、送达、重复、乱序及 ACK。跨设备验证 blocked |
+| iPhone M1 安装/启动 | verified | device-receipt.json；仅证明安装、启动和版本回读，不推导 Watch 行为 |
+
+上述未验证项不阻塞纯数据与本机持久化的 M2。

@@ -2,6 +2,36 @@ import XCTest
 
 final class FangcunRedesignUITests: XCTestCase {
   @MainActor
+  func testDisplayPreferencesSurviveRelaunch() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing"]
+    app.launch()
+    app.tabBars.buttons["设置"].tap()
+    let labels = ["深色模式", "较大字号", "减少动态效果"]
+    for label in labels {
+      let toggle = app.switches[label]
+      for _ in 0..<5 where !toggle.isHittable { app.scrollViews.firstMatch.swipeUp() }
+      XCTAssertTrue(toggle.exists)
+      if toggle.value as? String != "1" {
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+      }
+      XCTAssertEqual(toggle.value as? String, "1", "Immediate value: \(label)")
+    }
+    app.terminate()
+    app.launch()
+    app.tabBars.buttons["设置"].tap()
+    for label in labels { XCTAssertEqual(app.switches[label].value as? String, "1", "Relaunch value: \(label)") }
+    capture("preferences-relaunch", app)
+    // Keep the shared simulator preferences neutral for subsequent visual tests.
+    for label in labels {
+      let toggle = app.switches[label]
+      for _ in 0..<5 where !toggle.isHittable { app.scrollViews.firstMatch.swipeUp() }
+      toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+    }
+  }
+
+  @MainActor
   func testNativeTodayDrinksTrendsPracticeAndSettings() {
     continueAfterFailure = false
     let app = XCUIApplication()

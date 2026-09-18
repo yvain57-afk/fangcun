@@ -62,3 +62,21 @@ xcrun devicectl device info apps --device "$IPHONE_ID" --bundle-id com.yvainair.
 - 真机安装/启动及版本回读，不等同真机逐屏人工验收或健康数据准确性验证。
 - 物理 Watch 的腕下运行、触感、系统失效和跨端送达仍 blocked；Widget/通知仅完成独立编译实验。
 - M2 新准备度、M3 全量存储迁移/28 天趋势及取消分类柱高、M4 Watch 离线会话与同步、M5 系统入口、M6 完整验收与 Live Activity 尚未实施；M7 暂缓。
+
+## M0–M1 逐项复核（M2 前置，2026-09-18）
+
+| 用户核验项 | 现有测试名称及结果 | 证据 |
+|---|---|---|
+| 历史充分，当前无可靠资料不平稳 | BodyLoadEngineTests.historyWithoutCurrentEvidence(0/4/5/14)、HomeEvidencePipelineTests.rawInput(noCurrentHistory/stale/failed)、HomeEvidencePipelineUITests.testHistoryFailureAndLimitedEvidence 均通过 | m1-core.txt、m1-final-unit.txt、m1-final.txt |
+| 睡眠单项、体征单项为有限 | currentEvidenceGate、rawInput(sleepOnly/oneCardio/unreliablePair)、testHistoryFailureAndLimitedEvidence 通过 | 同上 |
+| 运动保护不表达正常 | recentWorkoutSuppressesElevatedConclusion、rawInput(workoutProtected) 通过；本次给 testQualifiedEvidenceAndWorkoutProtection 增加首页保护说明断言，通过 | m1-audit.txt：该 test passed（同次其他测试有失败，未混算） |
+| 非最近一夜不叫昨晚 | rawInput(previousSleep) 验证 stale；本次在 testPreviousSleepAndIncompleteBaselines 验证真实首页卡片包含“最近主睡眠”和 9月16日，且不含“昨晚”，通过 | m1-audit.txt |
+| 测量/查询/计算分离 | timeSeparation、testMeasurementTimeDoesNotBecomeQueryTime 通过，验证原时间不随刷新延长 | m1-final-unit.txt、m1-final.txt |
+| provider→VM→当前首页 | HomeEvidencePipelineUITests 四个 test，共 12 种 raw fixture；入口为 --health-fixture，未使用 --preview-state | m1-final.txt；HomeHealthFixture.swift 与 RootView.swift |
+| 练习无回归 | PracticeSessionViewModelTests 全套；testNativeTodayDrinksTrendsPracticeAndSettings；testBreathingWithMotionEnabledCanPauseAndExit 通过 | m1-final-unit.txt、m1-final.txt |
+| 饮品/记录无回归 | compositeDrinkUndoAndReload、dayBoundariesAndUnknownHistory、unreadableArchiveIsNotOverwritten、legacySnapshotKeepsItsMeaningAndSurvivesSameDayRefresh 通过 | m1-final-unit.txt |
+| 显示偏好 | 原 testAcceptedSoloAndDuoScenesInDarkAndLargeType 通过；新增 testDisplayPreferencesSurviveRelaunch 验证三个开关即时值及重启保留，通过 | m1-preferences.txt |
+
+补测命令使用相同 InnerBalance scheme、Debug、专用 iPhone 模拟器及 CODE_SIGNING_ALLOWED=NO，仅选择上述两个 HomeEvidencePipelineUITests test 和新偏好 test（完整参数见日志）。第一次偏好测试点到 SwiftUI Switch 行中央，未实际切换；修正为控件右侧，并增加即时值断言后单独重跑通过。保留首次失败日志，不把整次失败的 test run 标成通过。未修改 App 行为。
+
+原 M0–M1 的代码验收成立；平台能力验收仅按 CAPABILITIES 的具体层级登记，不包含 Watch 后台或跨端送达的真机成功。
