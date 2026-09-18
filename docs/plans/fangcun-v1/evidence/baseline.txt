@@ -426,7 +426,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceTests (in target
 
 SwiftCompile normal arm64 (in target 'InnerBalanceTests' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal arm64 Compiling\ CheckInCacheStoreTests.swift,\ DailyEchoStoreTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/CheckInCacheStoreTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/DailyEchoStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
 
@@ -512,7 +512,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceUITests (in targ
 
 SwiftCompile normal arm64 (in target 'InnerBalanceUITests' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal arm64 Compiling\ PracticeReturnHomeUITests.swift <REPO>/InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
 

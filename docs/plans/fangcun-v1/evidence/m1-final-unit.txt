@@ -91,7 +91,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalance (in target 'Inn
 
 SwiftCompile normal arm64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalance (in target 'InnerBalance' from project 'InnerBalance')
 
@@ -397,7 +397,7 @@ SwiftCompile normal arm64 Compiling\ BreathingFieldPlayer.swift,\ PracticeActive
 201 | */
 202 | - (void)scheduleBuffer:(AVAudioPCMBuffer *)buffer atTime:(AVAudioTime * __nullable)when options:(AVAudioPlayerNodeBufferOptions)options completionHandler:(AVAudioNodeCompletionHandler __nullable)completionHandler;
     | `- note: 'scheduleBuffer(_:at:options:)' declared here
-203 | 
+203 |
 204 | /*! @method scheduleBuffer:atTime:options:completionCallbackType:completionHandler:
 
 SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/BreathingFieldPlayer.swift (in target 'InnerBalance' from project 'InnerBalance')
@@ -457,7 +457,7 @@ SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceApp/DesignSystem/Fangc
 
 SwiftCompile normal arm64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceApp/DesignSystem/FangcunCopy.swift (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
@@ -525,7 +525,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceTests (in target
 
 SwiftCompile normal arm64 (in target 'InnerBalanceTests' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 Ld <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance normal (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance

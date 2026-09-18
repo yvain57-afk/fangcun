@@ -499,7 +499,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ WidgetProbe (in target 'Wid
 
 SwiftCompile normal x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
     cd <EVIDENCE>/probes
-    
+
 
 SwiftCompile normal x86_64 Compiling\ WidgetProbe.swift <EVIDENCE>/probes/WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
 
@@ -511,7 +511,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ WidgetProbe (in target 'Widg
 
 SwiftCompile normal arm64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
     cd <EVIDENCE>/probes
-    
+
 
 SwiftCompile normal arm64 Compiling\ WidgetProbe.swift <EVIDENCE>/probes/WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
 
@@ -641,4 +641,3 @@ PruneExplicitPrecompiledModules <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompil
 PruneExplicitPrecompiledModules <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
 
 ** BUILD SUCCEEDED **
-

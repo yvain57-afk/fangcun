@@ -680,7 +680,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalanceCore (in target
 
 SwiftCompile normal x86_64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftCompile normal x86_64 Compiling\ EchoPersonalization.swift,\ RecommendationEngine.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/EchoPersonalization.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/RecommendationEngine.swift (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
@@ -732,19 +732,19 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalanceCore (in target
 
 SwiftCompile normal x86_64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
 SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
 SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftDriverJobDiscovery normal x86_64 Emitting module for InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
@@ -1600,7 +1600,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalance_Watch_App (in 
 
 SwiftCompile normal x86_64 (in target 'InnerBalance Watch App' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal x86_64 Compiling\ WatchHealthRepository.swift <REPO>/InnerBalance/InnerBalanceWatch/Health/WatchHealthRepository.swift (in target 'InnerBalance Watch App' from project 'InnerBalance')
 
@@ -1654,7 +1654,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalance_Watch_App (in t
 
 SwiftCompile normal arm64 (in target 'InnerBalance Watch App' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal x86_64 Compiling WatchPracticeCompletion.swift (in target 'InnerBalance Watch App' from project 'InnerBalance')
 
@@ -2356,7 +2356,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalance (in target 'In
 
 SwiftCompile normal x86_64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal x86_64 Compiling\ PracticeSessionDialogs.swift,\ PracticeSessionScreens.swift,\ PracticeSessionView.swift,\ PracticeSessionViewModel.swift,\ PracticeSoundControls.swift,\ PracticeSoundPreferences.swift,\ PracticeToneRenderer.swift <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionDialogs.swift <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionScreens.swift <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionView.swift <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionViewModel.swift <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeSoundControls.swift <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeSoundPreferences.swift <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeToneRenderer.swift (in target 'InnerBalance' from project 'InnerBalance')
 
@@ -2417,7 +2417,7 @@ SwiftCompile normal x86_64 <REPO>/InnerBalance/InnerBalanceApp/DesignSystem/Fang
 
 SwiftCompile normal x86_64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal x86_64 <REPO>/InnerBalance/InnerBalanceApp/DesignSystem/FangcunDisplayPreferences.swift (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
@@ -2581,7 +2581,7 @@ SwiftCompile normal x86_64 Compiling\ BreathingFieldPlayer.swift,\ PracticeActiv
 201 | */
 202 | - (void)scheduleBuffer:(AVAudioPCMBuffer *)buffer atTime:(AVAudioTime * __nullable)when options:(AVAudioPlayerNodeBufferOptions)options completionHandler:(AVAudioNodeCompletionHandler __nullable)completionHandler;
     | `- note: 'scheduleBuffer(_:at:options:)' declared here
-203 | 
+203 |
 204 | /*! @method scheduleBuffer:atTime:options:completionCallbackType:completionHandler:
 
 SwiftCompile normal x86_64 <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/BreathingFieldPlayer.swift (in target 'InnerBalance' from project 'InnerBalance')
@@ -2628,7 +2628,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalance (in target 'Inn
 
 SwiftCompile normal arm64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal x86_64 Compiling InnerBalanceApp.swift, RootView.swift, FangcunCopy.swift, FangcunBrand.swift, FangcunCompanion.swift, FangcunDisplayPreferences.swift, InnerBalanceTheme.swift, CheckInFlowView.swift (in target 'InnerBalance' from project 'InnerBalance')
 
@@ -2728,7 +2728,7 @@ SwiftCompile normal arm64 Compiling\ BreathingFieldPlayer.swift,\ PracticeActive
 201 | */
 202 | - (void)scheduleBuffer:(AVAudioPCMBuffer *)buffer atTime:(AVAudioTime * __nullable)when options:(AVAudioPlayerNodeBufferOptions)options completionHandler:(AVAudioNodeCompletionHandler __nullable)completionHandler;
     | `- note: 'scheduleBuffer(_:at:options:)' declared here
-203 | 
+203 |
 204 | /*! @method scheduleBuffer:atTime:options:completionCallbackType:completionHandler:
 
 SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/BreathingFieldPlayer.swift (in target 'InnerBalance' from project 'InnerBalance')
@@ -2926,7 +2926,7 @@ SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceApp/DesignSystem/Fangc
 
 SwiftCompile normal arm64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceApp/DesignSystem/FangcunDisplayPreferences.swift (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
@@ -3181,4 +3181,3 @@ PruneExplicitPrecompiledModules <EVIDENCE>/WatchDerivedData/Build/Intermediates.
 PruneExplicitPrecompiledModules <EVIDENCE>/WatchDerivedData/SDKExplicitPrecompiledModules
 
 ** BUILD SUCCEEDED **
-

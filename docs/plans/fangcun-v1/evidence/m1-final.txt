@@ -87,7 +87,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalance (in target 'Inn
 
 SwiftCompile normal arm64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalance (in target 'InnerBalance' from project 'InnerBalance')
 
@@ -214,7 +214,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceTests (in target
 
 SwiftCompile normal arm64 (in target 'InnerBalanceTests' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalanceTests (in target 'InnerBalanceTests' from project 'InnerBalance')
 

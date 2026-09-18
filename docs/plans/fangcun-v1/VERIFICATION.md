@@ -21,7 +21,7 @@ M0 基线提交 `cf5c87d`；M1 在 `codex/fangcun-v1-m0-m1` 分支提交。保�
 | iOS + 嵌入 Watch | 最终 Release 真机构建通过 | evidence/device-receipt.json；含签名的完整日志只留本机 |
 | Release mock 排除 | 二进制没有 health-fixture、preview-state、UI-testing 内存模式入口；HealthKit entitlement 存在 | 构建后检查及 device-receipt.json |
 | 文案 | Catalog 40 个 body.* key 和 CSV 完全匹配；代码静态 key 均存在 | 构建前后脚本检查 |
-| 差异 | git diff --check 通过 | 提交前检查 |
+| 差异 | git diff --check cf5c87d 通过（M1 改动） | 提交前检查 |
 | 真机安装 | iPhone 16 Pro 覆盖安装、启动成功，版本回读 1.0.0 (2026091802) | evidence/device-receipt.json |
 
 UI 最终截图使用最终界面源代码；随后仅补齐 Release 的持久化测试入口隔离，并把文案 helper 移入既有 DesignSystem 目录。最终 Debug App 单元测试及 Release iOS/Watch 构建再次通过；无需因此重复全部 UI 场景。
@@ -53,7 +53,7 @@ xcrun devicectl device process launch --device "$IPHONE_ID" com.yvainair.InnerBa
 xcrun devicectl device info apps --device "$IPHONE_ID" --bundle-id com.yvainair.InnerBalance
 ```
 
-最终补测使用相同 App 四个 suite，去掉两个 UI selector，结果包为 `m1-final-unit.xcresult`。原始日志、签名产物、设备回执及 xcresult 留在本机 `/Users/yvainair/Code/Codex/2026-09-18/fangcun-v1/`；公开可提交证据经过路径/设备标识删减，所有截图均为模拟器合成数据。
+最终补测使用相同 App 四个 suite，去掉两个 UI selector，结果包为 `m1-final-unit.xcresult`。原始日志、签名产物、设备回执及 xcresult 留在本机 `/Users/yvainair/Code/Codex/2026-09-18/fangcun-v1/`；公开可提交证据经过路径/设备标识删减、行尾空白规范化，所有截图均为模拟器合成数据。
 
 ## 已知验证边界
 
