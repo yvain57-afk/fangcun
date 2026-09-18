@@ -86,3 +86,11 @@ xcrun devicectl device info apps --device "$IPHONE_ID" --bundle-id com.yvainair.
 `ReadinessSourceTests.sourceDefinitionsAndRevisions / noSilentSwitchAndManualRebaseline / uuidSyncVersionAndExplicitMirrors / deletionWinsAndCacheIsBounded` 通过，Core 共 71 项。`ReadinessHealthKitProviderTests.actualHKObjectsNormalizeWithoutWritingHealthStore` 通过，覆盖实际 HKQuantitySample 单位换算、原 UUID/时间/同步元数据及 inBed 类别保留，不写 HealthKit。SDK 适配器和观察器编译通过。
 
 首次 adapter 测试错误假定“未保存的 HKSample 已有来源 bundle”，SDK 实际为空。改为断言原样保留来源并且不能被选择为合格主源，重跑通过；没有给未保存对象编造来源。失败与复验日志均保留在 evidence/m2-01-*.txt。真机 HealthKit 增量、后台回调尚未验证，事务/锚点提交验收在 M2-04 完成。
+
+## M2-02 核验
+
+命令：`swift test --package-path InnerBalanceCore`。最终 78 tests / 15 suites 通过，证据 [m2-02-core-recheck.txt](evidence/m2-02-core-recheck.txt)。
+
+新增 `ReadinessFeatureTests`：`sleepUnionDoesNotMixSourcesOrCountAwake`、`lateSleepKeepsCycleAndAmbiguousMatchesRequireReview`、`shiftWorkNapManualChoiceAndArrival`、`excessiveFutureAndConflictingSleep`、`sparseCoverageInterventionAndRestingReuse`、`baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors`、`daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent`。最后一项当前覆盖换时区与绝对桶，实际夏令时重复小时在 M2-03 补充。
+
+首轮同小时 fixture 误放在整点边界两侧，实际属于两个绝对小时；测试失败如实保留 [m2-02-core.txt](evidence/m2-02-core.txt)。调整合成采样时刻，使 3 样本确实在同一小时，未放宽生产规则。

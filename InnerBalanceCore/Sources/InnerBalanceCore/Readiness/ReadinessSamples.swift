@@ -99,19 +99,25 @@ public enum SampleNormalizer {
       return $0.id.uuidString < $1.id.uuidString
     }
     var result: [ReadinessSample] = []
-    for sample in ordered where !result.contains(where: { retained in
-      if sample.id == retained.id { return true }
-      if sample.metric == retained.metric, sample.sourceKey == retained.sourceKey,
-        let sync = sample.syncIdentifier, sync == retained.syncIdentifier { return true }
-      guard sample.metric == retained.metric, mirrors.permits(sample.sourceKey, retained.sourceKey) else { return false }
-      if sample.metric == .workout {
-        guard sample.activityType == retained.activityType else { return false }
-        let overlap = min(sample.end, retained.end).timeIntervalSince(max(sample.start, retained.start))
-        return overlap > 0 && overlap >= 0.8 * min(sample.end.timeIntervalSince(sample.start), retained.end.timeIntervalSince(retained.start))
+    var ids: Set<UUID> = [], synced: Set<String> = []
+    for sample in ordered {
+      let syncKey = sample.syncIdentifier.map { sample.sourceKey + "|" + $0 }
+      guard !ids.contains(sample.id), syncKey.map({ !synced.contains($0) }) ?? true else { continue }
+      let mirrored = !mirrors.sourcePairs.isEmpty && result.contains { retained in
+        guard sample.metric == retained.metric, mirrors.permits(sample.sourceKey, retained.sourceKey) else { return false }
+        if sample.metric == .workout {
+          guard sample.activityType == retained.activityType else { return false }
+          let overlap = min(sample.end, retained.end).timeIntervalSince(max(sample.start, retained.start))
+          return overlap > 0 && overlap >= 0.8 * min(sample.end.timeIntervalSince(sample.start), retained.end.timeIntervalSince(retained.start))
+        }
+        return sample.start == retained.start && sample.end == retained.end
+          && sample.value == retained.value && sample.stage == retained.stage
       }
-      return sample.start == retained.start && sample.end == retained.end
-        && sample.value == retained.value && sample.stage == retained.stage
-    }) { result.append(sample) }
+      guard !mirrored else { continue }
+      ids.insert(sample.id)
+      if let syncKey { synced.insert(syncKey) }
+      result.append(sample)
+    }
     return result.sorted { $0.id.uuidString < $1.id.uuidString }
   }
 }
