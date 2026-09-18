@@ -148,11 +148,11 @@ Test Suite 'Selected tests' passed at 2026-09-18 20:35:05.193.
 ↳ source.contains(".preferredColorScheme(.light)") → false
 ↳   source → "import SwiftData
     import SwiftUI
-    
+
     @main
     struct InnerBalanceApp: App {
       private let modelContainer: ModelContainer
-    
+
       init() {
         let schema = Schema([
           PendingHealthWrite.self,
@@ -177,7 +177,7 @@ Test Suite 'Selected tests' passed at 2026-09-18 20:35:05.193.
           fatalError("Unable to create the local persistence container.")
         }
       }
-    
+
       var body: some Scene {
         WindowGroup {
           RootView()

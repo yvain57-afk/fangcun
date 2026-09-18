@@ -183,4 +183,4 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
   -only-testing:InnerBalanceTests/PracticePresentationTests CODE_SIGNING_ALLOWED=NO
 ```
 
-分阶段提交：M1 补证 `0062d4a`，M2-01 `9157b8d`，M2-02 `058a3e8`，M2-03 `1906270`；M2-04 提交见同分支历史。最终 HEAD 在交付回复提供。main 基准保持 `905626c6e08dc7a36ddd4e219abf6945795ac62f`。
+分阶段提交：M1 补证 `0062d4a`，M2-01 `9157b8d`，M2-02 `058a3e8`，M2-03 `1906270`；M2-04 `4a0916e`；随后仅整理脱敏日志空白。最终 HEAD 在交付回复提供。main 基准保持 `905626c6e08dc7a36ddd4e219abf6945795ac62f`。

@@ -67,13 +67,13 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 
 
 SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
 SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
@@ -135,7 +135,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalanceCore (in target
 
 SwiftCompile normal x86_64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftDriverJobDiscovery normal x86_64 Emitting module for InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
@@ -167,7 +167,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalance_Watch_App (in t
 
 SwiftCompile normal arm64 (in target 'InnerBalance Watch App' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalance_Watch_App (in target 'InnerBalance Watch App' from project 'InnerBalance')
 
@@ -183,7 +183,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalance_Watch_App (in 
 
 SwiftCompile normal x86_64 (in target 'InnerBalance Watch App' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal x86_64 Emitting module for InnerBalance_Watch_App (in target 'InnerBalance Watch App' from project 'InnerBalance')
 
@@ -215,7 +215,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalance (in target 'Inn
 
 SwiftCompile normal arm64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalance (in target 'InnerBalance' from project 'InnerBalance')
 
@@ -492,7 +492,7 @@ SwiftCompile normal arm64 Compiling\ BreathingFieldPlayer.swift,\ PracticeActive
 201 | */
 202 | - (void)scheduleBuffer:(AVAudioPCMBuffer *)buffer atTime:(AVAudioTime * __nullable)when options:(AVAudioPlayerNodeBufferOptions)options completionHandler:(AVAudioNodeCompletionHandler __nullable)completionHandler;
     | `- note: 'scheduleBuffer(_:at:options:)' declared here
-203 | 
+203 |
 204 | /*! @method scheduleBuffer:atTime:options:completionCallbackType:completionHandler:
 
 SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/BreathingFieldPlayer.swift (in target 'InnerBalance' from project 'InnerBalance')
@@ -1054,7 +1054,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceTests (in target
 
 SwiftCompile normal arm64 (in target 'InnerBalanceTests' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal arm64 Compiling\ PracticeFeedbackPersistenceTests.swift,\ FangcunResponseLoopTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/PracticeFeedbackPersistenceTests.swift <REPO>/InnerBalance/InnerBalanceTests/FangcunResponseLoopTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
 
@@ -1330,11 +1330,11 @@ Test Suite 'All tests' passed at 2026-09-18 20:30:42.187.
 ↳ source.contains(".preferredColorScheme(.light)") → false
 ↳   source → "import SwiftData
     import SwiftUI
-    
+
     @main
     struct InnerBalanceApp: App {
       private let modelContainer: ModelContainer
-    
+
       init() {
         let schema = Schema([
           PendingHealthWrite.self,
@@ -1359,7 +1359,7 @@ Test Suite 'All tests' passed at 2026-09-18 20:30:42.187.
           fatalError("Unable to create the local persistence container.")
         }
       }
-    
+
       var body: some Scene {
         WindowGroup {
           RootView()

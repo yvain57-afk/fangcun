@@ -8,7 +8,7 @@ error: SwiftCompile normal arm64 <REPO>/InnerBalanceCore/Sources/InnerBalanceCor
  66 |   private var privacy: PrivacyJournal
     |               `- note: property declared here
  67 |   private var nextFault: InsightsStoreFault = .none
- 68 | 
+ 68 |
     :
  94 |     if privacy.epoch > state.generation { state = InsightsSnapshot(); state.generation = privacy.epoch; state.requiresResync = true }
  95 |     state.redact(privacy.deletedIDs)

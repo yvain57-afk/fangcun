@@ -216,19 +216,19 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 
 
 SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
 SwiftCompile normal x86_64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
 SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftCompile normal arm64 Compiling\ InsightsStore.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
@@ -254,7 +254,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalanceCore (in target
 
 SwiftCompile normal x86_64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
     cd <REPO>/InnerBalance/InnerBalance.xcodeproj
-    
+
 
 SwiftCompile normal x86_64 Compiling\ ReadinessSamples.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessSamples.swift (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
 
@@ -686,7 +686,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalance (in target 'Inn
 
 SwiftCompile normal arm64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftDriver\ Compilation InnerBalance normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
@@ -724,7 +724,7 @@ SwiftEmitModule normal x86_64 Emitting\ module\ for\ InnerBalance (in target 'In
 
 SwiftCompile normal x86_64 (in target 'InnerBalance' from project 'InnerBalance')
     cd <REPO>/InnerBalance
-    
+
 
 SwiftCompile normal x86_64 Compiling\ HomeHealthFixture.swift,\ StateOfMindMapper.swift,\ CachedCheckIn.swift,\ CheckInSyncCoordinator.swift,\ DailyEcho.swift <REPO>/InnerBalance/InnerBalanceApp/Health/HomeHealthFixture.swift <REPO>/InnerBalance/InnerBalanceApp/Health/StateOfMindMapper.swift <REPO>/InnerBalance/InnerBalanceApp/Persistence/CachedCheckIn.swift <REPO>/InnerBalance/InnerBalanceApp/Persistence/CheckInSyncCoordinator.swift <REPO>/InnerBalance/InnerBalanceApp/Persistence/DailyEcho.swift (in target 'InnerBalance' from project 'InnerBalance')
 
@@ -788,7 +788,7 @@ SwiftCompile normal x86_64 Compiling\ PracticeAudioController.swift,\ PracticeAu
 201 | */
 202 | - (void)scheduleBuffer:(AVAudioPCMBuffer *)buffer atTime:(AVAudioTime * __nullable)when options:(AVAudioPlayerNodeBufferOptions)options completionHandler:(AVAudioNodeCompletionHandler __nullable)completionHandler;
     | `- note: 'scheduleBuffer(_:at:options:)' declared here
-203 | 
+203 |
 204 | /*! @method scheduleBuffer:atTime:options:completionCallbackType:completionHandler:
 
 SwiftCompile normal x86_64 <REPO>/InnerBalance/InnerBalanceApp/Features/Practice/PracticeAudioController.swift (in target 'InnerBalance' from project 'InnerBalance')
@@ -1131,4 +1131,3 @@ PruneExplicitPrecompiledModules <DERIVED_DATA>/Build/Intermediates.noindex/Swift
 PruneExplicitPrecompiledModules <DERIVED_DATA>/SDKExplicitPrecompiledModules
 
 ** BUILD SUCCEEDED **
-
