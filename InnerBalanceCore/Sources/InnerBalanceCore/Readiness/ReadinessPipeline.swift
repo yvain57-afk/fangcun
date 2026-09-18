@@ -31,6 +31,13 @@ public actor ReadinessPipeline {
     var request: Request
     var waiters: [CheckedContinuation<InsightsSnapshot, Error>]
   }
+  private var retired = false
+  /// Ends this owner's lifetime. In-flight SDK queries may finish, but cannot publish or schedule work.
+  public func retire() {
+    retired = true
+    pending?.waiters.forEach { $0.resume(throwing: RefreshError.superseded) }
+    pending = nil
+  }
   private var flight: Flight?
   private var pending: Pending?
   internal private(set) var waitingCallers = 0
@@ -38,6 +45,7 @@ public actor ReadinessPipeline {
 
   public func refresh(now: Date, calendar: Calendar, configuration: ReadinessConfiguration = .init(),
     interventions: [ReadinessInterval] = [], healthDataChanged: Bool = false) async throws -> InsightsSnapshot {
+    guard !retired else { throw RefreshError.superseded }
     waitingCallers += 1
     defer { waitingCallers -= 1 }
     let generation = await store.snapshot().generation
@@ -89,6 +97,7 @@ public actor ReadinessPipeline {
 
   private func run(now: Date, calendar: Calendar, configuration: ReadinessConfiguration,
     interventions: [ReadinessInterval]) async throws -> InsightsSnapshot {
+    guard !retired else { throw RefreshError.superseded }
     let initial = await store.snapshot()
     var candidate = initial
     var initialization = initial.initialization ?? [:]
@@ -160,6 +169,7 @@ public actor ReadinessPipeline {
     candidate.record(result)
     candidate.requiresResync = failure != nil && initial.requiresResync
     // compare-and-swap rejects a late response after source selection, deletion, or clear().
+    guard !retired else { throw RefreshError.superseded }
     return try await store.commit(candidate, expectedGeneration: initial.generation)
   }
 }

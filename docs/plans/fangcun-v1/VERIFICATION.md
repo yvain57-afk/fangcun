@@ -279,3 +279,6 @@ DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test
 ## M3-01
 
 迁移、编辑和故障恢复已核验：9 App + 1 UI，正常退出及可读结果包，见 [M3-01-VERIFICATION](M3-01-VERIFICATION.md)。
+
+## M3-02
+见 [M3-02-VERIFICATION](M3-02-VERIFICATION.md)。Core 生命周期1项、App owner5项（含6场景）、首页详情UI6项与28天历史大字UI1项最终通过。两次首次 UI 定位/日期选择失败及正常重跑分别保留于 evidence。

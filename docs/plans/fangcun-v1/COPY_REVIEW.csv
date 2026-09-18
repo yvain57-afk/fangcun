@@ -58,3 +58,96 @@ diary.done,M3,diary,完成,格式化参数见字符串,3,否,是,初稿待人工
 diary.kind,M3,diary,饮品种类,格式化参数见字符串,3,否,是,初稿待人工确认
 diary.undo,M3,diary,撤销上一笔,格式化参数见字符串,3,否,是,初稿待人工确认
 diary.entry,M3,diary,%@ · 约 %d ml,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.assessable,M3,readiness,资料充分,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.provisional,M3,readiness,初步参考,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.limited,M3,readiness,有限线索,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.insufficient,M3,readiness,还没有足够资料,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.awaitingData,M3,readiness,等待资料到齐,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.failed,M3,readiness,暂时读取失败,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.stopped,M3,readiness,已停止读取,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.historical,M3,readiness,上一周期参考,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.state.stale,M3,readiness,等待新的恢复资料,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.level.usual,M3,readiness,恢复状态接近平常,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.level.reduced,M3,readiness,今天可以放慢一点,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.level.low,M3,readiness,今天多留一点休息,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.assessable,M3,readiness,结合主睡眠和个人体征基线，看看这一周期的身体恢复。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.provisional,M3,readiness,已有初步资料；个人基线仍在积累。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.limited,M3,readiness,部分线索已到齐，暂不作整体判断。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.insufficient,M3,readiness,资料不够，也可以先做一次轻松的呼吸。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.awaitingData,M3,readiness,睡眠刚结束，留一点时间让资料更新。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.failed,M3,readiness,这次没能读到资料；稍后可以重新刷新。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.stopped,M3,readiness,你可以随时在设置中重新启用读取。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.historical,M3,readiness,这个结论属于上一有效时段，不代表此刻状态。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.summary.stale,M3,readiness,旧资料已过期，不继续沿用旧结论。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.boundary,M3,readiness,准备度是身体恢复参考，不等于心理压力诊断。首版工程阈值待校准。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.storageError,M3,readiness,本地评估档案暂不可用，原资料已保留。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.refreshError,M3,readiness,本次刷新未成功；已有资料保留原测量时间。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.evidence,M3,readiness,身体给的线索,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.why,M3,readiness,为什么这样判断,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.unknown,M3,readiness,未知,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.metric,M3,readiness,%@：%@ %@ · 有效基线 %d 天,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.metric.hrvSDNN,M3,readiness,HRV SDNN 夜间中位数,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.metric.restingHeartRate,M3,readiness,静息心率,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.metric.sleep,M3,readiness,睡眠来源,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.sleepEnd,M3,readiness,主睡眠结束：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.measured,M3,readiness,证据测量：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.queried,M3,readiness,证据查询：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.computed,M3,readiness,计算完成：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.validUntil,M3,readiness,参考截止：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.attempt,M3,readiness,最近刷新尝试：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.success,M3,readiness,最近成功检查：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.identity,M3,readiness,评估及修订,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.freshness.current,M3,readiness,当前恢复周期,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.freshness.historical,M3,readiness,历史参考，不代表此刻,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.freshness.stale,M3,readiness,已过有效时段,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.settings,M3,readiness,恢复参考与来源,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.range,M3,readiness,历史范围,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.seven,M3,readiness,7 天,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.twentyEight,M3,readiness,28 天,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.history,M3,readiness,恢复与记录,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.history.blank,M3,readiness,这一天没有已存的新评估。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.history.legacy,M3,readiness,旧口径记录 · 保留原文,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.history.drinks,M3,readiness,已记液体 %d ml · 咖啡因约 %d mg,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.refresh,M3,readiness,刷新资料,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.enabled,M3,readiness,使用准备度参考,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.target,M3,readiness,睡眠目标 %.1f 小时,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.sources,M3,readiness,主来源,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.mainSleep,M3,readiness,选择主睡眠,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.stop,M3,readiness,停止读取,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.resume,M3,readiness,重新启用读取,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.clear,M3,readiness,清除本地准备度资料,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.clearExplanation,M3,readiness,停止读取并清除本地准备度缓存与评估。保留饮品、练习和 Apple 健康中的原始记录。重新启用需要你的选择。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.currentDataMissing,M3,readiness,当前体征缺失,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sleepMissing,M3,readiness,缺少主睡眠,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.hrvMissing,M3,readiness,缺少 HRV,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.rhrMissing,M3,readiness,缺少静息心率,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.baselineBuilding,M3,readiness,个人基线仍在积累,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sparseHRV,M3,readiness,HRV 样本较少,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.narrowHRVCoverage,M3,readiness,HRV 时间覆盖不足,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.invalidValue,M3,readiness,存在无效数值,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.extremeValue,M3,readiness,存在需复核数值,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.unitMismatch,M3,readiness,单位不匹配,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sourceUnknown,M3,readiness,来源未知,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sourceAmbiguous,M3,readiness,来源难以区分,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sourceIdentityIncomplete,M3,readiness,来源设备标识不完整,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.manuallyEntered,M3,readiness,手工数据不参与体征判断,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.interventionExcluded,M3,readiness,练习影响时段已排除,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.restingSampleReused,M3,readiness,静息心率已用于上一周期,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.shortSleep,M3,readiness,睡眠片段较短,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.excessiveSleep,M3,readiness,睡眠时长需复核,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.futureSleep,M3,readiness,睡眠时间异常,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.conflictingSleep,M3,readiness,睡眠阶段冲突,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.ambiguousSleep,M3,readiness,主睡眠不明确,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.ambiguousRevision,M3,readiness,睡眠修订需复核,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.awaitingArrival,M3,readiness,等待数据到齐,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.manualSleepSelection,M3,readiness,使用你选择的主睡眠,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.hrvAtypicallyHigh,M3,readiness,HRV 异常偏高，暂不作整体判断,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.hrvBelowBaseline,M3,readiness,HRV 低于个人基线,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.rhrAboveBaseline,M3,readiness,静息心率高于个人基线,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sleepBelowTarget,M3,readiness,睡眠少于个人目标,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.dataStale,M3,readiness,资料已过期,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.invalidConfiguration,M3,readiness,设置需复核,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.refreshFailed,M3,readiness,刷新未成功,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sourceChanged,M3,readiness,来源已变更,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.reason.sourceDeleted,M3,readiness,相关来源或数据已删除,格式化参数见字符串,3,否,是,初稿待人工确认
+diary.alcoholUnknown,M3,diary,部分酒精量未知；汇总只包含已知估算量。,格式化参数见字符串,3,否,是,初稿待人工确认

@@ -661,6 +661,936 @@
           }
         }
       }
+    },
+    "readiness.state.assessable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "资料充分"
+          }
+        }
+      }
+    },
+    "readiness.state.provisional": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "初步参考"
+          }
+        }
+      }
+    },
+    "readiness.state.limited": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有限线索"
+          }
+        }
+      }
+    },
+    "readiness.state.insufficient": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有足够资料"
+          }
+        }
+      }
+    },
+    "readiness.state.awaitingData": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等待资料到齐"
+          }
+        }
+      }
+    },
+    "readiness.state.failed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时读取失败"
+          }
+        }
+      }
+    },
+    "readiness.state.stopped": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已停止读取"
+          }
+        }
+      }
+    },
+    "readiness.state.historical": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上一周期参考"
+          }
+        }
+      }
+    },
+    "readiness.state.stale": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等待新的恢复资料"
+          }
+        }
+      }
+    },
+    "readiness.level.usual": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复状态接近平常"
+          }
+        }
+      }
+    },
+    "readiness.level.reduced": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天可以放慢一点"
+          }
+        }
+      }
+    },
+    "readiness.level.low": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天多留一点休息"
+          }
+        }
+      }
+    },
+    "readiness.summary.assessable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结合主睡眠和个人体征基线，看看这一周期的身体恢复。"
+          }
+        }
+      }
+    },
+    "readiness.summary.provisional": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已有初步资料；个人基线仍在积累。"
+          }
+        }
+      }
+    },
+    "readiness.summary.limited": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分线索已到齐，暂不作整体判断。"
+          }
+        }
+      }
+    },
+    "readiness.summary.insufficient": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "资料不够，也可以先做一次轻松的呼吸。"
+          }
+        }
+      }
+    },
+    "readiness.summary.awaitingData": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠刚结束，留一点时间让资料更新。"
+          }
+        }
+      }
+    },
+    "readiness.summary.failed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这次没能读到资料；稍后可以重新刷新。"
+          }
+        }
+      }
+    },
+    "readiness.summary.stopped": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你可以随时在设置中重新启用读取。"
+          }
+        }
+      }
+    },
+    "readiness.summary.historical": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这个结论属于上一有效时段，不代表此刻状态。"
+          }
+        }
+      }
+    },
+    "readiness.summary.stale": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旧资料已过期，不继续沿用旧结论。"
+          }
+        }
+      }
+    },
+    "readiness.boundary": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "准备度是身体恢复参考，不等于心理压力诊断。首版工程阈值待校准。"
+          }
+        }
+      }
+    },
+    "readiness.storageError": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本地评估档案暂不可用，原资料已保留。"
+          }
+        }
+      }
+    },
+    "readiness.refreshError": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本次刷新未成功；已有资料保留原测量时间。"
+          }
+        }
+      }
+    },
+    "readiness.evidence": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "身体给的线索"
+          }
+        }
+      }
+    },
+    "readiness.why": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为什么这样判断"
+          }
+        }
+      }
+    },
+    "readiness.unknown": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知"
+          }
+        }
+      }
+    },
+    "readiness.metric": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@：%@ %@ · 有效基线 %d 天"
+          }
+        }
+      }
+    },
+    "readiness.metric.hrvSDNN": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV SDNN 夜间中位数"
+          }
+        }
+      }
+    },
+    "readiness.metric.restingHeartRate": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静息心率"
+          }
+        }
+      }
+    },
+    "readiness.metric.sleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠来源"
+          }
+        }
+      }
+    },
+    "readiness.sleepEnd": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主睡眠结束：%@"
+          }
+        }
+      }
+    },
+    "readiness.measured": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "证据测量：%@"
+          }
+        }
+      }
+    },
+    "readiness.queried": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "证据查询：%@"
+          }
+        }
+      }
+    },
+    "readiness.computed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "计算完成：%@"
+          }
+        }
+      }
+    },
+    "readiness.validUntil": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "参考截止：%@"
+          }
+        }
+      }
+    },
+    "readiness.attempt": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近刷新尝试：%@"
+          }
+        }
+      }
+    },
+    "readiness.success": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近成功检查：%@"
+          }
+        }
+      }
+    },
+    "readiness.identity": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "评估及修订"
+          }
+        }
+      }
+    },
+    "readiness.freshness.current": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前恢复周期"
+          }
+        }
+      }
+    },
+    "readiness.freshness.historical": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "历史参考，不代表此刻"
+          }
+        }
+      }
+    },
+    "readiness.freshness.stale": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已过有效时段"
+          }
+        }
+      }
+    },
+    "readiness.settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复参考与来源"
+          }
+        }
+      }
+    },
+    "readiness.range": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "历史范围"
+          }
+        }
+      }
+    },
+    "readiness.seven": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 天"
+          }
+        }
+      }
+    },
+    "readiness.twentyEight": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "28 天"
+          }
+        }
+      }
+    },
+    "readiness.history": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复与记录"
+          }
+        }
+      }
+    },
+    "readiness.history.blank": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这一天没有已存的新评估。"
+          }
+        }
+      }
+    },
+    "readiness.history.legacy": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旧口径记录 · 保留原文"
+          }
+        }
+      }
+    },
+    "readiness.history.drinks": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已记液体 %d ml · 咖啡因约 %d mg"
+          }
+        }
+      }
+    },
+    "readiness.refresh": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新资料"
+          }
+        }
+      }
+    },
+    "readiness.enabled": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用准备度参考"
+          }
+        }
+      }
+    },
+    "readiness.target": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠目标 %.1f 小时"
+          }
+        }
+      }
+    },
+    "readiness.sources": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主来源"
+          }
+        }
+      }
+    },
+    "readiness.mainSleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择主睡眠"
+          }
+        }
+      }
+    },
+    "readiness.stop": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止读取"
+          }
+        }
+      }
+    },
+    "readiness.resume": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新启用读取"
+          }
+        }
+      }
+    },
+    "readiness.clear": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除本地准备度资料"
+          }
+        }
+      }
+    },
+    "readiness.clearExplanation": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止读取并清除本地准备度缓存与评估。保留饮品、练习和 Apple 健康中的原始记录。重新启用需要你的选择。"
+          }
+        }
+      }
+    },
+    "readiness.reason.currentDataMissing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前体征缺失"
+          }
+        }
+      }
+    },
+    "readiness.reason.sleepMissing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺少主睡眠"
+          }
+        }
+      }
+    },
+    "readiness.reason.hrvMissing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺少 HRV"
+          }
+        }
+      }
+    },
+    "readiness.reason.rhrMissing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺少静息心率"
+          }
+        }
+      }
+    },
+    "readiness.reason.baselineBuilding": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "个人基线仍在积累"
+          }
+        }
+      }
+    },
+    "readiness.reason.sparseHRV": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV 样本较少"
+          }
+        }
+      }
+    },
+    "readiness.reason.narrowHRVCoverage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV 时间覆盖不足"
+          }
+        }
+      }
+    },
+    "readiness.reason.invalidValue": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存在无效数值"
+          }
+        }
+      }
+    },
+    "readiness.reason.extremeValue": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存在需复核数值"
+          }
+        }
+      }
+    },
+    "readiness.reason.unitMismatch": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "单位不匹配"
+          }
+        }
+      }
+    },
+    "readiness.reason.sourceUnknown": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来源未知"
+          }
+        }
+      }
+    },
+    "readiness.reason.sourceAmbiguous": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来源难以区分"
+          }
+        }
+      }
+    },
+    "readiness.reason.sourceIdentityIncomplete": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来源设备标识不完整"
+          }
+        }
+      }
+    },
+    "readiness.reason.manuallyEntered": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手工数据不参与体征判断"
+          }
+        }
+      }
+    },
+    "readiness.reason.interventionExcluded": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "练习影响时段已排除"
+          }
+        }
+      }
+    },
+    "readiness.reason.restingSampleReused": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静息心率已用于上一周期"
+          }
+        }
+      }
+    },
+    "readiness.reason.shortSleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠片段较短"
+          }
+        }
+      }
+    },
+    "readiness.reason.excessiveSleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠时长需复核"
+          }
+        }
+      }
+    },
+    "readiness.reason.futureSleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠时间异常"
+          }
+        }
+      }
+    },
+    "readiness.reason.conflictingSleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠阶段冲突"
+          }
+        }
+      }
+    },
+    "readiness.reason.ambiguousSleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主睡眠不明确"
+          }
+        }
+      }
+    },
+    "readiness.reason.ambiguousRevision": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠修订需复核"
+          }
+        }
+      }
+    },
+    "readiness.reason.awaitingArrival": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等待数据到齐"
+          }
+        }
+      }
+    },
+    "readiness.reason.manualSleepSelection": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用你选择的主睡眠"
+          }
+        }
+      }
+    },
+    "readiness.reason.hrvAtypicallyHigh": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV 异常偏高，暂不作整体判断"
+          }
+        }
+      }
+    },
+    "readiness.reason.hrvBelowBaseline": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV 低于个人基线"
+          }
+        }
+      }
+    },
+    "readiness.reason.rhrAboveBaseline": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静息心率高于个人基线"
+          }
+        }
+      }
+    },
+    "readiness.reason.sleepBelowTarget": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠少于个人目标"
+          }
+        }
+      }
+    },
+    "readiness.reason.dataStale": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "资料已过期"
+          }
+        }
+      }
+    },
+    "readiness.reason.invalidConfiguration": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置需复核"
+          }
+        }
+      }
+    },
+    "readiness.reason.refreshFailed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新未成功"
+          }
+        }
+      }
+    },
+    "readiness.reason.sourceChanged": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来源已变更"
+          }
+        }
+      }
+    },
+    "readiness.reason.sourceDeleted": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "相关来源或数据已删除"
+          }
+        }
+      }
+    },
+    "diary.alcoholUnknown": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分酒精量未知；汇总只包含已知估算量。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

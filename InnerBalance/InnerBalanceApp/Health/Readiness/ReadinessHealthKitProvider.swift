@@ -57,11 +57,13 @@ final class ReadinessHealthKitProvider: ReadinessHealthDataProviding {
 
   /// Explicit opt-in by a future lifecycle owner; no background delivery/authorization is enabled here.
   func startObserving(pipeline: ReadinessPipeline,
-    context: @escaping @MainActor @Sendable () -> ReadinessObservationContext) throws {
+    context: @escaping @MainActor @Sendable () -> ReadinessObservationContext,
+    onSnapshot: @escaping @MainActor @Sendable (InsightsSnapshot) -> Void = { _ in }) throws {
     try startObserving(onChange: {
       let value = context()
-      _ = try await pipeline.refresh(now: value.now, calendar: value.calendar,
+      let snapshot = try await pipeline.refresh(now: value.now, calendar: value.calendar,
         configuration: value.configuration, interventions: value.interventions, healthDataChanged: true)
+      onSnapshot(snapshot)
     })
   }
 

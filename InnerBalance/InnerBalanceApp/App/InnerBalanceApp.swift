@@ -3,6 +3,7 @@ import SwiftUI
 
 @main
 struct InnerBalanceApp: App {
+  @State private var readiness = ReadinessCoordinator.make()
   private let modelContainer: ModelContainer
 
   init() {
@@ -33,6 +34,7 @@ struct InnerBalanceApp: App {
   var body: some Scene {
     WindowGroup {
       RootView()
+        .environment(\.readinessOwner, readiness)
         .modifier(FangcunDisplayPreferences())
     }
     .modelContainer(modelContainer)

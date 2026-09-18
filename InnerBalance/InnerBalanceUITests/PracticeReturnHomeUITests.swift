@@ -63,7 +63,7 @@ final class PracticeReturnHomeUITests: XCTestCase {
   private func launchPracticeFromLibrary() -> XCUIApplication {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing"]
+    app.launchArguments = ["--ui-testing", "--readiness-disabled"]
     app.launch()
     let practice = app.tabBars.buttons["练习"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))

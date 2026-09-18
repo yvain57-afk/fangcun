@@ -59,7 +59,7 @@ final class HomeEvidencePipelineUITests: XCTestCase {
 
   @MainActor private func launch(_ fixture: String) -> XCUIApplication {
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--health-fixture=\(fixture)",
+    app.launchArguments = ["--ui-testing", "--readiness-disabled", "--health-fixture=\(fixture)",
       "-fangcun.dark", fixture == "watch" ? "YES" : "NO",
       "-fangcun.largeType", fixture == "oneCardio" ? "YES" : "NO",
       "-fangcun.reduceMotion", "YES"]

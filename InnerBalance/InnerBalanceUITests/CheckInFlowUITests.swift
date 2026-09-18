@@ -6,7 +6,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing",
+      "--ui-testing", "--readiness-disabled",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]
@@ -100,7 +100,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing",
+      "--ui-testing", "--readiness-disabled",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -132,7 +132,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing",
+      "--ui-testing", "--readiness-disabled",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -251,7 +251,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing",
+      "--ui-testing", "--readiness-disabled",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -331,7 +331,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing",
+      "--ui-testing", "--readiness-disabled",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -369,7 +369,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing",
+      "--ui-testing", "--readiness-disabled",
       "--ui-testing-practice-save-failure",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",

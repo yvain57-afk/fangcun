@@ -7,6 +7,9 @@ enum FangcunCopy {
     return arguments.isEmpty ? format : String(format: format, locale: Locale.current, arguments: arguments)
   }
 
+  static func timestamp(_ date: Date?) -> String {
+    date.map { timestamp($0) } ?? text("readiness.unknown")
+  }
   static func timestamp(_ date: Date) -> String {
     date.formatted(.dateTime.month().day().hour().minute())
   }

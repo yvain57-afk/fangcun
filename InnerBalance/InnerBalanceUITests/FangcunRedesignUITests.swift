@@ -5,7 +5,7 @@ final class FangcunRedesignUITests: XCTestCase {
   func testDisplayPreferencesSurviveRelaunch() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing"]
+    app.launchArguments = ["--ui-testing", "--readiness-disabled"]
     app.launch()
     app.tabBars.buttons["设置"].tap()
     let labels = ["深色模式", "较大字号", "减少动态效果"]
@@ -35,7 +35,7 @@ final class FangcunRedesignUITests: XCTestCase {
   func testNativeTodayDrinksTrendsPracticeAndSettings() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
+    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
     app.launch()
     XCTAssertTrue(app.staticTexts["today.conclusion"].waitForExistence(timeout: 15))
     XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
@@ -85,7 +85,7 @@ final class FangcunRedesignUITests: XCTestCase {
   func testBreathingWithMotionEnabledCanPauseAndExit() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
+    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
     app.launch()
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
     app.buttons["today.start"].tap()
@@ -108,7 +108,7 @@ final class FangcunRedesignUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     for state in ["steady", "elevated", "insufficient"] {
-      app.launchArguments = ["--ui-testing", "--preview-state=\(state)", "-fangcun.dark", state == "elevated" ? "YES" : "NO", "-fangcun.largeType", state == "insufficient" ? "YES" : "NO", "-fangcun.reduceMotion", "YES"]
+      app.launchArguments = ["--ui-testing", "--readiness-disabled", "--preview-state=\(state)", "-fangcun.dark", state == "elevated" ? "YES" : "NO", "-fangcun.largeType", state == "insufficient" ? "YES" : "NO", "-fangcun.reduceMotion", "YES"]
       app.launch()
       XCTAssertTrue(app.staticTexts["today.conclusion"].waitForExistence(timeout: 10))
       XCTAssertEqual(app.staticTexts["today.conclusion"].value as? String, state)

@@ -193,7 +193,7 @@ final class FangcunResponseLoopUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing",
+      "--ui-testing", "--readiness-disabled",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]

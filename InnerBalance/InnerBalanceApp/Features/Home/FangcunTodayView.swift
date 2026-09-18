@@ -8,6 +8,7 @@ struct FangcunTodayView: View {
   let isUITesting: Bool
   let onStart: () -> Void
   let onCheckIn: () -> Void
+  @Environment(\.readinessOwner) private var readiness
   @Environment(FangcunDiary.self) private var diary
   @Environment(\.scenePhase) private var phase
   @Environment(\.dynamicTypeSize) private var typeSize
@@ -19,6 +20,7 @@ struct FangcunTodayView: View {
   @State private var askingHealth = false
 
   private var state: FangcunDayState {
+    if let readiness, readiness.enabled { return readiness.scene }
     #if DEBUG
     if isUITesting, let flag = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--preview-state=") }),
       let value = FangcunDayState(rawValue: String(flag.dropFirst("--preview-state=".count))) { return value }
@@ -26,6 +28,7 @@ struct FangcunTodayView: View {
     return FangcunDayState.resolve(model)
   }
   private var summary: String {
+    if let readiness, readiness.enabled { return FangcunCopy.text("readiness.summary." + readiness.presentationKey) }
     if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
       return FangcunCopy.text("body.workout.summary")
     }
@@ -35,6 +38,7 @@ struct FangcunTodayView: View {
     return FangcunCopy.text("body.state.\(state.rawValue).summary")
   }
   private var evidenceLine: String {
+    if let readiness, readiness.enabled { return FangcunCopy.text(readiness.current?.refreshFailure != nil ? "readiness.refreshError" : "readiness.boundary") }
     if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
       return FangcunCopy.text("body.workout.evidence")
     }
@@ -73,7 +77,7 @@ struct FangcunTodayView: View {
               Image(systemName: "arrow.up.right")
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 18)
           }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
-          evidenceCard
+          if let readiness, readiness.enabled { ReadinessEvidenceLink(owner: readiness) } else { evidenceCard }
           Button { drinks = true } label: {
             HStack(spacing: 14) {
               Image(systemName: "drop").font(.title2).foregroundStyle(InnerBalanceTheme.strongFill)
@@ -93,7 +97,7 @@ struct FangcunTodayView: View {
               .accessibilityValue(latestPractice.sessionID)
               .font(.subheadline).foregroundStyle(InnerBalanceTheme.strongFill)
           }
-          NavigationLink { FangcunTrendsView() } label: {
+          NavigationLink { if let readiness, readiness.enabled { ReadinessHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: {
             HStack { Text("看看这一周的节奏"); Spacer(); Image(systemName: "arrow.right") }.font(.subheadline).padding(.vertical, 10)
           }.accessibilityIdentifier("today.trends")
           Button("想补充一下自己的感受") { onCheckIn() }
@@ -118,8 +122,14 @@ struct FangcunTodayView: View {
           .background(InnerBalanceTheme.canvas).presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
       }
     }
-    .task { await refresh() }
-    .onChange(of: phase) { _, value in if value == .active { Task { await refresh() } } }
+    .task {
+      if readiness?.enabled != true { await refresh() }
+      while !Task.isCancelled {
+        readiness?.tick()
+        try? await Task.sleep(for: .seconds(1))
+      }
+    }
+    .onChange(of: phase) { _, value in if value == .active, readiness?.enabled != true { Task { await refresh() } } }
     .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in Task { await refresh() } }
   }
 
@@ -140,18 +150,18 @@ struct FangcunTodayView: View {
   private var hero: some View {
     VStack(alignment: .leading, spacing: 16) {
       HStack {
-        Label(state.shortTitle, systemImage: "circle.fill").font(.caption).labelStyle(.titleAndIcon)
+        Label(readiness?.enabled == true ? FangcunCopy.text("readiness.state." + (readiness?.presentationKey ?? "insufficient")) : state.shortTitle, systemImage: "circle.fill").font(.caption).labelStyle(.titleAndIcon)
           .foregroundStyle(state == .elevated ? InnerBalanceTheme.emphasis : InnerBalanceTheme.strongFill)
           .padding(.horizontal, 10).padding(.vertical, 6).background(InnerBalanceTheme.subtleFill, in: Capsule())
         Spacer()
       }
-      Text(state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
-        .accessibilityIdentifier("today.conclusion").accessibilityValue(state.rawValue)
-      Text(model.latestMeasuredAt.map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0)) }
+      Text(readiness?.enabled == true ? readiness!.title : state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+        .accessibilityIdentifier("today.conclusion").accessibilityValue(readiness?.enabled == true ? readiness!.presentationKey : state.rawValue)
+      Text((readiness?.enabled == true ? readiness?.current?.latestMeasuredAt : model.latestMeasuredAt).map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0)) }
         ?? FangcunCopy.text("body.time.noMeasurement"))
         .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         .accessibilityIdentifier("today.measuredAt")
-        .accessibilityValue(model.latestMeasuredAt?.ISO8601Format() ?? "none")
+        .accessibilityValue((readiness?.enabled == true ? readiness?.current?.latestMeasuredAt : model.latestMeasuredAt)?.ISO8601Format() ?? "none")
       ViewThatFits(in: .horizontal) {
         HStack(spacing: 10) { Text(summary).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true); character.frame(width: 142) }
         VStack(alignment: .leading, spacing: 10) { Text(summary).font(.subheadline); character.frame(maxWidth: 180).frame(maxWidth: .infinity) }
@@ -204,6 +214,7 @@ struct FangcunTodayView: View {
     }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).frame(maxWidth: .infinity, alignment: .leading)
   }
   private func refresh() async {
+    if let readiness, readiness.enabled { await readiness.refresh(); return }
     await model.refresh()
     guard !isUITesting else { return }
     diary.record(FangcunDaySnapshot(date: .now, state: state, summary: evidenceLine, sleep: sleepText,

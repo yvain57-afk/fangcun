@@ -171,6 +171,11 @@ public actor InsightsStore {
     try commit(next, expectedGeneration: state.generation)
   }
 
+  public func invalidateCurrent() throws {
+    var next = state; next.currentAssessmentID = nil
+    try commit(next, expectedGeneration: state.generation)
+  }
+
   public func clear() throws {
     privacy.epoch = state.generation + 1
     privacy.deletedIDs.formUnion(state.ledger.samples.keys)

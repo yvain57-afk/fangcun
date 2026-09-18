@@ -3,7 +3,7 @@ import XCTest
 final class DrinkEditorUITests: XCTestCase {
   @MainActor func testCapacityEditingUndoAndQuickLogShareTheSameRecords() {
     continueAfterFailure = false
-    let app = XCUIApplication(); app.launchArguments = ["--ui-testing", "-fangcun.dark", "NO"]
+    let app = XCUIApplication(); app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO"]
     app.launch()
     let drinks = app.buttons["today.drinks"]
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+  @Environment(\.readinessOwner) private var readiness
   @AppStorage("fangcun.dark") private var dark = false
   @AppStorage("fangcun.largeType") private var large = false
   @AppStorage("fangcun.reduceMotion") private var reduced = false
@@ -14,6 +15,9 @@ struct SettingsView: View {
   var body: some View {
     NavigationStack {
       List {
+        if let readiness {
+          NavigationLink(FangcunCopy.text("readiness.settings")) { ReadinessSettingsView(owner: readiness) }
+        }
         Section {
           Toggle(isOn: $dark) { Label("深色模式", systemImage: "moon") }
           Toggle(isOn: $large) { Label("较大字号", systemImage: "textformat.size") }
@@ -21,7 +25,7 @@ struct SettingsView: View {
         } header: { Text("舒服的方式，由你决定") }
         .listRowBackground(InnerBalanceTheme.surface)
         Section {
-          NavigationLink { FangcunTrendsView() } label: { Label("历史与趋势", systemImage: "chart.bar") }
+          NavigationLink { if let readiness, readiness.enabled { ReadinessHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: { Label("历史与趋势", systemImage: "chart.bar") }
           Stepper(value: $coffeeMg, in: 0...500, step: 10) {
             VStack(alignment: .leading, spacing: 4) {
               Text("每杯咖啡因约 \(coffeeMg) mg")
@@ -38,7 +42,7 @@ struct SettingsView: View {
           }
           if !isUITesting {
             Button {
-              Task { _ = await authorizationCoordinator.request(.initialBodyStatus) }
+              Task { _ = await authorizationCoordinator.request(.initialBodyStatus); await readiness?.refresh() }
             } label: {
               Label("管理 Apple 健康权限", systemImage: "heart.text.clipboard")
             }

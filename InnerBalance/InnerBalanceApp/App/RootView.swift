@@ -20,6 +20,7 @@ struct RootView: View {
     case settings
   }
 
+  @Environment(\.readinessOwner) private var readiness
   @Environment(\.modelContext) private var modelContext
   @Environment(\.scenePhase) private var scenePhase
   @State private var diary: FangcunDiary
@@ -138,6 +139,7 @@ struct RootView: View {
         onReturnToHome: { selectedTab = .now }
       ) { record, postCheckIn in
         latestPractice = record
+        readiness?.interventions.append(.init(start: record.startedAt, end: record.endedAt))
         if let postCheckIn {
           latestCheckIn = LatestCheckInViewState(record: postCheckIn)
         }
@@ -158,6 +160,10 @@ struct RootView: View {
     latestStressContext = try? cacheStore.latestContextRecord()
 
     latestPractice = try? PracticeCompletionStore(modelContext: modelContext).latestRecord()
+    if let records = try? modelContext.fetch(FetchDescriptor<StoredPracticeCompletion>()) {
+      readiness?.interventions = records.map { .init(start: $0.startedAt, end: $0.endedAt) }
+    }
+    await readiness?.refresh()
 
     let writeCoordinator = HealthWriteCoordinator(
       writer: healthWriter,
