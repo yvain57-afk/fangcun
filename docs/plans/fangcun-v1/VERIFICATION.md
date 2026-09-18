@@ -269,3 +269,8 @@ DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test
   -maximum-test-execution-time-allowance 90 -collect-test-diagnostics never \
   -only-testing:InnerBalanceUITests/PracticeReturnHomeUITests CODE_SIGNING_ALLOWED=NO
 ```
+
+
+## M3-PRE
+
+本轮结果、完整命令与失败修正见 [M3-PRE-VERIFICATION](M3-PRE-VERIFICATION.md)。App 170/170，UI 6/6，均退出 0 且结果包可读取。
