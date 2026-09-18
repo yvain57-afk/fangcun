@@ -12,8 +12,8 @@
 | M1-03 | verified | 7 UI tests；原始 provider 输入至首页，真机已安装启动 |
 | M2-01 | implemented_unverified | 标准化、选源、去重、HK anchored adapter 单测/编译通过；事务锚点联测在 M2-04 |
 | M2-02 | verified | ReadinessFeatureTests；78 Core 测试通过，原始合成输入 |
-| M2-03 | in_progress | ReadinessEngine / golden fixtures |
-| M2-04 | not_started | 独立存储与事务恢复 |
+| M2-03 | verified | 86 Core；原文件 G01–G10 从原始样本重放 |
+| M2-04 | in_progress | 独立存储与事务恢复 |
 | M3 | not_started | 版本化存储及手机完整闭环 |
 | M4 | not_started | 腕上会话、反馈及幂等同步 |
 | M5 | not_started | 活动提醒及 Widgets |

@@ -25,3 +25,10 @@
 - 同段修订的 50% 重叠用两段跨度的较大值作为分母（任务书未指定分母）；存在多匹配一律待复核。
 - 极端有限值的绝对边界在任务书中未给数值。最小补充为 HRV >10,000 ms 或 RHR >1,000 bpm 标记 extremeValue，不截断；集中工程配置、待校准，不能视为医学阈值。相对 HRV 高值仍严格执行第 4 章规则。
 - 去重改为 UUID / 同源同步标识集合，只有显式跨源镜像策略才做区间对照。合成 20 日基线测试由约 13.65 秒降至 0.052 秒；模型和输出不变。
+
+## M2-03: deterministic assessment
+
+- Tests load the original G01-G10 JSON and generate raw sleep, SDNN, and RHR inputs. No copied expected-result table.
+- A 1e-12 numerical tolerance handles log/exp round trips at exact severity boundaries; no model threshold changes.
+- Availability, level, freshness, and sync state are orthogonal. Partial evidence remains visible without a level. A failed refresh preserves valid cached timestamps; invalidation and a newer sleep take precedence.
+- Current sleep uses 48 hours; historical episodes use the bounded 35-day cache. Old malformed nights do not invalidate a separate current night. Training never hides observed deviations; drinks and completion counts are not scoring inputs.
