@@ -28,12 +28,14 @@ public actor ReadinessPipeline {
     interventions: [ReadinessInterval]) async throws -> InsightsSnapshot {
     let initial = await store.snapshot()
     var candidate = initial
+    var initialization = initial.initialization ?? [:]
     var failure: ReadinessReadFailure?
     var resetMetrics: Set<ReadinessMetric> = []
     let metrics: [ReadinessMetric] = [.sleep,.hrvSDNN,.restingHeartRate,.workout]
     for metric in metrics {
       var cursor = candidate.ledger.cursors[metric.rawValue]
       if cursor == nil {
+        initialization[metric.rawValue] = .inProgress
         resetMetrics.insert(metric)
         candidate.ledger.samples = candidate.ledger.samples.filter { $0.value.metric != metric }
       }
@@ -44,6 +46,7 @@ public actor ReadinessPipeline {
           let batch = try await provider.changes(for: metric, cursor: cursor, now: now)
           guard batch.metric == metric, !batch.hasMore || batch.cursor != cursor else { throw ReadinessReadFailure.invalidAnchor }
           candidate.ledger.apply(batch, now: now)
+          initialization[metric.rawValue] = batch.hasMore ? .inProgress : .complete
           cursor = batch.cursor; pages += 1
           if !batch.hasMore { break }
           // Bounded work per refresh. A later opportunity resumes the committed cursor.
@@ -52,6 +55,7 @@ public actor ReadinessPipeline {
           let reason = error as? ReadinessReadFailure ?? .queryFailed
           if reason == .invalidAnchor, !restarted {
             restarted = true; cursor = nil
+            initialization[metric.rawValue] = .inProgress
             resetMetrics.insert(metric)
             candidate.ledger.samples = candidate.ledger.samples.filter { $0.value.metric != metric }
             candidate.ledger.cursors[metric.rawValue] = nil
@@ -64,7 +68,9 @@ public actor ReadinessPipeline {
     }
     candidate.ledger.samples = candidate.ledger.samples.filter { $0.value.end >= now.addingTimeInterval(-35*86_400) }
     let samples = candidate.ledger.normalizedSamples
+    candidate.initialization = initialization
     for metric in metrics {
+      guard candidate.sources[metric.rawValue] != nil || initialization[metric.rawValue] == .complete else { continue }
       candidate.sources[metric.rawValue] = StableSourceSelector.select(metric: metric, samples: samples,
         existing: candidate.sources[metric.rawValue], calendar: calendar, now: now)
     }

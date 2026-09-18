@@ -16,10 +16,14 @@ public struct DeletedAssessmentAudit: Codable, Sendable {
   public var reason: ReadinessReason = .sourceDeleted
 }
 
+public enum ReadinessInitialization: String, Codable, Sendable { case unread, inProgress, complete }
+
 public struct InsightsSnapshot: Codable, Sendable {
   public var generation: Int = 0
   public var ledger = ReadinessSampleLedger()
   public var sources: [String: SelectedReadinessSource] = [:]
+  // Optional for schema-1 compatibility; existing source choices remain authoritative.
+  public var initialization: [String: ReadinessInitialization]?
   public var episodes: [ReadinessSleepEpisode] = []
   public var assessments: [ReadinessAssessment] = []
   public var deletionAudit: [DeletedAssessmentAudit] = []

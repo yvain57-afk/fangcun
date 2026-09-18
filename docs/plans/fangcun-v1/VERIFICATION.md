@@ -188,3 +188,7 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
 ## M2-R01
 
 `swift test --package-path InnerBalanceCore --filter M2ReviewR01Tests`。修复前 3 tests / 8 issues（一个参数化测试含两种数据）：[red](evidence/m2-r01-red.txt)；修复后见 [green](evidence/m2-r01-green.txt)。测试覆盖历史睡眠删除立即撤销、20→19 日重算仍 usual 且正确 supersedes、重启/损坏恢复/失败读取、睡眠冲突与被过滤 NaN 的间接依赖，以及缺少新字段的旧文件兼容。首份测试的嵌套 #require 宏编译错误单独留存 [测试编写修正](evidence/m2-r01-before.txt)，不计为生产问题重现。
+
+## M2-R02
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR02Tests`。修复前 2 tests / 7 issues：[red](evidence/m2-r02-red.txt)；修复后 [green](evidence/m2-r02-green.txt)。覆盖第一页 A / 第二页 B 失败、进度落盘重启续读后选完整 20 日 B、期间无等级、手动 A 保持优先、后续新来源不自动切换，以及 100 页预算中断后续读。原失效锚点/缺主源回归将在最终 Core 全量继续核验。

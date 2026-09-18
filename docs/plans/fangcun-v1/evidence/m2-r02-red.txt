@@ -1,0 +1,57 @@
+Building for debugging...
+[Planning deferred tasks]
+[6 / 17] InnerBalanceCoreTests-product
+[9 / 20] InnerBalanceCoreTests-product
+[15 / 19] InnerBalanceCoreTests-product
+Build complete! (1.41秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R02 paged source discovery" started.
+◇ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+◇ Test workBudgetDoesNotFreezeIncompleteDiscovery() started.
+◇ Test case passing 1 argument manual → true to incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+◇ Test case passing 1 argument manual → false to incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() recorded an issue at M2ReviewR02Tests.swift:36:5: Expectation failed: partial.current?.level == nil && partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil
+↳ partial.current?.level == nil && partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+↳   partial.current?.level == nil → true
+↳   partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → false at M2ReviewR02Tests.swift:17:5: Expectation failed: partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil
+↳ partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+↳   partial.sources[ReadinessMetric.hrvSDNN.rawValue] → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳     some → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳       sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳       segmentID → "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d"
+↳       manuallySelected → false
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → true at M2ReviewR02Tests.swift:17:5: Expectation failed: partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil
+↳ partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+↳   partial.sources[ReadinessMetric.hrvSDNN.rawValue] → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳     some → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳       sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳       segmentID → "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d"
+↳       manuallySelected → false
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() recorded an issue at M2ReviewR02Tests.swift:38:5: Expectation failed: completed.current?.level == .usual
+↳ completed.current?.level == .usual → false
+↳   completed.current?.level → nil
+↳     some → .usual
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() recorded an issue at M2ReviewR02Tests.swift:39:5: Expectation failed: completed.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == f.source.key(for: .hrvSDNN)
+↳ completed.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == f.source.key(for: .hrvSDNN) → false
+↳   completed.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳     some → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳   f.source.key(for: .hrvSDNN) → "24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() failed after 0.164 seconds with 3 issues.
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → false at M2ReviewR02Tests.swift:22:5: Expectation failed: finished.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == (manual ? a.sourceKey : f.source.key(for: .hrvSDNN))
+↳ finished.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == (manual ? a.sourceKey : f.source.key(for: .hrvSDNN)) → false
+↳   finished.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳     some → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳   (manual ? a.sourceKey : f.source.key(for: .hrvSDNN)) → "24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → false at M2ReviewR02Tests.swift:23:5: Expectation failed: finished.current?.level == (manual ? nil : .usual)
+↳ finished.current?.level == (manual ? nil : .usual) → false
+↳   finished.current?.level → nil
+↳   (manual ? nil : .usual) → .usual
+↳     some → .usual
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) with 2 test cases failed after 0.277 seconds with 4 issues.
+✘ Suite "M2-R02 paged source discovery" failed after 0.277 seconds with 7 issues.
+✘ Test run with 2 tests in 1 suite failed after 0.277 seconds with 7 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
