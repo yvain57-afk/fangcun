@@ -54,3 +54,7 @@
 审阅成立。比较配置、完整 Calendar/时区、排序后的练习区间与读取到的 store generation。同语义普通刷新共享在途任务；不同语义或 healthDataChanged 请求进入最多一个 pending 批次，串行补读。待执行设置被更新设置替换时明确返回 superseded，不冒充已经应用。多个同语义事件合并进同一个补读；补读期间的新事件可要求下一次有界读取，每个事件最多加入一个后续批次。没有自动失败重试循环；每轮仍有限页数。observer 接线将在 R05 使用 healthDataChanged 路径。
 
 原 generation 提交校验保留，切源/删除/清除仍可拒绝旧结果。这里没有接入 App 生命周期或扩大后台权限。
+
+## M2-R04：证据身份与刷新时刻分离
+
+审阅成立。仅指纹投影使用固定逻辑 RHR 上界 sleepEnd+3h；真实抽取仍严格使用 min(now, sleepEnd+3h)，输出 feature.window 仍报告实际截止时间，未接受未来样本或改变门槛。新增可选 lastRefreshAttemptAt / lastSuccessfulRefreshAt 表示刷新尝试/成功检查时间；assessment.queriedAt 保留样本携带的证据读取时间。旧文件缺字段可解码为空，无迁移清库。

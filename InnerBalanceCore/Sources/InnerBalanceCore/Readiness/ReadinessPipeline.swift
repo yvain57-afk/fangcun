@@ -93,6 +93,7 @@ public actor ReadinessPipeline {
     var candidate = initial
     var initialization = initial.initialization ?? [:]
     var failure: ReadinessReadFailure?
+    var anyReadFailed = false
     var resetMetrics: Set<ReadinessMetric> = []
     let metrics: [ReadinessMetric] = [.sleep,.hrvSDNN,.restingHeartRate,.workout]
     for metric in metrics {
@@ -124,6 +125,7 @@ public actor ReadinessPipeline {
             candidate.ledger.cursors[metric.rawValue] = nil
             continue
           }
+          anyReadFailed = true
           if metric != .workout { failure = reason }
           break
         }
@@ -131,6 +133,8 @@ public actor ReadinessPipeline {
     }
     candidate.ledger.samples = candidate.ledger.samples.filter { $0.value.end >= now.addingTimeInterval(-35*86_400) }
     let samples = candidate.ledger.normalizedSamples
+    candidate.lastRefreshAttemptAt = now
+    if !anyReadFailed { candidate.lastSuccessfulRefreshAt = now }
     candidate.initialization = initialization
     for metric in metrics {
       guard candidate.sources[metric.rawValue] != nil || initialization[metric.rawValue] == .complete else { continue }

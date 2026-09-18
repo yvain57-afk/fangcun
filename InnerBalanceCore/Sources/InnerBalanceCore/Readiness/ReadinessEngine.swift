@@ -171,6 +171,8 @@ public enum ReadinessEngine {
     identity.cacheInvalidated = false
     // Conservative invalidation dependencies are not themselves displayed evidence.
     identity.dependencySampleIDs = nil
+    // Identity uses the logical RHR window; evidence still reports the actual min(now, deadline) cutoff.
+    if let sleep = input.sleep.episode { identity.rhr?.window.end = sleep.end.addingTimeInterval(3*3600) }
     let fingerprint = (try? StableDigest.encoded(identity)) ?? "invalid-input"
     let id = StableDigest.text((sleep?.recoveryCycleID ?? "no-cycle") + fingerprint)
     let allIDs = (input.dependencySampleIDs ?? []) + (sleep?.sampleIDs ?? [])

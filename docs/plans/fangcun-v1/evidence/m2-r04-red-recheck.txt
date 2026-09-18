@@ -1,0 +1,75 @@
+Building for debugging...
+[2 / 22] InnerBalanceCore
+[4 / 24] InnerBalanceCore
+[8 / 23] InnerBalanceCore
+[11 / 22] InnerBalanceCoreTests-product
+[17 / 28] InnerBalanceCoreTests-product
+[21 / 27] InnerBalanceCoreTests-product
+[23 / 27] InnerBalanceCoreTests-product
+Build complete! (1.98秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R04 stable evidence revision" started.
+◇ Test movingCutoffDoesNotReviseButNewEvidenceDoes() started.
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() failed after 0.712 seconds with 14 issues.
+✘ Suite "M2-R04 stable evidence revision" failed after 0.712 seconds with 14 issues.
+✘ Test run with 1 test in 1 suite failed after 0.712 seconds with 14 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)

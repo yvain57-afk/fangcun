@@ -1,0 +1,14 @@
+Building for debugging...
+[2 / 11] InnerBalanceCore
+[4 / 13] InnerBalanceCore
+[7 / 16] InnerBalanceCore
+[11 / 12] InnerBalanceCoreTests-product
+Build complete! (0.82秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R04 stable evidence revision" started.
+◇ Test movingCutoffDoesNotReviseButNewEvidenceDoes() started.
+✔ Test movingCutoffDoesNotReviseButNewEvidenceDoes() passed after 0.706 seconds.
+✔ Suite "M2-R04 stable evidence revision" passed after 0.706 seconds.
+✔ Test run with 1 test in 1 suite passed after 0.706 seconds.

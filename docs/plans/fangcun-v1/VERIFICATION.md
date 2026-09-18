@@ -198,3 +198,7 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
 `swift test --package-path InnerBalanceCore --filter M2ReviewR03Tests` 修复前 3 tests / 7 issues：[red](evidence/m2-r03-red.txt)。为事件复现场景先加入默认关闭、尚不改变行为的 healthDataChanged 参数，再执行 red。
 
 修复后执行 `swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests|InsightsStoreTests'`：[最终结果](evidence/m2-r03-green-recheck.txt)。覆盖 8→10 小时、时区/练习上下文变化、睡眠读完后的新事件自动补读；并复用同输入单飞与切源/清除拒绝迟到请求回归。初版 pending 可选值在同一表达式中读写触发 Swift 独占访问冲突，改为局部值修改后赋回；[中间失败](evidence/m2-r03-green.txt) 保留，未关闭检查。
+
+## M2-R04
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR04Tests`。[修复前 1 test / 14 issues](evidence/m2-r04-red-recheck.txt)，[修复后通过](evidence/m2-r04-green-recheck.txt)。测试通过完整 provider→pipeline→store，主睡眠距 now 两小时，在 +60 秒及 3 小时边界前后身份不变；18/24 小时独立更新 freshness；新增 RHR 和目标配置变化产生修订；有效期不延长；空增量更新检查时间但不伪造证据读取时间。第一版测试数组被 Swift 推断成 Any 的编译失败已纠正，另存 [编写日志](evidence/m2-r04-red.txt)，不当作问题重现。

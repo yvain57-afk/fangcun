@@ -24,6 +24,8 @@ public struct InsightsSnapshot: Codable, Sendable {
   public var sources: [String: SelectedReadinessSource] = [:]
   // Optional for schema-1 compatibility; existing source choices remain authoritative.
   public var initialization: [String: ReadinessInitialization]?
+  public var lastRefreshAttemptAt: Date?
+  public var lastSuccessfulRefreshAt: Date?
   public var episodes: [ReadinessSleepEpisode] = []
   public var assessments: [ReadinessAssessment] = []
   public var deletionAudit: [DeletedAssessmentAudit] = []
