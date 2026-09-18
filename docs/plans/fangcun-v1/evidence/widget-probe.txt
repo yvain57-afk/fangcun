@@ -1,0 +1,644 @@
+Command line invocation:
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcodebuild build -project <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj -scheme WidgetProbe -destination "generic/platform=iOS Simulator" -derivedDataPath <EVIDENCE>/ProbeDerivedData CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'WidgetProbe' in project 'FangcunCapabilityProbe' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 57ab2db23dba7cb54c2fd3d6360eedb2
+Build description path: <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/XCBuildData/57ab2db23dba7cb54c2fd3d6360eedb2.xcbuilddata
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/CompilationCache.noindex
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/CompilationCache.noindex
+
+ClangStatCache /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/Build/Products
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/Build/Products
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/PrecompiledHeaders
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/PrecompiledHeaders
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/FangcunCapabilityProbe-c1b949e95860bb22190edd0c293f13b4-VFS-iphonesimulator/all-product-headers.yaml
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/FangcunCapabilityProbe-c1b949e95860bb22190edd0c293f13b4-VFS-iphonesimulator/all-product-headers.yaml
+
+CreateBuildDirectory <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator
+    cd <EVIDENCE>/probes/FangcunCapabilityProbe.xcodeproj
+    builtin-create-build-directory <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.DependencyStaticMetadataFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.hmap (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.hmap
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.DependencyMetadataFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.DependencyMetadataFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-non-framework-target-headers.hmap (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugEntryPoint-normal-x86_64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugEntryPoint-normal-x86_64.txt
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibPath-normal-x86_64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibPath-normal-x86_64.txt
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugEntryPoint-normal-arm64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugEntryPoint-normal-arm64.txt
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibPath-normal-arm64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibInstallName-normal-x86_64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibInstallName-normal-x86_64.txt
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibInstallName-normal-arm64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibInstallName-normal-arm64.txt
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_const_extract_protocols.json (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_const_extract_protocols.json
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.LinkFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.LinkFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftConstValuesFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftConstValuesFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-OutputFileMap.json (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-OutputFileMap.json
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_const_extract_protocols.json (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_const_extract_protocols.json
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftConstValuesFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftConstValuesFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.LinkFileList (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.LinkFileList
+
+WriteAuxiliaryFile <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-OutputFileMap.json (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    write-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-OutputFileMap.json
+
+MkDir <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /bin/mkdir -p <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex
+
+ProcessInfoPlistFile <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/Info.plist <EVIDENCE>/probes/WidgetProbe-Info.plist (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-infoPlistUtility <EVIDENCE>/probes/WidgetProbe-Info.plist -producttype com.apple.product-type.app-extension -expandbuildsettings -format binary -platform iphonesimulator -o <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/Info.plist
+
+Ld <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/__preview.dylib normal x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios18.0-simulator -dynamiclib -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -install_name @rpath/WidgetProbe.debug.dylib -Xlinker -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_dependency_info.dat -o <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/__preview.dylib
+
+Ld <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/__preview.dylib normal arm64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -dynamiclib -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -install_name @rpath/WidgetProbe.debug.dylib -Xlinker -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_dependency_info.dat -o <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/__preview.dylib
+
+CreateUniversalBinary <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/__preview.dylib normal arm64\ x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/__preview.dylib <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/__preview.dylib -output <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/__preview.dylib
+
+SwiftDriver WidgetProbe normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name WidgetProbe -Onone @<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target x86_64-apple-ios18.0-simulator -g -module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -enable-testing -index-store-path <EVIDENCE>/ProbeDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -sdk-module-cache-path <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_const_extract_protocols.json -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources-normal/x86_64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/x86_64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-Swift.h -working-directory <EVIDENCE>/probes -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver WidgetProbe normal arm64 com.apple.xcode.tools.swift.compiler (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name WidgetProbe -Onone @<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -enable-testing -index-store-path <EVIDENCE>/ProbeDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -sdk-module-cache-path <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_const_extract_protocols.json -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources-normal/arm64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/arm64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-Swift.h -working-directory <EVIDENCE>/probes -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ptrcheck-5MM4M930UH1YQIXTTC8ISRXF5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdbool-ESPCBAF6C200WY6695F0N1VMZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ActivityKit-9QAPF9STWF0VCWBGGXYVW9IG4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdarg-5EAU0OSTLXSP8CIB2MEUMCCLT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ptrauth-9VB7KYD5PGDS0APIWILG6H8CF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-3NHLYBTRVXPPUNGY8O1XTNEP1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_float-B84M3CUQQW90SBVBSB1LYWUXL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/DeveloperToolsSupport-ELI2H3VUPJZ0EY0X34N7SNUWX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_AvailabilityInternal-3BWN28234DZXE0V26IT3N2UAI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/SwiftShims-9URFHR1DMENQIVD7D5X1ZEJYV.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ActivityKit-9RT1RIXIH5APPF2LX65DPLXFH.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-40M5UQRMEPXIC9UUCMY83SDUN.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdbool-CS4VVTO9GDH79UTDVGXIMSQE9.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdarg-6JVBSH45I4F8779O1XBEO2LIN.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ptrauth-CYXZLDBXJQ9EG5CVWCNU5Y8ZX.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/DeveloperToolsSupport-6PHC9CKXMDCS1NHXFUJ0EJ68E.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/SwiftShims-B2O0O82JTNN4XQXXAHFX8TOUQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stddef-28RN9MT7F6ATUXOKE2VSS2ETS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation1-KUWN6SJT8OXPRGY2UN5PVTU4.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ptrcheck-BY2S9HWZD0J22BR6ME0XWF9KP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stddef-1SQ26ZGSY2Q605VEYUP8HRNS8.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_float-29AFFOMBN39DGRLRR3J01UB8I.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_AvailabilityInternal-F0IMSID3E0KIXQGNPW32Z9IVV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ExtensionFoundation-4PEY90RL6Z0BYQMOATLS74Y1Q.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation2-DXU0MS4W9TPTZT2WARERH8DA6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_limits-3RM566LGLICHVNBH6GD6NCHDH.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation1-2AWP87TAW7YTXU05CYRWDO220.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/sys_types-ACE08WT6KIL6MZMPQRKZEV18H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_tgmath-8LK44OSCJQAQJKSC9U1PA00L4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/string_h-6MSQ5K1CRZLRQX2AM1E7S3SY1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdint-50LLUDKLNTBRB6818PG6V1Z0H.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation2-58GKE1BXE201SUIXM4YVTBH81.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ExtensionFoundation-1W0DXBDSANLU515A9NV7BIIXR.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_limits-BOWE69GQJYGNJNZW6E1I4PLBE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation3-EF51BFFZD9IA7J2977QFRP12Q.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdatomic-3994UW7X3C8EJ0VPJGGIR2B5T.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_intrinsics-780NMATN2LDVS2WJW2K1YOUZX.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_tgmath-BF3164UQ32PPXPEPK84GNUPLB.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/string_h-AO6IYX2EOX4WQLA30VUY05IQY.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/sys_types-A1MLSEDPBNORKBINX8GTR1HSK.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdint-7KWSN203E0T2WT37XLEIDZ9SX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_inttypes-74LOYSR0I630SJTRISPOYKVUO.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation3-2BUVOQKHXR8IIQPI4SX3UX74T.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_stdatomic-9BOLE56H3FLKWXILKPK7JSCX4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Darwin-E6S6EE6Q3LMQT8K6GN9SUWZOL.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_inttypes-4HGKSJA5V54F74UPY6GO5HHA3.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_Builtin_intrinsics-4JY1C3HLKQZEMRFWR94M3QUJ9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/simd-AKL8GTZBNAFESU6ETGI6HKLQ8.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Darwin-7NDRATGJJBPEV764YWZV66TU8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ObjectiveC-DZJI7ZOI2BTNOB6SUP010UHY3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/MachO-8PRTF2Y0WS95OM1G6ARB66HNM.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ObjectiveC-6BA0WJITT7P7OTKR5CFFTKA30.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/MachO-3INFNAIJRMKXTKICK7X1LRJQX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/os_object-3ONPRDYJI8INF5MEGI08VGBN0.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/simd-C03IIURII931B7PBI79HSBMZD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Spatial-DKZ6L946A5HJPRCA4XSGYBX3H.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/os_object-2YWV04HHQPIBD4N6LKWHSE468.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/os_workgroup-DBSICQM4DZIRE6PE0F9VAE8OP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/os_workgroup-AU9ANWTY8T8R0U3XNMS4PS8D1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Dispatch-5DYHRXWSYP1G01Y0VEWO8GCLY.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Dispatch-1SMKLDRMMS4JI17GHQPJXWKIS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/XPC-44F0DLH1J21GZS8EO22KCSNMG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/dnssd-2D6PK1HRFEERKXOCB8VQGKAQX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreFoundation-85JKBIHWAOSSU2UHDP5GY1FR2.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/dnssd-F1H5928PTIAIUGVL5BJLRMYLN.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/XPC-6HHOVQRGBSKU2YEU62USMJO6F.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreFoundation-7A7V162QV0S2MWECV35Y73HP1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/os-BFUICCXFLJMFCXC0NSO084VU2.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/os-ESW2FGWEJC58FRAHDC5AASASG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreAudioTypes-4UMNVP5I4ELGRLWW4CV4C8NYU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Security-39X8CZ3UG9PNLUXL74TESD7R0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreGraphics-7MPPAY7WOSRPVY7N4YWYXYKH3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CFNetwork-1ZHU2OPXBVFTYDT9RG7O1G0RA.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CFNetwork-90UVPDVP39JU9K8R7OKX0IXCL.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreAudioTypes-53XPU9BXGAYWACW5YRBG58XJ6.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreGraphics-8D582T85KK7Q4UG837G745KRV.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Security-81H04Z7I1R671VJF2444H2BGG.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Spatial-E5XH55JFA5GSHJ2KBN0DOZAL0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreAudio-2DEI567BJ570AJ1DGU3HMYSIY.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreAudio-E930T0TACN2VEFY64T1RFH7LV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Foundation-E4UMA1GGU0Z64X8EVFKBJ21SJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ImageIO-CJVVEHRB51MZ42Y4OLIV2PKNV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreText-2Y3LYZ0ODTOEUNPQ37774GGYN.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Foundation-4Y79CEKAS12SY1WFC338V4DP3.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/ImageIO-9GK1JA4U4GXZGFJ1G7KO8774Q.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreText-141BGWKXCKOT92IOXQFKK7END.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreData-1CJHNH41USQI79CF5OJ69GNJG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/OSLog-DGSHRUZE7CJRG5MHSTBH8O7CQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Accessibility-FKCY7QNA2XK8NRUTV7VAGDJQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-9964EKI9P5Q1Y7ODB7WSP87EI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/DataDetection-B06C15F8JJDFQ89UDR8Q0N42G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UserNotifications-EQ2T3F9JM3YV2AZB6BTQ44V9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/FileProvider-9JTL6S4ZDNQ5UH9SWI06MCK26.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UIUtilities-29810J2UOYS3IDMVLWAKW242.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/AppIntents-CYNJ3S2QRM2DJ8X7420OYBQKF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/AppIntentsTypeSupport-3FRH7AVPL8WKYXKPS0M9XYMJ1.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/OpenGLES-CL2PBVIIUJYTHXTEOTTC44Z9W.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/AppIntentsTypeSupport-9CBKCB1G41RWSSENKPY7E44D8.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/WidgetKit-7K46RKX50T6WMYT0MN2831LWR.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/OSLog-CMJO62LKSPCE5EO2QQWZZFYLZ.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/FileProvider-2T49X65C549ZALK2MATMJUNQP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UserNotifications-EUCHNLJGYJ4IT4HSA3PCD1VHW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreTransferable-765SPQ2ZDGZYWRELTALK8V5KY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Symbols-17CN3GBFZC9LRFHH07XNWZTK0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreSpotlight-ZM61Y3FEEGTCZGCVVGWZI4N.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreData-BLTKZN6C7T001WMHT88NM1NE5.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Accessibility-2G4JJMG4CVOU3JP4XJBC18DAY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Network-CUSMDYFHI433TMQFG1WIG7J7F.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-3K6MNQY5IQHTC7VXYT7C5NQZ2.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/RelevanceKit-7JHKELTT1QLB69LI5QNZSEL92.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreTransferable-793OF2MCNXQY0YE01J67DEP60.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Network-6MFH4TYO9MX5CYSLKQAJSJSCO.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Symbols-9CO2OJDLZ90VUBXNN4LZQ2GV1.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UIUtilities-C9HT9OH68WA34QED3PQEBM2YY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/WidgetKit-4EMU9OPLQNWKND93J2HXZ1LBV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/RelevanceKit-C6VY8NHFF9O5HNL13ARSNW0RI.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/DataDetection-H7LXF2UDC8XCE5L2V2WAM6S6.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreSpotlight-4RMRZD4512TY711KRBTT0UG93.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/IOSurface-EAPQEZJLMQLAQJV15VYD7PVI5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_LocationEssentials-ECK6OXHEHLS8AANBPPRPPPQRA.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/_LocationEssentials-2651BWDWOQGDL0KY5OFAPVAE9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/IOSurface-EPF0W7W3M0T1W15OOF67LDB4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/OpenGLES-1P9H6PUW0I2E67O0C2G17G3AO.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/AppIntents-BP6H98Q5YI6XLCHGATYLP06BM.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Metal-BREF2A1ALKP20IRL40M85SF1A.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreLocation-4VSMH46C1D9L13YMN8NVJ3DVX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreLocation-6SN6BVNKVXTWZKTKX5K66D1GI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Metal-6EWJ8SG56FWEOZYLPQ86PAEB8.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Intents-6J9IV9QE5N39YFZ89955A29B3.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreMotion-CPAYXV0D1CRKJKOUSVM0HP0GK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreMotion-1SIK8IGAC9797O0J6JXHSQEBK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/Intents-AS599FKQCC0JRXC7HA13PFI93.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreVideo-73FKE6JZIPSOH9M0EEFIL23P2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreVideo-EYTKU7Y7LPQI4UGKFALYET6CA.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreImage-ASW8UN3SWA4IHKM0UA06YPD1X.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/QuartzCore-DAQMEEBUDFYXB7R54USDATN6R.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreMedia-6NY0UL7788Y4FW1YQGBZBP3EX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreImage-1AMEQAXTT7SVD35YINR5TH14F.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/CoreMedia-3BZ952D6294LEHZ2RYXRTZSCQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/QuartzCore-21BFQSEXDLZNL3AQTBI5ZEGF.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/SwiftUICore-DOCEX3W4LDTY1ONI2BXL0JD3P.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UIKit-APMQSHBF4YZ1NKE49CN2HVOHJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/SwiftUICore-62M5QR4Z4Z6W3V3QOC73W31DB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/UIKit-3EW1OLSWLL1Y0R27NJ0VKWPJ4.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/SwiftUI-4CZUEGWBO85WJQQRZZZN4BVV0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules/SwiftUI-VD48H9ACL1WBAJTA8LE5JOTJ.pcm
+
+SwiftEmitModule normal x86_64 Emitting\ module\ for\ WidgetProbe (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftCompile normal x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    
+
+SwiftCompile normal x86_64 Compiling\ WidgetProbe.swift <EVIDENCE>/probes/WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftCompile normal x86_64 <EVIDENCE>/probes/WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-SwiftPerFileCompile WidgetProbe.swift
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ WidgetProbe (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftCompile normal arm64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    
+
+SwiftCompile normal arm64 Compiling\ WidgetProbe.swift <EVIDENCE>/probes/WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftCompile normal arm64 <EVIDENCE>/probes/WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-SwiftPerFileCompile WidgetProbe.swift
+
+SwiftDriverJobDiscovery normal x86_64 Emitting module for WidgetProbe (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for WidgetProbe (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftDriver\ Compilation\ Requirements WidgetProbe normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name WidgetProbe -Onone @<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target x86_64-apple-ios18.0-simulator -g -module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -enable-testing -index-store-path <EVIDENCE>/ProbeDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -sdk-module-cache-path <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_const_extract_protocols.json -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources-normal/x86_64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/x86_64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-Swift.h -working-directory <EVIDENCE>/probes -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver\ Compilation\ Requirements WidgetProbe normal arm64 com.apple.xcode.tools.swift.compiler (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name WidgetProbe -Onone @<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -enable-testing -index-store-path <EVIDENCE>/ProbeDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -sdk-module-cache-path <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_const_extract_protocols.json -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources-normal/arm64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/arm64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-Swift.h -working-directory <EVIDENCE>/probes -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/WidgetProbe-Swift.h <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-Swift.h <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-Swift.h (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-swiftHeaderTool -arch arm64 <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-Swift.h -arch x86_64 <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-Swift.h -o <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/WidgetProbe-Swift.h
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/arm64-apple-ios-simulator.abi.json <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.abi.json (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.abi.json <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/arm64-apple-ios-simulator.swiftmodule <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftmodule (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftmodule <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/x86_64-apple-ios-simulator.swiftmodule <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftmodule (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftmodule <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/x86_64-apple-ios-simulator.swiftmodule
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/x86_64-apple-ios-simulator.abi.json <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.abi.json (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.abi.json <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/x86_64-apple-ios-simulator.abi.json
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/arm64-apple-ios-simulator.swiftdoc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftdoc (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftdoc <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/x86_64-apple-ios-simulator.swiftdoc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftdoc (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftdoc <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/x86_64-apple-ios-simulator.swiftdoc
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftsourceinfo (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftsourceinfo <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo
+
+Copy <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftsourceinfo (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftsourceinfo <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftDriver\ Compilation WidgetProbe normal arm64 com.apple.xcode.tools.swift.compiler (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-Swift-Compilation -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name WidgetProbe -Onone @<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -enable-testing -index-store-path <EVIDENCE>/ProbeDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -sdk-module-cache-path <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_const_extract_protocols.json -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources-normal/arm64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/arm64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe-Swift.h -working-directory <EVIDENCE>/probes -experimental-emit-module-separately -disable-cmo
+
+Ld <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe.debug.dylib normal arm64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -dynamiclib -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -filelist <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.LinkFileList -install_name @rpath/WidgetProbe.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_dependency_info.dat -fapplication-extension -fobjc-link-runtime -L/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.swiftmodule -Xlinker -alias -Xlinker _NSExtensionMain -Xlinker ___debug_main_executable_dylib_entry_point -o <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe.debug.dylib
+
+SwiftDriverJobDiscovery normal x86_64 Compiling WidgetProbe.swift (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+SwiftDriver\ Compilation WidgetProbe normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-Swift-Compilation -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name WidgetProbe -Onone @<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target x86_64-apple-ios18.0-simulator -g -module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -enable-testing -index-store-path <EVIDENCE>/ProbeDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <EVIDENCE>/ProbeDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex -sdk-module-cache-path <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <EVIDENCE>/ProbeDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_const_extract_protocols.json -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-generated-files.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-own-target-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-all-target-headers.hmap -Xcc -iquote -Xcc <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-project-headers.hmap -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources-normal/x86_64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources/x86_64 -Xcc -I<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe-Swift.h -working-directory <EVIDENCE>/probes -experimental-emit-module-separately -disable-cmo
+
+Ld <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe.debug.dylib normal x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios18.0-simulator -dynamiclib -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -filelist <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.LinkFileList -install_name @rpath/WidgetProbe.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_dependency_info.dat -fapplication-extension -fobjc-link-runtime -L/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.swiftmodule -Xlinker -alias -Xlinker _NSExtensionMain -Xlinker ___debug_main_executable_dylib_entry_point -o <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe.debug.dylib
+
+CreateUniversalBinary <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/WidgetProbe.debug.dylib normal arm64\ x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe.debug.dylib <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe.debug.dylib -output <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/WidgetProbe.debug.dylib
+
+ConstructStubExecutorLinkFileList <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-ExecutorLinkFileList-normal-arm64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    construct-stub-executor-link-file-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe.debug.dylib /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+ConstructStubExecutorLinkFileList <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-ExecutorLinkFileList-normal-x86_64.txt (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    construct-stub-executor-link-file-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe.debug.dylib /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-ExecutorLinkFileList-normal-x86_64.txt
+note: Using stub executor library with Swift entry point. (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+
+Ld <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe normal x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios18.0-simulator -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibPath-normal-x86_64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_entry -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugEntryPoint-normal-x86_64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibInstallName-normal-x86_64.txt -Xlinker -filelist -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-ExecutorLinkFileList-normal-x86_64.txt <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe.debug.dylib -o <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe
+
+Ld <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe normal arm64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -F<EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/../../Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_entry -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugEntryPoint-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe-ExecutorLinkFileList-normal-arm64.txt <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe.debug.dylib -o <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe
+
+CreateUniversalBinary <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/WidgetProbe normal arm64\ x86_64 (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/Binary/WidgetProbe <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/Binary/WidgetProbe -output <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/WidgetProbe
+
+ExtractAppIntentsMetadata (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --module-name WidgetProbe --sdk-root /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk --xcode-version 27A5252f --platform-family iOS --deployment-target 18.0 --bundle-identifier org.example.fangcun.capabilityprobe.widget --output <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex --target-triple arm64-apple-ios18.0-simulator --target-triple x86_64-apple-ios18.0-simulator --binary-file <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/WidgetProbe --dependency-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe_dependency_info.dat --dependency-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe_dependency_info.dat --stringsdata-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --stringsdata-file <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftFileList --source-file-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftFileList --metadata-file-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.DependencyMetadataFileList --static-metadata-file-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.DependencyStaticMetadataFileList --swift-const-vals-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/arm64/WidgetProbe.SwiftConstValuesFileList --swift-const-vals-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/Objects-normal/x86_64/WidgetProbe.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-09-18 19:01:09.056 appintentsmetadataprocessor[95923:8319609] Starting appintentsmetadataprocessor export
+2026-09-18 19:01:09.102 appintentsmetadataprocessor[95923:8319609] Extracted no relevant App Intents symbols, skipping writing output
+
+AppIntentsSSUTraining (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/Info.plist --temp-dir-path <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/ssu --bundle-id org.example.fangcun.capabilityprobe.widget --product-path <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex --extracted-metadata-path <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/Metadata.appintents --metadata-file-list <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/FangcunCapabilityProbe.build/Debug-iphonesimulator/WidgetProbe.build/WidgetProbe.DependencyMetadataFileList --source-file <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex/Info.plist --archive-ssu-assets
+2026-09-18 19:01:09.122 appintentsnltrainingprocessor[95924:8319613] Parsing options for appintentsnltrainingprocessor
+2026-09-18 19:01:09.122 appintentsnltrainingprocessor[95924:8319613] Starting AppIntents SSU YAML Generation
+2026-09-18 19:01:09.124 appintentsnltrainingprocessor[95924:8319613] No AppShortcuts found - Skipping.
+
+RegisterExecutionPolicyException <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    builtin-RegisterExecutionPolicyException <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex
+
+Touch <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex (in target 'WidgetProbe' from project 'FangcunCapabilityProbe')
+    cd <EVIDENCE>/probes
+    /usr/bin/touch -c <EVIDENCE>/ProbeDerivedData/Build/Products/Debug-iphonesimulator/WidgetProbe.appex
+
+PruneExplicitPrecompiledModules <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <EVIDENCE>/ProbeDerivedData/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <EVIDENCE>/ProbeDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+** BUILD SUCCEEDED **
+

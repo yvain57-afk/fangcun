@@ -1,0 +1,26 @@
+name: FangcunCapabilityProbe
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  WidgetProbe:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - WidgetProbe.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.example.fangcun.capabilityprobe.widget
+        SKIP_INSTALL: YES
+    info:
+      path: WidgetProbe-Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+schemes:
+  WidgetProbe:
+    build:
+      targets:
+        WidgetProbe: all

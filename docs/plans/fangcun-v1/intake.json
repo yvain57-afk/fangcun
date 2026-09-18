@@ -1,0 +1,6 @@
+{
+  "zipSHA256": "e5fbe793be92adf4ccad2fad3c67f18635e380f901a393932fb1735eac17741a",
+  "specSHA256": "72a6e047fcd637152fedfe642e29d969a0a0dd91ec60b976b3c208f652d6d165",
+  "standaloneSpecMatchesZip": true,
+  "baselineCommit": "905626c6e08dc7a36ddd4e219abf6945795ac62f"
+}

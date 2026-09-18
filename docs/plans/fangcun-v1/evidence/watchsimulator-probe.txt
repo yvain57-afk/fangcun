@@ -1,0 +1,3 @@
+xcrun swiftc -typecheck -swift-version 6 -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -target arm64-apple-watchos11.0-simulator <EVIDENCE>/probes/PlatformProbe.swift
+
+exit=0

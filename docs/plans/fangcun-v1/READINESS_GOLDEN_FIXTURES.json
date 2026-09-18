@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Golden examples for proposed deterministic rules; not a medically validated model or complete test suite.",
+  "preconditions": {
+    "hrvBaselineDays": 20,
+    "rhrBaselineDays": 20,
+    "nightHRVSampleCount": 4,
+    "nightHRVCoveredAbsoluteHours": 3,
+    "sleepSourceComparable": true,
+    "freshness": "current"
+  },
+  "cases": [
+    {
+      "id": "G01",
+      "input": {
+        "hrvDeviation": 0,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 0,
+        "level": "usual"
+      }
+    },
+    {
+      "id": "G02",
+      "input": {
+        "hrvDeviation": 0.99,
+        "rhrDeviation": 0.99,
+        "sleepDeficitMinutes": 59
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 0,
+        "level": "usual"
+      }
+    },
+    {
+      "id": "G03",
+      "input": {
+        "hrvDeviation": 1,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 1,
+        "sleepSeverity": 0,
+        "level": "reduced"
+      }
+    },
+    {
+      "id": "G04",
+      "input": {
+        "hrvDeviation": 1,
+        "rhrDeviation": 1,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 2,
+        "sleepSeverity": 0,
+        "level": "reduced"
+      }
+    },
+    {
+      "id": "G05",
+      "input": {
+        "hrvDeviation": 2,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 60
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 2,
+        "sleepSeverity": 1,
+        "level": "low"
+      }
+    },
+    {
+      "id": "G06",
+      "input": {
+        "hrvDeviation": 1,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 120
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 1,
+        "sleepSeverity": 2,
+        "level": "low"
+      }
+    },
+    {
+      "id": "G07",
+      "input": {
+        "hrvDeviation": 0,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 120
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 2,
+        "level": "reduced"
+      }
+    },
+    {
+      "id": "G08",
+      "input": {
+        "hrvDeviation": 0,
+        "rhrDeviation": 2,
+        "sleepDeficitMinutes": 119
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 2,
+        "sleepSeverity": 1,
+        "level": "low"
+      }
+    },
+    {
+      "id": "G09",
+      "input": {
+        "hrvDeviation": -0.5,
+        "rhrDeviation": -0.5,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 0,
+        "level": "usual"
+      }
+    },
+    {
+      "id": "G10",
+      "input": {
+        "hrvDeviation": -2.1,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "limited",
+        "autonomicSeverity": null,
+        "sleepSeverity": null,
+        "level": null
+      }
+    }
+  ]
+}

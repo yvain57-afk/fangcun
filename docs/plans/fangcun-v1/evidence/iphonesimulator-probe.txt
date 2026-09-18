@@ -1,0 +1,3 @@
+xcrun swiftc -typecheck -swift-version 6 -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator <EVIDENCE>/probes/PlatformProbe.swift
+
+exit=0

@@ -1,0 +1,1203 @@
+Command line invocation:
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -configuration Debug -destination "platform=iOS Simulator,id=<IOS_SIMULATOR_ID>" -derivedDataPath <DERIVED_DATA> -resultBundlePath <EVIDENCE>/baseline.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 "-only-testing:InnerBalanceTests/HomeViewModelTests" "-only-testing:InnerBalanceTests/FangcunDiaryTests" "-only-testing:InnerBalanceTests/PracticeSessionViewModelTests" "-only-testing:InnerBalanceUITests/FangcunRedesignUITests" CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  InnerBalanceCore: <REPO>/InnerBalanceCore @ local
+
+2026-09-18 18:54:58.554 xcodebuild[94103:8305154] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+Writing result bundle at path:
+	<EVIDENCE>/baseline.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (8 targets)
+    Target 'InnerBalanceTests' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance' in project 'InnerBalance'
+    Target 'InnerBalanceUITests' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance' in project 'InnerBalance'
+    Target 'InnerBalance' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance Watch App' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+        ➜ Explicit dependency on target 'InnerBalanceCore' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore' in project 'InnerBalanceCore' (no dependencies)
+    Target 'InnerBalance Watch App' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+        ➜ Explicit dependency on target 'InnerBalanceCore' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore' in project 'InnerBalanceCore' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 <REPO>/InnerBalance/InnerBalanceWatch/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/ibtool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcstringstool compile --dry-run --output-directory <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build <REPO>/InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 <REPO>/InnerBalance/InnerBalanceApp/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: b84d27ca58fc83d756c41208c7282d2a
+Build description path: <DERIVED_DATA>/Build/Intermediates.noindex/XCBuildData/b84d27ca58fc83d756c41208c7282d2a.xcbuilddata
+ClangStatCache /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+
+ClangStatCache /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -o <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache
+
+Copy <DERIVED_DATA>/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/InnerBalanceCore.modulemap <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/InnerBalanceCore.modulemap (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/InnerBalanceCore.modulemap <DERIVED_DATA>/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.hmap (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/empty-InnerBalanceTests.plist (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/empty-InnerBalanceTests.plist
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/ProductTypeInfoPlistAdditions.plist (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/ProductTypeInfoPlistAdditions.plist
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/empty-InnerBalanceUITests.plist (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/empty-InnerBalanceUITests.plist
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_const_extract_protocols.json (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_const_extract_protocols.json
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftConstValuesFileList (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftFileList (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.LinkFileList (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.LinkFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-OutputFileMap.json (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-OutputFileMap.json
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.hmap (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.DependencyStaticMetadataFileList (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-project-headers.hmap (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-project-headers.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.DependencyMetadataFileList (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.DependencyMetadataFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-own-target-headers.hmap (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-own-target-headers.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-generated-files.hmap (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-generated-files.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-all-target-headers.hmap (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-all-target-headers.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-all-non-framework-target-headers.hmap (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_const_extract_protocols.json (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_const_extract_protocols.json
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftFileList (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftConstValuesFileList (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.LinkFileList (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.LinkFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-OutputFileMap.json (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-OutputFileMap.json
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.DependencyStaticMetadataFileList (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.DependencyMetadataFileList (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.DependencyMetadataFileList
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-project-headers.hmap (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-project-headers.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-own-target-headers.hmap (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-own-target-headers.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-generated-files.hmap (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-generated-files.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-all-target-headers.hmap (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-all-target-headers.hmap
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-all-non-framework-target-headers.hmap (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-all-non-framework-target-headers.hmap
+
+MkDir <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /bin/mkdir -p <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest
+
+MkDir <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /bin/mkdir -p <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest
+
+MkDir <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /bin/mkdir -p <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns
+
+CompileAssetCatalogVariant thinned <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app <REPO>/InnerBalance/InnerBalanceWatch/Assets.xcassets (in target 'InnerBalance Watch App' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool <REPO>/InnerBalance/InnerBalanceWatch/Assets.xcassets --compile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_dependencies_thinned --output-partial-info-plist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --accent-color AccentColor --compress-pngs --enable-on-demand-resources YES --filter-for-thinning-device-configuration iPhone17,1 --filter-for-device-os-version 27.0 --development-region zh-Hans --target-device watch --minimum-deployment-target 11.0 --platform watchsimulator
+/* com.apple.actool.compilation-results */
+<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance Watch App.build/assetcatalog_generated_info.plist_thinned
+<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance Watch App.build/assetcatalog_output/thinned/Assets.car
+
+
+SwiftDriver InnerBalanceCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name InnerBalanceCore -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name innerbalancecore -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_const_extract_protocols.json -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -working-directory <REPO>/InnerBalance/InnerBalance.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver\ Compilation\ Requirements InnerBalanceCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name InnerBalanceCore -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name innerbalancecore -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_const_extract_protocols.json -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -working-directory <REPO>/InnerBalance/InnerBalance.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver\ Compilation InnerBalanceCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name InnerBalanceCore -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name innerbalancecore -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_const_extract_protocols.json -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -working-directory <REPO>/InnerBalance/InnerBalance.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/arm64-apple-ios-simulator.swiftmodule <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+SwiftMergeGeneratedHeaders <DERIVED_DATA>/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/InnerBalanceCore-Swift.h <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    builtin-swiftHeaderTool -arch arm64 <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -o <DERIVED_DATA>/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/InnerBalanceCore-Swift.h
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/arm64-apple-ios-simulator.abi.json <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.abi.json (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.abi.json <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/arm64-apple-ios-simulator.swiftdoc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftdoc (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftdoc <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftsourceinfo (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftsourceinfo <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+Ld <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.o normal (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -r -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -F<DERIVED_DATA>/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -filelist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_lto.o -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.o
+
+SwiftDriver InnerBalance normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalance -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+CompileAssetCatalogVariant thinned <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app <REPO>/InnerBalance/InnerBalanceApp/Assets.xcassets (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool <REPO>/InnerBalance/InnerBalanceApp/Assets.xcassets --compile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_dependencies_thinned --output-partial-info-plist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --accent-color AccentColor --compress-pngs --enable-on-demand-resources YES --filter-for-thinning-device-configuration iPhone17,1 --filter-for-device-os-version 27.0 --development-region zh-Hans --target-device iphone --minimum-deployment-target 18.0 --platform iphonesimulator
+/* com.apple.actool.compilation-results */
+<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_generated_info.plist_thinned
+<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_output/thinned/AppIcon60x60@2x.png
+<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_output/thinned/AppIcon76x76@2x~ipad.png
+<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_output/thinned/Assets.car
+
+
+ExtractAppIntentsMetadata (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --module-name InnerBalanceCore --sdk-root /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk --xcode-version 27A5252f --platform-family iOS --deployment-target 18.0 --bundle-identifier innerbalancecore.InnerBalanceCore --output <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.appintents --target-triple arm64-apple-ios18.0-simulator --binary-file <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceCore.o --dependency-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_dependency_info.dat --stringsdata-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList --metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/InnerBalanceCore.DependencyMetadataFileList --static-metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/InnerBalanceCore.DependencyStaticMetadataFileList --swift-const-vals-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-09-18 18:55:01.109 appintentsmetadataprocessor[94158:8305731] Starting appintentsmetadataprocessor export
+2026-09-18 18:55:01.164 appintentsmetadataprocessor[94158:8305731] Extracted no relevant App Intents symbols, skipping writing output
+
+LinkAssetCatalog <REPO>/InnerBalance/InnerBalanceWatch/Assets.xcassets (in target 'InnerBalance Watch App' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-linkAssetCatalog --thinned <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_output/thinned --thinned-dependencies <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_dependencies_thinned --thinned-info-plist-content <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_generated_info.plist_thinned --unthinned <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_output/unthinned --unthinned-dependencies <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_generated_info.plist_unthinned --output <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app --plist-output <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_generated_info.plist
+note: Emplaced <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance Watch App.app/Assets.car (in target 'InnerBalance Watch App' from project 'InnerBalance')
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Info.plist <REPO>/InnerBalance/Configuration/InnerBalanceWatch-Info.plist (in target 'InnerBalance Watch App' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <REPO>/InnerBalance/Configuration/InnerBalanceWatch-Info.plist -producttype com.apple.product-type.application -genpkginfo <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/PkgInfo -expandbuildsettings -format binary -platform watchsimulator -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_generated_info.plist -o <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Info.plist
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app (in target 'InnerBalance Watch App' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/InnerBalance\ Watch\ App.debug.dylib --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Extensions --platform watchsimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+Ignoring --strip-bitcode because --sign was not passed
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_nsdr_breath.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_breath.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_breath.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_sigh_top_up.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_top_up.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_top_up.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_sigh_exhale.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_exhale.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_exhale.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+Ld <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/__preview.dylib normal (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -dynamiclib -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -install_name @rpath/InnerBalance.debug.dylib -Xlinker -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance_dependency_info.dat -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/__preview.dylib
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_sigh_inhale.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_inhale.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_inhale.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_paced_inhale.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_paced_inhale.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_paced_inhale.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_nsdr_shoulders.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_shoulders.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_shoulders.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_paced_exhale.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_paced_exhale.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_paced_exhale.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_nsdr_return.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_return.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_return.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_nsdr_legs.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_legs.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_legs.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_nsdr_face.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_face.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_face.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_nsdr_belly.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_belly.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_belly.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_meditation_support.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_support.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_support.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_meditation_return.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_return.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_return.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_meditation_breath.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_breath.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_breath.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_kegel_release.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_kegel_release.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_kegel_release.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/practice_kegel_contract.m4a <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_kegel_contract.m4a (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PracticeVoice/practice_kegel_contract.m4a <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+CpResource <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PrivacyInfo.xcprivacy <REPO>/InnerBalance/InnerBalanceApp/PrivacyInfo.xcprivacy (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <REPO>/InnerBalance/InnerBalanceApp/PrivacyInfo.xcprivacy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app
+
+SwiftDriver\ Compilation\ Requirements InnerBalance normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalance -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver\ Compilation InnerBalance normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-Swift-Compilation -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalance -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/arm64-apple-ios-simulator.abi.json <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.abi.json (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.abi.json <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+SwiftMergeGeneratedHeaders <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources/InnerBalance-Swift.h <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-Swift.h (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftHeaderTool -arch arm64 <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance-Swift.h -o <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/DerivedSources/InnerBalance-Swift.h
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/arm64-apple-ios-simulator.swiftdoc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftdoc (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftdoc <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/arm64-apple-ios-simulator.swiftmodule <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftmodule (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftmodule <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftsourceinfo (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftsourceinfo <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftDriver InnerBalanceUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalanceUITests -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver InnerBalanceTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalanceTests -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -default-isolation\=MainActor -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+Ld <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance.debug.dylib normal (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -dynamiclib -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<DERIVED_DATA>/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F<DERIVED_DATA>/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -filelist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.LinkFileList -install_name @rpath/InnerBalance.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.swiftmodule -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance.debug.dylib
+
+ConstructStubExecutorLinkFileList <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-ExecutorLinkFileList-normal-arm64.txt (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    construct-stub-executor-link-file-list <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance.debug.dylib /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'InnerBalance' from project 'InnerBalance')
+
+Ld <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance normal (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -debug_variant -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance-ExecutorLinkFileList-normal-arm64.txt <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance.debug.dylib -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/Testing-21GIZIF729Z6B.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-BIER9CRADCYL6JG9OP62EDN0R.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-4AYRUG471DM5UBS7V4T9HOJKL.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-3QZG1VI590P8P.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/_Testing_CoreGraphics-AWNUHK47UYQU.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/_Testing_Foundation-2EDG60NAJ2APW.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-11POCZJ9SDL64.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/_Testing_UIKit-26DHKURX8NOFH.swiftmodule
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceTests (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    
+
+SwiftCompile normal arm64 Compiling\ CheckInCacheStoreTests.swift,\ DailyEchoStoreTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/CheckInCacheStoreTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/DailyEchoStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Persistence/CheckInCacheStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile CheckInCacheStoreTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Persistence/DailyEchoStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile DailyEchoStoreTests.swift
+
+SwiftCompile normal arm64 Compiling\ HealthSyncCursorStoreTests.swift,\ StateOfMindMapperTests.swift <REPO>/InnerBalance/InnerBalanceTests/Health/HealthSyncCursorStoreTests.swift <REPO>/InnerBalance/InnerBalanceTests/Health/StateOfMindMapperTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Health/HealthSyncCursorStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile HealthSyncCursorStoreTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Health/StateOfMindMapperTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile StateOfMindMapperTests.swift
+
+SwiftCompile normal arm64 Compiling\ PracticeFeedbackPersistenceTests.swift,\ FangcunResponseLoopTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/PracticeFeedbackPersistenceTests.swift <REPO>/InnerBalance/InnerBalanceTests/FangcunResponseLoopTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Persistence/PracticeFeedbackPersistenceTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile PracticeFeedbackPersistenceTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/FangcunResponseLoopTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile FangcunResponseLoopTests.swift
+
+SwiftCompile normal arm64 Compiling\ PendingHealthWriteTests.swift,\ PracticeCompletionStoreTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/PendingHealthWriteTests.swift <REPO>/InnerBalance/InnerBalanceTests/Persistence/PracticeCompletionStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Persistence/PendingHealthWriteTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile PendingHealthWriteTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Persistence/PracticeCompletionStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile PracticeCompletionStoreTests.swift
+
+SwiftCompile normal arm64 Compiling\ FangcunDiaryTests.swift,\ FangcunHomePresentationTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/FangcunDiaryTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/FangcunHomePresentationTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/FangcunDiaryTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile FangcunDiaryTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/FangcunHomePresentationTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile FangcunHomePresentationTests.swift
+
+SwiftCompile normal arm64 Compiling\ PrivacyManifestTests.swift,\ CheckInViewModelTests.swift <REPO>/InnerBalance/InnerBalanceTests/Compliance/PrivacyManifestTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/CheckInViewModelTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Compliance/PrivacyManifestTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile PrivacyManifestTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/CheckInViewModelTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile CheckInViewModelTests.swift
+
+SwiftCompile normal arm64 Compiling\ HomeViewModelTests.swift,\ PracticePresentationTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/HomeViewModelTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/PracticePresentationTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/HomeViewModelTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile HomeViewModelTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/PracticePresentationTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile PracticePresentationTests.swift
+
+SwiftCompile normal arm64 Compiling\ PracticeSessionViewModelTests.swift,\ HealthAuthorizationCoordinatorTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/PracticeSessionViewModelTests.swift <REPO>/InnerBalance/InnerBalanceTests/Health/HealthAuthorizationCoordinatorTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/PracticeSessionViewModelTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile PracticeSessionViewModelTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Health/HealthAuthorizationCoordinatorTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile HealthAuthorizationCoordinatorTests.swift
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceUITests (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    
+
+SwiftCompile normal arm64 Compiling\ PracticeReturnHomeUITests.swift <REPO>/InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile PracticeReturnHomeUITests.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalanceUITests (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftDriver\ Compilation\ Requirements InnerBalanceUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalanceUITests -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling PracticeReturnHomeUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 Compiling\ FangcunRedesignUITests.swift <REPO>/InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile FangcunRedesignUITests.swift
+
+SwiftMergeGeneratedHeaders <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources/InnerBalanceUITests-Swift.h <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-Swift.h (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftHeaderTool -arch arm64 <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-Swift.h -o <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources/InnerBalanceUITests-Swift.h
+
+SwiftDriverJobDiscovery normal arm64 Compiling HealthSyncCursorStoreTests.swift, StateOfMindMapperTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/arm64-apple-ios-simulator.swiftmodule <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftmodule (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftmodule <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/arm64-apple-ios-simulator.swiftdoc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftdoc (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftdoc <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+SwiftDriverJobDiscovery normal arm64 Compiling FangcunDiaryTests.swift, FangcunHomePresentationTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/arm64-apple-ios-simulator.abi.json <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.abi.json (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.abi.json <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftsourceinfo (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftsourceinfo <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ FangcunAppearanceUITests.swift <REPO>/InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile FangcunAppearanceUITests.swift
+
+SwiftCompile normal arm64 Compiling\ CheckInFlowUITests.swift <REPO>/InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile CheckInFlowUITests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling FangcunRedesignUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 Compiling\ FangcunResponseLoopUITests.swift <REPO>/InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile FangcunResponseLoopUITests.swift
+
+SwiftCompile normal arm64 Compiling\ HealthKitRepositoryTests.swift,\ HealthMetadataTests.swift <REPO>/InnerBalance/InnerBalanceTests/Health/HealthKitRepositoryTests.swift <REPO>/InnerBalance/InnerBalanceTests/Health/HealthMetadataTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Health/HealthKitRepositoryTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile HealthKitRepositoryTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Health/HealthMetadataTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile HealthMetadataTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling FangcunAppearanceUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 Compiling\ DiagnosticsExporterTests.swift,\ FangcunDesignSystemTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/DiagnosticsExporterTests.swift <REPO>/InnerBalance/InnerBalanceTests/Features/FangcunDesignSystemTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/DiagnosticsExporterTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile DiagnosticsExporterTests.swift
+
+SwiftCompile normal arm64 <REPO>/InnerBalance/InnerBalanceTests/Features/FangcunDesignSystemTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-SwiftPerFileCompile FangcunDesignSystemTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling PracticeSessionViewModelTests.swift, HealthAuthorizationCoordinatorTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+LinkAssetCatalog <REPO>/InnerBalance/InnerBalanceApp/Assets.xcassets (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-linkAssetCatalog --thinned <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_output/thinned --thinned-dependencies <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_dependencies_thinned --thinned-info-plist-content <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_generated_info.plist_thinned --unthinned <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_output/unthinned --unthinned-dependencies <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_generated_info.plist_unthinned --output <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app --plist-output <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_generated_info.plist
+note: Emplaced <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/AppIcon60x60@2x.png (in target 'InnerBalance' from project 'InnerBalance')
+note: Emplaced <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Assets.car (in target 'InnerBalance' from project 'InnerBalance')
+note: Emplaced <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/AppIcon76x76@2x~ipad.png (in target 'InnerBalance' from project 'InnerBalance')
+
+SwiftDriverJobDiscovery normal arm64 Compiling CheckInCacheStoreTests.swift, DailyEchoStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Watch/InnerBalance\ Watch\ App.app <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks -remove-static-executable <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Watch
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Info.plist <REPO>/InnerBalance/Configuration/InnerBalance-Info.plist (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <REPO>/InnerBalance/Configuration/InnerBalance-Info.plist -producttype com.apple.product-type.application -genpkginfo <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/FangcunLaunch-SBPartialInfo.plist -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_generated_info.plist -scanforprivacyfile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Watch/InnerBalance\ Watch\ App.app -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Info.plist
+
+ExtractAppIntentsMetadata (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --module-name InnerBalance --sdk-root /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk --xcode-version 27A5252f --platform-family iOS --deployment-target 18.0 --bundle-identifier com.yvainair.InnerBalance --output <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app --target-triple arm64-apple-ios18.0-simulator --binary-file <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance --dependency-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance_dependency_info.dat --stringsdata-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.SwiftFileList --metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance.DependencyMetadataFileList --static-metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/InnerBalance.DependencyStaticMetadataFileList --swift-const-vals-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/Objects-normal/arm64/InnerBalance.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-09-18 18:55:03.369 appintentsmetadataprocessor[94204:8306164] Starting appintentsmetadataprocessor export
+2026-09-18 18:55:03.371 appintentsmetadataprocessor[94204:8306164] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+ValidateEmbeddedBinary <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Watch/InnerBalance\ Watch\ App.app (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/embeddedBinaryValidationUtility <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Watch/InnerBalance\ Watch\ App.app -info-plist-path <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Info.plist
+
+SwiftDriverJobDiscovery normal arm64 Compiling CheckInFlowUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance.debug.dylib --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+SwiftDriverJobDiscovery normal arm64 Compiling FangcunResponseLoopUITests.swift (in target 'InnerBalanceUITests' from project 'InnerBalance')
+
+SwiftDriver\ Compilation InnerBalanceUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-Swift-Compilation -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalanceUITests -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Info.plist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/empty-InnerBalanceTests.plist (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/empty-InnerBalanceTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Info.plist
+
+SwiftDriverJobDiscovery normal arm64 Compiling PendingHealthWriteTests.swift, PracticeCompletionStoreTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftDriverJobDiscovery normal arm64 Compiling PrivacyManifestTests.swift, CheckInViewModelTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for InnerBalanceTests (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftDriver\ Compilation\ Requirements InnerBalanceTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalanceTests -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -default-isolation\=MainActor -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources/InnerBalanceTests-Swift.h <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-Swift.h (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftHeaderTool -arch arm64 <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-Swift.h -o <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources/InnerBalanceTests-Swift.h
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftmodule (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftmodule <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/arm64-apple-ios-simulator.abi.json <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.abi.json (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.abi.json <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/arm64-apple-ios-simulator.swiftdoc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftdoc (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftdoc <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftsourceinfo (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftsourceinfo <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling HealthKitRepositoryTests.swift, HealthMetadataTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftDriverJobDiscovery normal arm64 Compiling DiagnosticsExporterTests.swift, FangcunDesignSystemTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftDriverJobDiscovery normal arm64 Compiling PracticeFeedbackPersistenceTests.swift, FangcunResponseLoopTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftDriverJobDiscovery normal arm64 Compiling HomeViewModelTests.swift, PracticePresentationTests.swift (in target 'InnerBalanceTests' from project 'InnerBalance')
+
+SwiftDriver\ Compilation InnerBalanceTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-Swift-Compilation -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name InnerBalanceTests -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -default-isolation\=MainActor -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_const_extract_protocols.json -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-generated-files.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-own-target-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance-0a07ab4db9da15aa8fd7ffa97ec5941f-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests-project-headers.hmap -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests-Swift.h -working-directory <REPO>/InnerBalance -experimental-emit-module-separately -disable-cmo
+
+Ld <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/InnerBalanceTests normal (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -bundle -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<DERIVED_DATA>/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -L/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F<DERIVED_DATA>/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -filelist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/PackageFrameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -dead_strip -bundle_loader <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance -Xlinker -object_path_lto -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.swiftmodule -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance.debug.dylib -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/InnerBalanceTests
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/InnerBalanceTests --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+ExtractAppIntentsMetadata (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --module-name InnerBalanceTests --sdk-root /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk --xcode-version 27A5252f --platform-family iOS --deployment-target 18.0 --bundle-identifier com.yvainair.InnerBalanceTests --output <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest --target-triple arm64-apple-ios18.0-simulator --binary-file <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/InnerBalanceTests --dependency-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests_dependency_info.dat --stringsdata-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftFileList --metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.DependencyMetadataFileList --static-metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.DependencyStaticMetadataFileList --swift-const-vals-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/Objects-normal/arm64/InnerBalanceTests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-09-18 18:55:05.671 appintentsmetadataprocessor[94228:8306325] Starting appintentsmetadataprocessor export
+2026-09-18 18:55:05.672 appintentsmetadataprocessor[94228:8306325] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+AppIntentsSSUTraining (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Info.plist --temp-dir-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/ssu --bundle-id com.yvainair.InnerBalanceTests --product-path <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest --extracted-metadata-path <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Metadata.appintents --metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/InnerBalanceTests.DependencyMetadataFileList --source-file <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Info.plist --archive-ssu-assets
+2026-09-18 18:55:05.692 appintentsnltrainingprocessor[94229:8306326] Parsing options for appintentsnltrainingprocessor
+2026-09-18 18:55:05.692 appintentsnltrainingprocessor[94229:8306326] Starting AppIntents SSU YAML Generation
+2026-09-18 18:55:05.693 appintentsnltrainingprocessor[94229:8306326] No AppShortcuts found - Skipping.
+
+RegisterExecutionPolicyException <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-RegisterExecutionPolicyException <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest
+
+Touch <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /usr/bin/touch -c <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest
+
+Validate <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-validationUtility <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app -shallow-bundle -infoplist-subpath Info.plist
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Info.plist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/empty-InnerBalanceUITests.plist (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/empty-InnerBalanceUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/ProductTypeInfoPlistAdditions.plist -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Info.plist
+
+Ld <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/InnerBalanceUITests normal (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -bundle -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L<DERIVED_DATA>/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -L/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F<DERIVED_DATA>/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F<DERIVED_DATA>/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -filelist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.swiftmodule -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/InnerBalanceUITests
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/InnerBalanceUITests --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+ExtractAppIntentsMetadata (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --module-name InnerBalanceUITests --sdk-root /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk --xcode-version 27A5252f --platform-family iOS --deployment-target 18.0 --bundle-identifier com.yvainair.InnerBalanceUITests --output <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest --target-triple arm64-apple-ios18.0-simulator --binary-file <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/InnerBalanceUITests --dependency-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests_dependency_info.dat --stringsdata-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftFileList --metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.DependencyMetadataFileList --static-metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.DependencyStaticMetadataFileList --swift-const-vals-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/Objects-normal/arm64/InnerBalanceUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-09-18 18:55:05.836 appintentsmetadataprocessor[94233:8306341] Starting appintentsmetadataprocessor export
+2026-09-18 18:55:05.837 appintentsmetadataprocessor[94233:8306341] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+AppIntentsSSUTraining (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Info.plist --temp-dir-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/ssu --bundle-id com.yvainair.InnerBalanceUITests --product-path <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest --extracted-metadata-path <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Metadata.appintents --metadata-file-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/InnerBalanceUITests.DependencyMetadataFileList --source-file <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Info.plist --archive-ssu-assets
+2026-09-18 18:55:05.856 appintentsnltrainingprocessor[94234:8306345] Parsing options for appintentsnltrainingprocessor
+2026-09-18 18:55:05.856 appintentsnltrainingprocessor[94234:8306345] Starting AppIntents SSU YAML Generation
+2026-09-18 18:55:05.856 appintentsnltrainingprocessor[94234:8306345] No AppShortcuts found - Skipping.
+
+MkDir <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /bin/mkdir -p <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app
+
+CopyPlistFile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/Info.plist /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/Info.plist (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copyPlist --validate --convert xml1 --macro-expansion WRAPPEDPRODUCTNAME InnerBalanceUITests-Runner --macro-expansion WRAPPEDPRODUCTBUNDLEIDENTIFIER com.yvainair.InnerBalanceUITests.xctrunner --macro-expansion TESTPRODUCTNAME InnerBalanceUITests --macro-expansion TESTPRODUCTBUNDLEIDENTIFIER com.yvainair.InnerBalanceUITests --copy-value UIDeviceFamily <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Info.plist --outdir <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app -- /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/Info.plist
+
+Copy <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PkgInfo /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/PkgInfo (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/PkgInfo <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app
+
+CopyAndPreserveArchs <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/InnerBalanceUITests-Runner (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/XCTRunner -output <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/InnerBalanceUITests-Runner -extract arm64
+
+RegisterExecutionPolicyException <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-RegisterExecutionPolicyException <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest
+
+Touch <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    /usr/bin/touch -c <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+2026-09-18 18:55:17.504860+0800 InnerBalanceUITests-Runner[94307:8307057] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-09-18 18:55:19.897.
+Test Suite 'InnerBalanceUITests.xctest' started at 2026-09-18 18:55:19.898.
+Test Suite 'FangcunRedesignUITests' started at 2026-09-18 18:55:19.898.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testAcceptedSoloAndDuoScenesInDarkAndLargeType]' started.
+    t =     0.00s Start Test at 2026-09-18 18:55:19.902
+    t =     0.11s Set Up
+    t =     0.12s Open com.yvainair.InnerBalance
+    t =     0.12s     Launch com.yvainair.InnerBalance
+2026-09-18 18:55:20.216 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 18:55:20.216 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: no debugger version
+objc[94307]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.6KbZG7/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x109c74398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.6KbZG7/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x109dac310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     0.85s         Setting up automation session
+    t =     2.72s         Wait for com.yvainair.InnerBalance to idle
+    t =     5.56s Waiting 10.0s for "今日压力负荷平稳" StaticText to exist
+    t =     6.63s     Checking `Expect predicate `existsNoRetry == 1` for object "今日压力负荷平稳" StaticText`
+    t =     6.63s         Checking existence of `"今日压力负荷平稳" StaticText`
+    t =     6.87s Find the Target Application 'com.yvainair.InnerBalance'
+    t =     6.99s Added attachment named 'redesign-steady'
+    t =     6.99s Find the "today.start" Button
+    t =     7.06s Find the "today.start" Button
+    t =     7.08s Find the "today.start" Button
+    t =     7.11s Find the "today.start" Button
+    t =     7.13s Find the "today.start" Button
+    t =     7.15s Find the "today.start" Button
+    t =     7.18s Find the "today.start" Button
+    t =     7.20s Find the "today.start" Button
+    t =     7.22s Terminate com.yvainair.InnerBalance:94343
+    t =     8.27s Open com.yvainair.InnerBalance
+    t =     8.28s     Launch com.yvainair.InnerBalance
+2026-09-18 18:55:28.182 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 18:55:28.182 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     8.49s         Setting up automation session
+    t =    10.10s         Wait for com.yvainair.InnerBalance to idle
+    t =    11.79s Waiting 10.0s for "今日身体负荷偏高" StaticText to exist
+    t =    12.82s     Checking `Expect predicate `existsNoRetry == 1` for object "今日身体负荷偏高" StaticText`
+    t =    12.82s         Checking existence of `"今日身体负荷偏高" StaticText`
+    t =    12.95s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    13.03s Added attachment named 'redesign-elevated'
+    t =    13.03s Find the "today.start" Button
+    t =    13.07s Find the "today.start" Button
+    t =    13.10s Find the "today.start" Button
+    t =    13.12s Find the "today.start" Button
+    t =    13.14s Find the "today.start" Button
+    t =    13.17s Find the "today.start" Button
+    t =    13.19s Find the "today.start" Button
+    t =    13.21s Find the "today.start" Button
+    t =    13.23s Terminate com.yvainair.InnerBalance:94383
+    t =    14.29s Open com.yvainair.InnerBalance
+    t =    14.29s     Launch com.yvainair.InnerBalance
+2026-09-18 18:55:34.187 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 18:55:34.187 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    14.50s         Setting up automation session
+    t =    16.08s         Wait for com.yvainair.InnerBalance to idle
+    t =    17.70s Waiting 10.0s for "还需要一点身体线索" StaticText to exist
+    t =    18.73s     Checking `Expect predicate `existsNoRetry == 1` for object "还需要一点身体线索" StaticText`
+    t =    18.73s         Checking existence of `"还需要一点身体线索" StaticText`
+    t =    18.86s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    18.93s Added attachment named 'redesign-insufficient'
+    t =    18.93s Find the "today.start" Button
+    t =    18.97s Find the "today.start" Button
+    t =    19.00s Find the "today.start" Button
+    t =    19.03s Find the "today.start" Button
+    t =    19.05s Find the "today.start" Button
+    t =    19.08s Find the "today.start" Button
+    t =    19.10s Find the "today.start" Button
+    t =    19.13s Find the "today.start" Button
+    t =    19.15s Terminate com.yvainair.InnerBalance:94404
+    t =    20.20s Tear Down
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testAcceptedSoloAndDuoScenesInDarkAndLargeType]' passed (20.273 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' started.
+    t =     0.00s Start Test at 2026-09-18 18:55:40.177
+    t =     0.02s Set Up
+    t =     0.02s Open com.yvainair.InnerBalance
+    t =     0.02s     Launch com.yvainair.InnerBalance
+2026-09-18 18:55:40.196 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 18:55:40.196 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     0.23s         Setting up automation session
+    t =     1.77s         Wait for com.yvainair.InnerBalance to idle
+    t =     3.38s Waiting 10.0s for "today.start" Button to exist
+    t =     4.41s     Checking `Expect predicate `existsNoRetry == 1` for object "today.start" Button`
+    t =     4.42s         Checking existence of `"today.start" Button`
+    t =     4.54s Tap "today.start" Button
+    t =     4.54s     Wait for com.yvainair.InnerBalance to idle
+    t =     4.54s     Find the "today.start" Button
+    t =     4.57s     Check for interrupting elements affecting "today.start" Button
+    t =     4.64s     Synthesize event
+    t =     5.10s     Wait for com.yvainair.InnerBalance to idle
+    t =     5.82s Waiting 10.0s for "暂停练习" Button to exist
+    t =     6.85s     Checking `Expect predicate `existsNoRetry == 1` for object "暂停练习" Button`
+    t =     6.85s         Checking existence of `"暂停练习" Button`
+    t =     6.93s Checking existence of `"双吸一呼" StaticText`
+    t =     8.01s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =     8.01s     Find the "practice.breathPhase" StaticText
+    t =     8.04s     Capturing element debug description
+    t =     8.16s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =     8.24s         Find: Descendants matching type StaticText
+    t =     8.24s         Find: Elements matching predicate '"practice.breathPhase" IN identifiers'
+    t =     8.24s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =     8.29s         Find: Descendants matching type StaticText
+    t =     8.29s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =     8.99s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =     8.99s     Find the "practice.breathPhase" StaticText
+    t =     9.03s     Capturing element debug description
+    t =     9.07s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =     9.11s         Find: Descendants matching type StaticText
+    t =     9.12s         Find: Elements matching predicate '"practice.breathPhase" IN identifiers'
+    t =     9.12s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =     9.17s         Find: Descendants matching type StaticText
+    t =     9.17s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =    10.05s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =    10.05s     Find the "practice.breathPhase" StaticText
+    t =    10.08s     Capturing element debug description
+    t =    10.22s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =    10.26s         Find: Descendants matching type StaticText
+    t =    10.26s         Find: Elements matching predicate '"practice.breathPhase" IN identifiers'
+    t =    10.27s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =    10.30s         Find: Descendants matching type StaticText
+    t =    10.31s         Requesting snapshot of accessibility hierarchy for app with pid 94438
+    t =    11.02s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =    11.02s     Find the "practice.breathPhase" StaticText
+    t =    11.05s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    11.14s Added attachment named 'redesign-breathing-live'
+    t =    11.14s Tap "暂停练习" Button
+    t =    11.14s     Wait for com.yvainair.InnerBalance to idle
+    t =    11.15s     Find the "暂停练习" Button
+    t =    11.20s     Check for interrupting elements affecting "pause.fill" Button
+    t =    11.25s     Synthesize event
+    t =    11.54s     Wait for com.yvainair.InnerBalance to idle
+    t =    11.54s Waiting 5.0s for "已暂停" StaticText to exist
+    t =    12.58s     Checking `Expect predicate `existsNoRetry == 1` for object "已暂停" StaticText`
+    t =    12.58s         Checking existence of `"已暂停" StaticText`
+    t =    12.63s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    12.75s Added attachment named 'redesign-breathing-paused'
+    t =    12.75s Tap "结束" Button
+    t =    12.75s     Wait for com.yvainair.InnerBalance to idle
+    t =    12.75s     Find the "结束" Button
+    t =    12.78s     Check for interrupting elements affecting "结束" Button
+    t =    12.80s     Synthesize event
+    t =    13.09s     Wait for com.yvainair.InnerBalance to idle
+    t =    13.14s Tap "结束练习" Button
+    t =    13.14s     Wait for com.yvainair.InnerBalance to idle
+    t =    13.33s     Find the "结束练习" Button
+    t =    13.41s     Check for interrupting elements affecting "结束练习" Button
+    t =    13.44s     Synthesize event
+    t =    13.74s     Wait for com.yvainair.InnerBalance to idle
+    t =    13.99s Waiting 5.0s for "先完成" Button to exist
+    t =    15.03s     Checking `Expect predicate `existsNoRetry == 1` for object "先完成" Button`
+    t =    15.03s         Checking existence of `"先完成" Button`
+    t =    15.08s Tear Down
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' passed (15.306 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' started.
+    t =     0.00s Start Test at 2026-09-18 18:55:55.483
+    t =     0.02s Set Up
+    t =     0.02s Open com.yvainair.InnerBalance
+    t =     0.03s     Launch com.yvainair.InnerBalance
+    t =     0.03s         Terminate com.yvainair.InnerBalance:94438
+2026-09-18 18:55:56.564 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 18:55:56.564 xcodebuild[94103:8305154] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.29s         Setting up automation session
+    t =     2.87s         Wait for com.yvainair.InnerBalance to idle
+    t =     4.44s Waiting 15.0s for "today.conclusion" StaticText to exist
+    t =     5.48s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =     5.48s         Checking existence of `"today.conclusion" StaticText`
+    t =     5.60s Checking existence of `"home.echo.state.calm" Button`
+    t =     5.61s Find the "today.start" Button
+    t =     5.65s Find the Target Application 'com.yvainair.InnerBalance'
+    t =     5.73s Added attachment named 'redesign-home'
+    t =     5.73s Find the "today.drinks" Button
+    t =     5.76s Swipe up ScrollView (First Match)
+    t =     5.76s     Wait for com.yvainair.InnerBalance to idle
+    t =     5.76s     Find the ScrollView (First Match)
+    t =     5.78s     Check for interrupting elements affecting ScrollView
+    t =     5.79s     Synthesize event
+    t =     6.23s     Wait for com.yvainair.InnerBalance to idle
+    t =     7.03s Find the "today.drinks" Button
+    t =     7.08s Find the "today.drinks" Button
+    t =     7.11s Find the "today.drinks" Button
+    t =     7.14s Find the "today.drinks" Button
+    t =     7.16s Find the "today.drinks" Button
+    t =     7.19s Find the "today.drinks" Button
+    t =     7.21s Tap "today.drinks" Button
+    t =     7.21s     Wait for com.yvainair.InnerBalance to idle
+    t =     7.21s     Find the "today.drinks" Button
+    t =     7.23s     Check for interrupting elements affecting "today.drinks" Button
+    t =     7.25s     Synthesize event
+    t =     7.53s     Wait for com.yvainair.InnerBalance to idle
+    t =     7.60s Waiting 5.0s for "增加白水" Button to exist
+    t =     8.63s     Checking `Expect predicate `existsNoRetry == 1` for object "增加白水" Button`
+    t =     8.63s         Checking existence of `"增加白水" Button`
+    t =     8.72s Tap "增加白水" Button
+    t =     8.72s     Wait for com.yvainair.InnerBalance to idle
+    t =     8.72s     Find the "增加白水" Button
+    t =     8.75s     Check for interrupting elements affecting "plus" Button
+    t =     8.78s     Synthesize event
+    t =     9.07s     Wait for com.yvainair.InnerBalance to idle
+    t =     9.82s Tap "增加美式" Button
+    t =     9.82s     Wait for com.yvainair.InnerBalance to idle
+    t =     9.82s     Find the "增加美式" Button
+    t =     9.88s     Check for interrupting elements affecting "plus" Button
+    t =     9.91s     Synthesize event
+    t =    10.20s     Wait for com.yvainair.InnerBalance to idle
+    t =    10.95s Find the "drinks.totals" Any
+    t =    11.01s Tap "撤销" Button
+    t =    11.01s     Wait for com.yvainair.InnerBalance to idle
+    t =    11.01s     Find the "撤销" Button
+    t =    11.04s     Check for interrupting elements affecting "撤销" Button
+    t =    11.07s     Synthesize event
+    t =    11.36s     Wait for com.yvainair.InnerBalance to idle
+    t =    12.10s Find the "drinks.totals" Any
+    t =    12.14s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    12.25s Added attachment named 'redesign-drinks'
+    t =    12.25s Tap "完成" Button
+    t =    12.25s     Wait for com.yvainair.InnerBalance to idle
+    t =    12.25s     Find the "完成" Button
+    t =    12.28s     Check for interrupting elements affecting "完成" Button
+    t =    12.31s     Synthesize event
+    t =    12.59s     Wait for com.yvainair.InnerBalance to idle
+    t =    13.01s Find the "today.trends" Button
+    t =    13.05s Find the "today.trends" Button
+    t =    13.07s Find the "today.trends" Button
+    t =    13.10s Find the "today.trends" Button
+    t =    13.13s Find the "today.trends" Button
+    t =    13.15s Find the "today.trends" Button
+    t =    13.18s Find the "today.trends" Button
+    t =    13.20s Tap "today.trends" Button
+    t =    13.20s     Wait for com.yvainair.InnerBalance to idle
+    t =    13.20s     Find the "today.trends" Button
+    t =    13.22s     Check for interrupting elements affecting "today.trends" Button
+    t =    13.24s     Synthesize event
+    t =    13.53s     Wait for com.yvainair.InnerBalance to idle
+    t =    14.04s Waiting 5.0s for "trends.snapshot" StaticText to exist
+    t =    15.07s     Checking `Expect predicate `existsNoRetry == 1` for object "trends.snapshot" StaticText`
+    t =    15.07s         Checking existence of `"trends.snapshot" StaticText`
+    t =    15.12s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    15.21s Added attachment named 'redesign-trends'
+    t =    15.21s Tap Button (First Match)
+    t =    15.21s     Wait for com.yvainair.InnerBalance to idle
+    t =    15.21s     Find the Button (First Match)
+    t =    15.22s     Check for interrupting elements affecting "BackButton" Button
+    t =    15.24s     Synthesize event
+    t =    15.54s     Wait for com.yvainair.InnerBalance to idle
+    t =    15.85s Find the "today.start" Button
+    t =    15.89s Find the "today.start" Button
+    t =    15.92s Find the "today.start" Button
+    t =    15.95s Find the "today.start" Button
+    t =    15.97s Tap "today.start" Button
+    t =    15.97s     Wait for com.yvainair.InnerBalance to idle
+    t =    15.97s     Find the "today.start" Button
+    t =    15.99s     Check for interrupting elements affecting "today.start" Button
+    t =    16.01s     Synthesize event
+    t =    16.30s     Wait for com.yvainair.InnerBalance to idle
+    t =    16.54s Waiting 10.0s for "暂停练习" Button to exist
+    t =    17.57s     Checking `Expect predicate `existsNoRetry == 1` for object "暂停练习" Button`
+    t =    17.58s         Checking existence of `"暂停练习" Button`
+    t =    17.65s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    17.74s Added attachment named 'redesign-breathing'
+    t =    17.74s Tap "暂停练习" Button
+    t =    17.74s     Wait for com.yvainair.InnerBalance to idle
+    t =    17.74s     Find the "暂停练习" Button
+    t =    17.76s     Check for interrupting elements affecting "pause.fill" Button
+    t =    17.79s     Synthesize event
+    t =    18.08s     Wait for com.yvainair.InnerBalance to idle
+    t =    18.08s Waiting 4.0s for "已暂停" StaticText to exist
+    t =    19.12s     Checking `Expect predicate `existsNoRetry == 1` for object "已暂停" StaticText`
+    t =    19.12s         Checking existence of `"已暂停" StaticText`
+    t =    19.16s Tap "继续练习" Button
+    t =    19.16s     Wait for com.yvainair.InnerBalance to idle
+    t =    19.16s     Find the "继续练习" Button
+    t =    19.19s     Check for interrupting elements affecting "play.fill" Button
+    t =    19.21s     Synthesize event
+    t =    19.50s     Wait for com.yvainair.InnerBalance to idle
+    t =    19.51s Waiting 4.0s for "pause.fill" Button to exist
+    t =    20.54s     Checking `Expect predicate `existsNoRetry == 1` for object "pause.fill" Button`
+    t =    20.54s         Checking existence of `"pause.fill" Button`
+    t =    20.59s Tap "结束" Button
+    t =    20.59s     Wait for com.yvainair.InnerBalance to idle
+    t =    20.59s     Find the "结束" Button
+    t =    20.62s     Check for interrupting elements affecting "结束" Button
+    t =    20.65s     Synthesize event
+    t =    20.94s     Wait for com.yvainair.InnerBalance to idle
+    t =    21.03s Tap "结束练习" Button
+    t =    21.03s     Wait for com.yvainair.InnerBalance to idle
+    t =    21.03s     Find the "结束练习" Button
+    t =    21.11s     Check for interrupting elements affecting "结束练习" Button
+    t =    21.14s     Synthesize event
+    t =    21.43s     Wait for com.yvainair.InnerBalance to idle
+    t =    21.60s Waiting 6.0s for "先完成" Button to exist
+    t =    22.62s     Checking `Expect predicate `existsNoRetry == 1` for object "先完成" Button`
+    t =    22.62s         Checking existence of `"先完成" Button`
+    t =    22.68s Find the "先完成" Button
+    t =    22.71s Find the "先完成" Button
+    t =    22.75s Find the "先完成" Button
+    t =    22.78s Find the "先完成" Button
+    t =    22.82s Find the "先完成" Button
+    t =    22.85s Find the "先完成" Button
+    t =    22.88s Find the "先完成" Button
+    t =    22.92s Tap "先完成" Button
+    t =    22.92s     Wait for com.yvainair.InnerBalance to idle
+    t =    22.92s     Find the "先完成" Button
+    t =    22.95s     Check for interrupting elements affecting "先完成" Button
+    t =    22.97s     Synthesize event
+    t =    23.26s     Wait for com.yvainair.InnerBalance to idle
+    t =    23.26s Waiting 8.0s for "practice.saved.done" Button to exist
+    t =    24.28s     Checking `Expect predicate `existsNoRetry == 1` for object "practice.saved.done" Button`
+    t =    24.28s         Checking existence of `"practice.saved.done" Button`
+    t =    24.31s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    24.39s Added attachment named 'redesign-completion'
+    t =    24.39s Tap "practice.saved.done" Button
+    t =    24.39s     Wait for com.yvainair.InnerBalance to idle
+    t =    24.40s     Find the "practice.saved.done" Button
+    t =    24.42s     Check for interrupting elements affecting "practice.saved.done" Button
+    t =    24.44s     Synthesize event
+    t =    24.73s     Wait for com.yvainair.InnerBalance to idle
+    t =    25.05s Tap "设置" Button
+    t =    25.05s     Wait for com.yvainair.InnerBalance to idle
+    t =    25.07s     Find the "设置" Button
+    t =    25.11s     Check for interrupting elements affecting "gearshape.fill" Button
+    t =    25.13s     Synthesize event
+    t =    25.42s     Wait for com.yvainair.InnerBalance to idle
+    t =    27.47s Waiting 5.0s for "深色模式" Switch to exist
+    t =    28.48s     Checking `Expect predicate `existsNoRetry == 1` for object "深色模式" Switch`
+    t =    28.48s         Checking existence of `"深色模式" Switch`
+    t =    28.60s Find the Target Application 'com.yvainair.InnerBalance'
+    t =    28.68s Added attachment named 'redesign-settings'
+    t =    28.68s Tear Down
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' passed (28.935 seconds).
+Test Suite 'FangcunRedesignUITests' passed at 2026-09-18 18:56:24.419.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 64.515 (64.521) seconds
+Test Suite 'InnerBalanceUITests.xctest' passed at 2026-09-18 18:56:24.424.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 64.515 (64.527) seconds
+Test Suite 'Selected tests' passed at 2026-09-18 18:56:24.425.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 64.515 (64.528) seconds
+IOSurfaceClientSetSurfaceNotify failed e00002c7
+2026-09-18 18:56:25.784783+0800 InnerBalance[94602:8310169] [XPCErrors] non-launching port is incompatible with service identifier "com.apple.PointerUI.pointeruid.default-service"
+2026-09-18 18:56:25.789036+0800 InnerBalance[94602:8310169] [API] cannot add handler to 0 from 0 - dropping
+2026-09-18 18:56:25.789947+0800 InnerBalance[94602:8310169] [API] cannot add handler to 0 from 0 - dropping
+2026-09-18 18:56:25.790404+0800 InnerBalance[94602:8310169] [API] cannot add handler to 0 from 0 - dropping
+2026-09-18 18:56:25.790448+0800 InnerBalance[94602:8310169] [API] cannot add handler to 0 from 0 - dropping
+2026-09-18 18:56:25.797257+0800 InnerBalance[94602:8310311] [default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+Test Suite 'Selected tests' started at 2026-09-18 18:56:26.476.
+Test Suite 'InnerBalanceTests.xctest' started at 2026-09-18 18:56:26.477.
+Test Suite 'InnerBalanceTests.xctest' passed at 2026-09-18 18:56:26.477.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-09-18 18:56:26.477.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+◇ Test run started.
+↳ Testing Library Version: 2078
+↳ Target Platform: arm64-apple-ios17.0-simulator
+◇ Suite "Native diary persistence" started.
+◇ Test compositeDrinkUndoAndReload() started.
+✔ Test compositeDrinkUndoAndReload() passed after 0.006 seconds.
+◇ Test dayBoundariesAndUnknownHistory() started.
+✔ Test dayBoundariesAndUnknownHistory() passed after 0.002 seconds.
+◇ Test unreadableArchiveIsNotOverwritten() started.
+✔ Test unreadableArchiveIsNotOverwritten() passed after 0.003 seconds.
+✔ Suite "Native diary persistence" passed after 0.013 seconds.
+◇ Suite "Cold-start home" started.
+◇ Test "压力来源只在同日且记录语义允许时沿用" started.
+✔ Test "压力来源只在同日且记录语义允许时沿用" passed after 0.001 seconds.
+◇ Test "自动来源优先识别睡眠、训练和其他身体信号" started.
+✔ Test "自动来源优先识别睡眠、训练和其他身体信号" passed after 0.001 seconds.
+◇ Test "没有可靠身体证据时仍给出明确且保守的日程动作" started.
+✔ Test "没有可靠身体证据时仍给出明确且保守的日程动作" passed after 0.001 seconds.
+◇ Test "Evidence that only needs review cannot produce a steady display" started.
+✔ Test "Evidence that only needs review cannot produce a steady display" passed after 0.001 seconds.
+◇ Test "Workout-sensitive deviations are shown as protected after recent training" started.
+✔ Test "Workout-sensitive deviations are shown as protected after recent training" passed after 0.001 seconds.
+◇ Test "Recent training never hides an independent sleep deviation" started.
+✔ Test "Recent training never hides an independent sleep deviation" passed after 0.001 seconds.
+◇ Test "两项独立可靠异常会给出优先恢复的行动结论" started.
+✔ Test "两项独立可靠异常会给出优先恢复的行动结论" passed after 0.001 seconds.
+◇ Test "重叠刷新只让最新请求更新数据和结束读取状态" started.
+◇ Test case passing 1 argument olderFinishesFirst → true to "重叠刷新只让最新请求更新数据和结束读取状态" started.
+​◇ Test case passing 1 argument olderFinishesFirst → false to "重叠刷新只让最新请求更新数据和结束读取状态" started.
+​✔ Test "重叠刷新只让最新请求更新数据和结束读取状态" with 2 test cases passed after 0.003 seconds.
+◇ Test "Day zero still shows raw Watch readings without inferring deviation" started.
+✔ Test "Day zero still shows raw Watch readings without inferring deviation" passed after 0.001 seconds.
+◇ Test "Home displays the newest Watch reading with its own measurement time" started.
+✔ Test "Home displays the newest Watch reading with its own measurement time" passed after 0.001 seconds.
+◇ Test "超过当前评估窗口的 Watch 最新读数仍显示真实测量时间" started.
+✔ Test "超过当前评估窗口的 Watch 最新读数仍显示真实测量时间" passed after 0.001 seconds.
+◇ Test "同时间的混合来源不会把 Watch 数值配上第三方来源" started.
+✔ Test "同时间的混合来源不会把 Watch 数值配上第三方来源" passed after 0.001 seconds.
+◇ Test "旧 Watch 读数不会与当前第三方读数混成可靠结论" started.
+✔ Test "旧 Watch 读数不会与当前第三方读数混成可靠结论" passed after 0.001 seconds.
+◇ Test "Four baseline days show progress and raw evidence without an elevated conclusion" started.
+✔ Test "Four baseline days show progress and raw evidence without an elevated conclusion" passed after 0.001 seconds.
+◇ Test "An implausibly long main sleep is marked for confirmation and excluded" started.
+✔ Test "An implausibly long main sleep is marked for confirmation and excluded" passed after 0.001 seconds.
+◇ Test "身体来信汇总近二十四小时训练并保留最近一次类型和来源" started.
+✔ Test "身体来信汇总近二十四小时训练并保留最近一次类型和来源" passed after 0.001 seconds.
+◇ Test "同一训练被 Watch 和第三方重复记录时只计算一次并优先 Watch" started.
+✔ Test "同一训练被 Watch 和第三方重复记录时只计算一次并优先 Watch" passed after 0.001 seconds.
+◇ Test "训练摘要用可扫读的次数和总时长呈现" started.
+✔ Test "训练摘要用可扫读的次数和总时长呈现" passed after 0.001 seconds.
+◇ Test "空训练查询只说明未读到记录" started.
+✔ Test "空训练查询只说明未读到记录" passed after 0.001 seconds.
+◇ Test "今日推荐和练习结果只使用当前自然日记录" started.
+✔ Test "今日推荐和练习结果只使用当前自然日记录" passed after 0.001 seconds.
+✔ Suite "Cold-start home" passed after 0.010 seconds.
+◇ Suite "Practice session" started.
+◇ Test "Pause and resume use absolute time without counting the pause" started.
+✔ Test "Pause and resume use absolute time without counting the pause" passed after 0.001 seconds.
+◇ Test "Leaving the active scene pauses the session and preserves the remaining time" started.
+✔ Test "Leaving the active scene pauses the session and preserves the remaining time" passed after 0.001 seconds.
+◇ Test "NSDR 暂停期间保留当前阶段，恢复后按有效练习时长切换" started.
+✔ Test "NSDR 暂停期间保留当前阶段，恢复后按有效练习时长切换" passed after 0.001 seconds.
+◇ Test "Completing a session creates a restrained subjective comparison record" started.
+✔ Test "Completing a session creates a restrained subjective comparison record" passed after 0.001 seconds.
+✔ Suite "Practice session" passed after 0.002 seconds.
+✔ Test run with 27 tests in 3 suites passed after 0.025 seconds.
+2026-09-18 18:56:26.790 xcodebuild[94103:8305154] [MT] IDETestOperationsObserverDebug: 80.918 elapsed -- Testing started completed.
+2026-09-18 18:56:26.790 xcodebuild[94103:8305154] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-18 18:56:26.790 xcodebuild[94103:8305154] [MT] IDETestOperationsObserverDebug: 80.918 sec, +80.918 sec -- end
+
+Test session results, code coverage, and logs:
+	<EVIDENCE>/baseline.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
