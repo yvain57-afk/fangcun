@@ -192,3 +192,9 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
 ## M2-R02
 
 `swift test --package-path InnerBalanceCore --filter M2ReviewR02Tests`。修复前 2 tests / 7 issues：[red](evidence/m2-r02-red.txt)；修复后 [green](evidence/m2-r02-green.txt)。覆盖第一页 A / 第二页 B 失败、进度落盘重启续读后选完整 20 日 B、期间无等级、手动 A 保持优先、后续新来源不自动切换，以及 100 页预算中断后续读。原失效锚点/缺主源回归将在最终 Core 全量继续核验。
+
+## M2-R03
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR03Tests` 修复前 3 tests / 7 issues：[red](evidence/m2-r03-red.txt)。为事件复现场景先加入默认关闭、尚不改变行为的 healthDataChanged 参数，再执行 red。
+
+修复后执行 `swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests|InsightsStoreTests'`：[最终结果](evidence/m2-r03-green-recheck.txt)。覆盖 8→10 小时、时区/练习上下文变化、睡眠读完后的新事件自动补读；并复用同输入单飞与切源/清除拒绝迟到请求回归。初版 pending 可选值在同一表达式中读写触发 Swift 独占访问冲突，改为局部值修改后赋回；[中间失败](evidence/m2-r03-green.txt) 保留，未关闭检查。

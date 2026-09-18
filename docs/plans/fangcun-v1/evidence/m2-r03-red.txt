@@ -1,0 +1,50 @@
+Building for debugging...
+[Planning deferred tasks]
+[5 / 25] InnerBalanceCore
+[7 / 27] InnerBalanceCore
+[16 / 27] InnerBalanceCoreTests-product
+[21 / 32] InnerBalanceCoreTests-product
+[25 / 31] InnerBalanceCoreTests-product
+[27 / 31] InnerBalanceCoreTests-product
+Build complete! (1.81秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Test healthEventAfterSleepReadSchedulesOneCatchup() started.
+◇ Test changedConfigurationRunsAfterOldFlight() started.
+◇ Test contextAndTimezoneChangeAreNotOldResult() started.
+✘ Test contextAndTimezoneChangeAreNotOldResult() recorded an issue at M2ReviewR03Tests.swift:39:5: Expectation failed: result.current?.timeZoneID == "Asia/Tokyo" && result.current?.level == nil
+↳ result.current?.timeZoneID == "Asia/Tokyo" && result.current?.level == nil → false
+↳   result.current?.timeZoneID == "Asia/Tokyo" → false
+↳   result.current?.level == nil → <not evaluated>
+✘ Test changedConfigurationRunsAfterOldFlight() recorded an issue at M2ReviewR03Tests.swift:23:5: Expectation failed: second.current?.configuration.sleepTargetHours == 10 && second.current?.sleepSeverity == 2
+↳ second.current?.configuration.sleepTargetHours == 10 && second.current?.sleepSeverity == 2 → false
+↳   second.current?.configuration.sleepTargetHours == 10 → false
+↳   second.current?.sleepSeverity == 2 → <not evaluated>
+✘ Test changedConfigurationRunsAfterOldFlight() recorded an issue at M2ReviewR03Tests.swift:24:5: Expectation failed: await store.snapshot().current?.configuration.sleepTargetHours == 10
+↳ await store.snapshot().current?.configuration.sleepTargetHours == 10 → <not evaluated>
+✘ Test contextAndTimezoneChangeAreNotOldResult() recorded an issue at M2ReviewR03Tests.swift:40:5: Expectation failed: result.current?.qualityFlags.contains(.interventionExcluded) == true
+↳ result.current?.qualityFlags.contains(.interventionExcluded) == true → false
+↳   result.current?.qualityFlags.contains(.interventionExcluded) → false
+↳     some → false
+↳     some → true
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() recorded an issue at M2ReviewR03Tests.swift:54:5: Expectation failed: result.ledger.samples[f.id(9000).uuidString] != nil
+↳ result.ledger.samples[f.id(9000).uuidString] != nil → false
+↳   result.ledger.samples[f.id(9000).uuidString] → nil
+✘ Test changedConfigurationRunsAfterOldFlight() failed after 0.138 seconds with 2 issues.
+✘ Test contextAndTimezoneChangeAreNotOldResult() failed after 0.138 seconds with 2 issues.
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() recorded an issue at M2ReviewR03Tests.swift:55:5: Expectation failed: result.current?.sleepEndAt == f.date(3.5)
+↳ result.current?.sleepEndAt == f.date(3.5) → false
+↳   result.current?.sleepEndAt → 2026-09-18 00:00:00 +0000
+↳     some → 2026-09-18 00:00:00 +0000
+↳       timeIntervalSinceReferenceDate → 811382400.0
+↳   f.date(3.5) → 2026-09-18 00:30:00 +0000
+↳     timeIntervalSinceReferenceDate → 811384200.0
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() recorded an issue at M2ReviewR03Tests.swift:56:5: Expectation failed: await provider.calls == 8
+↳ await provider.calls == 8 → <not evaluated>
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() failed after 0.140 seconds with 3 issues.
+✘ Suite "M2-R03 semantic single flight" failed after 0.140 seconds with 7 issues.
+✘ Test run with 3 tests in 1 suite failed after 0.140 seconds with 7 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)

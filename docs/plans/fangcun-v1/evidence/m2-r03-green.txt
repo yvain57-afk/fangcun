@@ -1,0 +1,71 @@
+Building for debugging...
+[2 / 11] InnerBalanceCore
+[4 / 13] InnerBalanceCore
+[12 / 17] InnerBalanceCoreTests-product
+[17 / 22] InnerBalanceCoreTests-product
+[19 / 22] InnerBalanceCoreTests-product
+[21 / 25] InnerBalanceCoreTests-product
+Build complete! (1.68秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2 atomic Insights store and provider pipeline" started.
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() started.
+◇ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() started.
+◇ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() started.
+◇ Test providerToStorePaginationRevisionsAndDeletion() started.
+◇ Test sourceChangeAndClearRejectLateRequests() started.
+◇ Test healthEventAfterSleepReadSchedulesOneCatchup() started.
+◇ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() started.
+◇ Test transactionFaultsKeepCursorsAndAssessmentTogether() started.
+◇ Test contextAndTimezoneChangeAreNotOldResult() started.
+◇ Test changedConfigurationRunsAfterOldFlight() started.
+Simultaneous accesses to 0x1030a3188, but modification requires exclusive access.
+Previous access (a modification) started at InnerBalanceCoreTests`ReadinessPipeline.pending.modify + 48 (0x107b5c554).
+Current access (a read) started at:
+0    libswiftCore.dylib                 0x000000019fe9b69c _swift_reportExclusivityConflict + 332
+Simultaneous accesses to 0x1030a4108, but modification requires exclusive access.
+Previous access (a modification) started at InnerBalanceCoreTests`ReadinessPipeline.pending.modify + 48 (0x107b5c554).
+Current access (a read) started at:
+0    libswiftCore.dylib                 0x000000019fe9b69c _swift_reportExclusivityConflict + 332
+1    libswiftCore.dylib                 0x000000019fe32f34 swift_beginAccess + 192
+1    libswiftCore.dylib                 0x000000019fe32f34 swift_beginAccess + 192
+2    InnerBalanceCoreTests              0x0000000107b5df7c closure #2 in ReadinessPipeline.refresh(now:calendar:configuration:interventions:healthDataChanged:) + 2136
+2    InnerBalanceCoreTests              0x0000000107b5df7c closure #2 in ReadinessPipeline.refresh(now:calendar:configuration:interventions:healthDataChanged:) + 2136
+Simultaneous accesses to 0x7c28e681d8, but modification requires exclusive access.
+Previous access (a modification) started at 3    InnerBalanceCoreTests              0x0000000107b6f3d0 closure #1 in withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 244
+4    InnerBalanceCoreTests              0x0000000107b5ec08 withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 192
+InnerBalanceCoreTests`ReadinessPipeline.pending.modify + 48 (0x107b5c554).
+Current access (a read) started at:
+0    libswiftCore.dylib                 0x000000019fe9b69c _swift_reportExclusivityConflict + 332
+1    libswiftCore.dylib                 0x000000019fe32f34 swift_beginAccess + 192
+2    InnerBalanceCoreTests              0x0000000107b5df7c closure #2 in ReadinessPipeline.refresh(now:calendar:configuration:interventions:healthDataChanged:) + 2136
+3    InnerBalanceCoreTests              0x0000000107b6f3d0 closure #1 in withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 244
+4    InnerBalanceCoreTests              0x0000000107b5ec08 withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 192
+3    InnerBalanceCoreTests              0x0000000107b6f3d0 closure #1 in withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 244
+4    InnerBalanceCoreTests              0x0000000107b5ec08 withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 192
+5    libswift_Concurrency.dylib         0x00000002b81b7b08 swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 328
+6    libswift_Concurrency.dylib         0x00000002b81b9938 swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+7    libdispatch.dylib                  0x000000018b716944 _dispatch_root_queue_drain + 360
+8    libdispatch.dylib                  0x000000018b717190 _dispatch_worker_thread2 + 184
+9    libsystem_pthread.dylib            0x000000018b8c1e78 _pthread_wqthread + 232
+10   libsysterror: Process '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/swiftpm-testing-helper --test-bundle-path <REPO>/InnerBalanceCore/.build/out/Products/Debug/InnerBalanceCoreTests.xctest/Contents/MacOS/InnerBalanceCoreTests --package-path InnerBalanceCore --filter M2ReviewR03Tests|InsightsStoreTests <REPO>/InnerBalanceCore/.build/out/Products/Debug/InnerBalanceCoreTests.xctest/Contents/MacOS/InnerBalanceCoreTests --testing-library swift-testing' exited with unexpected signal code 6
+em_pthread.dylib            0x000000018b8c0cd8 start_wqthread + 8
+Fatal access conflict detected.
+5    libswift_Concurrency.dylib         0x00000002b81b7b08 swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 328
+6    libswift_Concurrency.dylib         0x00000002b81b9938 swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+7    libdispatch.dylib                  0x000000018b716944 _dispatch_root_queue_drain + 360
+8    libdispatch.dylib                  0x000000018b717190 _dispatch_worker_thread2 + 184
+9    libsystem_pthread.dylib            0x000000018b8c1e78 _pthread_wqthread + 232
+10   libsystem_pthread.dylib            0x000000018b8c0cd8 start_wqthread + 8
+Fatal access conflict detected.
+5    libswift_Concurrency.dylib         0x00000002b81b7b08 swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 328
+6    libswift_Concurrency.dylib         0x00000002b81b9938 swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+7    libdispatch.dylib                  0x000000018b716944 _dispatch_root_queue_drain + 360
+8    libdispatch.dylib                  0x000000018b717190 _dispatch_worker_thread2 + 184
+9    libsystem_pthread.dylib            0x000000018b8c1e78 _pthread_wqthread + 232
+10   libsystem_pthread.dylib            0x000000018b8c0cd8 start_wqthread + 8
+Fatal access conflict detected.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)

@@ -1,0 +1,33 @@
+Building for debugging...
+[2 / 12] InnerBalanceCore
+[4 / 14] InnerBalanceCore
+[11 / 12] InnerBalanceCoreTests-product
+Build complete! (0.69秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Suite "M2 atomic Insights store and provider pipeline" started.
+◇ Test contextAndTimezoneChangeAreNotOldResult() started.
+◇ Test changedConfigurationRunsAfterOldFlight() started.
+◇ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() started.
+◇ Test healthEventAfterSleepReadSchedulesOneCatchup() started.
+◇ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() started.
+◇ Test providerToStorePaginationRevisionsAndDeletion() started.
+◇ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() started.
+◇ Test sourceChangeAndClearRejectLateRequests() started.
+◇ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() started.
+◇ Test transactionFaultsKeepCursorsAndAssessmentTogether() started.
+✔ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() passed after 0.324 seconds.
+✔ Test healthEventAfterSleepReadSchedulesOneCatchup() passed after 0.349 seconds.
+✔ Test changedConfigurationRunsAfterOldFlight() passed after 0.349 seconds.
+✔ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() passed after 0.358 seconds.
+✔ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() passed after 0.364 seconds.
+✔ Test contextAndTimezoneChangeAreNotOldResult() passed after 0.373 seconds.
+✔ Suite "M2-R03 semantic single flight" passed after 0.373 seconds.
+✔ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() passed after 0.383 seconds.
+✔ Test sourceChangeAndClearRejectLateRequests() passed after 0.441 seconds.
+✔ Test transactionFaultsKeepCursorsAndAssessmentTogether() passed after 0.527 seconds.
+✔ Test providerToStorePaginationRevisionsAndDeletion() passed after 0.536 seconds.
+✔ Suite "M2 atomic Insights store and provider pipeline" passed after 0.536 seconds.
+✔ Test run with 10 tests in 2 suites passed after 0.536 seconds.
