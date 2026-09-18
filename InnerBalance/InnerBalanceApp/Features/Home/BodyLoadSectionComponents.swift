@@ -230,7 +230,7 @@ struct BodyEvidenceDisclosure: View {
         }
         if let lastUpdated = viewModel.lastUpdated {
           Text(
-            "Apple 健康最近同步：\(lastUpdated.formatted(.relative(presentation: .named)))"
+            FangcunCopy.text("body.time.fetched", FangcunCopy.timestamp(lastUpdated))
           )
           .font(.caption2)
           .foregroundStyle(InnerBalanceTheme.mutedInk)

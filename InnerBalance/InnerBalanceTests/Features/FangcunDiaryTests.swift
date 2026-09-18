@@ -48,4 +48,31 @@ struct FangcunDiaryTests {
     #expect(store.storageMessage != nil)
     #expect(defaults.data(forKey: "fangcun.native.diary.v1") == data)
   }
+
+  @Test func legacySnapshotKeepsItsMeaningAndSurvivesSameDayRefresh() throws {
+    let name = "fangcun-test-\(UUID().uuidString)"
+    let defaults = try #require(UserDefaults(suiteName: name))
+    defer { defaults.removePersistentDomain(forName: name) }
+    let date = Date.now
+    let original = try JSONSerialization.data(withJSONObject: [
+      "entries": [], "snapshots": [["date": date.timeIntervalSinceReferenceDate,
+        "state": "steady", "summary": "Original summary", "sleep": "Original sleep", "training": "Original training"]]
+    ])
+    defaults.set(original, forKey: "fangcun.native.diary.v1")
+    let diary = FangcunDiary(defaults: defaults)
+    #expect(defaults.data(forKey: "fangcun.native.diary.v1") == original)
+    #expect(diary.snapshot(on: date)?.isLegacy == true)
+    #expect(diary.snapshot(on: date)?.displayStateTitle == "平稳")
+    diary.record(FangcunDaySnapshot(date: date.addingTimeInterval(1), state: .watch,
+      summary: "New summary", sleep: "New sleep", training: "New training"))
+    let reloaded = FangcunDiary(defaults: defaults)
+    #expect(reloaded.snapshot(on: date)?.state == .watch)
+    #expect(reloaded.snapshot(on: date)?.isLegacy == false)
+    #expect(reloaded.legacySnapshots(on: date).count == 1)
+    #expect(reloaded.legacySnapshots(on: date).first?.summary == "Original summary")
+    #expect(reloaded.legacySnapshots(on: date).first?.sleep == "Original sleep")
+    #expect(defaults.data(forKey: "fangcun.native.diary.preM1") == original)
+    diary.add(.water, at: date)
+    #expect(defaults.data(forKey: "fangcun.native.diary.preM1") == original)
+  }
 }

@@ -19,26 +19,37 @@ struct FangcunTodayView: View {
   @State private var askingHealth = false
 
   private var state: FangcunDayState {
+    #if DEBUG
     if isUITesting, let flag = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--preview-state=") }),
       let value = FangcunDayState(rawValue: String(flag.dropFirst("--preview-state=".count))) { return value }
+    #endif
     return FangcunDayState.resolve(model)
   }
   private var summary: String {
-    switch state {
-    case .steady: "身体指标接近平常，今天按自己的节奏来。"
-    case .elevated: "身体有些忙，先给自己留一点缓冲。"
-    case .insufficient: model.baselineDays > 0 ? "正在认识你的节奏，个人基线已积累 \(model.baselineDays)/5 天。" : "身体线索还不够。你仍然可以先休息，或做一次呼吸。"
+    if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
+      return FangcunCopy.text("body.workout.summary")
     }
+    if model.assessment.availability == .buildingBaseline && state == .limited {
+      return FangcunCopy.text("body.baseline.summary", model.baselineDays)
+    }
+    return FangcunCopy.text("body.state.\(state.rawValue).summary")
   }
   private var evidenceLine: String {
-    switch state {
-    case .steady: "已有可靠身体指标处于个人参考范围"
-    case .elevated: model.assessment.level == .watch ? "一项身体指标偏离参考，先留意今天的恢复" : "多项身体指标偏离个人参考"
-    case .insufficient: "数据不足时，不把未知当作平稳"
+    if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
+      return FangcunCopy.text("body.workout.evidence")
     }
+    return FangcunCopy.text("body.state.\(state.rawValue).evidence")
   }
-  private var sleepText: String { model.evidence.first(where: { $0.kind == .sleep })?.valueText ?? "暂无可用数据" }
-  private var recovery: String { state == .steady ? "接近平常" : state == .elevated ? "需要缓一缓" : "基线积累中" }
+  private var sleepText: String {
+    guard let sleep = model.evidence.first(where: { $0.kind == .sleep }) else {
+      return FangcunCopy.text("body.metric.unavailable")
+    }
+    return FangcunCopy.text("body.sleep.value", FangcunCopy.timestamp(sleep.measuredAt), sleep.valueText)
+  }
+  private var cardiovascular: HomeHealthEvidence? {
+    model.evidence.filter { $0.kind == .restingHeartRate || $0.kind == .heartRateVariability }
+      .max { $0.measuredAt < $1.measuredAt }
+  }
 
   var body: some View {
     NavigationStack {
@@ -131,15 +142,21 @@ struct FangcunTodayView: View {
           .foregroundStyle(state == .elevated ? InnerBalanceTheme.emphasis : InnerBalanceTheme.strongFill)
           .padding(.horizontal, 10).padding(.vertical, 6).background(InnerBalanceTheme.subtleFill, in: Capsule())
         Spacer()
-        if let updated = model.lastUpdated { Text(updated, style: .time).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk) }
       }
-      Text(state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("today.conclusion")
+      Text(state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+        .accessibilityIdentifier("today.conclusion").accessibilityValue(state.rawValue)
+      Text(model.latestMeasuredAt.map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0)) }
+        ?? FangcunCopy.text("body.time.noMeasurement"))
+        .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        .accessibilityIdentifier("today.measuredAt")
+        .accessibilityValue(model.latestMeasuredAt?.ISO8601Format() ?? "none")
       ViewThatFits(in: .horizontal) {
         HStack(spacing: 10) { Text(summary).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true); character.frame(width: 142) }
         VStack(alignment: .leading, spacing: 10) { Text(summary).font(.subheadline); character.frame(maxWidth: 180).frame(maxWidth: .infinity) }
       }
       Divider()
       Text(evidenceLine).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true)
+        .accessibilityIdentifier("today.evidenceSummary")
     }.fangcunPaperCard()
   }
   private var character: some View {
@@ -156,9 +173,11 @@ struct FangcunTodayView: View {
       NavigationLink { FangcunEvidenceDetail(model: model, authorization: authorization) } label: {
         VStack(spacing: 16) {
           HStack(alignment: .top) {
-            metric("昨晚睡眠", sleepText, "moon")
+            metric(FangcunCopy.text("body.sleep.title"), sleepText, "moon")
             Spacer(minLength: 8); Divider(); Spacer(minLength: 8)
-            metric("身体恢复", recovery, "heart")
+            metric(FangcunCopy.text(cardiovascular?.kind == .heartRateVariability ? "body.metric.hrv" : "body.metric.rhr"),
+              cardiovascular?.valueText ?? FangcunCopy.text("body.metric.unavailable"), "heart",
+              detail: cardiovascular.map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0.measuredAt)) })
           }.fixedSize(horizontal: false, vertical: true)
           Divider()
           HStack { Text("为什么这样判断"); Spacer(); Image(systemName: "chevron.right") }.font(.caption)
@@ -166,10 +185,11 @@ struct FangcunTodayView: View {
       }.buttonStyle(.plain).accessibilityIdentifier("today.evidence")
     }
   }
-  private func metric(_ title: String, _ value: String, _ icon: String) -> some View {
+  private func metric(_ title: String, _ value: String, _ icon: String, detail: String? = nil) -> some View {
     VStack(alignment: .leading, spacing: 10) {
       Label(title, systemImage: icon).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
       Text(value).font(.subheadline.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+      if let detail { Text(detail).font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk) }
     }.frame(maxWidth: .infinity, alignment: .leading)
   }
   private var drinkContext: some View {
@@ -199,6 +219,18 @@ struct FangcunEvidenceDetail: View {
         Text("判断有依据，也有边界。").font(.title2.weight(.semibold))
         Text("与自己的近期基线比较，综合恢复指标和睡眠。身体负荷不等于你的主观感受；数据不足时保留未知。")
           .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+        VStack(alignment: .leading, spacing: 8) {
+          if let fetchedAt = model.fetchedAt {
+            Text(FangcunCopy.text("body.time.fetched", FangcunCopy.timestamp(fetchedAt)))
+              .accessibilityIdentifier("evidence.fetchedAt").accessibilityValue(fetchedAt.ISO8601Format())
+          }
+          if let computedAt = model.computedAt {
+            Text(FangcunCopy.text("body.time.computed", FangcunCopy.timestamp(computedAt)))
+              .accessibilityIdentifier("evidence.computedAt").accessibilityValue(computedAt.ISO8601Format())
+          }
+          Text(FangcunCopy.text("body.time.explanation"))
+          if !model.unavailableKinds.isEmpty { Text(FangcunCopy.text("body.query.unavailable")) }
+        }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         if model.evidence.isEmpty { Text("还没有可用的健康数据。你可以检查授权，或等待设备同步。").fangcunPaperCard() }
         ForEach(model.evidence) { evidence in HealthEvidenceView(evidence: evidence).fangcunPaperCard() }
         VStack(alignment: .leading, spacing: 10) {
@@ -207,7 +239,9 @@ struct FangcunEvidenceDetail: View {
             Text("\(training.count) 次训练 · \(Int(training.totalDuration / 60)) 分钟")
             Text("最近：\(training.latestActivityName) · \(training.latestSourceName)").font(.caption)
           } else { Text("没有可用的近期训练记录").font(.subheadline) }
-          if model.recentWorkoutProtection { Text("近期运动可能影响恢复指标，本次判断已考虑运动后的保护窗口。").font(.caption) }
+          if model.recentWorkoutProtection {
+            Text(FangcunCopy.text("body.workout.detail")).font(.caption).accessibilityIdentifier("evidence.workoutProtection")
+          }
         }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
         Text("基线积累：\(model.baselineDays)/5 天。饮品记录作为生活线索展示，不会凭几杯饮品改写健康结论。")
           .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)

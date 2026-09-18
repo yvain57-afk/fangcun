@@ -29,6 +29,7 @@ struct HealthEvidenceView: View {
       }
     }
     .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("evidence.metric.\(evidence.kind.rawValue)")
   }
 
   private var title: String {
@@ -36,7 +37,7 @@ struct HealthEvidenceView: View {
     case .heartRateVariability: "心率变异性"
     case .restingHeartRate: "静息心率"
     case .respiratoryRate: "呼吸频率"
-    case .sleep: "主睡眠"
+    case .sleep: FangcunCopy.text("body.sleep.title")
     }
   }
 
@@ -64,10 +65,13 @@ struct HealthEvidenceView: View {
       case .reliable: evidence.deviation == .elevated ? "偏离近期参考" : "在近期参考内"
       case .buildingBaseline: "原始读数 · 基线尚未完成"
       case .needsReview: "数据需要确认"
-      case .stale: "超过 36 小时 · 不参与当前判断"
+      case .stale: FangcunCopy.text("body.source.stale")
       }
-    let time = evidence.measuredAt.formatted(.relative(presentation: .named))
+    let time = FangcunCopy.timestamp(evidence.measuredAt)
     let assessment = evidence.assessmentValueText.map { " · \($0)" } ?? ""
-    return "\(evidence.sourceName) · 最新测量于 \(time)\(assessment) · \(reliability)"
+    let assessmentTime = evidence.assessmentMeasuredAt.map {
+      FangcunCopy.text("body.time.assessmentLatest", FangcunCopy.timestamp($0))
+    } ?? ""
+    return FangcunCopy.text("body.source.detail", evidence.sourceName, time, assessment, assessmentTime, reliability)
   }
 }

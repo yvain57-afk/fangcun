@@ -3,17 +3,27 @@ import InnerBalanceCore
 import Observation
 
 enum FangcunDayState: String, Codable, CaseIterable {
-  case steady, elevated, insufficient
-  var title: String {
-    switch self { case .steady: "今日压力负荷平稳"; case .elevated: "今日身体负荷偏高"; case .insufficient: "还需要一点身体线索" }
+  case steady, watch, elevated, limited, insufficient
+  var title: String { FangcunCopy.text("body.state.\(rawValue).title") }
+  var shortTitle: String { FangcunCopy.text("body.state.\(rawValue).short") }
+  var scene: FangcunCompanionScene {
+    switch self {
+    case .steady: .calm
+    case .watch, .elevated: .rest
+    case .limited, .insufficient: .curious
+    }
   }
-  var shortTitle: String { switch self { case .steady: "平稳"; case .elevated: "偏高"; case .insufficient: "数据不足" } }
-  var scene: FangcunCompanionScene { switch self { case .steady: .calm; case .elevated: .rest; case .insufficient: .curious } }
   static func resolve(_ model: HomeViewModel) -> Self {
-    switch model.assessment.level {
+    switch model.assessment.availability {
+    case .insufficient: return .insufficient
+    case .limited, .buildingBaseline: return .limited
+    case .available: break
+    }
+    return switch model.assessment.level {
     case .buildingBaseline: .insufficient
     case .steady: .steady
-    case .watch, .elevated: .elevated
+    case .watch: .watch
+    case .elevated: .elevated
     }
   }
 }
@@ -42,7 +52,25 @@ struct FangcunDaySnapshot: Codable, Identifiable {
   let summary: String
   let sleep: String
   let training: String
+  /// Missing in original archives. Those snapshots retain their original interpretation.
+  let semanticsVersion: Int?
   var id: Date { date }
+  var isLegacy: Bool { semanticsVersion == nil }
+  var displayStateTitle: String {
+    guard isLegacy else { return state.shortTitle }
+    return switch state {
+    case .steady: "平稳"
+    case .elevated: "偏高"
+    case .insufficient: "数据不足"
+    case .watch, .limited: state.shortTitle
+    }
+  }
+
+  init(date: Date, state: FangcunDayState, summary: String, sleep: String, training: String,
+    semanticsVersion: Int? = 1) {
+    self.date = date; self.state = state; self.summary = summary
+    self.sleep = sleep; self.training = training; self.semanticsVersion = semanticsVersion
+  }
 }
 
 @MainActor @Observable
@@ -70,6 +98,9 @@ final class FangcunDiary {
   func snapshot(on date: Date) -> FangcunDaySnapshot? {
     archive.snapshots.last { Calendar.current.isDate($0.date, inSameDayAs: date) }
   }
+  func legacySnapshots(on date: Date) -> [FangcunDaySnapshot] {
+    archive.snapshots.filter { $0.isLegacy && Calendar.current.isDate($0.date, inSameDayAs: date) }
+  }
   func add(_ kind: FangcunDrink, caffeine: Int = 140, at date: Date = .now) {
     guard storageMessage == nil, entries(on: date).count < 1000 else { return }
     remember()
@@ -87,12 +118,19 @@ final class FangcunDiary {
   }
   func record(_ snapshot: FangcunDaySnapshot) {
     guard storageMessage == nil else { return }
-    archive.snapshots.removeAll { Calendar.current.isDate($0.date, inSameDayAs: snapshot.date) }
+    archive.snapshots.removeAll { !$0.isLegacy && Calendar.current.isDate($0.date, inSameDayAs: snapshot.date) }
     archive.snapshots.append(snapshot); save()
   }
   private func remember() { undoStack.append(archive.entries); if undoStack.count > 50 { undoStack.removeFirst() } }
   private func save() {
-    do { defaults.set(try JSONEncoder().encode(archive), forKey: key) }
+    do {
+      let data = try JSONEncoder().encode(archive)
+      if defaults.data(forKey: "fangcun.native.diary.preM1") == nil,
+        let original = defaults.data(forKey: key) {
+        defaults.set(original, forKey: "fangcun.native.diary.preM1")
+      }
+      defaults.set(data, forKey: key)
+    }
     catch { storageMessage = "记录暂时未能保存，请稍后再试。" }
   }
 }

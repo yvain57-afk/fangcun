@@ -22,6 +22,7 @@ struct HomeHealthEvidence: Equatable, Identifiable, Sendable {
   let reliability: HomeEvidenceReliability
   let deviation: HomeEvidenceDeviation
   let assessmentValueText: String?
+  let assessmentMeasuredAt: Date?
 
   init(
     kind: BodyLoadEvidenceKind,
@@ -30,7 +31,8 @@ struct HomeHealthEvidence: Equatable, Identifiable, Sendable {
     measuredAt: Date,
     reliability: HomeEvidenceReliability,
     deviation: HomeEvidenceDeviation,
-    assessmentValueText: String? = nil
+    assessmentValueText: String? = nil,
+    assessmentMeasuredAt: Date? = nil
   ) {
     self.kind = kind
     self.valueText = valueText
@@ -39,6 +41,7 @@ struct HomeHealthEvidence: Equatable, Identifiable, Sendable {
     self.reliability = reliability
     self.deviation = deviation
     self.assessmentValueText = assessmentValueText
+    self.assessmentMeasuredAt = assessmentMeasuredAt
   }
 
   var isAggregatedAssessment: Bool {
@@ -70,6 +73,7 @@ struct HomeTrainingSummary: Equatable, Sendable {
 @Observable
 final class HomeViewModel {
   private let provider: any BodyHealthDataProviding
+  private let clock: () -> Date
   @ObservationIgnored private var currentRefreshID: UUID?
 
   private(set) var assessment = BodyLoadEngine.assess(evidence: [], baselineDays: 0)
@@ -80,14 +84,22 @@ final class HomeViewModel {
   private(set) var sleepNeedsReview = false
   private(set) var sleepReviewDetails: SleepReviewDetails?
   private(set) var trainingSummary: HomeTrainingSummary?
-  private(set) var lastUpdated: Date?
+  private(set) var fetchedAt: Date?
+  private(set) var computedAt: Date?
+  /// Compatibility for older diagnostics; this has always been a query timestamp.
+  var lastUpdated: Date? { fetchedAt }
+  var latestMeasuredAt: Date? {
+    evidence.flatMap { [$0.measuredAt, $0.assessmentMeasuredAt].compactMap { $0 } }.max()
+  }
   private(set) var isLoading = false
 
-  init(provider: any BodyHealthDataProviding) {
+  init(provider: any BodyHealthDataProviding, clock: @escaping () -> Date = { .now }) {
     self.provider = provider
+    self.clock = clock
   }
 
-  func refresh(now: Date = .now) async {
+  func refresh(now: Date? = nil) async {
+    let now = now ?? clock()
     let refreshID = UUID()
     currentRefreshID = refreshID
     isLoading = true
@@ -97,12 +109,20 @@ final class HomeViewModel {
       }
     }
 
-    let snapshot = await provider.fetchBodyHealthData(now: now)
+    let received = await provider.fetchBodyHealthData(now: now)
     guard currentRefreshID == refreshID else { return }
+    // A failed query cannot validate any cached values delivered alongside it.
+    let snapshot = BodyHealthDataSnapshot(
+      heartRateVariability: received.unavailableKinds.contains(.heartRateVariability) ? [] : received.heartRateVariability,
+      restingHeartRate: received.unavailableKinds.contains(.restingHeartRate) ? [] : received.restingHeartRate,
+      sleep: received.unavailableKinds.contains(.sleep) ? [] : received.sleep,
+      workouts: received.unavailableKinds.contains(.workout) ? [] : received.workouts,
+      unavailableKinds: received.unavailableKinds, fetchedAt: received.fetchedAt)
     let calendar = Calendar.current
     let today = calendar.startOfDay(for: now)
-    let historicalHRV = snapshot.heartRateVariability.filter { $0.date < today }
-    let historicalResting = snapshot.restingHeartRate.filter { $0.date < today }
+    let baselineCutoff = calendar.date(byAdding: .day, value: -14, to: now) ?? now
+    let historicalHRV = snapshot.heartRateVariability.filter { $0.date < today && $0.date >= baselineCutoff }
+    let historicalResting = snapshot.restingHeartRate.filter { $0.date < today && $0.date >= baselineCutoff }
     let currentHRV = assessmentRecords(
       from: snapshot.heartRateVariability,
       now: now
@@ -185,7 +205,8 @@ final class HomeViewModel {
             "近 36 小时中位数 "
               + "\($0.value.formatted(.number.precision(.fractionLength(0)))) ms"
               + " · 来源 \(assessmentSourceName(from: currentHRV))"
-          }
+          },
+          assessmentMeasuredAt: recentHRV?.latestDate
         )
       )
       if recentHRV != nil {
@@ -216,7 +237,8 @@ final class HomeViewModel {
             "近 36 小时中位数 "
               + "\($0.value.formatted(.number.precision(.fractionLength(0)))) 次/分"
               + " · 来源 \(assessmentSourceName(from: currentResting))"
-          }
+          },
+          assessmentMeasuredAt: recentResting?.latestDate
         )
       )
       if recentResting != nil {
@@ -246,6 +268,7 @@ final class HomeViewModel {
       )
     }
     if let primarySleep {
+      let isCurrent = primarySleep.end >= now.addingTimeInterval(-36 * 3_600)
       let isElevated = primarySleep.isUsableForBodyLoad && primarySleep.asleepDuration < 6.5 * 3_600
       items.append(
         HomeHealthEvidence(
@@ -253,17 +276,17 @@ final class HomeViewModel {
           valueText: Self.durationText(primarySleep.asleepDuration),
           sourceName: primarySleep.sourceNames.joined(separator: "、"),
           measuredAt: primarySleep.end,
-          reliability: primarySleep.isUsableForBodyLoad ? .reliable : .needsReview,
+          reliability: !isCurrent ? .stale : primarySleep.isUsableForBodyLoad ? .reliable : .needsReview,
           deviation: isElevated ? .elevated : .withinRange
         )
       )
-      coreEvidence.append(
+      if isCurrent { coreEvidence.append(
         BodyLoadEvidence(
           kind: .sleep,
           state: isElevated ? .elevated : .withinRange,
           isReliable: primarySleep.isUsableForBodyLoad
         )
-      )
+      ) }
     }
 
     recentWorkoutProtection = snapshot.workouts.contains {
@@ -297,7 +320,8 @@ final class HomeViewModel {
       baselineDays: baselineDays,
       recentWorkout: recentWorkoutProtection
     )
-    lastUpdated = snapshot.fetchedAt
+    fetchedAt = snapshot.fetchedAt
+    computedAt = clock()
   }
 
   private func validDayCount(

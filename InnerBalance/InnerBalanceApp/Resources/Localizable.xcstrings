@@ -1,12 +1,487 @@
 {
-  "sourceLanguage" : "zh-Hans",
-  "strings" : {
-    "方寸" : {
-
+  "sourceLanguage": "zh-Hans",
+  "strings": {
+    "方寸": {},
+    "照料方寸之间的自己": {},
+    "body.state.steady.title": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "身体指标处于参考范围"
+          }
+        }
+      }
     },
-    "照料方寸之间的自己" : {
-
+    "body.state.steady.short": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "参考范围内"
+          }
+        }
+      }
+    },
+    "body.state.steady.summary": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已有身体指标接近平常，今天按自己的节奏来。"
+          }
+        }
+      }
+    },
+    "body.state.steady.evidence": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "至少两类可靠近期线索，其中包含心血管指标"
+          }
+        }
+      }
+    },
+    "body.state.watch.title": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有一项指标值得留意"
+          }
+        }
+      }
+    },
+    "body.state.watch.short": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轻度留意"
+          }
+        }
+      }
+    },
+    "body.state.watch.summary": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有一项身体指标偏离参考，留意今天的恢复和自己的感受。"
+          }
+        }
+      }
+    },
+    "body.state.watch.evidence": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一项可靠指标偏离参考，尚不等于整体负荷偏高"
+          }
+        }
+      }
+    },
+    "body.state.elevated.title": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日身体负荷偏高"
+          }
+        }
+      }
+    },
+    "body.state.elevated.short": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏高"
+          }
+        }
+      }
+    },
+    "body.state.elevated.summary": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "多项身体指标偏离参考，先给自己留一点缓冲。"
+          }
+        }
+      }
+    },
+    "body.state.elevated.evidence": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "至少两类可靠指标偏离个人参考，不代表心理压力诊断"
+          }
+        }
+      }
+    },
+    "body.state.limited.title": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前只有有限的身体线索"
+          }
+        }
+      }
+    },
+    "body.state.limited.short": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有限线索"
+          }
+        }
+      }
+    },
+    "body.state.limited.summary": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还不够判断整体状态。你可以先休息，或做一次呼吸。"
+          }
+        }
+      }
+    },
+    "body.state.limited.evidence": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "单一指标或尚不可靠的资料，不用于判断整体平稳"
+          }
+        }
+      }
+    },
+    "body.state.insufficient.title": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还需要一点身体线索"
+          }
+        }
+      }
+    },
+    "body.state.insufficient.short": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据不足"
+          }
+        }
+      }
+    },
+    "body.state.insufficient.summary": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时没有可用的近期线索。已有历史记录，也不能代表现在。"
+          }
+        }
+      }
+    },
+    "body.state.insufficient.evidence": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据不足时，不把未知当作平稳"
+          }
+        }
+      }
+    },
+    "body.baseline.summary": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已有近期读数，个人基线积累了 %ld/5 天；暂不判断整体状态。"
+          }
+        }
+      }
+    },
+    "body.workout.summary": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "近期运动可能影响这些指标。先给身体一点恢复时间，今天仍可按感受调整。"
+          }
+        }
+      }
+    },
+    "body.workout.evidence": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运动保护窗口内有指标偏离，本次不将它们解释为正常"
+          }
+        }
+      }
+    },
+    "body.workout.detail": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "近期有至少 45 分钟训练，处于旧判断的 18 小时保护窗口。心血管偏离可能受运动影响，仍在上方保留；保护窗口不代表各项指标正常。"
+          }
+        }
+      }
+    },
+    "body.time.measured": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近测量 · %@"
+          }
+        }
+      }
+    },
+    "body.time.noMeasurement": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚无可展示的测量记录"
+          }
+        }
+      }
+    },
+    "body.time.fetched": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本次查询 · %@"
+          }
+        }
+      }
+    },
+    "body.time.computed": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本次计算 · %@"
+          }
+        }
+      }
+    },
+    "body.time.explanation": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查询和计算时间不代表新测量。每项线索的测量日期见下方。"
+          }
+        }
+      }
+    },
+    "body.time.assessmentLatest": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · 判断所用最新样本 %@"
+          }
+        }
+      }
+    },
+    "body.sleep.title": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近主睡眠"
+          }
+        }
+      }
+    },
+    "body.sleep.value": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 结束\n%@"
+          }
+        }
+      }
+    },
+    "body.metric.hrv": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "心率变异性"
+          }
+        }
+      }
+    },
+    "body.metric.rhr": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静息心率"
+          }
+        }
+      }
+    },
+    "body.metric.unavailable": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无可用数据"
+          }
+        }
+      }
+    },
+    "body.source.stale": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "超过 36 小时 · 不参与当前判断"
+          }
+        }
+      }
+    },
+    "body.source.detail": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 测量于 %@%@%@ · %@"
+          }
+        }
+      }
+    },
+    "body.query.unavailable": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分身体线索未能读取。本次判断只使用成功读取的资料，无法据此判断是否已授权。"
+          }
+        }
+      }
+    },
+    "body.history.legacy": {
+      "extractionState": "manual",
+      "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旧版记录 · 保留当时的判断口径，不作为新准备度样本"
+          }
+        }
+      }
+    },
+    "body.history.unknownLegend": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "浅色短线：线索有限 / 数据不足 / 未记录"
+          }
+        }
+      }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

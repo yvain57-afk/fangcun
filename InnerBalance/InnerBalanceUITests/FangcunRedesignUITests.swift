@@ -77,10 +77,11 @@ final class FangcunRedesignUITests: XCTestCase {
   func testAcceptedSoloAndDuoScenesInDarkAndLargeType() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    for (state, title) in [("steady", "今日压力负荷平稳"), ("elevated", "今日身体负荷偏高"), ("insufficient", "还需要一点身体线索")] {
+    for state in ["steady", "elevated", "insufficient"] {
       app.launchArguments = ["--ui-testing", "--preview-state=\(state)", "-fangcun.dark", state == "elevated" ? "YES" : "NO", "-fangcun.largeType", state == "insufficient" ? "YES" : "NO", "-fangcun.reduceMotion", "YES"]
       app.launch()
-      XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 10))
+      XCTAssertTrue(app.staticTexts["today.conclusion"].waitForExistence(timeout: 10))
+      XCTAssertEqual(app.staticTexts["today.conclusion"].value as? String, state)
       capture("redesign-\(state)", app)
       reveal(app.buttons["today.start"], app)
       XCTAssertTrue(app.buttons["today.start"].isHittable)

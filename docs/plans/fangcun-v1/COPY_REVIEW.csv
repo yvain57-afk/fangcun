@@ -1,0 +1,42 @@
+key,模块,使用场景,中文初稿,参数,最大推荐行数,是否安全说明,待人工确认,备注
+body.state.steady.title,M1 身体线索,state,身体指标处于参考范围,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.steady.short,M1 身体线索,state,参考范围内,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.steady.summary,M1 身体线索,state,已有身体指标接近平常，今天按自己的节奏来。,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.steady.evidence,M1 身体线索,state,至少两类可靠近期线索，其中包含心血管指标,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.watch.title,M1 身体线索,state,有一项指标值得留意,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.watch.short,M1 身体线索,state,轻度留意,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.watch.summary,M1 身体线索,state,有一项身体指标偏离参考，留意今天的恢复和自己的感受。,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.watch.evidence,M1 身体线索,state,一项可靠指标偏离参考，尚不等于整体负荷偏高,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.elevated.title,M1 身体线索,state,今日身体负荷偏高,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.elevated.short,M1 身体线索,state,偏高,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.elevated.summary,M1 身体线索,state,多项身体指标偏离参考，先给自己留一点缓冲。,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.elevated.evidence,M1 身体线索,state,至少两类可靠指标偏离个人参考，不代表心理压力诊断,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.limited.title,M1 身体线索,state,目前只有有限的身体线索,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.limited.short,M1 身体线索,state,有限线索,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.limited.summary,M1 身体线索,state,还不够判断整体状态。你可以先休息，或做一次呼吸。,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.limited.evidence,M1 身体线索,state,单一指标或尚不可靠的资料，不用于判断整体平稳,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.insufficient.title,M1 身体线索,state,还需要一点身体线索,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.insufficient.short,M1 身体线索,state,数据不足,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.insufficient.summary,M1 身体线索,state,暂时没有可用的近期线索。已有历史记录，也不能代表现在。,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.state.insufficient.evidence,M1 身体线索,state,数据不足时，不把未知当作平稳,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.baseline.summary,M1 身体线索,baseline,已有近期读数，个人基线积累了 %ld/5 天；暂不判断整体状态。,%ld=有效基线天数,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.workout.summary,M1 身体线索,workout,近期运动可能影响这些指标。先给身体一点恢复时间，今天仍可按感受调整。,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.workout.evidence,M1 身体线索,workout,运动保护窗口内有指标偏离，本次不将它们解释为正常,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.workout.detail,M1 身体线索,workout,近期有至少 45 分钟训练，处于旧判断的 18 小时保护窗口。心血管偏离可能受运动影响，仍在上方保留；保护窗口不代表各项指标正常。,,6,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.time.measured,M1 身体线索,time,最近测量 · %@,%@=对应测量/查询/计算/判断样本的日期和时间；由系统日期格式化,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.time.noMeasurement,M1 身体线索,time,尚无可展示的测量记录,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.time.fetched,M1 身体线索,time,本次查询 · %@,%@=对应测量/查询/计算/判断样本的日期和时间；由系统日期格式化,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.time.computed,M1 身体线索,time,本次计算 · %@,%@=对应测量/查询/计算/判断样本的日期和时间；由系统日期格式化,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.time.explanation,M1 身体线索,time,查询和计算时间不代表新测量。每项线索的测量日期见下方。,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.time.assessmentLatest,M1 身体线索,time, · 判断所用最新样本 %@,%@=对应测量/查询/计算/判断样本的日期和时间；由系统日期格式化,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.sleep.title,M1 身体线索,sleep,最近主睡眠,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.sleep.value,M1 身体线索,sleep,"%@ 结束
+%@",第1个 %@=主睡眠结束日期时间；第2个 %@=实际睡眠时长,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.metric.hrv,M1 身体线索,metric,心率变异性,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.metric.rhr,M1 身体线索,metric,静息心率,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.metric.unavailable,M1 身体线索,metric,暂无可用数据,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.source.stale,M1 身体线索,source,超过 36 小时 · 不参与当前判断,,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.source.detail,M1 身体线索,source,%@ · 测量于 %@%@%@ · %@,依次：%@ 来源名；%@ 测量日期时间；%@ 聚合读数说明；%@ 聚合最新样本时间；%@ 可靠性说明,3,否,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.query.unavailable,M1 身体线索,query,部分身体线索未能读取。本次判断只使用成功读取的资料，无法据此判断是否已授权。,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.history.legacy,M1 身体线索,history,旧版记录 · 保留当时的判断口径，不作为新准备度样本,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
+body.history.unknownLegend,M1 历史,图例,浅色短线：线索有限 / 数据不足 / 未记录,,2,否,是,M3 将取消不同柱高的量值暗示

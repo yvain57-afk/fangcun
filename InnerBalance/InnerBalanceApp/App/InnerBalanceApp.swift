@@ -14,7 +14,11 @@ struct InnerBalanceApp: App {
       StoredPracticeCompletion.self,
       StoredDailyEcho.self,
     ])
+    #if DEBUG
     let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+    #else
+    let isUITesting = false
+    #endif
     let configuration = ModelConfiguration(
       schema: schema,
       isStoredInMemoryOnly: isUITesting

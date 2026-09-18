@@ -99,9 +99,9 @@ struct BodyLoadEngineTests {
     )
     let unreliableSleep = BodyLoadEvidence(kind: .sleep, state: .elevated, isReliable: false)
 
-    #expect(BodyLoadEngine.assess(evidence: [hrv], baselineDays: 5).level == .watch)
+    #expect(BodyLoadEngine.assess(evidence: [hrv], baselineDays: 5).availability == .limited)
     #expect(
-      BodyLoadEngine.assess(evidence: [hrv, unreliableSleep], baselineDays: 5).level == .watch)
+      BodyLoadEngine.assess(evidence: [hrv, unreliableSleep], baselineDays: 5).availability == .limited)
     #expect(
       BodyLoadEngine.assess(evidence: [hrv, restingHeartRate], baselineDays: 5).level == .elevated)
   }
@@ -119,7 +119,9 @@ struct BodyLoadEngineTests {
       recentWorkout: true
     )
 
-    #expect(assessment.level == .steady)
+    #expect(assessment.level != .steady)
+    #expect(assessment.availability == .limited)
+    #expect(assessment.workoutExcludedEvidenceIDs == ["hrv", "rhr"])
   }
 
   @Test("Recent workout keeps non-workout-sensitive evidence")
@@ -127,6 +129,7 @@ struct BodyLoadEngineTests {
     let evidence = [
       BodyLoadEvidence(kind: .sleep, state: .elevated, isReliable: true),
       BodyLoadEvidence(kind: .respiratoryRate, state: .elevated, isReliable: true),
+      BodyLoadEvidence(kind: .heartRateVariability, state: .withinRange, isReliable: true),
     ]
 
     let assessment = BodyLoadEngine.assess(
@@ -136,6 +139,36 @@ struct BodyLoadEngineTests {
     )
 
     #expect(assessment.level == .elevated)
+  }
+
+  @Test("History alone never permits a steady conclusion", arguments: [0, 4, 5, 14])
+  func historyWithoutCurrentEvidence(_ days: Int) {
+    let result = BodyLoadEngine.assess(evidence: [], baselineDays: days)
+    #expect(result.availability == .insufficient)
+    #expect(result.level != .steady)
+  }
+
+  @Test("Two distinct reliable kinds including cardiovascular evidence are required")
+  func currentEvidenceGate() {
+    let hrv = BodyLoadEvidence(kind: .heartRateVariability, state: .withinRange, isReliable: true)
+    let sleep = BodyLoadEvidence(kind: .sleep, state: .withinRange, isReliable: true)
+    let respiratory = BodyLoadEvidence(kind: .respiratoryRate, state: .withinRange, isReliable: true)
+    for evidence in [[hrv], [sleep], [hrv, hrv], [sleep, respiratory]] {
+      let result = BodyLoadEngine.assess(evidence: evidence, baselineDays: 5)
+      #expect(result.availability == .limited)
+      #expect(result.level != .steady)
+    }
+    #expect(BodyLoadEngine.assess(evidence: [hrv, sleep], baselineDays: 5).level == .steady)
+  }
+
+  @Test("Observation is separate from elevated when enough independent evidence exists")
+  func observationVersusElevated() {
+    let hrv = BodyLoadEvidence(kind: .heartRateVariability, state: .elevated, isReliable: true)
+    let sleep = BodyLoadEvidence(kind: .sleep, state: .withinRange, isReliable: true)
+    let result = BodyLoadEngine.assess(evidence: [hrv, sleep], baselineDays: 5)
+    #expect(result.availability == .available)
+    #expect(result.level == .watch)
+    #expect(result.elevatedEvidenceIDs == ["hrv"])
   }
 
   private var calendar: Calendar {

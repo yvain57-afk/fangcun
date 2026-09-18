@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-18",
+  "configuration": "Release",
+  "bundleID": "com.yvainair.InnerBalance",
+  "version": "1.0.0",
+  "build": "2026091802",
+  "deviceModel": "iPhone 16 Pro",
+  "install": "success",
+  "launch": "success",
+  "installedVersionReadback": "match",
+  "healthKitEntitlement": true,
+  "debugFixturesInBinary": false,
+  "executableSHA256": "30c18e5d67a0bde266faa1c65b58000cf2a8c0a73677eeec65ef2f014c143e19",
+  "privacy": "Unique device/signing identifiers and personal data omitted. Physical UI and health accuracy are not verified by installation."
+}

@@ -2,6 +2,10 @@
 
 核验日期：2026-09-18。本文区分实际运行结果和历史设计目标。
 
+最新开发分支已完成 v1.0 任务书的 M0 基线及 M1 数据语义修复，iPhone 安装版为 **1.0.0 (2026091802)**。Core 67、App 31、UI 7 项测试通过。详见 [本轮验收](../plans/fangcun-v1/VERIFICATION.md)、[任务状态](../plans/fangcun-v1/TASKS.md) 和 [截图](../plans/fangcun-v1/SCREENSHOTS.md)。M0 的物理 Watch 能力验证仍待设备，M2–M6 未实施。
+
+以下内容保留为此前完整 UI 改版的基线记录。
+
 ## 真机
 
 最终修复版已覆盖安装到配对的 iPhone 16 Pro，开发工具确认安装成功并启动 `com.yvainair.InnerBalance`。未卸载 App，保留现有数据。最终包含后台音频 session 准备、取消处理、呼吸页标题与舞台收尾修复。

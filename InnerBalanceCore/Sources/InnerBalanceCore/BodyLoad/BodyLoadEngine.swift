@@ -64,6 +64,17 @@ public enum BodyLoadLevel: Equatable, Sendable {
 public struct BodyLoadAssessment: Equatable, Sendable {
   public let level: BodyLoadLevel
   public let elevatedEvidenceIDs: [String]
+  public let availability: BodyLoadDataAvailability
+  public let workoutExcludedEvidenceIDs: [String]
+}
+
+/// Eligibility for the legacy load estimate, separate from the estimate itself.
+/// Callers pass current evidence only; historical baseline length is not current evidence.
+public enum BodyLoadDataAvailability: String, Equatable, Sendable {
+  case insufficient
+  case limited
+  case buildingBaseline
+  case available
 }
 
 public enum BodyLoadEngine {
@@ -149,10 +160,20 @@ public enum BodyLoadEngine {
     baselineDays: Int,
     recentWorkout: Bool = false
   ) -> BodyLoadAssessment {
+    guard !evidence.isEmpty else {
+      return unavailable(.insufficient)
+    }
     guard baselineDays >= 5 else {
-      return BodyLoadAssessment(level: .buildingBaseline, elevatedEvidenceIDs: [])
+      return unavailable(evidence.contains { $0.kind.isWorkoutSensitive } ? .buildingBaseline : .limited)
+    }
+    let reliableKinds = Set(evidence.filter(\.isReliable).map(\.kind))
+    guard reliableKinds.count >= 2, reliableKinds.contains(where: \.isWorkoutSensitive) else {
+      return unavailable(.limited)
     }
 
+    let workoutExcludedIDs = Set(evidence.filter {
+      recentWorkout && $0.isReliable && $0.state == .elevated && $0.kind.isWorkoutSensitive
+    }.map { $0.kind.rawValue }).sorted()
     let elevatedKinds = Set(
       evidence
         .filter {
@@ -171,7 +192,18 @@ public enum BodyLoadEngine {
       default: .steady
       }
 
-    return BodyLoadAssessment(level: level, elevatedEvidenceIDs: elevatedIDs)
+    // A workout explanation must not turn suppressed deviations into reassurance.
+    if level == .steady && !workoutExcludedIDs.isEmpty {
+      return BodyLoadAssessment(level: .buildingBaseline, elevatedEvidenceIDs: [],
+        availability: .limited, workoutExcludedEvidenceIDs: workoutExcludedIDs)
+    }
+    return BodyLoadAssessment(level: level, elevatedEvidenceIDs: elevatedIDs,
+      availability: .available, workoutExcludedEvidenceIDs: workoutExcludedIDs)
+  }
+
+  private static func unavailable(_ availability: BodyLoadDataAvailability) -> BodyLoadAssessment {
+    BodyLoadAssessment(level: .buildingBaseline, elevatedEvidenceIDs: [],
+      availability: availability, workoutExcludedEvidenceIDs: [])
   }
 
   private static func distinctDayCount(

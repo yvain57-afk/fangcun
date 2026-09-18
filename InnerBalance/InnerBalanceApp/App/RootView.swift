@@ -39,7 +39,11 @@ struct RootView: View {
 
   init() {
     let arguments = ProcessInfo.processInfo.arguments
+    #if DEBUG
     let isUITesting = arguments.contains("--ui-testing")
+    #else
+    let isUITesting = false
+    #endif
     self.isUITesting = isUITesting
     _diary = State(initialValue: FangcunDiary(defaults: isUITesting ? UserDefaults(suiteName: "fangcun.ui." + UUID().uuidString)! : .standard))
     shouldFailPracticeSaveForUITesting = arguments.contains(
@@ -49,8 +53,11 @@ struct RootView: View {
 
     #if DEBUG
       if isUITesting {
-        let service = UITestingHealthService()
-        _homeViewModel = State(initialValue: HomeViewModel(provider: service))
+        let fixture = arguments.first { $0.hasPrefix("--health-fixture=") }
+          .flatMap { HomeHealthFixture(rawValue: String($0.dropFirst("--health-fixture=".count))) }
+        let service = UITestingHealthService(fixture: fixture)
+        _homeViewModel = State(initialValue: HomeViewModel(provider: service,
+          clock: { fixture == nil ? .now : HomeHealthFixture.now }))
         healthRepository = nil
         healthWriter = service
         return
@@ -198,8 +205,10 @@ struct RootView: View {
 #if DEBUG
   @MainActor
   private final class UITestingHealthService: BodyHealthDataProviding, HealthWriting {
+    let fixture: HomeHealthFixture?
+    init(fixture: HomeHealthFixture?) { self.fixture = fixture }
     func fetchBodyHealthData(now: Date) async -> BodyHealthDataSnapshot {
-      .empty(at: now)
+      fixture?.snapshot(now: now) ?? .empty(at: now)
     }
 
     func saveStateOfMind(_ record: StateOfMindRecord) async throws {}
