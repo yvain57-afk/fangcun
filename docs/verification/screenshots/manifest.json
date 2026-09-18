@@ -1,0 +1,62 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "F4D2DA51-6C45-4F1D-8D75-10A75370A2CA.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-settings_0_E8ECC5B2-B3D5-4EDA-8931-76233FB864B3.png",
+        "timestamp" : 1789697900.105
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "C7AA995E-6B86-4149-9790-12BAB3159022.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-completion_0_13AAC336-88ED-4A75-9F61-4435D38D5B37.png",
+        "timestamp" : 1789697895.768
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "8CD125AB-64D4-4DE6-8542-C1926CE8A5D6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-breathing_0_FF04D1EF-F9BB-414B-B56B-6681FEC676D4.png",
+        "timestamp" : 1789697888.391
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "55CA0D4C-2D70-4009-A957-B3C606E760E7.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-trends_0_74BB9F1B-1B67-4136-BF5B-16C9F724DC2F.png",
+        "timestamp" : 1789697885.418
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "DCC9B472-D944-49A8-A9C5-7F53D8E8FE03.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-drinks_0_56E7D837-0FF9-4429-9054-E3DD2DA8D274.png",
+        "timestamp" : 1789697882.366
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "259B610F-B230-4660-BA62-2D0D341B50E9.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-home_0_E6CFCA98-3926-42F1-8422-37E27ED8C8E8.png",
+        "timestamp" : 1789697875.715
+      }
+    ],
+    "testIdentifier" : "FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()",
+    "testIdentifierURL" : "test://com.apple.xcode/InnerBalance/InnerBalanceUITests/FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings"
+  }
+]

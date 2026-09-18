@@ -1,0 +1,44 @@
+.section-title { margin: 58px 0 24px; }
+.section-title h2 { font-family: "Songti SC", serif; font-size: 32px; font-weight: 500; margin: 12px 0; }
+.section-title p { color: #687584; font-size: 14px; line-height: 1.9; }
+.application-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.icon-panel { display: flex; flex-direction: column; justify-content: center; }
+.icon-pair { display: flex; justify-content: center; gap: 36px; margin: 28px 0; }
+.icon-pair figure { margin: 0; text-align: center; }
+.icon-pair img { display: block; width: 104px; height: 104px; border-radius: 25%; border: 1px solid #e2e5e8; }
+.icon-pair figcaption { font-size: 12px; margin-top: 14px; color: #687584; }
+.lockup { display: flex; align-items: center; gap: 16px; margin: 25px 0; }
+.lockup > img { width: 56px; height: 56px; }
+.lockup strong { font-size: 30px; letter-spacing: 3px; font-weight: 600; }
+.lockup small { display: block; font-size: 9px; letter-spacing: 2.5px; margin-top: 4px; }
+.phone-wrap { background: #e9edf0; display: flex; align-items: center; justify-content: center; padding: 32px; border-radius: 26px; }
+.launch-phone { position: relative; width: 275px; height: 475px; border: 7px solid #273647; border-radius: 40px; background: #FAF9F5; overflow: hidden; color: #1B355A; display: flex; flex-direction: column; align-items: center; }
+.launch-phone[data-theme="dark"] { background: #1B355A; color: #FAF9F5; }
+.phone-time { align-self: flex-start; margin: 16px 22px; font-size: 11px; }
+.launch-core { margin: auto; text-align: center; display: flex; align-items: center; flex-direction: column; }
+.launch-core img { width: 82px; height: 82px; transform-origin: center; }
+.launch-core strong { font-size: 29px; letter-spacing: 5px; font-weight: 550; margin: 22px 0 8px; }
+.launch-core small { font-size: 9px; letter-spacing: 3px; }
+.launch-note { font-size: 12px; letter-spacing: 1px; opacity: .7; margin-bottom: 38px; }
+.phone-home { height: 4px; width: 85px; border-radius: 4px; background: currentColor; opacity: .5; margin-bottom: 10px; }
+.preview-controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+button { font: inherit; cursor: pointer; min-height: 44px; padding: 10px 16px; border: 1px solid #ccd5df; border-radius: 24px; background: transparent; color: #1B355A; font-size: 13px; }
+button:focus-visible { outline: 3px solid #E07A5F; outline-offset: 3px; }
+button[aria-pressed="true"] { background: #1B355A; color: #FAF9F5; border-color: #1B355A; }
+.reduced-label { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 12px; color: #687584; }
+.reduced-label input { width: 17px; height: 17px; accent-color: #1B355A; }
+.preview-status { font-size: 12px; color: #687584; line-height: 1.8; min-height: 44px; }
+.swatches { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 24px; }
+.swatch i { display: block; height: 64px; border-radius: 12px; border: 1px solid #e2e5e8; }
+.swatch b,.swatch small { display: block; font-size: 12px; margin-top: 10px; font-weight: 400; }
+.swatch small { font-size: 10px; letter-spacing: 1px; color: #687584; margin-top: 5px; }
+.usage { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.usage h3 { font-size: 15px; font-weight: 550; }
+.usage p { font-size: 13px; color: #687584; line-height: 1.9; }
+.launch-core.is-playing img { animation: room-unfold 1800ms cubic-bezier(.23,1,.32,1) both; }
+.launch-core.is-playing strong,.launch-core.is-playing small { animation: word-appear 800ms ease-out both; }
+@keyframes room-unfold { 0% { transform: scale(.94); } 48% { transform: scale(1.025); } 100% { transform: scale(1); } }
+@keyframes word-appear { from { opacity: .7; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+.launch-core.is-paused * { animation-play-state: paused !important; }
+@media(prefers-reduced-motion:reduce) { .launch-core.is-playing * { animation: none !important; } }
+@media(max-width:650px) { .application-grid,.usage { grid-template-columns: 1fr; } .section-title h2 { font-size: 28px; } .phone-wrap { padding: 24px 10px; } .icon-pair { gap: 24px; } .icon-pair img { width: 90px; height: 90px; } .swatches { gap: 8px; } }

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - Proposal B - 呼吸练习</title>
+<style>
+  :root {
+    --fc-blue: #2B5EA7; --fc-blue-dark: #1E4578; --fc-blue-light: #E8EFF8;
+    --fc-blue-muted: #94B3D7; --fc-blue-50: #F0F5FB;
+    --fc-orange: #E07B4F;
+    --fc-text: #2D3748; --fc-text-secondary: #6B7793; --fc-text-tertiary: #8A95AD;
+    --fc-gray-200: #D8DCE5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#E8EEF5;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,'PingFang SC',sans-serif;-webkit-font-smoothing:antialiased}
+  .iphone-frame{width:393px;height:852px;border-radius:47px;box-shadow:0 0 0 3px #1a1a1a,0 20px 60px rgba(0,0,0,.15);background:linear-gradient(180deg,#EDF3FB 0%,#D6E3F5 60%,#C8D9F0 100%);position:relative;overflow:hidden}
+  .dynamic-island{width:126px;height:37px;background:#000;border-radius:20px;position:absolute;top:11px;left:50%;transform:translateX(-50%);z-index:10}
+  .status-bar{height:54px;padding:14px 28px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:5}
+  .status-time{font-size:16px;font-weight:700;color:var(--fc-blue-dark)}
+  .status-icons{display:flex;align-items:center;gap:6px}
+  .home-indicator{width:134px;height:5px;background:rgba(30,69,120,.3);border-radius:3px;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:11}
+
+  /* Top controls */
+  .top-controls{position:absolute;top:58px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 20px;z-index:5}
+  .close-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.5);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px)}
+  .exercise-name{font-size:16px;font-weight:500;color:var(--fc-blue);position:absolute;left:50%;transform:translateX(-50%)}
+
+  /* Center breathing area */
+  .breath-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);display:flex;flex-direction:column;align-items:center}
+
+  /* Concentric rings */
+  .rings{position:relative;width:280px;height:280px;display:flex;align-items:center;justify-content:center}
+  .ring{position:absolute;border-radius:50%;border-style:solid;border-color:rgba(43,94,167,.12)}
+  .ring-outer{width:280px;height:280px;border-width:1px;animation:ringPulse 4s ease-in-out infinite}
+  .ring-mid{width:220px;height:220px;border-width:1.5px;border-color:rgba(43,94,167,.18);animation:ringPulse 4s ease-in-out infinite .3s}
+  .ring-inner{width:160px;height:160px;border-width:2px;border-color:rgba(43,94,167,.28);animation:ringPulse 4s ease-in-out infinite .6s}
+
+  @keyframes ringPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.7}}
+
+  /* Cat in center */
+  .breath-cat{position:absolute;animation:catBreathe 4s ease-in-out infinite}
+  @keyframes catBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+  /* Phase display */
+  .phase-area{text-align:center;margin-top:24px}
+  .phase-text{font-size:28px;font-weight:600;color:var(--fc-blue);letter-spacing:2px}
+  .phase-count{font-size:52px;font-weight:700;color:var(--fc-blue);margin-top:4px;animation:countPulse 1s ease-in-out infinite}
+  @keyframes countPulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .phase-bar{width:120px;height:3px;background:rgba(43,94,167,.15);border-radius:2px;margin:12px auto 0;overflow:hidden}
+  .phase-bar-fill{width:60%;height:100%;background:var(--fc-blue);border-radius:2px;transition:width .3s}
+
+  /* Progress */
+  .progress-area{position:absolute;bottom:180px;left:0;right:0;text-align:center}
+  .progress-text{font-size:14px;font-weight:500;color:var(--fc-text-secondary);margin-bottom:10px}
+  .progress-segments{display:flex;gap:4px;justify-content:center}
+  .seg{width:24px;height:4px;border-radius:2px;background:rgba(43,94,167,.15)}
+  .seg.filled{background:var(--fc-blue)}
+
+  /* Bottom controls */
+  .bottom-controls{position:absolute;bottom:100px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:40px}
+  .ctrl-btn{border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .pause-btn{width:56px;height:56px;background:#fff;box-shadow:0 2px 12px rgba(43,94,167,.15)}
+  .end-btn{width:48px;height:48px;background:rgba(255,255,255,.5);backdrop-filter:blur(8px)}
+
+  /* Subtle tab bar */
+  .tab-bar{height:83px;position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.4);backdrop-filter:blur(12px);border-top:.5px solid rgba(216,220,229,.5);display:flex;justify-content:space-around;align-items:flex-start;padding-top:8px;z-index:4}
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;opacity:.5}
+  .tab-item.active{opacity:1}
+  .tab-label{font-size:10px;color:#8A95AD}
+  .tab-item.active .tab-label{color:#2B5EA7}
+</style>
+</head>
+<body>
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="8" width="3" height="4" rx=".5" fill="#1E4578"/><rect x="4.5" y="5" width="3" height="7" rx=".5" fill="#1E4578"/><rect x="9" y="2" width="3" height="10" rx=".5" fill="#1E4578"/><rect x="13.5" y="0" width="3" height="12" rx=".5" fill="#1E4578"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 11.5a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z" fill="#1E4578"/><path d="M4.7 8.1a4.7 4.7 0 016.6 0" stroke="#1E4578" stroke-width="1.3" stroke-linecap="round"/><path d="M2.3 5.5a8 8 0 0111.4 0" stroke="#1E4578" stroke-width="1.3" stroke-linecap="round"/><path d="M0 3a11.2 11.2 0 0116 0" stroke="#1E4578" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <svg width="27" height="12" viewBox="0 0 27 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="2.5" stroke="#1E4578" stroke-opacity=".5"/><rect x="2" y="2" width="20" height="8" rx="1.5" fill="#1E4578"/><path d="M25 4v4a2 2 0 000-4z" fill="#1E4578" fill-opacity=".5"/></svg>
+    </div>
+  </div>
+
+  <!-- Top -->
+  <div class="top-controls">
+    <button class="close-btn">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke="#2B5EA7" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <span class="exercise-name">节律呼吸</span>
+    <div style="width:36px"></div>
+  </div>
+
+  <!-- Breathing center -->
+  <div class="breath-center">
+    <div class="rings">
+      <div class="ring ring-outer"></div>
+      <div class="ring ring-mid"></div>
+      <div class="ring ring-inner"></div>
+      <!-- Cat meditating -->
+      <svg class="breath-cat" width="120" height="130" viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body (slightly expanded - breathing in) -->
+        <ellipse cx="60" cy="88" rx="32" ry="36" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Tail curled serenely -->
+        <path d="M88 98c10-2 18-10 20-20s-4-14-12-10c-5 3-7 12-4 18" fill="none" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Head -->
+        <ellipse cx="60" cy="50" rx="24" ry="21" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Ears -->
+        <path d="M40 40L32 16l18 16z" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M80 40l8-24-18 16z" fill="#E07B4F" stroke="#2B5EA7" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- Peacefully closed eyes (curved downward) -->
+        <path d="M47 48c2 2 5 2 7 0" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <path d="M66 48c2 2 5 2 7 0" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <!-- Nose -->
+        <ellipse cx="60" cy="55" rx="2.5" ry="1.8" fill="#E07B4F"/>
+        <!-- Gentle smile -->
+        <path d="M56 58c2 1.5 5 1.5 7 0" stroke="#2B5EA7" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <!-- Whiskers -->
+        <line x1="36" y1="52" x2="48" y2="54" stroke="#2B5EA7" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="37" y1="57" x2="48" y2="56" stroke="#2B5EA7" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="72" y1="54" x2="84" y2="52" stroke="#2B5EA7" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="72" y1="56" x2="83" y2="57" stroke="#2B5EA7" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- Front paws folded in meditation -->
+        <ellipse cx="48" cy="118" rx="9" ry="5" fill="white" stroke="#2B5EA7" stroke-width="2.5"/>
+        <ellipse cx="72" cy="118" rx="9" ry="5" fill="white" stroke="#2B5EA7" stroke-width="2.5"/>
+      </svg>
+    </div>
+
+    <!-- Phase -->
+    <div class="phase-area">
+      <div class="phase-text">吸气</div>
+      <div class="phase-count">4</div>
+      <div class="phase-bar"><div class="phase-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-area">
+    <div class="progress-text">第3组 / 共8组</div>
+    <div class="progress-segments">
+      <div class="seg filled"></div>
+      <div class="seg filled"></div>
+      <div class="seg filled"></div>
+      <div class="seg"></div>
+      <div class="seg"></div>
+      <div class="seg"></div>
+      <div class="seg"></div>
+      <div class="seg"></div>
+    </div>
+  </div>
+
+  <!-- Bottom controls -->
+  <div class="bottom-controls">
+    <button class="ctrl-btn pause-btn">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="5" y="4" width="3.5" height="12" rx="1" fill="#2B5EA7"/><rect x="11.5" y="4" width="3.5" height="12" rx="1" fill="#2B5EA7"/></svg>
+    </button>
+    <button class="ctrl-btn end-btn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="#6B7793" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- Tab bar (subtle) -->
+  <div class="tab-bar">
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#8A95AD" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="#8A95AD"/></svg>
+      <span class="tab-label">此刻</span>
+    </div>
+    <div class="tab-item active">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12c3-4 5-7 8-7s5 3 8 7" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/><path d="M4 12c3 4 5 7 8 7s5-3 8-7" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="tab-label" style="color:#2B5EA7">练习</span>
+    </div>
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#8A95AD" stroke-width="1.8"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="#8A95AD" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+</body>
+</html>

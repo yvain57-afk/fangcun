@@ -1,0 +1,46 @@
+import InnerBalanceCore
+
+extension EmotionLabel {
+  var displayName: String {
+    switch self {
+    case .amazed: "惊叹"
+    case .amused: "愉快"
+    case .angry: "生气"
+    case .anxious: "焦虑"
+    case .ashamed: "羞愧"
+    case .brave: "勇敢"
+    case .calm: "平静"
+    case .content: "知足"
+    case .disappointed: "失望"
+    case .discouraged: "泄气"
+    case .disgusted: "厌恶"
+    case .embarrassed: "尴尬"
+    case .excited: "兴奋"
+    case .frustrated: "挫败"
+    case .grateful: "感激"
+    case .guilty: "内疚"
+    case .happy: "开心"
+    case .hopeless: "绝望"
+    case .irritated: "烦躁"
+    case .jealous: "嫉妒"
+    case .joyful: "喜悦"
+    case .lonely: "孤独"
+    case .passionate: "热情"
+    case .peaceful: "安宁"
+    case .proud: "自豪"
+    case .relieved: "如释重负"
+    case .sad: "难过"
+    case .scared: "害怕"
+    case .stressed: "紧张"
+    case .surprised: "惊讶"
+    case .worried: "担心"
+    case .annoyed: "恼火"
+    case .confident: "自信"
+    case .drained: "疲惫"
+    case .hopeful: "充满希望"
+    case .indifferent: "无所谓"
+    case .overwhelmed: "不堪重负"
+    case .satisfied: "满意"
+    }
+  }
+}

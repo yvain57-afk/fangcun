@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "proposal-b",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8091", "-d", "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-proposals/proposal-b"],
+      "port": 8091
+    }
+  ]
+}

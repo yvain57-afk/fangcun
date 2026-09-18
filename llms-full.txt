@@ -1,0 +1,177 @@
+# 方寸：给 GPT / AI 的项目入口
+
+仓库：<https://github.com/yvain57-afk/fangcun>
+
+本文 raw 地址：<https://raw.githubusercontent.com/yvain57-afk/fangcun/main/AI_CONTEXT.md>
+
+## 阅读顺序
+
+1. [README](README.md)：产品、运行方式、当前目录。
+2. [当前验证与安装状态](docs/verification/STATUS.md)：区分源码、测试、真机安装和商店发布。
+3. [设计决策](docs/CURRENT_DESIGN.md)：已确认方向与历史版本优先级。
+4. [原始完整设计规格](web/docs/用户提供的完整设计规格.md)：设计目标；不是完成声明。
+5. [架构与数据流](docs/ARCHITECTURE.md)：原生真实数据和网页 Mock 的边界。
+6. [所有文件索引](FILE_INDEX.md)：每个源文件及图片的可点击链接。
+7. [分卷源码](ai/README.md)：原生代码、Core、网页与设计文字的纯文本分卷，适合无法递归遍历仓库的阅读工具。
+
+所有文件均可通过 `https://raw.githubusercontent.com/yvain57-afk/fangcun/main/<文件路径>` 读取。中文和空格路径需要 URL 编码。分卷文件使用 ASCII 文件名；文件索引同时提供原文件和 raw 链接。
+
+## 目标与明确偏好
+
+方寸帮助一部分需要缓释压力的人理解身体线索并开始一个合适的练习。用户重视明确且有依据的结论，不希望首页强迫从“绷着”等预设标签中选心情。缺少数据必须如实表示缺少数据，不能用虚假的确定性补齐。
+
+界面轻松、安静、有趣；猫狗是情境陪伴。角色的原画、耳朵、花纹、五官和身形不能被随意重画；允许局部动作，脚底固定，避免全身夸张缩放与持续摇晃。猫狗需要独处场景，不必每次一起出现。
+
+## 当前实现入口
+
+- `InnerBalance/InnerBalanceApp/App/RootView.swift`：今日 / 练习 / 设置，真实数据与练习持久化连接。
+- `Features/Home/FangcunTodayView.swift`：新首页与依据详情。旧 `HomeView.swift` 保留但不是根入口。
+- `Features/Home/FangcunDrinkSheet.swift`、`Persistence/FangcunDiary.swift`：饮品、撤销、日快照。
+- `Features/Home/FangcunTrendsView.swift`：周视图与真实已存记录。
+- `DesignSystem/FangcunCompanion.swift`、同名 Metal shader：确认原画的局部动效。
+- `Features/Practice/PracticeSessionView.swift`：练习完整流程；`PracticeAudioCoordinator.swift` 将可能阻塞的音频 session 准备移出主线程。
+- `DesignSystem/FangcunDisplayPreferences.swift`：深浅色、字号、减少动态。
+
+上面相对 `Features/`、`DesignSystem/`、`Persistence/` 的路径均位于 `InnerBalance/InnerBalanceApp/` 内。
+
+## 事实边界
+
+- 原生：HealthKit 真实数据查询与本机记录。UI 测试可注入三种演示场景；正式首页不展示演示开关。
+- 网页：Mock 数据、浏览器本地记录，用来讨论设计与交互。
+- 饮品：杯量及成分估算，不等同实测浓度；不会仅凭一杯咖啡把健康压力结论强行改成偏高。
+- 历史：日状态从实际记录开始积累，空白日期不推测过去。
+- 当前安装和测试详情见 STATUS；不能把 GitHub 上传或真机开发安装称为 App Store 上架。
+- 旧设计文档中的 BLOCKED / PROGRESS 只描述当时阶段。发生矛盾时，以本文件、STATUS、当前源码和最新用户指示为准。
+
+## 后续修改原则
+
+保留原有健康权限边界、SwiftData 数据与用户记录。不添加遥测、账户、在线 AI 或新网络调用，除非另有授权。验证受影响的 iOS / watchOS 编译和相关交互。角色与产品审美参考 `docs/CURRENT_DESIGN.md`，先读现有代码再改。
+
+# 当前设计方向 · 2026-09-18
+
+## 版画日常与情境陪伴
+
+主体为轻版画日常风格，结合情境姿态。暖纸白 `#FAF9F5`、版画蓝 `#1B355A` 与克制的橙色点缀；原生深色使用独立色值而非简单反相。卡片、按钮、留白与字体服从手机阅读和 Dynamic Type。
+
+“方寸”指内心的一小片空间，也指繁忙日常中留给自己的余地。当前标志为带开口的环抱形，保留呼吸的空隙。已淘汰“方”字加方框的字面做法。完整寓意与应用见 `web/docs/` 品牌文档、`web/brand-studio.html`。
+
+## 角色定案
+
+主角色使用 `web/public/characters/v4/` 的确认稿。猫咪圆润、短肢、蓝色线条和橙色耳部；小狗已重新设计为圆脸垂耳，避免旧版比例问题。呼吸猫咪沿用 v3 的闭眼坐姿。图像必须保持原有特征，不能为了写 SVG 而改成几何占位图。
+
+| 情景 | 角色 | 动作 |
+| --- | --- | --- |
+| 平稳 | 猫狗相伴 | 低频、轻微的头部和尾巴动作 |
+| 偏高 / 休息 | 小狗单独趴着 | 安静的胸腹起伏 |
+| 数据不足 | 猫咪单独观察 | 小幅歪头、好奇观察 |
+| 饮品记录 | 小狗与水杯 | 记录后有限次点头，不持续表演 |
+| 呼吸练习 | 猫咪独处 | 胸腹与练习时钟同步，暂停冻结 |
+| 完整完成 | 猫狗碰爪 | 有限的庆祝动作 |
+| 提前结束 | 休息小狗 | 平静陪伴，不用失败反馈 |
+
+## 交互原则
+
+- 首页先看到结论、依据和开始入口。取消强制的预设状态标签。
+- 保留真实数据边界：压力 / 负荷判断必须有可查看依据，未知不能包装成平稳。
+- 饮品半屏弹层支持复合增减和撤销，不让轻记录变成问卷。
+- 5 分钟练习直接开始；暂停、继续、安全退出和保存都属于完整验收。
+- 支持系统及 App 内减少动态效果；角色不抢夺主操作的注意力。
+- 深色与大字不能只改背景和字体变量，仍需查看真实页面布局。
+
+## 历史材料
+
+`design/proposals/`、`design/claude-proposal-c/` 与 `docs/design/fangcun-companions/` 保留早期探索，包括未采用稿。它们用于对比，不能覆盖当前 v4 角色、品牌规范与原生页面。用户原始完整规格保留原文，未实现项不应被描述为已完成。
+
+# 架构与数据流
+
+## 原生
+
+`InnerBalance.xcodeproj` 包含 iOS App、Watch App、App 单元测试与 UI 测试，通过相邻的 `InnerBalanceCore` Swift Package 共享类型安全的领域模型和逻辑。最低 iOS 18、watchOS 11，Swift 6 并发检查。
+
+```text
+HealthKitRepository → HomeViewModel → FangcunTodayView
+                                    ├→ FangcunEvidenceDetail
+                                    └→ FangcunDiary（日状态快照）
+
+FangcunDrinkSheet → FangcunDiary（UserDefaults Codable）
+                   └→ FangcunTrendsView
+
+今日 / 练习库 → PracticeLaunch → PracticeSessionViewModel
+                              ├→ 共享时钟 → 文字、触感、呼吸角色
+                              ├→ PracticeAudioController → AudioCoordinator
+                              └→ CompletionSaveController → SwiftData / Health write queue
+```
+
+原来的 SwiftData schema 与既有用户数据保留。新饮品、日状态快照使用独立本机存档，损坏存档不静默覆盖。撤销按操作保存最近状态，咖啡因估值记在每条记录中，改变设置不会重算旧记录。
+
+音频 session 的激活 / 停用可能同步阻塞，因此通过串行后台队列执行。UI 控制器处理任务取消和迟到的准备结果，避免退出后重新激活状态。AVAudioEngine 与 UI 协调仍由现有控制层管理。
+
+角色使用原画资源与 Metal 局部采样变形。练习中胸腹变化取自同一个呼吸阶段时钟；有限动作结束后停帧；不可见、后台或减少动态时不持续播放。
+
+## 网页
+
+React、Tailwind、Framer Motion、Lucide 与 Vite。页面、可复用组件、数据模型与 Tokens 位于 `web/src/`。入口有应用、角色工作室和品牌工作室三个。无后端，Mock 健康数据和 localStorage 状态均为演示；不会同步用户的真实 HealthKit 数据。
+
+## 公共仓库与本机项目
+
+这是从已验证工作区整理出的独立源码项目。Xcode 中的个人 DEVELOPMENT_TEAM 已清空，签名文件、手机标识、健康数据与构建缓存未纳入。Bundle Identifier 保留历史配置供理解引用关系，其他开发者真机运行需选择自己的签名配置。
+
+图片、SVG 和本地语音作为普通文件纳入 Git；无需 LFS。完整路径索引和源码分卷用于远程 AI 阅读。原始 `.xcresult` 和开发安装回执留在本机，仓库中仅存可公开的验证摘要与模拟器截图。
+
+# 当前交付与验证状态
+
+核验日期：2026-09-18。本文区分实际运行结果和历史设计目标。
+
+## 真机
+
+最终修复版已覆盖安装到配对的 iPhone 16 Pro，开发工具确认安装成功并启动 `com.yvainair.InnerBalance`。未卸载 App，保留现有数据。最终包含后台音频 session 准备、取消处理、呼吸页标题与舞台收尾修复。
+
+这是开发安装，不是 TestFlight / App Store 上架。签名 App、原始安装回执、设备标识和原始 `.xcresult` 留在开发者本机，公开仓库只提供代码、模拟器截图和摘要。
+
+## 独立仓库可运行性
+
+从当前 App 工程与网页原型整理出独立目录后，重新执行：
+
+| 检查 | 结果 |
+| --- | --- |
+| `swift test --package-path InnerBalanceCore` | 64 项测试通过 |
+| `xcodebuild build ... -scheme InnerBalance -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO` | 构建成功，包含 Watch companion target |
+| `cd web && npm ci --no-audit --no-fund` | 安装成功 |
+| `cd web && npm test` | 9 项模型测试通过 |
+| `cd web && npm run build` | 应用、角色工作室、品牌工作室打包成功 |
+
+验证工具链：Xcode 27 beta / Swift 6；Swift Package 要求 Swift 6.2+。个人 Team 配置在公开工程中留空，真机需自行签名。
+
+## 改版功能验证
+
+- 真机 App 单元测试：饮品组合、撤销、持久化、跨日、损坏存档保护与练习时钟，合计 7 项通过。
+- 音频：真实音频图、运行中启动、配置变化恢复、通知合并、取消后迟到结果、无可恢复配置时暂停，6 项通过。
+- UI 情景：平稳 / 偏高 / 数据不足，深色与较大字号测试通过。
+- UI 完整链路：首页 → 饮品增加与撤销 → 趋势 → 直接开始呼吸 → 暂停 / 继续 → 提前结束 → 保存 → 返回首页 → 设置，通过。
+- 动效开启：进入呼吸、等待阶段变化、暂停、提前结束，通过。
+
+最初一次完整 UI 测试曾在开始练习时因同步音频 session 等待而失败；修复后上述链路重新通过。失败历史没有作为通过记录混算。
+
+## 截图索引
+
+| 内容 | 截图 |
+| --- | --- |
+| 今日 | [首页](screenshots/259B610F-B230-4660-BA62-2D0D341B50E9.png) |
+| 饮品 | [增减与撤销](screenshots/DCC9B472-D944-49A8-A9C5-7F53D8E8FE03.png) |
+| 呼吸 | [动效开启](motion/E40F80CA-3DE4-47EB-A25A-1FEFBE3D2D38.png) / [暂停](motion/43469171-776F-413B-8EBE-C71693ECC76F.png) |
+| 保存 | [提前结束后的保存](screenshots/C7AA995E-6B86-4149-9790-12BAB3159022.png) |
+| 趋势 | [真实空白与已记录饮品](screenshots/55CA0D4C-2D70-4009-A957-B3C606E760E7.png) |
+| 设置 | [显示与偏好](screenshots/F4D2DA51-6C45-4F1D-8D75-10A75370A2CA.png) |
+| 三情景 | [平稳](scenarios/9D1B4C1D-54EA-4EFA-A4BE-F1F2610C9EFE.png) / [偏高深色](scenarios/514611FA-A1C6-418D-B60E-64FB2EFE16B4.png) / [数据不足大字](scenarios/2910023E-1EC2-466A-94A4-D5A806B51868.png) |
+
+截图来自模拟器与独立 UI 测试存储。三情景截图包含专门注入的演示状态；不上传真实个人健康数据。
+
+## 纳入与排除
+
+纳入当前原生源码与测试、网页源码与测试、确认角色、品牌资产、设计原文、历史方案、模拟器截图。旧方案保留但不作为当前定案。
+
+排除签名文件、账号凭证、设备标识、真实健康导出、构建缓存、依赖目录、来源不明的工作区改动和无关 App。重复打包 / 源码备份以已展开、可阅读的当前文件提供，避免 GPT 只能看到压缩包。
+
+## 尚不能从本次验证推导的结论
+
+没有完成商店审核或上架；没有宣称医学诊断能力；没有把网页 Mock 判定当成原生实测结果。当前物理设备的每个手势和后台场景没有全部自动化验收，自动化 UI 完整链路主要在 iPhone 16 Pro 模拟器验证。

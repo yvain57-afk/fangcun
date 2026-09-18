@@ -1,0 +1,1792 @@
+
+===== FILE: docs/plans/2026-08-10-inner-balance-testflight-plan.md =====
+# 内衡：双波 TestFlight 最终实施规划
+
+**状态：** 产品与技术方案已收敛，等待实施确认  
+**产品名：** 内衡（Inner Balance）  
+**目标：** 为必须拥有 Apple Watch 的资深苹果用户，用尽量少的主动输入识别身体负荷、当下情绪与可能来源，并给出短而可执行的调节方案以及克制、可解释的前后变化证据。  
+**最低系统：** iOS 18、watchOS 11  
+**iOS Bundle ID：** `com.yvainair.InnerBalance`  
+**发布路径：** 先做两波 TestFlight，不直接提交正式版。
+
+---
+
+## 1. 最终结论
+
+本方案采纳评估中的四项核心修订：
+
+1. Watch 上需要“身体证据”的练习使用 `HKWorkoutSession + HKLiveWorkoutBuilder` 获取高频心率；即时证据只谈心率变化，不把稀疏 HRV 当作练习前后证据。
+2. 首版取消 WatchConnectivity 业务同步。结构化情绪数据随 `HKStateOfMind` metadata 写入 HealthKit；练习摘要随 `mindfulSession` metadata 写入。
+3. 默认情绪登记压缩为“定位光球 + 选一个词”即完成，身体感受和来源改为提交后的可选补充。
+4. TestFlight 拆为 Build 1 和 Build 2，先验证输入、解释、推荐和练习闭环，再加入提醒、趋势与生活背景。
+
+同时修正评估中的三处过度表述：
+
+- 不宣称 Apple 自带呼吸/正念 App 使用相同技术实现，因为公开文档没有作出该保证。
+- HealthKit 会在用户的苹果设备间同步，但不保证即时到达；Watch 必须有本地待写队列和明确的“等待同步”状态。
+- 样本 UUID 本身不足以解决离线重试幂等；所有本 App 写入的 HealthKit 样本使用 `HKMetadataKeySyncIdentifier` 与 `HKMetadataKeySyncVersion` 去重。
+
+Apple 官方说明：所有 Watch workout session 都会生成高频心率样本；workout builder 可以丢弃而不保存 workout；HealthKit 允许自定义 metadata，并会在用户设备间同步健康数据。参考 [Running workout sessions](https://developer.apple.com/documentation/healthkit/running-workout-sessions)、[HKWorkoutBuilder](https://developer.apple.com/documentation/healthkit/hkworkoutbuilder)、[Metadata Keys](https://developer.apple.com/documentation/healthkit/metadata-keys) 与 [HealthKit updates](https://developer.apple.com/documentation/updates/healthkit)。
+
+---
+
+## 2. 产品边界
+
+### 2.1 定位
+
+内衡不是“压力诊断器”，也不输出一个看似精确的总压力分。它把状态分为三个可解释层面：
+
+| 层面 | 回答的问题 | 数据来源 |
+|---|---|---|
+| 身体负荷 | 身体今天是否出现偏离个人基线的信号？ | Apple Watch、HealthKit |
+| 主观状态 | 我现在愉快还是不愉快、激活还是低能量？ | 用户两步输入 |
+| 可能来源 | 这种状态可能和什么有关？ | 用户可选补充，Build 2 加入最小化生活背景 |
+
+推荐引擎可以组合三层信息，但 UI 始终保留原始证据和置信度，不把“身体负荷高”直接等同于“心理压力大”。
+
+### 2.2 目标用户
+
+- 必须拥有并已配对 Apple Watch；不要求最新型号。
+- AirPods 可用于更私密、沉浸的语音练习，但 Build 1 不把 AirPods 传感器当成评估数据源。
+- 用户愿意授权必要的 HealthKit 数据，并重视本地处理、可解释性和苹果原生体验。
+- iPad 不做原生适配；允许系统以 iPhone 兼容模式运行，但不承诺布局体验。
+
+### 2.3 明确不做
+
+- 不做医疗诊断、心理治疗、疾病风险预测或“治疗有效”承诺。
+- 不做账号、服务器、CloudKit、广告、第三方分析 SDK 或后台上传。
+- 不做聊天机器人、自由文本日记、语音情绪识别或 AI 心理咨询。
+- 不读取日历标题、参与人、地点、备注；不使用私有 API 打开或控制 Apple 正念 App。
+- 不在首版使用 AirPods 头部运动或特定新型号才具备的生理传感能力。
+
+---
+
+## 3. 核心体验
+
+### 3.1 首页：今天的状态
+
+首页只呈现四件事：
+
+1. **身体负荷**：平稳 / 留意 / 偏高 / 建立基线中，并显示置信度与 2–3 条原因。
+2. **此刻感受**：最近一次情绪罗盘结果；没有记录时显示一个明确入口。
+3. **建议动作**：只推荐一个最适合当下的动作，并允许展开替代选项。
+4. **证据回看**：最近一次练习的主观变化；符合条件时再显示 Watch 心率变化。
+
+不把大量图表放在首页，不用红色制造焦虑，不用“你压力过大”这类诊断式文案。
+
+### 3.2 默认 10 秒情绪登记
+
+默认路径只有两步：
+
+1. 在二维罗盘上拖动光球：横轴为愉快度（HealthKit valence），纵轴为激活度（自定义 arousal）。
+2. 从当前象限推荐的 4–6 个情绪词中选一个，点击后立即保存并结束。
+
+提交后出现不阻塞的补充卡片：
+
+- 身体感受：肩颈紧、胸口紧、胃部不适、呼吸浅、头沉、疲惫、无明显感觉等，可多选。
+- 影响来源：工作、任务、健康、家庭、关系、金钱、训练、睡眠等，最多选两个。
+- 用户可点“先这样”直接离开。
+
+“都不像 / 不知道”的规则：仍写入用户已选的 valence，`labels` 为空；metadata 标记 `unclassified = true`，不能因缺少标签而跳过 HealthKit 写入。
+
+### 3.3 Watch 最小流程
+
+- 主页只保留“记录此刻”“开始调节”“同步状态”三个入口。
+- 情绪输入使用 3×3 状态区域代替复杂二维拖动：先点区域，再点一个词，两次点击完成。
+- Watch 可以独立完成记录和练习；iPhone 不在线时写入本地待处理队列，成功保存至 HealthKit 后再清理。
+- Watch 上不能因为同步延迟重复弹出同一条记录。
+
+### 3.4 冷启动第一周
+
+从第 0 天开始即可使用：
+
+- 情绪罗盘、练习、主观前后对比立即可用。
+- 身体卡片显示“个人基线 2/5 天”这类进度，而不是只显示“数据不足”。
+- 未满 5 个有效日时，可以展示原始数据和趋势方向，但不下“身体负荷偏高”结论，也不触发智能压力提醒。
+- 每增加一个有效日，说明新增了哪类可用证据。
+
+---
+
+## 4. 身体负荷与睡眠可靠性
+
+### 4.1 基线逻辑
+
+从旧 App 复制纯计算逻辑到新建的 `InnerBalanceCore`，不移动、不引用旧 target 源文件：
+
+- 14 天窗口。
+- 每日先取中位数，再计算个人基线中位数。
+- 至少 5 个有效日才形成基线。
+- 核心信号：HRV、静息心率、主睡眠、近期训练；呼吸频率延后到 Build 2。
+- 最近训练用于解释短期 HRV/心率波动，避免把正常训练反应误报为心理压力。
+- 只有两项以上相互独立且可靠的信号一致偏离时，才允许显示“偏高”；否则显示“留意”或“证据不足”。
+
+旧 App 中的逻辑位于：
+
+- `iOSWatchApp/iOSWatchApp/HealthKitRecoveryManager.swift`
+- `iOSWatchApp/iOSWatchApp/CoreLogic.swift`
+
+复制时只带走纯模型与算法，并用测试固化现有行为；旧 App 文件不因内衡而修改。
+
+### 4.2 睡眠纠错
+
+为避免再次出现十几个小时的错误睡眠：
+
+1. 只统计 `.asleepUnspecified`、`.asleepCore`、`.asleepDeep`、`.asleepREM`，不把 `.inBed` 计入睡眠。
+2. 对重叠睡眠阶段做区间并集，不能简单累加各来源或各阶段。
+3. 按睡眠间隔聚类为独立 episode；相隔超过 90 分钟的记录不合并，午睡不叠加到主睡眠。
+4. 从最近 48 小时中选取结束时间合理、实际睡眠最长的主 episode；来源优先展示 Apple Watch，但不能用来源名替代区间去重。
+5. 主睡眠少于 2 小时或超过 12 小时只显示“数据需要确认”，不进入负荷判断，不做截断伪装成正常值。
+6. 数据详情页展示开始/结束时间、去重后时长、样本数、数据源与是否来自 Watch，方便用户核对健康 App。
+
+---
+
+## 5. 调节方案与效果证据
+
+### 5.1 Build 1 练习库
+
+| 练习 | 默认时长 | 是否自动推荐 | 身体证据策略 |
+|---|---:|---|---|
+| 生理性叹息 | 1 分钟 | 是，适合高激活、需要快速复位 | 默认只做主观前后对比；时间太短不强行解释心率 |
+| 节律呼吸 | 3 / 5 分钟 | 是 | 5 分钟版本可开启 Watch 证据模式 |
+| 冥想放松 | 5 / 10 分钟 | 是 | Watch 证据模式 |
+| NSDR | 10 / 20 分钟 | 是，适合疲惫、低能量或恢复 | Watch 证据模式 |
+| 凯格尔 | 3 分钟 | 否，单独位于“身体练习” | 只记录完成，不把它包装成减压证据 |
+
+凯格尔必须附安全说明：疼痛、盆底持续紧张、排尿排便异常、产后或术后恢复中的用户先咨询专业人员；出现不适立即停止。它不能进入压力自动推荐规则。
+
+### 5.2 Watch 身体证据模式
+
+仅当练习时长和权限足够时启用：
+
+1. 用户在 Watch 上明确点击“开始测量”，UI 持续显示正在测量。
+2. 检查是否已有其他 workout session；若冲突，退化为主观模式，不抢占用户正在进行的训练。
+3. 使用 `.mindAndBody` 配置启动 `HKWorkoutSession` 与 `HKLiveWorkoutBuilder`，采集高频心率。
+4. 前 60 秒形成初始窗口，练习后最后 60 秒形成结束窗口；任一窗口有效样本不足则不输出身体结论。
+5. 结束时调用 `discardWorkout()`，不生成一条训练记录；单独写入 `mindfulSession`。
+6. 需要在授权说明和练习页明确告知：workout session 会提高传感器采样频率，HealthKit 可能保存由此产生的心率等样本；丢弃 builder 只保证不保存 workout 本身。
+7. 发布前必须在真机核对健康 App：不能出现意外 workout 记录，并记录是否产生额外活动能量样本。若无法做到足够透明或审核风险不可接受，Build 1 降级为“保存 `.mindAndBody` workout 并明确展示”或关闭身体证据模式，不能偷偷运行。
+
+### 5.3 证据文案边界
+
+允许显示：
+
+- “主观紧张从 7 降到 4。”
+- “本次有效心率窗口：开始 78，结束 69 次/分。”
+- “这只是本次练习中的变化，不能单独证明压力水平或治疗效果。”
+
+禁止显示：
+
+- “压力下降 35%。”
+- “HRV 已恢复。”
+- “焦虑得到治疗。”
+
+HRV 只用于按天的身体负荷基线，不进入 3–20 分钟练习的即时前后对比。
+
+---
+
+## 6. 技术架构
+
+### 6.1 方案比较
+
+| 方案 | 优点 | 缺点 | 结论 |
+|---|---|---|---|
+| 独立 Xcode 工程 + 本地纯 Swift Package | 真正独立发布；旧 App 零耦合；iOS/Watch 共用可测试核心 | 初始工程配置稍多 | **采用** |
+| 在旧 `iOSWatchApp.xcodeproj` 中加两个 target | 建立较快 | 项目继续膨胀；现有 `project.pbxproj` 已有用户改动；容易误伤旧 App | 不采用 |
+| 直接从旧 App 拆页面 | 复用最多 | 继续携带行情、训练等无关依赖，无法形成清晰独立产品 | 排除 |
+
+### 6.2 工程结构
+
+新工程放在旧 App 同级目录，不修改旧 target：
+
+```text
+InnerBalance/
+├── InnerBalance.xcodeproj
+├── InnerBalanceApp/
+│   ├── App/
+│   ├── DesignSystem/
+│   ├── Features/CheckIn/
+│   ├── Features/Home/
+│   ├── Features/Practice/
+│   ├── Features/Diagnostics/
+│   ├── Health/
+│   ├── Persistence/
+│   ├── Resources/
+│   └── Assets.xcassets/
+├── InnerBalanceWatch/
+│   ├── App/
+│   ├── CheckIn/
+│   ├── Practice/
+│   ├── Health/
+│   └── Persistence/
+├── InnerBalanceTests/
+└── InnerBalanceUITests/
+
+InnerBalanceCore/
+├── Package.swift
+├── Sources/InnerBalanceCore/
+│   ├── BodyLoad/
+│   ├── Emotion/
+│   ├── Practice/
+│   └── Recommendation/
+└── Tests/InnerBalanceCoreTests/
+```
+
+### 6.3 职责边界
+
+- `InnerBalanceCore`：纯 Foundation 算法、映射、规则与测试；不导入 HealthKit、SwiftUI、SwiftData。
+- iPhone App：HealthKit 查询、首页、完整登记、推荐、趋势、本地诊断与导出。
+- Watch App：快速登记、练习、实时心率、本地待写队列。
+- HealthKit：跨设备事实来源；保存 State of Mind、Mindful Session 及必要 metadata。
+- SwiftData：保存纯本地推荐结果、提示决策、诊断统计与尚未成功写入 HealthKit 的 pending records。
+
+---
+
+## 7. HealthKit 数据设计
+
+### 7.1 授权分层
+
+**Build 1 初始身体状态授权：**
+
+- 读取：HRV、静息心率、睡眠、workout、State of Mind、Mindful Session。
+- 写入：State of Mind、Mindful Session。
+
+**用户首次开启 Watch 身体证据时再请求：**
+
+- 读取：心率。
+- 写入：workout 类型；这是启动 Watch workout session 的必要授权，即使最终选择丢弃 workout。
+
+**Build 2 可选授权：**
+
+- 呼吸频率。
+- 日历读取、Focus 状态与通知。
+
+每组授权都要先展示用途说明；拒绝任何一项都必须可降级，不重复骚扰。
+
+### 7.2 State of Mind
+
+- 默认即时登记写 `.momentaryEmotion`。
+- Build 2 的晚间回顾写 `.dailyMood`。
+- valence 直接来自横轴，范围 `-1...1`。
+- labels 使用 Apple 的 `HKStateOfMind.Label`；允许空数组。
+- 来源优先映射为 Apple 的 `HKStateOfMind.Association`，最多两个。
+- arousal、身体感受、输入来源和关联练习 ID 使用自定义 metadata。
+
+自定义 metadata 只使用字符串、数字和日期，key 使用反向域名前缀：
+
+| Key | 类型 | 用途 |
+|---|---|---|
+| `HKMetadataKeySyncIdentifier` | String | 客户端稳定 ID，离线重试幂等 |
+| `HKMetadataKeySyncVersion` | Number | 样本版本 |
+| `com.yvainair.innerbalance.schemaVersion` | Number | metadata schema 版本 |
+| `com.yvainair.innerbalance.arousal` | Number | `-1...1` 激活度 |
+| `com.yvainair.innerbalance.bodySensationCodes` | String | 逗号分隔的稳定代码，不写自然语言 |
+| `com.yvainair.innerbalance.unclassified` | Number | 是否选择“都不像” |
+| `com.yvainair.innerbalance.origin` | String | `iphone` 或 `watch` |
+| `com.yvainair.innerbalance.sessionID` | String | 关联练习 |
+| `com.yvainair.innerbalance.phase` | String | `pre`、`post` 或 `standalone` |
+
+隐私页必须说明：这些字段随 State of Mind 样本进入 HealthKit，其他获得相应读取权限的健康类 App 理论上也可能读取。用户若不接受，可关闭 HealthKit 心境写入并仅保存在本机，但将失去跨设备记录同步。
+
+### 7.3 Mindful Session
+
+每次呼吸、冥想或 NSDR 完成后写入 Mindful Session，并在 metadata 中保存：
+
+- `sessionID`
+- `practiceType`
+- `protocolVersion`
+- `origin`
+- `evidenceMode`
+- `heartRateStart`、`heartRateEnd`、`heartRateSampleCount`、`evidenceQuality`（仅有足够样本时）
+
+只保存汇总，不复制原始逐拍心率。凯格尔不写 Mindful Session，避免把盆底训练伪装成正念分钟；它只保存在本机完成记录中。
+
+### 7.4 同步与幂等
+
+- Watch 每次创建记录时先生成稳定 `syncIdentifier`，再尝试保存 HealthKit。
+- 保存失败则进入本地 `PendingHealthWrite`；按退避策略重试，成功后删除 pending。
+- iPhone 通过 anchored query 增量读取由本 App 创建的样本，并以 sync identifier 去重构建本地缓存。
+- UI 允许显示“已保存在手表，等待同步”；不能把未到达 iPhone 解释成数据丢失。
+- HealthKit 同步是最终一致，不承诺秒级到达。
+
+---
+
+## 8. 情绪标签映射测试夹具
+
+二维罗盘的建议词按 arousal 分组；最终 valence 始终由光球位置决定，标签不反推数值。
+
+| 象限 | Apple labels |
+|---|---|
+| 高激活 / 正向 | amazed, amused, brave, excited, happy, joyful, passionate, proud, confident, hopeful, surprised |
+| 低激活 / 正向 | calm, content, grateful, peaceful, relieved, satisfied |
+| 高激活 / 负向 | angry, anxious, ashamed, disgusted, embarrassed, frustrated, guilty, irritated, jealous, scared, stressed, worried, annoyed, overwhelmed |
+| 低激活 / 负向 | disappointed, discouraged, hopeless, lonely, sad, drained |
+| 中性 / 需用户确认 | indifferent |
+
+要求：Apple 当前公开的 38 个 label 必须在夹具中恰好出现一次；`surprised` 和 `indifferent` 这类语义可能跨象限的词，只用于候选排序，不能覆盖用户已选择的 valence/arousal。
+
+---
+
+## 9. 智能提醒与生活背景（Build 2）
+
+### 9.1 触发策略
+
+- 主触发窗为起床后：检测到新的主睡眠、夜间 HRV/静息心率已经到达且基线有效时重新计算。
+- app 进入前台时必定刷新一次。
+- HealthKit observer query + background delivery 只作为尽力而为的补充，不能设计成实时压力报警器。Apple 仅保证系统在有新样本时按设定频率“至多”唤醒，并不保证具体时刻；见 [Executing Observer Queries](https://developer.apple.com/documentation/healthkit/executing-observer-queries)。
+- 每天最多一条身体负荷智能提醒；训练结束后的保护窗口、静默时段和置信度门槛必须生效。
+- 用户可另行开启固定晚间回顾，它不是身体负荷报警；两类通知间隔不足 4 小时时合并或取消其中一条。
+- 通知权限只在用户完成至少一次登记或练习、已经看到价值后再请求。
+
+### 9.2 Calendar 与 Focus
+
+- Calendar 只在内存中计算未来/过去数小时的忙碌分钟数、连续会议段和空档；不保存标题、地点、参与人、备注。
+- Focus 只使用系统授权可提供的“当前是否处于 Focus”状态，不推断具体专注模式名称。
+- 这些背景只能改变解释和提醒时机，不能直接给用户贴“工作压力”标签。
+- 用户拒绝授权时，推荐系统继续使用身体与主观数据。
+
+### 9.3 Apple 原生引导
+
+Build 2 提供 App Intents / Shortcuts：
+
+- “记录我此刻的状态”
+- “开始一次生理性叹息”
+- “开始 NSDR”
+
+可以引导用户把入口放到快捷指令、控制中心或操作按钮，但不假设 Apple 正念 App 存在可公开调用的深链。
+
+---
+
+## 10. 本地诊断页
+
+为同时满足“无遥测”和可验证性，设置页隐藏一个“TestFlight 诊断”入口，仅在测试构建显示：
+
+- 默认登记完成时长的中位数与 P90。
+- 光球完成率、情绪词完成率、可选补充完成率。
+- 推荐被接受、练习开始、练习完成的本地计数。
+- 主观前后对比可用率。
+- 符合资格的 Watch 练习中心率窗口可用率。
+- 通知已计划数与用户点击/操作数。这里的“响应率”是 `responded / scheduled` 的保守近似，不能宣称系统一定展示了每条本地通知。
+- HealthKit 授权状态、最近同步时间、pending 数量与错误类别，不显示原始情绪或健康值。
+
+支持用户主动导出聚合 JSON；详细记录默认不导出，必须再次确认。导出通过系统分享表完成，App 自己不上传。
+
+---
+
+## 11. 两波 TestFlight
+
+### Build 1：验证核心闭环
+
+范围：
+
+- 独立 iPhone + Watch 工程、品牌与本地化骨架。
+- HealthKit 分层授权与隐私说明。
+- 身体负荷、睡眠纠错、5 天基线进度。
+- iPhone/Watch 情绪快速登记与 metadata 同步。
+- 生理性叹息、节律呼吸、冥想、NSDR、独立凯格尔。
+- 主观前后对比；符合资格时提供 Watch 心率证据。
+- Watch pending queue、HealthKit 幂等与 iPhone 增量读取。
+- TestFlight 本地诊断页。
+
+不包含：智能通知、趋势高级统计、Calendar、Focus、App Intents。
+
+### Build 2：验证自动化与留存
+
+范围：
+
+- 起床后主触发、白天尽力而为触发和晚间回顾。
+- 7/14/28 天趋势、同类练习至少 3 次后的主观效果汇总。
+- 呼吸频率可选纳入身体基线。
+- Calendar/Focus 最小化背景。
+- App Intents、快捷指令入口。
+- 根据 Build 1 诊断结果调整词表、步骤和推荐规则。
+
+---
+
+## 12. 实施任务与文件
+
+以下路径均相对于仓库根目录 `.`。
+
+### Task 1：建立独立工程与品牌骨架
+
+**创建：**
+
+- `InnerBalance/InnerBalance.xcodeproj/project.pbxproj`
+- `InnerBalance/InnerBalanceApp/App/InnerBalanceApp.swift`
+- `InnerBalance/InnerBalanceWatch/App/InnerBalanceWatchApp.swift`
+- `InnerBalance/InnerBalanceApp/DesignSystem/InnerBalanceTheme.swift`
+- `InnerBalance/InnerBalanceApp/Assets.xcassets/AppIcon.appiconset/Contents.json`
+- `InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings`
+
+**步骤：**
+
+1. 新建 iPhone 与配套 watchOS target，部署版本设为 iOS 18 / watchOS 11。
+2. iPhone display name 设为“内衡”；Watch 使用同一产品名。
+3. 采用深石墨背景、暖白正文、低饱和青绿色状态光，不使用医疗红绿灯风格。
+4. 图标概念固定为“两个偏离后重新趋于平衡的弧面/光点”，不使用心电图、十字或大脑图标。
+5. 只设置 iPhone device family；在隐私/帮助页说明 iPad 兼容模式不保证。
+
+**验证：**
+
+```bash
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO build
+```
+
+### Task 2：建立纯计算 Core 与测试
+
+**创建：**
+
+- `InnerBalanceCore/Package.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/BodyLoadEngine.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/SleepEpisodeAnalyzer.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Emotion/EmotionCatalog.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/RecommendationEngine.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/BodyLoadEngineTests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/EmotionCatalogTests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/RecommendationEngineTests.swift`
+
+**步骤：**
+
+1. 先复制旧逻辑的行为测试，再复制最小纯算法；不修改旧文件。
+2. 为 14 天日中位数、5 有效日、近期训练保护和部分数据缺失写失败测试。
+3. 为睡眠重叠、多来源、跨午夜、午睡、>12 小时异常写失败测试。
+4. 为 38 个情绪 label 恰好映射一次、未知标签降级写测试。
+5. 为“凯格尔永不自动推荐”和推荐解释可追溯写测试。
+
+**验证：**
+
+```bash
+swift test --package-path InnerBalanceCore
+```
+
+### Task 3：HealthKit 仓储、授权与幂等
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Health/HealthAuthorizationCoordinator.swift`
+- `InnerBalance/InnerBalanceApp/Health/HealthKitRepository.swift`
+- `InnerBalance/InnerBalanceApp/Health/StateOfMindMapper.swift`
+- `InnerBalance/InnerBalanceApp/Health/HealthMetadataKeys.swift`
+- `InnerBalance/InnerBalanceApp/Health/HealthSyncCursorStore.swift`
+- `InnerBalance/InnerBalanceTests/Health/StateOfMindMapperTests.swift`
+- `InnerBalance/InnerBalanceTests/Health/HealthMetadataTests.swift`
+
+**步骤：**
+
+1. 先测试 valence、空 labels、association 与 metadata round-trip。
+2. 实现分层授权和逐项降级状态。
+3. 使用 sync identifier/version 写入，并用 anchored query 增量读取。
+4. 过滤来源，只把本 App 写入的样本重建为本地记录；Apple 健康中的其他 State of Mind 只用于用户明确开启的趋势汇总。
+5. 禁止在日志中输出 health values 或 metadata 内容。
+
+**验证：**
+
+```bash
+swift test --package-path InnerBalanceCore
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+```
+
+### Task 4：身体负荷与冷启动首页
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Features/Home/HomeView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/HomeViewModel.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/BodyLoadCard.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/BaselineProgressView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/HealthEvidenceView.swift`
+- `InnerBalance/InnerBalanceTests/Features/HomeViewModelTests.swift`
+
+**步骤：**
+
+1. 先测试 0–4 天只显示进度、不触发偏高结论。
+2. 接入 HRV、静息心率、睡眠和 workout 查询。
+3. 展示数据源、最新时间、置信度与训练保护原因。
+4. 加入睡眠数据核对入口。
+
+**验证：** `swift test --package-path InnerBalanceCore`，并用含真实历史数据的 iPhone + Watch 真机核对至少三晚。
+
+### Task 5：两步情绪罗盘
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/EmotionCompassView.swift`
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/EmotionWordPicker.swift`
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/OptionalContextSheet.swift`
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/CheckInViewModel.swift`
+- `InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift`
+
+**步骤：**
+
+1. 先写 UI 测试覆盖正常词与“都不像”。
+2. 完成光球拖动、动态词表、触感与 Dynamic Type。
+3. 选择情绪词后立即提交；补充页失败不能回滚主记录。
+4. 从打开到主记录成功计时，写入本地诊断事件。
+
+**验证：** 在已安装的 iOS 模拟器上运行 UI tests，并用 VoiceOver、最大 Dynamic Type 和 Reduce Motion 人工核对。
+
+### Task 6：练习与主观前后对比
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Features/Practice/PracticeLibrary.swift`
+- `InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionViewModel.swift`
+- `InnerBalance/InnerBalanceApp/Features/Practice/SubjectiveComparisonView.swift`
+- `InnerBalance/InnerBalanceApp/Resources/PracticeScripts.xcstrings`
+- `InnerBalance/InnerBalanceTests/Features/PracticeSessionViewModelTests.swift`
+
+**步骤：**
+
+1. 先测试暂停、恢复、退后台、结束和中断后的状态机。
+2. 加入本地脚本、音频控制、触觉节奏和 AirPods/扬声器系统路由。
+3. 练习计时使用绝对开始/暂停时间计算，切换页面后不得重新开始。
+4. 完成后写 Mindful Session 和主观 post 状态；写入失败进入 pending。
+5. 凯格尔采用独立记录类型和安全文案。
+
+**验证：** 锁屏、切 App、断开 AirPods、来电/音频中断后分别恢复一次；计时误差不超过 1 秒。
+
+### Task 7：Watch 快速登记与身体证据
+
+**创建：**
+
+- `InnerBalance/InnerBalanceWatch/CheckIn/WatchCheckInView.swift`
+- `InnerBalance/InnerBalanceWatch/Practice/WatchPracticeView.swift`
+- `InnerBalance/InnerBalanceWatch/Practice/LiveHeartRateSession.swift`
+- `InnerBalance/InnerBalanceWatch/Health/WatchHealthKitRepository.swift`
+- `InnerBalance/InnerBalanceWatch/Persistence/PendingHealthWrite.swift`
+- `InnerBalance/InnerBalanceWatch/Persistence/PendingWriteProcessor.swift`
+
+**步骤：**
+
+1. 先用 Core tests 固化前后窗口、样本不足和异常心率过滤规则。
+2. 实现 3×3 区域 + 单词的两点击登记。
+3. 实现 workout session 生命周期、冲突退化、后台继续和明确停止。
+4. 结束时丢弃 workout builder，另写 Mindful Session 汇总。
+5. 在断网、iPhone 不在附近、锁屏、已有 workout 四种场景真机验证。
+
+**验证：** 必须使用真实 Apple Watch；Simulator 只用于布局。健康 App 中不得出现意外 workout 记录。
+
+### Task 8：本地诊断与隐私页
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Persistence/DiagnosticEvent.swift`
+- `InnerBalance/InnerBalanceApp/Features/Diagnostics/DiagnosticsView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Diagnostics/DiagnosticsExporter.swift`
+- `InnerBalance/InnerBalanceApp/Features/Settings/PrivacyView.swift`
+- `InnerBalance/InnerBalanceTests/Diagnostics/DiagnosticsExporterTests.swift`
+
+**步骤：**
+
+1. 先测试聚合导出不包含 health values、情绪词、日历内容或稳定设备标识。
+2. 实现本地时长、漏斗、练习与同步错误统计。
+3. 仅 TestFlight/Debug 展示诊断入口。
+4. 用户主动确认后调用系统分享表；不加入网络客户端。
+
+**验证：** 解压导出内容并人工搜索健康值、情绪、日历与设备标识，结果必须为空。
+
+### Task 9：Build 1 真机验收与 TestFlight 材料
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Resources/PrivacyInfo.xcprivacy`
+- `InnerBalance/TestFlight/BetaReviewNotes.zh-Hans.md`
+- `InnerBalance/TestFlight/TestChecklist.zh-Hans.md`
+- `InnerBalance/TestFlight/PrivacyPolicy.zh-Hans.md`
+
+**步骤：**
+
+1. 配置 HealthKit、Workout Processing、必要后台能力和两端 purpose strings。
+2. 完成隐私政策 URL 准备、非医疗声明和审核说明。
+3. 用空数据、部分授权、完整授权、Watch 不佩戴、同步延迟五种状态走查。
+4. Archive 前运行所有 Core tests、App tests 与两端 Release build。
+5. 第一版外部 TestFlight 提交 Beta App Review；Apple 要求外部测试的首个构建经过审核，见 [TestFlight](https://developer.apple.com/testflight/)。
+
+**验证：**
+
+```bash
+swift test --package-path InnerBalanceCore
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -configuration Release -destination 'generic/platform=iOS' build
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -configuration Release -destination 'generic/platform=watchOS' build
+```
+
+### Task 10：Build 2 提醒、趋势与背景
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Notifications/MorningPromptCoordinator.swift`
+- `InnerBalance/InnerBalanceApp/Features/Trends/TrendsView.swift`
+- `InnerBalance/InnerBalanceApp/Context/CalendarLoadProvider.swift`
+- `InnerBalance/InnerBalanceApp/Context/FocusStatusProvider.swift`
+- `InnerBalance/InnerBalanceApp/AppIntents/InnerBalanceShortcuts.swift`
+- `InnerBalance/InnerBalanceTests/Notifications/MorningPromptCoordinatorTests.swift`
+
+**步骤：**
+
+1. 先测试每天一次、静默时段、训练保护、基线不足和通知合并。
+2. 接入 observer query 与前台刷新，后台未唤醒时不伪造实时提醒。
+3. 只保存 Calendar 聚合量，不保存事件内容。
+4. 同类练习少于 3 次不展示效果趋势。
+5. 加入三个 App Intents，并为无权限/Watch 不可用提供明确退化。
+
+**验证：** Core/App tests 全通过；检查 SwiftData store 中不存在 Calendar 原文。
+
+---
+
+## 13. 验收闸门
+
+### Build 1 必须满足
+
+- 至少 5 名测试者完成首次使用；80% 无需解释即可完成第一条登记。
+- 默认登记中位时长 ≤10 秒，P90 ≤15 秒；若不达标，先减词和减动画，不增加教程。
+- 0–4 个有效日不会出现“偏高”结论或智能提醒。
+- 多来源重叠睡眠不会重复累计；异常 >12 小时不进入负荷判断。
+- 所有 HealthKit 重试无重复样本；Watch pending 最终可清零或显示可操作错误。
+- 凯格尔自动推荐次数必须为 0。
+- 符合资格的 5 分钟以上 Watch 证据练习中，前后心率窗口可用率目标 ≥80%；达不到时仍发布主观证据，但隐藏身体证据卖点。
+- 丢弃 evidence session 后，健康 App 中意外 workout 记录为 0。
+- 旧 `iOSWatchApp` 能保持原状构建；内衡开发不修改其业务源文件。
+
+### Build 2 必须满足
+
+- 身体负荷智能提醒每天不超过 1 条，晚间回顾遵守 4 小时间隔规则。
+- 基线不足、近期训练、静默时段和通知拒绝均正确降级。
+- Calendar 标题、参与人、地点、备注落盘数量为 0。
+- 同类练习不足 3 次不显示趋势性效果结论。
+- 诊断页可以给出登记耗时和提醒点击的本地聚合数据，导出不含健康原始值。
+
+---
+
+## 14. 审核、隐私与安全文案
+
+- iPhone 和 Watch target 都配置准确、具体的 `NSHealthShareUsageDescription` 与 `NSHealthUpdateUsageDescription`。
+- App 内与 App Store Connect 都提供隐私政策入口，说明数据类型、用途、本地保存、HealthKit metadata、撤销授权和删除方式。Apple 要求所有 App 提供隐私政策，并对健康测量与医学声称进行更严格审查；见 [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)。
+- 首页解释统一使用“状态参考”“身体负荷信号”“本次变化”，不使用“检测焦虑”“治疗压力”。
+- 对“绝望”等高风险词只显示静态、非诊断式支持入口：建议联系可信任的人和当地专业/紧急支持；不建立隐藏风险分，不自动通知第三方。
+- 用户可以在设置中删除本地数据；HealthKit 样本的删除需清楚区分“本 App 写入的记录”和“其他来源记录”，绝不批量删除非本 App 数据。
+
+---
+
+## 15. 最终推荐的实施顺序
+
+1. 先完成 Task 1–2，让独立工程和纯算法可构建、可测试。
+2. 完成 Task 3–5，尽早把“两步登记 + HealthKit 写入 + 冷启动首页”交给测试者体验。
+3. 完成 Task 6–8，闭合练习、Watch 证据和本地诊断。
+4. 完成 Task 9，发布 Build 1，至少观察 3–7 天后再冻结交互。
+5. 只有 Build 1 的登记耗时、练习完成率和数据可靠性达到闸门，才开始 Task 10 的 Build 2。
+
+这个顺序优先验证产品真正的核心：用户是否愿意持续输入、是否信任解释、是否愿意执行建议，以及能否看懂练习后的变化。提醒、趋势和生活背景都不能早于这个闭环。
+
+===== END FILE =====
+
+===== FILE: docs/plans/2026-08-11-fangcun-chenhun-design.md =====
+# 方寸「晨昏纸境」改版设计
+
+**日期：** 2026-08-11  
+**状态：** 已批准  
+**方案：** A「晨昏纸境」
+
+## 问题定义
+
+当前版本已经具备 HealthKit、情绪登记、调节练习与 Watch 证据闭环，但首屏以同权重深色卡片呈现权限、指标和功能，用户首先感受到的是“阅读报告”，而不是“每天打开就有所得”。练习播放器还默认使用系统合成语音，与品牌的安静、克制气质不一致。
+
+## 产品承诺
+
+方寸每天给用户三样东西：一句值得读的话、一次对今天状态的理解、一个做得完的动作。数据退到幕后，证据仍可解释；用户不需要为了使用产品而先理解 HRV、静息心率或基线算法。
+
+品牌工作名称为「方寸」，品牌句为“照料方寸之间的自己”。本次只修改面向用户的名称；Bundle ID、HealthKit metadata key、sync identifier 前缀与本地模型保持不变。
+
+## 设计
+
+### 架构
+
+1. 在 `InnerBalanceCore` 增加纯 Swift 的每日内容选择器。句库随 App 本地发布，同一个本地自然日与同一状态主题返回稳定内容，不使用网络或生成式服务。
+2. iPhone 首页改为四段叙事：今日之言、身体来信、今日一事、今日回声。健康原始证据通过按需展开继续可见。
+3. 设计系统从强制深色改为跟随系统明暗模式的“晨昏纸境”：日间为温暖纸白与墨色文字，夜间为蓝黑墨色与暖白文字，统一使用低饱和玉绿色作为动作色。
+4. 练习继续以绝对时间、视觉节奏与可关闭触觉工作；移除系统合成语音、语音开关和音频会话。
+5. Watch 保持黑底以符合 watchOS 使用环境，但改用方寸品牌、当天短句和玉色动作入口。
+
+### 核心组件
+
+- `DailyReflection`：句子、简短注解、内容主题与可选署名。
+- `DailyReflectionSelector`：根据本地日期和身体负荷主题稳定选择内容。
+- `DailyWordHero`：首页第一视觉层，呈现日期、方寸与今日之言。
+- `BodyLetterSection`：先给自然语言结论，再允许查看来源、时间、可靠性和基线进度。
+- `TodayActionSection`：只突出记录此刻或一个推荐练习。
+- `TodayEchoSection`：合并最近情绪与练习后的主观变化。
+- `FangcunTheme` 的现有兼容入口：保留 `InnerBalanceTheme` 类型名以控制 diff，但替换为自适应语义色与纸面组件。
+
+### 数据流
+
+1. 首页刷新真实 HealthKit 数据并形成现有 `BodyLoadAssessment`。
+2. 内容选择器把评估层级映射为平稳、留意、恢复、通用四类内容主题。
+3. 当天日期决定主题内的稳定索引；当天多次打开不会通过刷新更换句子。
+4. 首页把同一份评估转译为“身体来信”，用户展开时仍读取原来的证据数组。
+5. 情绪记录与练习完成沿用现有 SwiftData + HealthKit 写入路径，并更新“今日回声”。
+
+### 异常与降级
+
+- 未授权 HealthKit：仍先显示今日之言，身体来信显示“方寸还在认识你”，并提供次级授权入口。
+- 建立基线中：显示 X/5 天，不生成偏高结论。
+- 睡眠需要确认：在身体来信中明确提示，不把异常样本用于结论。
+- 无情绪记录：今日一事为“记录此刻”。
+- 内容选择异常：使用内置通用句，不出现空白首屏。
+- Reduce Motion：关闭呼吸缩放和大幅过渡，保留静态层次；触觉可独立关闭。
+- Dynamic Type：内容允许纵向增长和滚动，不锁定正文高度。
+
+### 内容边界
+
+- 首批内容使用方寸原创短句，不伪造名人署名。
+- 句子不诊断、不说教、不把痛苦浪漫化，也不把正常状态描述成问题。
+- “绝望”等高风险记录继续优先展示静态现实支持入口，不用励志句替代支持。
+- 每日内容全部在本地选择，不新增网络、账号、分析或遥测。
+
+## 本次非目标
+
+- 不在本批实现小组件、通知、句册长期收藏和 28 天趋势。
+- 不更换 App Icon；先验证首页与练习气质。
+- 不修改旧工程 `iOSWatchApp`。
+- 不验证「方寸」商标或 App Store 名称可用性；发布前另行查重。
+
+## 验收体验
+
+- 启动后第一屏先看到方寸、日期和今日之言，不先看到权限说明或健康数值。
+- 10 秒内能理解今天最重要的一句话和一个动作。
+- 健康证据仍能找到，且来源、时间、可靠性不丢失。
+- 练习页面不存在语音开关，也不会发起系统合成语音或播放音频会话。
+- 浅色、深色、Dynamic Type、VoiceOver 与 Reduce Motion 均可使用。
+
+
+===== END FILE =====
+
+===== FILE: docs/plans/2026-08-11-fangcun-chenhun-implementation.md =====
+# 方寸「晨昏纸境」实施计划
+
+**目标：** 在保留现有健康数据与练习闭环的前提下，把 iPhone + Watch 的可见产品改为「方寸」，让首页先提供每日获得感，并撤掉系统合成语音。
+
+**架构：** 每日内容选择逻辑放入 `InnerBalanceCore`，SwiftUI 负责自适应主题和叙事层级；现有 HealthKit repository、SwiftData 模型、同步标识与推荐引擎不改。行为变化严格按 RED–GREEN–REFACTOR 实施。
+
+**方案：** 采用已批准的 A「晨昏纸境」。不推倒工程，不新增第三方依赖，不接入网络。
+
+---
+
+### Task 1：每日之言纯 Swift 核心
+
+**文件：**
+- 新建：`InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyReflection.swift`
+- 新建：`InnerBalanceCore/Tests/InnerBalanceCoreTests/DailyReflectionTests.swift`
+
+**步骤：**
+1. RED：添加“同一自然日结果稳定”的单个失败测试并运行。
+2. GREEN：实现最小模型、主题和稳定选择器，使测试通过。
+3. RED：逐个添加状态主题映射、跨日变化、通用降级与署名边界测试。
+4. GREEN：逐个补齐本地句库和选择逻辑。
+5. REFACTOR：消除选择器重复，保持全部 Core 测试通过。
+
+**验证：** `swift test --package-path InnerBalanceCore`
+
+### Task 2：首页新体验与晨昏主题
+
+**文件：**
+- 修改：`InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift`
+- 修改：`InnerBalance/InnerBalanceApp/DesignSystem/InnerBalanceTheme.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Home/HomeView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Home/BodyLoadCard.swift`
+
+**步骤：**
+1. RED：先添加首页必须出现“今日之言”“身体来信”“今日一事”的 UI 断言并运行，确认失败。
+2. GREEN：加入自适应纸白/墨黑语义色和四段首页结构，使断言通过。
+3. 保留基线 X/5、睡眠核对、证据来源/时间/可靠性与权限安全降级。
+4. REFACTOR：提取小型 SwiftUI section，保证 44pt 点击区、Dynamic Type 与 VoiceOver 顺序。
+
+**验证：** `xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:InnerBalanceUITests`
+
+### Task 3：品牌、导航与产品语言
+
+**文件：**
+- 修改：`InnerBalance/InnerBalance.xcodeproj/project.pbxproj`
+- 修改：`InnerBalance/InnerBalanceApp/App/RootView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Settings/SettingsView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/CheckIn/OptionalContextSheet.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings`
+- 修改：`InnerBalance/InnerBalanceWatch/App/WatchRootView.swift`
+- 修改：`InnerBalance/InnerBalanceWatch/Features/Practice/WatchPracticeView.swift`
+- 修改：`InnerBalance/InnerBalanceWatch/Features/Sync/WatchSyncStatusView.swift`
+
+**步骤：**
+1. RED：更新 UI 测试，要求“今日 / 调节 / 我的”导航和“方寸”品牌，确认旧版失败。
+2. GREEN：修改 iPhone/Watch 显示名、可见文案和导航标签，Bundle ID 与内部 target 名不变。
+3. Watch 首页加入当天短句，但仍保留记录、调节、同步三个独立入口。
+4. REFACTOR：检查所有用户可见“内衡”残留，只保留代码模块与兼容标识。
+
+**验证：** `rg -n '内衡' InnerBalance/InnerBalanceApp InnerBalance/InnerBalanceWatch InnerBalance/InnerBalance.xcodeproj/project.pbxproj`
+
+### Task 4：无语音调节体验
+
+**文件：**
+- 修改：`InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Practice/PracticeLibraryView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionView.swift`
+- 删除：`InnerBalance/InnerBalanceApp/Features/Practice/PracticeVoiceGuide.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/CheckIn/CheckInFlowView.swift`
+
+**步骤：**
+1. RED：添加进入真实练习后不存在“语音引导”、仍存在“触觉节奏”的 UI 测试，确认失败。
+2. GREEN：删除语音状态、开关、播报、音频中断监听和音频会话代码。
+3. 使用视觉提示、呼吸光晕和可关闭触觉维持节奏；Reduce Motion 时停止缩放动画。
+4. 调节库、情绪登记和播放器移除强制深色并跟随晨昏主题。
+5. REFACTOR：清除未使用的 AVFoundation 引用与失效清理路径。
+
+**验证：** `rg -n 'PracticeVoiceGuide|AVSpeech|语音引导|AVAudioSession' InnerBalance/InnerBalanceApp`
+
+### Task 5：回归、构建与真机前闸门
+
+**文件：**
+- 按测试失败最小修复上述文件；不修改 `iOSWatchApp`。
+
+**步骤：**
+1. 运行 Core 全套测试。
+2. 运行 iPhone App 单元测试与 UI 测试。
+3. 严格运行 Swift Format。
+4. 构建 iPhone Debug/Release 与 Watch Debug/Release。
+5. 在浅色、深色和大号 Dynamic Type 下采集首页截图做人工核对。
+6. 独立代码审查，修复全部 Critical/Important 后重跑受影响验证。
+
+**验证：**
+- `swift test --package-path InnerBalanceCore`
+- `swift format lint --recursive --strict InnerBalanceCore/Sources InnerBalanceCore/Tests InnerBalance/InnerBalanceApp InnerBalance/InnerBalanceWatch InnerBalance/InnerBalanceTests InnerBalance/InnerBalanceUITests`
+- `xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'platform=iOS Simulator,name=iPhone 16 Pro'`
+- `xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -configuration Release -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO`
+- `xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -configuration Release -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO`
+
+
+===== END FILE =====
+
+===== FILE: docs/plans/2026-08-12-fangcun-personalized-home-design.md =====
+# 方寸：状态驱动的个性化首页设计
+
+**日期：** 2026-08-12  
+**状态：** 用户已要求实施  
+**范围：** 当前 iPhone Build 1；Watch 罗盘延期，不引入网络、账号或 AI 在线生成
+
+## 目标
+
+用户选择当下状态后，首页立即用一句有明确作者和作品的哲学或心理学名家句回应，并结合身体指标给出一个可执行的练习。记录全部由交互自动形成，不留下需要填写的空白任务。
+
+## 方案比较
+
+### A. 状态驱动（采用）
+
+“现在怎样”是主观状态入口。每日名家句和恢复动作由状态决定，身体负荷调整当天安排与动作优先级。响应直接，且身体与情绪仍分开呈现。
+
+### B. 身体数据驱动
+
+句子和动作主要由 HRV、静息心率、睡眠、训练决定。自动化程度高，但容易替用户判断感受，也会让无数据用户体验变弱。
+
+### C. 在线生成
+
+每次用模型生成文案和建议。变化最多，但违背本地优先、无网络和无账号边界，也难以稳定控制医疗措辞，因此不采用。
+
+## 交互
+
+1. 打开首页先看到“今天读这句”，每句都显示作者和作品。
+2. 用户在“现在怎样”选择：平静、清醒、有触动、绷着、有点累、说不清。
+3. 点击即保存，不出现文字输入框。
+4. “今天读这句”柔和切换到该状态当天的名家句。
+5. “今天怎么安排”同时显示清晰的身体行动判断、唯一推荐练习和训练背景。
+6. 删除“今日足迹”；最近一次练习的主观变化并入“今天怎么安排”。
+7. 完整情绪登记使用一屏直触罗盘：点选位置后原地出现 4–6 个词，点词立即保存，不再出现预设按钮、滑杆或“继续”。
+
+## 个性化规则
+
+| 回声 | 句子主题 | 默认动作 |
+|---|---|---|
+| 平静 | 留住空间、不过度占满 | 冥想放松 |
+| 清醒 | 从看清走向行动 | 节律呼吸 |
+| 有触动 | 允许感受停留 | 冥想放松 |
+| 绷着 | 先解除生理紧绷 | 生理性叹息 |
+| 有点累 | 停止透支、恢复能量 | NSDR |
+| 说不清 | 不强求命名、先回身体 | 节律呼吸 |
+
+若身体负荷达到“偏高”，且回声没有更明确地指向“绷着”或“有点累”，优先推荐节律呼吸。凯格尔保留在练习库自主选择，不进入自动推荐，也不展示与压力关系的解释文案。
+
+## 今天怎么安排
+
+行动结论固定为：建立基线或无可靠数据时“照常安排”；可靠指标稳定时“可以推进”；一项独立可靠偏离时“今天收着一点”；两项及以上独立可靠偏离时“优先恢复”；较长训练仅保护 HRV/静息心率且整体结论为平稳时显示“训练后先恢复”。
+
+### 训练背景
+
+在现有训练保护逻辑之外，显示近 24 小时：
+
+- 训练次数和总时长；
+- 最近一次训练类型、时长、结束时间和来源；
+- 没有记录或没有授权时给出中性状态。
+
+训练仍只用于解释 HRV 与静息心率；它不能过滤睡眠等独立异常。
+
+## Watch
+
+本批不修改 Watch。Watch 罗盘与表盘形态单独设计、单独验收。
+
+## 数据与迁移
+
+- 继续使用 SwiftData 保存每日回声；旧文字补充保留在历史数据中，但新流程不再要求或提供文字输入。
+- 句子和推荐规则位于 `InnerBalanceCore`。句库只收录有作者和作品的名家句；旧版 `echo-*` 生成句在展示时换成同日同状态的名家句。
+- 不增加新的 HealthKit 权限；训练读取使用已有 workout 授权。
+
+## 验收
+
+- 六种状态各有一周不重复的有出处名家句和正确动作。
+- 状态点击后句子与动作立即变化，重启后保持。
+- 首页没有文本输入框，也没有空的“待完成记录”。
+- 首页只有“今天读这句”“现在怎样”“今天怎么安排”三段主内容，没有“今日足迹”。
+- 训练摘要正确区分有记录、无记录和不可用。
+- 情绪罗盘在同一屏完成位置和词语选择。
+- Dynamic Type、VoiceOver 和 Reduce Motion 可用。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-p0-response-loop/BLOCKED.md =====
+# BLOCKED
+
+## 2026-08-29 任务 0 流程证据
+
+- 流程偏差：只读的符号链接探测命令误用了任务书禁止的 `readlink . || true`。该命令没有改动文件，也没有用于验收判定；后续不再使用 `|| true`。
+- 命令失败：首次生成 `/tmp/fangcun-p0-protected.sha256` 时使用普通 `xargs`，含空格的 `iOSWatchApp/iOSWatchApp Watch App/**` 被拆分，输出 `Is a directory` / `No such file or directory`。该清单当场判定无效；现已改为逐行引用路径重建，105 个文件全部回读 `OK`，受影响的哈希基线已恢复。
+- 影响：无生产代码改动；三个指定文件的 SHA-256 均与任务书一致。
+- 诊断后固定哈希复核时，首条命令对 entitlements 和隐私清单使用了不存在的假定路径，退出码 1；该命令未读到这两个文件，不是哈希不匹配。随即用 `rg --files` 解析真实路径并重跑，`project.pbxproj`、`InnerBalance.entitlements`、`PrivacyInfo.xcprivacy` 三者哈希均与任务书精确一致，无文件改动。
+
+## 2026-08-29 任务 2 UI 验收上限
+
+- 接线后第 1 次完整 UI 验收在运行测试前被 Simulator `Busy` 阻断，退出码 65。
+- 第 2 次为 15/16；14 个既有 UI 测试与新增“详细→快捷”通过，新增“快捷→详细”仍显示旧的“平静”。
+- 只把新测试从“元素已经存在”改为等待标签成为“焦虑”，没有放宽最终断言；第 3 次仍为 15/16，同一测试失败，结果包为 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_19-46-36-+0800.xcresult`。
+- 处理：遵守同一验收命令三次失败后切换任务的规则，停止重跑并进入任务 3；最终全量回归前再做一次针对性根因修复。
+
+## 2026-08-29 任务 3 流程偏差
+
+- 新增 6 个 App 测试和 1 个 UI 测试均先于生产实现写入；完整 App 命令随后给出正确行为 RED。
+- 但 UI 新测试没有在生产实现前单独执行；第一次实际完整 UI 运行发生在实现之后，并因目标流程/可访问元素查询失败而红。该次不能作为严格的“生产实现前 UI RED”证据，因此不宣称完全符合这一过程条件。
+
+## 2026-08-29 最终 UI 阻塞（三轮上限）
+
+- 第 1 轮结果包：`/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_20-01-13-+0800.xcresult`，15/17；两个目标 UI 流程失败。
+- 第 2 轮结果包：`/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_20-08-05-+0800.xcresult`，16/17；“快捷→详细”和“练完→先完成→首页”通过，仅“详细→快捷”失败。随后修正快捷点击的真实 `updatedAt`。
+- 第 3 轮结果包：`/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_20-13-37-+0800.xcresult`，运行 2221.232 秒后退出码 65。两条状态反向路径均通过；失败分散为 4 个既有测试和跳过路径，错误包含应用未运行、事件合成超时、UI 查询超时，属于本轮 Simulator/XCTest 失稳表现。
+- 限定性诊断（不是第 4 轮完整回归）：以原命令参数对上述 5 个失败项逐一加 `-only-testing:<class>/<method>` 执行，5/5 均退出 0。结果包为 `...22-07-45-+0800.xcresult`、`...22-08-36-+0800.xcresult`、`...22-10-42-+0800.xcresult`、`...22-11-51-+0800.xcresult`、`...22-13-00-+0800.xcresult`。
+- 诊断时 Xcode 再次对 Clone 2 报 xctrunner 启动失败与 `Invalid device state`，实际在 Clone 1 上的目标测试仍通过。因此不改产品源码，也不改既有测试。
+- 结论：达到任务书最多 3 轮后停止，不再重跑或扩大到清理/重启模拟器。剩余工作仅为在模拟器恢复稳定后重新执行原始完整 UI 命令，确认 17/17；当前不能声称 Core/App/UI 全绿。
+
+## 2026-08-29 Goal 第 3 回合阻塞审计
+
+- 权威当前状态：所有可用 iOS 模拟器为 Shutdown，活跃 `xcodebuild`/XCTest 进程数为 0；不存在可重新连接或继续等待的验收会话。
+- 第 3 轮完整结果包 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_20-13-37-+0800.xcresult` 已不存在；后续 5 个单项结果包占据了 `Logs/Test` 现存的 5 个保留位，判定为 Xcode DerivedData 结果轮换。本文档中的当时退出码、失败数和错误摘要仍保留，但不再声称该结果包可现场回读。
+- `xcresulttool get test-results summary` 对现存 `22-07-45`、`22-08-36`、`22-10-42`、`22-11-51`、`22-13-00` 五个结果包均返回 `result: Passed`、`totalTestCount: 1`、`passedTests: 1`、`failedTests: 0`、`skippedTests: 0`。
+- 同一阻塞已连续出现三个 Goal 回合：第 1 回合在第 3 轮完整 UI 失败后达到上限；第 2 回合证明 5 个失败项单独均绿，但完整 17/17 仍缺；本回合复核后条件未改变。
+- 真实难点是任务书同时要求“完整 UI 全绿”和“最多 3 轮即停”。继续必须获得用户对第 4 次完整 UI 命令的明确授权，否则无法同时满足两条。
+
+## 2026-08-29 阻塞已解除
+
+- 用户已明确授权额外执行 1 次原始完整 UI 验收命令，因此上述“三轮上限”权限阻塞解除。
+- 该额外命令退出码 0，结果包 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_23-27-44-+0800.xcresult` 当前可回读；摘要为 17 passed、0 failed、0 skipped。
+- 随后 Core 为 53/53 通过，App 结果包 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_23-31-48-+0800.xcresult` 为 124 passed、0 failed、0 skipped。
+- 历史失败和流程偏差保留在本文件中，未删除或改写；当前无剩余阻塞项。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-p0-response-loop/PROGRESS.md =====
+# 方寸 P0 此刻回应闭环进度
+
+## 任务理解（10 行内）
+
+1. 目标：用户表达此刻后，方寸仅给出一个有身体背景依据的主动作，练完即有本地记录。
+2. 状态来源：快捷与详细不合并；同日最近主动表达生效，同时间详细优先，跨日失效。
+3. 身体数据只解释和调整动作，不命名情绪；未授权、加载、零基线、读取失败不得下确定结论。
+4. 完成与反馈解耦：计时结束或确认早停先幂等保存，反馈可跳过且只更新同一 session。
+5. 顺序：任务 0 保护基线 → 任务 1 纯 Swift 决策 → 任务 2 首页统一装配 → 任务 3 完成/反馈解耦 → 全量验收。
+6. 每项先新建测试并保留正确红灯，再最小实现到全绿；禁止修改现有测试或放宽断言。
+7. 最大风险：工作树既有大量用户改动，必须通过白名单、基线哈希和小差异避免覆盖。
+8. 范围：不改 Watch、工程配置、权限/隐私、旧测试、工具、角色素材和旧设计；不提交、推送、上传或删数据。
+
+## 任务 0：保护基线（已完成）
+
+- 时间：2026-08-29（Asia/Shanghai）
+- 真实路径：`.`（非符号链接）
+- 保护清单：`/tmp/fangcun-p0-protected.sha256`，105 个文件；`shasum -a 256 -c` 全部 `OK`。
+- `project.pbxproj`：`a42a3275d23188568e7f71ce31791bcdef6d82c6eba213929094e31bc5d53e49` — 匹配。
+- iOS entitlements：`e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e` — 匹配。
+- privacy manifest：`a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12` — 匹配。
+- 流程偏差与首次清单失败证据保留于 `BLOCKED.md`；重建后未留下未解决的受影响项。
+
+### `git status --short --branch` 基线
+
+```text
+## codex/inner-balance
+ M Tools/MARKET_SERVICE.md
+ M Tools/install_market_service.sh
+ M Tools/market_service.py
+ M iOSWatchApp/iOSWatchApp.xcodeproj/project.pbxproj
+ M iOSWatchApp/iOSWatchApp/ContentView.swift
+ M iOSWatchApp/iOSWatchApp/HealthKitRecoveryManager.swift
+ M iOSWatchApp/iOSWatchApp/Info.plist
+ M iOSWatchApp/iOSWatchApp/MarketDashboardView.swift
+ M iOSWatchApp/iOSWatchApp/MarketDataManager.swift
+ M iOSWatchApp/iOSWatchApp/PomodoroSessionView.swift
+ M iOSWatchApp/iOSWatchApp/RecoveryStatusView.swift
+ M iOSWatchApp/iOSWatchApp/iOSWatchAppApp.swift
+?? .agents/
+?? InnerBalance/
+?? InnerBalanceCore/
+?? Tools/AI_STOCK_POOL_NOTICE.md
+?? Tools/Tests/
+?? Tools/requirements-personal-os.txt
+?? competitor-profiles/
+?? docs/design/
+?? docs/plans/2026-08-10-inner-balance-testflight-plan.md
+?? docs/plans/2026-08-11-fangcun-chenhun-implementation.md
+?? docs/plans/2026-08-12-fangcun-personalized-home-design.md
+?? iOSWatchApp/iOSWatchApp/CoreLogic.swift
+?? iOSWatchApp/iOSWatchApp/EdgeSpeechProtocol.swift
+?? iOSWatchApp/iOSWatchApp/EdgeSpeechWebSocketTransport.swift
+?? iOSWatchApp/iOSWatchApp/EdgeTextToSpeechServiceClient.swift
+?? iOSWatchApp/iOSWatchApp/IndustryHeatViews.swift
+?? iOSWatchApp/iOSWatchApp/MarketResearchStore.swift
+?? iOSWatchApp/iOSWatchApp/MarketResearchViews.swift
+?? iOSWatchApp/iOSWatchApp/SpeechAudioPlayer.swift
+?? iOSWatchApp/iOSWatchApp/TextToSpeechCore.swift
+?? iOSWatchApp/iOSWatchApp/TextToSpeechFeature.swift
+?? iOSWatchApp/iOSWatchApp/TextToSpeechServiceClient.swift
+?? iOSWatchApp/iOSWatchApp/TextToSpeechView.swift
+?? iOSWatchApp/iOSWatchApp/TrainingPlan.swift
+?? iOSWatchApp/iPadApp/
+```
+
+## 当前位置
+
+## 任务 1：统一当前状态决策（已完成）
+
+- RED：新建 `CurrentMomentDecisionTests.swift`，6 个 `@Test` 声明。首次 Core 命令退出码 1，混入新测试 helper 的 `static member ... cannot be used on instance` 错误，判定为无效红灯；只修正 helper 作用域。
+- 正确 RED：第二次 `swift test --package-path InnerBalanceCore --scratch-path /tmp/fangcun-p0-core` 退出码 1；失败核心是 `cannot find 'CurrentMomentDecisionEngine' in scope`、`CurrentMomentQuickState`、`CurrentMomentDetailedState`。
+- GREEN：新建 `Recommendation/CurrentMomentDecision.swift`，实现同日最近者胜、同时间详细优先、跨日失效、无状态、四档身体负荷、稳定 reason code/规则版本及凯格尔禁荐。
+- 首次绿灯：完整 Core 命令退出码 0，`Test run with 53 tests in 13 suites passed`。
+- 反向验证：故意把“更新的详细登记胜出”断言改为 `.quick(.tired)`，完整 Core 命令退出码 1，53 个测试仅该测试 1 issue；实际值为 `.detailed(...)`。
+- 恢复与整理后：两次完整 Core 命令均退出码 0，最新为 `Test run with 53 tests in 13 suites passed`；53 个 `@Test` 声明，0 failure，无 skip/disabled/TODO。
+
+## 当前位置
+
+## 任务 2：首页统一装配（App 已完成，UI 反向路径留待全量修复）
+
+- RED：在指定新文件加入 6 个 App 测试与 2 个 UI 测试。App 首次完整命令退出码 65，核心失败为缺少 `TodayCoordinator` / `TodayBodyContext`；UI 首次完整命令退出码 65，既有 14 个 UI 测试全过，仅两个新 `home.currentState` 场景失败。
+- GREEN（App）：新增 `TodayCoordinator` / `TodayViewState`，Root 只注入依赖与导航；Home 统一装配单一状态、单一解释、单一动作及当日最近练习。两次完整 App 命令退出码均为 0，最新 `** TEST SUCCEEDED **`。
+- UI 接线：快捷与详细两条反向路径已接入同一 `TodayCoordinator`；“详细→快捷”新测试和 14 个既有 UI 测试均通过。
+- UI 验收上限：接线后的三次完整 UI 命令均已使用。第 1 次在测试前被 Simulator `Busy` 阻断；第 2 次 15/16，通过项包含“详细→快捷”，失败项是“快捷→详细”读到旧的“平静”；只修正新测试的等待条件后，第 3 次仍为 15/16，同一场景失败。
+- 按任务书不再重复该验收命令；该单一 UI 反向路径进入最终回归修复清单，不把 Task 2 宣称为 UI 全绿。
+
+## 当前位置
+
+## 任务 3：完成与反馈解耦（实现与 App 验收完成）
+
+- RED：在指定新文件加入 6 个 App 测试与 1 个 UI 测试。首次完整 App 命令退出码 65，编译器明确报 `nil is not compatible with expected argument type 'Int'` 与 `Missing argument for parameter 'afterRating'`，命中“无反馈完成记录”缺口。
+- 实现：完成记录的练前/练后值可缺省；默认练前值不再当作输入；结束后先用固定 sessionID 幂等保存本地 completion 与 Mindful Session；“保留这次变化”只更新同一记录并写 post State of Mind；“先完成”不写 post、不造前后差。
+- SwiftData：保留唯一 sessionID，已有对象原位更新，不删记录、不删库重建；可选字段对旧非空值保持可读。
+- App GREEN：修正一个新增测试宏对 throwing expression 的写法后，完整 App 命令退出码 0，随后多次完整命令均 `** TEST SUCCEEDED **`；最新结果包 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_20-12-58-+0800.xcresult`。
+- 重复保存反证：故意把唯一 completion 行数断言从 1 反转为 2，完整 App 命令退出码 65，唯一失败为 `repeatedCompletionIsIdempotent()`；恢复为 1 后完整 App 命令退出码 0。实际为 1 条 completion、1 次 Mindful 写入。
+- UI 路径：第 1 轮 15/17；第 2 轮新增“练完→先完成→首页”通过，首页可访问文本包含“已完成”且不含“持平”。UI 测试没有在生产实现前单独执行，流程偏差已写 `BLOCKED.md`。
+
+## 最终三轮全量回归
+
+- 第 1 轮 UI：15/17；失败为两个目标流程。根因分别是 Home 使用页面启动时刻作为决策 `now`，以及最新练习的 UI 查询类型过窄。
+- 第 2 轮 UI：16/17；“快捷→详细”和“练完→先完成→首页”均通过，只剩“详细→快捷”。根因是快捷保存仍把页面启动时刻写为 `updatedAt`。
+- 第 3 轮 UI：两条状态反向路径均通过，但 Simulator/XCTest 运行 2221 秒后出现 5 个分散基础设施失败：`application ... is not running`、`Timed out while synthesizing event`、`Timed out while evaluating UI query` 等；退出码 65。按“三轮即停”不再重跑。
+- Core 最终命令退出码 0：`Test run with 53 tests in 13 suites passed`。
+- App 最终命令退出码 0：`** TEST SUCCEEDED **`；124 个测试声明。
+- UI：17 个测试声明，skip 扫描 0；最新完整命令未全绿，因此不宣称达到最终 UI 验收条件。
+- 保护清单：`shasum -a 256 -c /tmp/fangcun-p0-protected.sha256` 105/105 `OK`。
+- 固定哈希：pbxproj、iOS entitlements、privacy manifest 分别仍为任务书给定的 `a42a…53e49`、`e82a…f039e`、`a331…a12`。
+- 白名单审计：以 `PROGRESS.md` 创建时间 `2026-08-29 19:23:42 +0800` 为界，源码/测试/本任务文档共 17 个更新文件，全部位于允许清单；白名单外更新 0。
+
+## 当前位置
+
+- 已按最大三轮规则停止完整 UI 回归。对第 3 轮的 5 个失败项逐一使用 `-only-testing` 诊断，5/5 单独通过：新增跳过反馈路径 14.434 秒、呼吸阶段 11.207 秒、辅助功能字号 28.452 秒、声音/触觉引导 15.407 秒、建议词立即保存 20.632 秒。
+- 单项结果包依次为 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_22-07-45-+0800.xcresult`、`...22-08-36-+0800.xcresult`、`...22-10-42-+0800.xcresult`、`...22-11-51-+0800.xcresult`、`...22-13-00-+0800.xcresult`，均为 `** TEST SUCCEEDED **`。
+- 诊断过程中 Xcode 仍对非实际承载测试的 Clone 2 报 `Invalid device state` / runner launch 失败，而 Clone 1 的目标测试通过；证据支持 Simulator/XCTest 克隆设备失稳，未见产品行为回归。
+- 功能实现、Core、App、计数、skip、保护哈希和白名单审计达标；但最新完整 UI 命令退出码仍为 65，不以单项绿灯替代 17/17 完整验收，证据与剩余工作见 `BLOCKED.md`。
+- 诊断后最新审计：保护清单 105/105 `OK`；三个固定哈希精确匹配；测试声明 53/124/17；skip/disabled/TODO 匹配 0；以 `2026-08-29 19:23:42 +0800` 为界共 17 个更新文件，白名单外 0。
+- Goal 第 3 个连续回合复核：当前 iPhone 17 Pro 与其他模拟器均为 Shutdown，活跃 `xcodebuild`/XCTest 进程 0，无可继续等待的任务。
+- 后续 5 个单项 `.xcresult` 将 DerivedData 中第 3 轮完整 UI 结果包轮换清理；完整命令的失败输出仍保留在本文档和 `BLOCKED.md`，但当前文件系统已无该完整结果包。现存 5 个单项结果包经 `xcresulttool` 回读均为 1 passed、0 failed、0 skipped。
+- 完成条件仍缺原始完整 UI 命令 17/17 绿灯；任务书又明确“最多 3 轮，满 3 轮即停”。在不获得突破该上限的新授权时，已无合规的验收动作可执行，不能标记完成。
+
+## 用户授权的额外完整验收（已完成）
+
+- 授权：用户明确允许“突破三轮上限，额外执行一次原始完整 UI 验收命令”；本次只执行该 1 次，未改命令参数，未先清理或重置模拟器。
+- UI：原始完整命令退出码 0，`** TEST SUCCEEDED **`，耗时 206.789 秒；结果包 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_23-27-44-+0800.xcresult`。`xcresulttool` 回读为 `totalTestCount: 17`、`passedTests: 17`、`failedTests: 0`、`skippedTests: 0`，两条状态反向路径与“练完→先完成→首页”均通过。
+- Core：紧随 UI 后重跑 `swift test --package-path InnerBalanceCore --scratch-path /tmp/fangcun-p0-core`，退出码 0，`Test run with 53 tests in 13 suites passed`。
+- App：原始完整 App 命令退出码 0，`** TEST SUCCEEDED **`；结果包 `/tmp/fangcun-p0-derived/Logs/Test/Test-InnerBalance-2026.08.29_23-31-48-+0800.xcresult`。`xcresulttool` 回读为 `totalTestCount: 124`、`passedTests: 124`、`failedTests: 0`、`skippedTests: 0`。
+- 最终审计：保护清单 105/105 `OK`；三个固定 SHA-256 精确匹配；测试声明 53/124/17；skip/disabled/TODO 匹配 0；更新文件 17，白名单外 0；仓库未配置 Swift lint/format 命令。
+- 完成判定：任务书的 Core/App/UI、数量、skip、保护哈希、白名单与两条目标 UI 流程已全部有当前绿灯证据；未提交、推送、上传或删除数据。
+
+===== END FILE =====
+
+===== FILE: docs/verification/STATUS.md =====
+# 当前交付与验证状态
+
+核验日期：2026-09-18。本文区分实际运行结果和历史设计目标。
+
+## 真机
+
+最终修复版已覆盖安装到配对的 iPhone 16 Pro，开发工具确认安装成功并启动 `com.yvainair.InnerBalance`。未卸载 App，保留现有数据。最终包含后台音频 session 准备、取消处理、呼吸页标题与舞台收尾修复。
+
+这是开发安装，不是 TestFlight / App Store 上架。签名 App、原始安装回执、设备标识和原始 `.xcresult` 留在开发者本机，公开仓库只提供代码、模拟器截图和摘要。
+
+## 独立仓库可运行性
+
+从当前 App 工程与网页原型整理出独立目录后，重新执行：
+
+| 检查 | 结果 |
+| --- | --- |
+| `swift test --package-path InnerBalanceCore` | 64 项测试通过 |
+| `xcodebuild build ... -scheme InnerBalance -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO` | 构建成功，包含 Watch companion target |
+| `cd web && npm ci --no-audit --no-fund` | 安装成功 |
+| `cd web && npm test` | 9 项模型测试通过 |
+| `cd web && npm run build` | 应用、角色工作室、品牌工作室打包成功 |
+
+验证工具链：Xcode 27 beta / Swift 6；Swift Package 要求 Swift 6.2+。个人 Team 配置在公开工程中留空，真机需自行签名。
+
+## 改版功能验证
+
+- 真机 App 单元测试：饮品组合、撤销、持久化、跨日、损坏存档保护与练习时钟，合计 7 项通过。
+- 音频：真实音频图、运行中启动、配置变化恢复、通知合并、取消后迟到结果、无可恢复配置时暂停，6 项通过。
+- UI 情景：平稳 / 偏高 / 数据不足，深色与较大字号测试通过。
+- UI 完整链路：首页 → 饮品增加与撤销 → 趋势 → 直接开始呼吸 → 暂停 / 继续 → 提前结束 → 保存 → 返回首页 → 设置，通过。
+- 动效开启：进入呼吸、等待阶段变化、暂停、提前结束，通过。
+
+最初一次完整 UI 测试曾在开始练习时因同步音频 session 等待而失败；修复后上述链路重新通过。失败历史没有作为通过记录混算。
+
+## 截图索引
+
+| 内容 | 截图 |
+| --- | --- |
+| 今日 | [首页](screenshots/259B610F-B230-4660-BA62-2D0D341B50E9.png) |
+| 饮品 | [增减与撤销](screenshots/DCC9B472-D944-49A8-A9C5-7F53D8E8FE03.png) |
+| 呼吸 | [动效开启](motion/E40F80CA-3DE4-47EB-A25A-1FEFBE3D2D38.png) / [暂停](motion/43469171-776F-413B-8EBE-C71693ECC76F.png) |
+| 保存 | [提前结束后的保存](screenshots/C7AA995E-6B86-4149-9790-12BAB3159022.png) |
+| 趋势 | [真实空白与已记录饮品](screenshots/55CA0D4C-2D70-4009-A957-B3C606E760E7.png) |
+| 设置 | [显示与偏好](screenshots/F4D2DA51-6C45-4F1D-8D75-10A75370A2CA.png) |
+| 三情景 | [平稳](scenarios/9D1B4C1D-54EA-4EFA-A4BE-F1F2610C9EFE.png) / [偏高深色](scenarios/514611FA-A1C6-418D-B60E-64FB2EFE16B4.png) / [数据不足大字](scenarios/2910023E-1EC2-466A-94A4-D5A806B51868.png) |
+
+截图来自模拟器与独立 UI 测试存储。三情景截图包含专门注入的演示状态；不上传真实个人健康数据。
+
+## 纳入与排除
+
+纳入当前原生源码与测试、网页源码与测试、确认角色、品牌资产、设计原文、历史方案、模拟器截图。旧方案保留但不作为当前定案。
+
+排除签名文件、账号凭证、设备标识、真实健康导出、构建缓存、依赖目录、来源不明的工作区改动和无关 App。重复打包 / 源码备份以已展开、可阅读的当前文件提供，避免 GPT 只能看到压缩包。
+
+## 尚不能从本次验证推导的结论
+
+没有完成商店审核或上架；没有宣称医学诊断能力；没有把网页 Mock 判定当成原生实测结果。当前物理设备的每个手势和后台场景没有全部自动化验收，自动化 UI 完整链路主要在 iPhone 16 Pro 模拟器验证。
+
+===== END FILE =====
+
+===== FILE: docs/verification/motion/manifest.json =====
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "43469171-776F-413B-8EBE-C71693ECC76F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-breathing-paused_0_D2A5B150-30FC-46FA-AA2C-3834F0329995.png",
+        "timestamp" : 1789698073.866
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "E40F80CA-3DE4-47EB-A25A-1FEFBE3D2D38.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-breathing-live_0_FCE76DDB-9283-4C98-A920-CDE938469F96.png",
+        "timestamp" : 1789698072.186
+      }
+    ],
+    "testIdentifier" : "FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit()",
+    "testIdentifierURL" : "test://com.apple.xcode/InnerBalance/InnerBalanceUITests/FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit"
+  }
+]
+===== END FILE =====
+
+===== FILE: docs/verification/screenshots/manifest.json =====
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "F4D2DA51-6C45-4F1D-8D75-10A75370A2CA.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-settings_0_E8ECC5B2-B3D5-4EDA-8931-76233FB864B3.png",
+        "timestamp" : 1789697900.105
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "C7AA995E-6B86-4149-9790-12BAB3159022.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-completion_0_13AAC336-88ED-4A75-9F61-4435D38D5B37.png",
+        "timestamp" : 1789697895.768
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "8CD125AB-64D4-4DE6-8542-C1926CE8A5D6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-breathing_0_FF04D1EF-F9BB-414B-B56B-6681FEC676D4.png",
+        "timestamp" : 1789697888.391
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "55CA0D4C-2D70-4009-A957-B3C606E760E7.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-trends_0_74BB9F1B-1B67-4136-BF5B-16C9F724DC2F.png",
+        "timestamp" : 1789697885.418
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "DCC9B472-D944-49A8-A9C5-7F53D8E8FE03.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-drinks_0_56E7D837-0FF9-4429-9054-E3DD2DA8D274.png",
+        "timestamp" : 1789697882.366
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "259B610F-B230-4660-BA62-2D0D341B50E9.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-home_0_E6CFCA98-3926-42F1-8422-37E27ED8C8E8.png",
+        "timestamp" : 1789697875.715
+      }
+    ],
+    "testIdentifier" : "FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()",
+    "testIdentifierURL" : "test://com.apple.xcode/InnerBalance/InnerBalanceUITests/FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings"
+  }
+]
+===== END FILE =====
+
+===== FILE: scripts/generate_ai_index.py =====
+#!/usr/bin/env python3
+"""Build public, readable source bundles and a complete tracked-file index."""
+from pathlib import Path
+from urllib.parse import quote
+import hashlib
+import json
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[1]
+RAW = "https://raw.githubusercontent.com/yvain57-afk/fangcun/main/"
+TEXT = {".swift", ".metal", ".md", ".txt", ".js", ".jsx", ".ts", ".tsx", ".json", ".css", ".html", ".svg", ".plist", ".entitlements", ".pbxproj", ".command", ".py", ".yml", ".yaml"}
+
+
+def main():
+    files = sorted(Path(p) for p in subprocess.check_output(
+        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=ROOT,
+        text=True).rstrip("\0").split("\0"))
+    files = [p for p in files if p.parts[0] != "ai" and p.name not in {
+        "FILE_INDEX.md", "llms.txt", "llms-full.txt", "publication-manifest.json"}]
+    # Only overwrite this script's generated outputs, never source files.
+    target = ROOT / "ai"
+    target.mkdir(exist_ok=True)
+    for old in target.glob("source-*.txt"):
+        old.unlink()
+    chunks, chunk, size = [], [], 0
+    for p in files:
+        if p.suffix not in TEXT or p.name == "package-lock.json":
+            continue
+        try:
+            content = (ROOT / p).read_text(encoding="utf-8")
+        except UnicodeError:
+            continue
+        block = f"\n===== FILE: {p.as_posix()} =====\n{content}\n===== END FILE =====\n"
+        if chunk and size + len(block.encode()) > 160_000:
+            chunks.append("".join(chunk)); chunk, size = [], 0
+        chunk.append(block); size += len(block.encode())
+    if chunk:
+        chunks.append("".join(chunk))
+    links = []
+    for number, content in enumerate(chunks, 1):
+        name = f"source-{number:02}.txt"
+        (target / name).write_text(content, encoding="utf-8")
+        links.append(f"- [{name}]({name}) — [raw]({RAW}ai/{name})")
+    (target / "README.md").write_text(
+        "# Readable source bundles\n\nGenerated from the public source files. "
+        "Every section names its original repository path. Binary images/audio and the "
+        "dependency lockfile remain available through FILE_INDEX.md. "
+        "Historical documents are not current completion claims.\n\n" + "\n".join(links) + "\n",
+        encoding="utf-8")
+    (ROOT / "llms-full.txt").write_text("\n".join(
+        (ROOT / p).read_text(encoding="utf-8") for p in [
+            "AI_CONTEXT.md", "docs/CURRENT_DESIGN.md", "docs/ARCHITECTURE.md",
+            "docs/verification/STATUS.md"]), encoding="utf-8")
+    (ROOT / "llms.txt").write_text(
+        "# Fangcun\n\n> Native iOS/watchOS wellbeing app and its design archive.\n\n"
+        f"- [AI entry]({RAW}AI_CONTEXT.md)\n"
+        f"- [Context in one file]({RAW}llms-full.txt)\n"
+        f"- [Complete file index]({RAW}FILE_INDEX.md)\n"
+        f"- [Source bundles]({RAW}ai/README.md)\n", encoding="utf-8")
+    all_files = sorted(set(files + [Path("ai") / p.name for p in target.iterdir()] +
+                           [Path("llms.txt"), Path("llms-full.txt")]))
+    index = ["# Complete file index", "", "Public source, assets and design materials. "
+             "Generated files are included; caches, private signing and user data are excluded.", ""]
+    manifest = []
+    for p in all_files:
+        data = (ROOT / p).read_bytes()
+        path = p.as_posix(); encoded = quote(path)
+        index.append(f"- [{path}]({encoded}) — [raw]({RAW}{encoded}) ({len(data):,} bytes)")
+        manifest.append({"path": path, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+    (ROOT / "FILE_INDEX.md").write_text("\n".join(index) + "\n", encoding="utf-8")
+    (ROOT / "publication-manifest.json").write_text(json.dumps({
+        "description": "File-level hashes of public materials; excludes this manifest and the generated index.",
+        "files": manifest}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Indexed {len(all_files)} files; wrote {len(chunks)} text bundles.")
+
+
+if __name__ == "__main__":
+    main()
+
+===== END FILE =====
+
+===== FILE: web/README.md =====
+# 方寸 Fangcun · 高保真交互测试原型
+
+依据用户提供的《全套 UI 改造深化设计系统与完整规格》制作：方案 A 轻版画日常，融合方案 B 猫狗情境姿态。交付日期：2026-09-17。
+
+## 打开预览
+
+当前机器预览：<http://127.0.0.1:4173/>。
+
+猫狗形态与动效工作台：<http://127.0.0.1:4173/character-studio.html>。可分别重播、暂停、查看单独与双角色原画，以及切换深浅背景。
+
+双击 **启动预览.command**。已运行时直接打开，未运行时启动本地服务。关闭启动终端将停止服务。需要 Node.js 22.12 或更新版本；首次启动会通过 npm 安装锁定版本的依赖，之后可离线运行。
+
+也可以在项目目录执行：
+
+```sh
+npm ci --no-audit --no-fund
+npm run dev
+```
+
+这是本机 Web 原型，地址仅在运行它的电脑上有效。手机尺寸预览已内置；尚未部署公网或安装进 iPhone。
+
+## 已实现的测试链路
+
+- **今日**：平稳 / 偏高 / 数据不足三种演示情景；清晰结论、依据摘要、一键进入 5 分钟练习；依据详情。
+- **陪伴角色**：以用户确认稿为参考，通过 imagegen 生成情景原画；本轮保留猫咪，重新设计圆脸垂耳的小狗，并增加单独出场；保留连贯圆润的轮廓、蓝橙双色和版画印痕。原画以局部网格变形呈现轻微动作，首页可点击查看大图；练习页胸腹随节拍起伏，脚底固定。
+- **饮品记录**：半屏弹层，水、咖啡（美式 / 甜拿铁）、酒精、糖饮快速增减；固定底部总量、撤销上一笔；甜拿铁同时累计饮品体积、咖啡因和糖饮份数，不重复累计体积。
+- **沉浸练习**：300 秒双吸一呼，暂停 / 继续、退出确认、提前结束也记录实际时长；页面隐藏时自动暂停；完成后可选择反馈并返回。
+- **趋势**：7 天状态分类柱，点选日期展示快照；数据不足使用空心标记，不当成零压力。示例周固定为 2026-09-11 至 09-17，最后一天联动当前演示场景和当日试用记录。
+- **设置**：深浅色、大字号、减少动态效果；咖啡因每杯估值可改，旧记录保留录入时数值。
+- **本地保存**：饮品和练习按本机日期存入浏览器 localStorage；不上传。禁用存储或空间不足时显示未保存提示。
+
+## 设计与规格取舍
+
+- 色彩来自文档 Tokens：版画蓝 `#1B355A`、印章橙 `#E07A5F`、暖纸白 `#FAF9F5`，深色使用指定的独立调色板；圆角、字号、44 px 点击区域集中管理。
+- 以首条原型请求的 **5 分钟**为统一测试流程，三种状态均可直接开始。完整规格中的其他练习、入门授权、睡眠独立详情、Watch 等不属于本次优先原型范围。
+- 文档未明确每段秒数，原型暂用 **吸气 4 秒 → 补吸 1 秒 → 呼气 7 秒**，共 25 轮。80% / 20% 表达为图形相对扩张阶段，不表示真实肺容量或测量结果。正式产品的练习参数仍需单独确定。
+- 减少动态效果时猫咪和圆环不缩放，只改变光晕透明度和文字节拍。
+- 咖啡因采用 mg，默认每杯 140 mg；酒精以预设约 10 g / 份估算。糖饮只显示份数，不根据饮料名称虚构糖克数。饮品总量表示记录体积，不声称等于净补水量。
+- 健康指标及压力结论均为 **Mock 演示数据**，没有接入 HealthKit，也没有实现或验证医学压力判定算法。练习结束不会自动把压力改成平稳。
+- 大字号是 Web 字号切换，不能替代原生 Dynamic Type 验收；无原生 Taptic、语音节拍或 Watch 同步。
+
+用户原始规格保存在 `docs/用户提供的完整设计规格.md`；确认稿保存在 `public/reference.png`。原始文档保留原文，其产品主张不代表原型已验证的能力。
+
+## 代码结构
+
+```text
+src/
+  App.jsx                  页面导航、偏好与本地记录
+  tokens.css               深浅色、字号、圆角 Tokens
+  styles.css               手机布局和响应式样式
+  models/                  饮品事务、呼吸节拍、演示数据
+  hooks/                   呼吸时钟与暂停行为
+  components/              原画渲染与局部动效、弹层、饮品记录
+  characterStudio.jsx      单独与双角色形态动效工作台
+public/characters/v3/      保留的猫咪与上一版原画
+public/characters/v4/      新小狗、单独与双角色情景原画
+docs/                     原始规格、生成提示词与资产校验清单
+  views/                   今日、依据、练习、完成、趋势、设置
+tests/
+  models.test.js            记录与节拍边界测试
+  ui/prototype.spec.js      浏览器完整链路测试
+artifacts/                 浅色、深色大字号、饮品和练习截图
+```
+
+技术栈：React、Vite、Tailwind CSS、Framer Motion、Lucide。无需账号、后端或外部图片服务。
+
+## 验证与试用
+
+```sh
+npm test
+npm run test:ui
+npm run build
+```
+
+交付时 9 项模型测试、10 项 Chrome 浏览器交互测试通过，生产构建通过。浏览器测试使用本机 Google Chrome；覆盖情景切换、弹层高度、增减撤销、刷新保存、呼吸阶段、暂停退出、300 秒完成、375 px 布局、深色、大字号、缺失数据、减少动态效果。完整 300 秒结束测试使用虚拟时钟加速，不代表已完成真实用户的 5 分钟体验研究。
+
+建议先做三个真实体验任务：
+
+1. 首页只看 3 秒后移开视线，说出今天结论、一个依据和下一步行动。
+2. 记录一杯水和一杯甜拿铁，撤销拿铁，观察汇总是否符合预期。
+3. 实际练习一轮，再测试暂停与退出，最后比较深色及大字号。
+
+自动测试确认核心信息与入口可见，**3 秒认知效率和舒适度仍需由真实使用者验证**。
+
+
+## 本轮：保留猫咪，重做小狗，增加单独出场
+
+猫咪的呼吸原画原文件复用。小狗重新设计为圆脸、短身体、两只自然垂下的耳朵；保留白色身体、蓝色版画线条和单侧橙耳。现在包含五张单角色画稿（包括一张小狗形象展示）和两张双角色画稿。
+
+| 画稿 | 出场位置 | 动作 |
+| --- | --- | --- |
+| dog-greeting.png | 角色工作台，展示新小狗 | 尾巴偶尔轻摆 |
+| cat-curious.png | 首页数据不足 | 猫咪独自探身观察小纸页 |
+| breathing.png（v3 原文件） | 练习入口、全屏练习 | 猫咪独自呼吸，胸腹跟随节拍 |
+| dog-rest.png | 首页偏高、提前结束 | 小狗独自趴下，身体缓缓起伏 |
+| dog-drink.png | 饮品弹层、记录反馈 | 小狗坐在水杯旁，记录后轻点头 |
+| duo-calm.png | 首页平稳 | 猫咪与新小狗坐在一起，尾巴轻摆 |
+| duo-complete.png | 完整练习结束 | 猫咪与新小狗轻碰爪 |
+
+本轮通过内置 image_gen 生成，原画保存在 `public/characters/v4/`；提示词和生成源路径在 `docs/character-artwork-v4-prompts.json`，资产校验在 `docs/character-artwork-v4-manifest.json`。复制原图后未做像素修改。深色保留白色纸面与原画配色。
+
+场景使用独立的资产与角色类型配置 `src/models/characterAssets.js`，避免“单独出场”的页面误用双角色图。首页查看按钮随当前角色显示“看看它”或“看看它们”，放大预览与首页保持同一场景。单角色使用方形展示区域，双角色使用横向区域。
+
+动作使用原生 WebGL 局部网格变形，没有新增依赖；这是原画上的轻微动作，不是逐帧动画。WebGL 不可用时回退到静态原画，离开屏幕或切换到后台时停止绘制。暂停冻结节拍与局部动作，减少动态效果时保留静态姿态。
+
+主要实现：`src/components/CharacterArtwork.jsx`、`src/components/artworkRenderer.js`、`src/models/characterMotion.js`。旧原画与本次修改前的代码均保留；本次代码备份在 `backups/before-dog-redesign-20260917-170155/`。
+
+验证覆盖单独猫咪、单独小狗及双角色的页面匹配、原画加载、脚底固定、局部变形幅度、呼吸与计时同步、暂停冻结、饮品增减撤销、大小字号与深色布局。截图保存在 `artifacts/`。
+
+## 动作与反馈精修
+
+沿用 v4 猫狗原画和单独 / 双角色分工。小狗轻歪头和摆尾，猫咪观察时小幅探身；点头区域让眼睛、鼻子的相对位置保持稳定。饮品操作后，标题下方显示本次增减或撤销结果，同时触发小狗回应。
+
+连续触发动作时，从当前已绘制的姿态用 160 ms 缓出过渡接入新动作，避免突然回到原位。角色大图增加“再看一次动作”；重播保持按钮焦点。减少动态效果时不显示重播入口。
+
+暂停、减少动态效果、后台、屏幕外，以及被弹层或全屏练习遮住的角色停止帧循环。点头和碰爪做完后停止绘制，下一次操作再唤醒；关闭弹层后，首页角色继续原来的进度。弹层沿用 230 ms 进入时长，改用 transform 与 opacity。
+
+时长与曲线集中在 `src/models/motionTokens.js`。相关验证包含快速连续记录、撤销后汇总、后台角色冻结与恢复、重播焦点、暂停及减少动态效果时不增加绘制次数。当前仍是本机 Web 原型；真实手机上的舒适度需继续试用。
+
+## 品牌标志提案：留一方余地
+
+将名称解释为“在纷乱的日常里，留一小处照顾自己的空间”。两段柔软的弧线围合中央留白，保留开口，以蓝色为主体、少量橙色点缀。已替换首页字框标志、网页图标与练习完成页签名，沿用现有猫狗角色。
+
+访问 `/brand-studio.html` 查看寓意、尺寸、单色、深色及角色搭配。SVG 和原始概念图在 `public/brand/`；完整设计说明和生成提示词见 `docs/方寸-logo-留一方余地.md`。这是一版可在原型中比较的品牌提案。
+
+本轮生产构建通过，首页三情景、五分钟完成及移动端深色大字号共 3 项相关浏览器测试通过；人工检查了首页深浅色搭配。修改前的版本在 `backups/before-brand-mark-20260918-000902/`。
+
+## 品牌应用补充
+
+`/brand-studio.html#applications` 新增暖白与深蓝 App 图标、可重播的启动展示、颜色与留白规范；设置页也统一使用新标志，并链接品牌预览。启动动效仅在预览中按需播放一次，支持减少动态效果及离屏暂停，实际首页继续直接进入。
+
+`public/brand/fangcun-brand-kit-v1.zip` 提供五份 SVG 源文件及两份设计说明。当前为 Web 预览与 SVG 设计素材，尚未接入原生 iOS 图标。完整规范在 `docs/方寸品牌使用规范-v1.md`。
+
+本次生产构建通过，新增 2 项浏览器测试通过：重播结束、深浅色、减少动态效果、素材下载、375 px 无横向溢出，以及从设置页打开品牌说明。相关截图为 `artifacts/brand-applications-desktop.png` 和 `artifacts/brand-applications-mobile.png`。
+
+===== END FILE =====
+
+===== FILE: web/brand-studio.html =====
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>方寸 · 留一方余地</title><link rel="icon" href="/brand/fangcun-mark.svg"/><style>
+:root{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#1B355A;background:#FAF9F5;font-synthesis:none}*{box-sizing:border-box}body{margin:0}a{color:inherit;text-decoration:none}a:focus-visible{outline:3px solid #E07A5F;outline-offset:5px}nav,main,footer{max-width:1140px;margin:auto}nav{display:flex;justify-content:space-between;align-items:center;padding:30px 0;font-size:13px}nav small{letter-spacing:2px}nav a{border-bottom:1px solid #cfd5dc;padding:10px 0}.intro{padding:42px 0 46px;max-width:720px}.eyebrow{font-size:12px;letter-spacing:2px;color:#687584}.intro h1{font-family:"Songti SC",serif;font-size:48px;line-height:1.3;letter-spacing:2px;font-weight:500;margin:16px 0}.intro p{font-size:17px;line-height:1.9;color:#5c6b7b;max-width:610px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{border-radius:26px;border:1px solid #e2e5e8;padding:30px;background:#fff;min-width:0}.panel h2{font-size:16px;font-weight:500;margin:0 0 20px}.hero{min-height:380px;display:flex;flex-direction:column;justify-content:center;align-items:center}.hero img{width:195px;height:195px}.wordmark{font-size:33px;letter-spacing:5px;font-weight:550;margin-top:20px}.english{font-size:10px;letter-spacing:4px;margin-top:6px}.meaning{display:flex;flex-direction:column;justify-content:center;background:#f0f3f5}.meaning h2{font-size:25px;margin-bottom:24px}.meaning p{font-size:15px;line-height:1.95;color:#526170;margin:10px 0}.meaning strong{font-weight:550;color:#1B355A}.dark{background:#1B355A;color:#FAF9F5;display:flex;flex-direction:column;min-height:285px;justify-content:space-between}.dark img{width:120px;height:120px;align-self:center}.caption{font-size:12px;color:#687584;line-height:1.8;margin-top:20px}.dark .caption{color:#c0cbd8}.sizes{display:flex;gap:28px;align-items:flex-end;justify-content:center;min-height:135px}.sizes figure{margin:0;text-align:center}.sizes figcaption{margin-top:16px;font-size:11px;color:#71808d}.header-demo{margin-top:22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.header-demo img{width:36px;height:36px}.header-demo strong{font-size:22px;font-weight:600;letter-spacing:2px}.header-demo small{margin-left:auto;color:#687584}.context{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:center}.context img{width:100%;mix-blend-mode:multiply}.context h2{font-family:"Songti SC",serif;font-size:28px;line-height:1.6;font-weight:500;margin:0}.context p{color:#687584;line-height:1.9;font-size:14px}.links{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}.links a{padding:13px 20px;border:1px solid #d6dee6;border-radius:24px;font-size:13px;min-height:44px}.links a:first-child{background:#1B355A;color:white;border-color:#1B355A}footer{padding:35px 0 45px;font-size:12px;color:#687584;line-height:1.8}body{padding:0 36px}@media(max-width:650px){body{padding:0 20px}nav{padding:20px 0}.intro{padding:25px 0}.intro h1{font-size:36px}.intro p{font-size:15px}.grid{grid-template-columns:1fr}.panel{padding:24px}.hero{min-height:330px}.context{grid-template-columns:1fr;gap:8px}.context img{max-width:350px;justify-self:center}.sizes{gap:25px}}
+</style></head><body>
+<link rel="stylesheet" href="/src/brand-studio.css"/>
+<nav><small>FANGCUN / BRAND SYSTEM 01</small><a href="/">放回 App 看看 ↗</a></nav>
+<main><section class="intro"><span class="eyebrow">方寸，为什么叫方寸</span><h1>留一方余地。</h1><p>在纷乱的日常里，留一小处照顾自己的空间。<br/>先听懂身体的信号，再慢慢找回自己的节奏。</p></section>
+<div class="grid"><section class="panel hero" aria-label="方寸标志方案"><img src="/brand/fangcun-mark.svg" alt="两段开口软弧围出留白的方寸标志"/><div class="wordmark">方寸</div><div class="english">FANGCUN</div></section>
+<section class="panel meaning"><h2>小小一处，也可以安顿自己。</h2><p><strong>中心的留白</strong>，是属于自己的那一小处空间。</p><p><strong>柔软的弧形</strong>，像被轻轻托住，有分寸的照顾。</p><p><strong>向外的开口</strong>，留有余地，也容得下呼吸。</p><p class="caption">这是本轮提出的品牌解释与标志方向。</p></section>
+<section class="panel"><h2>缩小后，仍然清楚</h2><div class="sizes"><figure><img src="/brand/fangcun-mark-mono.svg" width="16" height="16" alt="16 像素单色标志"/><figcaption>16</figcaption></figure><figure><img src="/brand/fangcun-mark.svg" width="24" height="24" alt="24 像素标志"/><figcaption>24</figcaption></figure><figure><img src="/brand/fangcun-mark.svg" width="36" height="36" alt="36 像素标志"/><figcaption>36</figcaption></figure><figure><img src="/brand/fangcun-mark.svg" width="64" height="64" alt="64 像素标志"/><figcaption>64</figcaption></figure></div><div class="header-demo"><img src="/brand/fangcun-mark.svg" alt=""/><strong>方寸</strong><small>页头组合</small></div><p class="caption">小尺寸保留清晰轮廓；蓝色承担主要识别，橙色只是轻轻一笔。</p></section>
+<section class="panel dark"><h2>单色，也能成立</h2><img src="/brand/fangcun-mark-white.svg" alt="暖白色单色标志"/><p class="caption">同一轮廓，用于深色底与单色应用。</p></section></div>
+<section id="applications" class="section-title"><span class="eyebrow">01 / 日常里的方寸</span><h2>从手机桌面，到打开的那一刻。</h2><p>同一个标志，保留同样的留白。点一下，感受轻轻舒展的启动提案。</p></section>
+<div class="application-grid"><div class="panel icon-panel"><h2>App 图标 · 暖白与深蓝</h2><div class="icon-pair"><figure><img src="/brand/fangcun-app-icon-light.svg" alt="暖白底蓝色方寸 App 图标"/><figcaption>日间</figcaption></figure><figure><img src="/brand/fangcun-app-icon-dark.svg" alt="深蓝底白色方寸 App 图标"/><figcaption>夜间</figcaption></figure></div><p class="caption">让标志周围留出充足空间，手机桌面上也能轻松辨认。</p><div class="lockup"><img src="/brand/fangcun-mark.svg" alt=""/><div><strong>方寸</strong><small>FANGCUN</small></div></div><p class="caption">页头组合 · 柔和的字形与克制的字距。</p><div class="preview-controls"><button id="launch-replay">播放启动效果</button><button id="launch-theme" aria-pressed="false">深色预览</button></div><label class="reduced-label"><input id="launch-reduced" type="checkbox"/>减少动态效果</label><p class="preview-status" id="launch-status" role="status">按需播放一次，约 1.8 秒；实际首页直接进入。</p></div>
+<div class="phone-wrap"><div class="launch-phone" data-theme="light" id="launch-phone" aria-label="方寸启动画面预览"><span class="phone-time">9:41</span><div class="launch-core" id="launch-core"><img id="launch-mark" src="/brand/fangcun-mark.svg" alt="方寸标志"/><strong>方寸</strong><small>FANGCUN</small></div><p class="launch-note">给自己，留一点空间。</p><i class="phone-home" aria-hidden="true"></i></div></div></div>
+<section class="section-title"><span class="eyebrow">02 / 克制，也有温度</span><h2>让颜色各司其职。</h2></section>
+<section class="panel"><div class="swatches"><div class="swatch"><i style="background:#1B355A"></i><b>版画蓝 · 识别</b><small>#1B355A</small></div><div class="swatch"><i style="background:#FAF9F5"></i><b>暖纸白 · 留白</b><small>#FAF9F5</small></div><div class="swatch"><i style="background:#E07A5F"></i><b>柔橙 · 温度</b><small>#E07A5F</small></div></div><div class="usage"><div><h3>小尺寸，优先清晰</h3><p>16 px 使用单色；24 px 起保留橙色。四周至少留出标志宽度的 1/4，不压进文字，也不额外套框。</p></div><div><h3>动作，点到即止</h3><p>标志仅在预览时舒展一次。练习里的呼吸节拍交给猫咪；日常里的回应交给猫狗。</p></div></div></section>
+<section class="panel context"><div><h2>标志留下空间，<br/>猫狗住进日常。</h2><p>抽象标志代表方寸这款产品；猫咪和小狗在具体情景里陪你观察、休息、呼吸。它们共享温柔的曲线与蓝橙色彩。</p></div><img src="/characters/v4/duo-calm.png" alt="已选用的猫咪与小狗形象"/></section>
+<div class="links"><a href="/">体验更新后的原型</a><a href="/brand/fangcun-brand-kit-v1.zip" download>下载完整品牌素材包</a><a href="/brand/logo-concept-board.png" target="_blank" rel="noreferrer">查看概念方案板 ↗</a></div></main>
+<footer>概念板由 imagegen 生成；此页展示的是按该方向重建的 SVG 应用稿。猫狗原画与现有界面配色保持不变。</footer>
+<script type="module" src="/src/brand-studio.js"></script></body></html>
+
+===== END FILE =====
+
+===== FILE: web/character-studio.html =====
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>方寸 · 猫狗形态与动效工作台</title></head><body><div id="root"></div><script type="module" src="/src/characterStudio.jsx"></script></body></html>
+
+===== END FILE =====
+
+===== FILE: web/docs/character-artwork-v3-manifest.json =====
+{
+  "reference": "public/reference.png",
+  "assets": [
+    {
+      "key": "calm",
+      "file": "public/characters/v3/calm.png",
+      "sha256": "1fcdc6af459ba91054a2d104ce92d3af2fe82b6932d0d4a542aff5c843c626e5",
+      "bytes": 1152972,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "rest",
+      "file": "public/characters/v3/rest.png",
+      "sha256": "306356690e9841953f35fbccb66caa2d8f240108b5d8b65949e3d4241d6d96b2",
+      "bytes": 1143789,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "curious",
+      "file": "public/characters/v3/curious.png",
+      "sha256": "af74caf0cd1260ee7360840c905204b0abaef72ff92a7e59d0ff90437df13eea",
+      "bytes": 1310669,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "drink",
+      "file": "public/characters/v3/drink.png",
+      "sha256": "6c8087863680f2adfc4258c103df248651b44eef7a861c1fe20dbcb8b8032685",
+      "bytes": 1612597,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "complete",
+      "file": "public/characters/v3/complete.png",
+      "sha256": "82bed2e9d35794c7af256297ae7b07e9191e3860dc44a80e70de3d83ea0fb71a",
+      "bytes": 1173052,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "breathing",
+      "file": "public/characters/v3/breathing.png",
+      "sha256": "8bb2ea4c22b460cf3f5d0a13918513d33af3a56c18ffe2b209a7e890a83b41f4",
+      "bytes": 1354108,
+      "matchesGeneratedOriginal": true
+    }
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: web/docs/character-artwork-v3-prompts.json =====
+{
+  "method": "Built-in image_gen",
+  "anchor": "web/public/reference.png",
+  "assets": [
+    {
+      "key": "calm",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-5335d965-3191-413b-959b-de2365b57cf3.png",
+      "prompt": "Use case: identity-preserve. Create a finished 2D mascot illustration asset for Fangcun, strictly derived from the attached APPROVED CHARACTER REFERENCE, not a reinterpretation. Keep the exact charming visual identity: soft chunky white cat with a continuous head-to-body silhouette (NO neck seam, NO bobblehead), round triangular ears, orange right ear, curved hook tail, two short front paws; very soft horizontal white puppy, round muzzle, orange drooping ear and small orange tail. Thick irregular dusty-blue rubber-stamp/linocut contours with subtle worn white flecks, exact reference dot eyes and tiny blue w mouth, almost no interior lines. Flat white bodies, dusty blue #365793 ink, muted apricot/coral #E88C6B accent. No black ink, no thin smooth vector strokes, no extra digits, no collars, no clothes, no eyebrows, no anatomical realism, no 3D, no gradients, no drop shadows. One scene only, cat on left and dog on right. Pure solid white #FFFFFF background, fully opaque. No transparency, no alpha, absolutely NO halos, shadows, bloom, auras or colored glow. Flat ink on clean white paper only. Landscape 3:2 canvas, centered complete silhouettes occupying about 82% canvas width and 62% canvas height, snug but never cropped, baseline around 78% image height, no text or labels. The original proportions and integrated silhouettes are essential. SCENE: Calm everyday companionship. Closely reproduce the approved seated plump cat beside the reclining puppy, their shoulders naturally touching. Cat has relaxed dot eyes and tiny smile; dog rests chin softly above paws with tiny smile. Preserve the original cat tall silhouette and low long puppy silhouette. Friendly, unforced, quietly cute."
+    },
+    {
+      "key": "rest",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-02b54709-ec8b-4189-8190-a605e253be51.png",
+      "prompt": "Use case: identity-preserve. Create a finished 2D mascot illustration asset for Fangcun, strictly derived from the attached APPROVED CHARACTER REFERENCE, not a reinterpretation. Keep the exact charming visual identity: soft chunky white cat with a continuous head-to-body silhouette (NO neck seam, NO bobblehead), round triangular ears, orange right ear, curved hook tail, two short front paws; very soft horizontal white puppy, round muzzle, orange drooping ear and small orange tail. Thick irregular dusty-blue rubber-stamp/linocut contours with subtle worn white flecks, exact reference dot eyes and tiny blue w mouth, almost no interior lines. Flat white bodies, dusty blue #365793 ink, muted apricot/coral #E88C6B accent. No black ink, no thin smooth vector strokes, no extra digits, no collars, no clothes, no eyebrows, no anatomical realism, no 3D, no gradients, no drop shadows. One scene only, cat on left and dog on right. Pure solid white #FFFFFF background, fully opaque. No transparency, no alpha, absolutely NO halos, shadows, bloom, auras or colored glow. Flat ink on clean white paper only. Landscape 3:2 canvas, centered complete silhouettes occupying about 82% canvas width and 62% canvas height, snug but never cropped, baseline around 78% image height, no text or labels. The original proportions and integrated silhouettes are essential. SCENE: Quietly leaning together and resting. The same cat is in a soft compact loaf posture, two small front paws tucked visibly beneath the chest, head not separated by an outline at the neck, curled tail beside it. The same puppy lies very low beside the cat, cheek touching the cat's shoulder; tiny gently closed eyes, no sadness, no sweat, no frowns. Their bodies are rounded and close like two warm buns. Clearly different resting silhouette from the upright reference but unmistakably the same duo."
+    },
+    {
+      "key": "curious",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-2ec23dd1-c28f-42a9-b142-5193e0439797.png",
+      "prompt": "Use case: identity-preserve. Create a finished 2D mascot illustration asset for Fangcun, strictly derived from the attached APPROVED CHARACTER REFERENCE, not a reinterpretation. Keep the exact charming visual identity: soft chunky white cat with a continuous head-to-body silhouette (NO neck seam, NO bobblehead), round triangular ears, orange right ear, curved hook tail, two short front paws; very soft horizontal white puppy, round muzzle, orange drooping ear and small orange tail. Thick irregular dusty-blue rubber-stamp/linocut contours with subtle worn white flecks, exact reference dot eyes and tiny blue w mouth, almost no interior lines. Flat white bodies, dusty blue #365793 ink, muted apricot/coral #E88C6B accent. No black ink, no thin smooth vector strokes, no extra digits, no collars, no clothes, no eyebrows, no anatomical realism, no 3D, no gradients, no drop shadows. One scene only, cat on left and dog on right. Pure solid white #FFFFFF background, fully opaque. No transparency, no alpha, absolutely NO halos, shadows, bloom, auras or colored glow. Flat ink on clean white paper only. Landscape 3:2 canvas, centered complete silhouettes occupying about 82% canvas width and 62% canvas height, snug but never cropped, baseline around 78% image height, no text or labels. The original proportions and integrated silhouettes are essential. SCENE: Curious observation, waiting to learn. Same cat sits with head and upper body leaning slightly forward to the right, dot eyes attentive; same puppy in a compact sitting pose with one drooping orange ear, head tilted left towards cat. A tiny BLANK cream paper card lies between their front paws, both gaze towards that shared point. A SINGLE tiny blue curved curiosity stroke is allowed. No question mark or text. Gentle friendly inquisitiveness, not anxious. Preserve the cat continuous silhouette and short limbs."
+    },
+    {
+      "key": "drink",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-6f09d5c5-a139-440f-8fa9-986d1193a869.png",
+      "prompt": "Use case: identity-preserve. Create a finished 2D mascot illustration asset for Fangcun, strictly derived from the attached APPROVED CHARACTER REFERENCE, not a reinterpretation. Keep the exact charming visual identity: soft chunky white cat with a continuous head-to-body silhouette (NO neck seam, NO bobblehead), round triangular ears, orange right ear, curved hook tail, two short front paws; very soft horizontal white puppy, round muzzle, orange drooping ear and small orange tail. Thick irregular dusty-blue rubber-stamp/linocut contours with subtle worn white flecks, exact reference dot eyes and tiny blue w mouth, almost no interior lines. Flat white bodies, dusty blue #365793 ink, muted apricot/coral #E88C6B accent. No black ink, no thin smooth vector strokes, no extra digits, no collars, no clothes, no eyebrows, no anatomical realism, no 3D, no gradients, no drop shadows. One scene only, cat on left and dog on right. Pure solid white #FFFFFF background, fully opaque. No transparency, no alpha, absolutely NO halos, shadows, bloom, auras or colored glow. Flat ink on clean white paper only. Landscape 3:2 canvas, centered complete silhouettes occupying about 82% canvas width and 62% canvas height, snug but never cropped, baseline around 78% image height, no text or labels. The original proportions and integrated silhouettes are essential. SCENE: Logging a drink together. Same cat sits rounded on left. Same puppy sits compactly on right with a small plain blue-outlined water glass between them. Cat gently rests ONE short paw beside the glass; dog leans nose slightly toward glass, both look at the glass. White empty upper glass, a small pale-blue flat water area in lower half. No one is drinking, no steaming coffee, no alcohol, no straws. Other paws clearly planted, no extra arms. Quiet everyday companionship."
+    },
+    {
+      "key": "complete",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-ad11b14f-3944-4d3b-98eb-c8111d5087ee.png",
+      "prompt": "Use case: identity-preserve. Create a finished 2D mascot illustration asset for Fangcun, strictly derived from the attached APPROVED CHARACTER REFERENCE, not a reinterpretation. Keep the exact charming visual identity: soft chunky white cat with a continuous head-to-body silhouette (NO neck seam, NO bobblehead), round triangular ears, orange right ear, curved hook tail, two short front paws; very soft horizontal white puppy, round muzzle, orange drooping ear and small orange tail. Thick irregular dusty-blue rubber-stamp/linocut contours with subtle worn white flecks, exact reference dot eyes and tiny blue w mouth, almost no interior lines. Flat white bodies, dusty blue #365793 ink, muted apricot/coral #E88C6B accent. No black ink, no thin smooth vector strokes, no extra digits, no collars, no clothes, no eyebrows, no anatomical realism, no 3D, no gradients, no drop shadows. One scene only, cat on left and dog on right. Pure solid white #FFFFFF background, fully opaque. No transparency, no alpha, absolutely NO halos, shadows, bloom, auras or colored glow. Flat ink on clean white paper only. Landscape 3:2 canvas, centered complete silhouettes occupying about 82% canvas width and 62% canvas height, snug but never cropped, baseline around 78% image height, no text or labels. The original proportions and integrated silhouettes are essential. SCENE: A tiny shared acknowledgement after a breathing break. Both same characters sit low and rounded, cat on left, compact sitting puppy on right. They gently touch ONE lifted front paw each at the center, below their chins, other paws planted. Simple closed happy eye arcs and original tiny w smiles, no open mouths, no teeth. Two tiny orange contact strokes above the touching paws; no confetti, trophies, badges, text or hearts. The contact is light and calm, short anatomically connected forelegs, no elbow tangles."
+    },
+    {
+      "key": "breathing",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-ce34f87a-caae-46df-b641-7c93a3d12c58.png",
+      "prompt": "Use case: identity-preserve. Input image is the APPROVED Fangcun character identity. Create ONE solo CAT animation base illustration for the breathing exercise, not a new character. Match the original perfectly: plump white cat, head flows directly into pear-shaped body with NO horizontal neck seam, thick slightly irregular dusty-blue #365793 linocut / rubber stamp outlines with white worn flecks, ONE muted apricot-orange right ear, curved blue outlined hook tail on left, two very short rounded front paws planted symmetrically, rounded side haunches. Cat seated front-facing, very relaxed softly closed eyes (two tiny curved strokes), original tiny blue w mouth and blue nose, no eyebrows, no clothing, no extra limbs, no lines dividing head from body. Quiet warm friendly expression, not euphoric. Composition: SQUARE canvas, full cat including tail occupies 76% width and 76% height, feet baseline at 86% canvas height, centered, room for small motion above. Plain pure opaque white #FFFFFF background, no transparency, no shadows or colored glow, no gradients, no 3D, no text, no UI, no extra shapes. This is a finished ink illustration asset, not a vector outline or technical diagram. Keep the exact appealing proportions and substantial textured stroke weight of the reference."
+    }
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: web/docs/character-artwork-v4-manifest.json =====
+{
+  "method": "Built-in image_gen",
+  "revision": "v4 dog redesign and solo scenes",
+  "assets": [
+    {
+      "key": "dog-greeting",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-25943416-e1e9-494d-ac7c-c14686dc8d7d.png",
+      "file": "public/characters/v4/dog-greeting.png",
+      "sha256": "4fe758c0f08c4d8ed552bf6c3e84e44d0f9bff22111a1c8de92eebb4c3c79645"
+    },
+    {
+      "key": "dog-rest",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-6743ecf6-e8e6-45c7-b744-856a678b26c8.png",
+      "file": "public/characters/v4/dog-rest.png",
+      "sha256": "d45bcb478996dc84c70b3b771b9b230ba8729ed21220a544837dba2f63a30c08"
+    },
+    {
+      "key": "dog-drink",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-3824ccc6-dfc7-4486-8585-78dbd8c5c08f.png",
+      "file": "public/characters/v4/dog-drink.png",
+      "sha256": "6417d94ac837b24ac31bb96f0df94cf26bbb347dac87752171abdbb126465eab"
+    },
+    {
+      "key": "cat-curious",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-62ff18b1-4fa2-4764-93ce-620bed9929e5.png",
+      "file": "public/characters/v4/cat-curious.png",
+      "sha256": "80eaf2980ce86f3f971c31b60a44ab46d788fed87b483878d8cc1ffe7dcaded2"
+    },
+    {
+      "key": "duo-calm",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-32575d72-74d8-4c90-a6a9-3527d0cac9a0.png",
+      "file": "public/characters/v4/duo-calm.png",
+      "sha256": "269a775e9a81fa3c70bce678179e9da5e5b4a1d18e5211e94b5e00f4da2b5080"
+    },
+    {
+      "key": "duo-complete",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-67626500-91d2-458d-b369-85a80800b1ca.png",
+      "file": "public/characters/v4/duo-complete.png",
+      "sha256": "45027409d771b04e8caf135b096bf429c47ba0a289d30ccf87e7003e7ac46a72"
+    }
+  ],
+  "preservedCat": {
+    "file": "public/characters/v3/breathing.png",
+    "sha256": "8bb2ea4c22b460cf3f5d0a13918513d33af3a56c18ffe2b209a7e890a83b41f4",
+    "reusedUnmodified": true
+  }
+}
+
+===== END FILE =====
+
+===== FILE: web/docs/character-artwork-v4-prompts.json =====
+{
+  "method": "Built-in image_gen",
+  "revision": "v4 dog redesign and solo scenes",
+  "assets": [
+    {
+      "key": "dog-greeting",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-25943416-e1e9-494d-ac7c-c14686dc8d7d.png",
+      "prompt": "Use case: stylized-concept. Asset type: Fangcun app solo puppy mascot master artwork. The attached CAT is a STYLE reference only: match its chunky rounded proportions, thick dusty-blue rubber stamp outlines, sparse white worn-ink flecks, white body and small muted apricot accents. Design ONE NEW EXTREMELY CUTE PUPPY alone, front-facing with a subtle head tilt, full body sitting. A soft round mochi-shaped broad face flows gently into a short plump pear-shaped body, no neck seam and no separate floating head. TWO small rounded floppy ears clearly hang at the upper sides of the face, one warm apricot filled ear on viewer right, the other white with blue outline. Ears must read as actual attached folded ears, NOT a large orange oval painted on the cheek. Small blue round eyes set slightly low and fairly wide apart, a tiny rounded triangle nose centered between eyes and a very short relaxed smiling mouth. No protruding muzzle, no old long flat side-profile dog shape, no human features. Two short simple planted front paws, one tiny curved apricot tail peeking at lower right. Face is the focus, body is smaller and compact. Friendly quiet little companion, organic hand printed character, recognizable dog at thumbnail size. Match the reference blue and apricot exactly. Pure opaque white background, no shadows, no halos, no transparency. Square canvas, whole puppy centered occupying about 70 percent width and 72 percent height, ample clean white margins. No cat, no text, no props, no collar, no pink cheeks, no fur detail, no gradients, no 3D. The dog should feel as charming and simple as the reference cat, while clearly being a different species."
+    },
+    {
+      "key": "dog-rest",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-6743ecf6-e8e6-45c7-b744-856a678b26c8.png",
+      "prompt": "Use case: identity-preserve. Create a solo resting pose of EXACTLY the puppy in reference image 1. Same round baby face, floppy outlined ears with viewer-right ear apricot and other ear white, tiny blue nose, chunky white body, short paws, apricot tail, thick dusty-blue worn stamp ink. This is a pose change, NOT a redesign. Puppy ALONE lies curled compactly facing almost forwards, chin resting on two short front paws, gently closed crescent eyes and tiny content smile. Both drooping ears frame its face naturally. Body visibly tucked behind head, very short rounded body, NOT long sausage-shaped, no long snout, no sharp angles, no isolated oval ear spot. Cozy safe and peaceful, not sad. Full body square artwork occupying 72% width and 58% height, centered, baseline around 80% canvas height, pure opaque WHITE background, generous margins. No cat, objects, letters, floating head, shadow, glow, 3D, gradients, pink cheeks. Preserve the reference's exact ink colors, texture and cuteness."
+    },
+    {
+      "key": "dog-drink",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-3824ccc6-dfc7-4486-8585-78dbd8c5c08f.png",
+      "prompt": "Use case: precise-object-edit. Keep the puppy in the provided master image EXACTLY unchanged in pose and anatomy: same seated front-facing body, two planted short front paws, same tilted round face, two floppy ears, white/apricot ears, little tail, blue print texture and proportions. Add ONLY a small plain blue-outlined water glass on the ground to the puppy's viewer-left, just beside and not covering its paws. Do NOT raise a paw, do NOT redraw legs, do NOT add any limbs. Puppy simply sits beside its water glass. Keep same opaque white background, square composition, full body and glass with generous margins. No text, no shadows, no glow. This is a clean app illustration with the original sitting puppy plus one small glass."
+    },
+    {
+      "key": "cat-curious",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-62ff18b1-4fa2-4764-93ce-620bed9929e5.png",
+      "prompt": "Use case: identity-preserve. Create a SOLO illustration of only the EXACT CAT on the LEFT of the reference. Preserve its round continuous head-and-body silhouette, blue stamp outline, white body, apricot viewer-right triangular ear, white viewer-left ear, two cheek whisker strokes per side, dot eyes, tiny w smile, short forepaws and hook tail. Remove the dog completely. The cat stands in its familiar relaxed seated pose, head tilted slightly toward a tiny blank paper note on the floor to its viewer-right; one front paw rests near the note, eyes look gently at it. Curious quiet expression, no worried eyebrows. This is a minor pose variant of the accepted cat, do not redesign its face or proportions. Square composition, whole cat centered occupying ~72% width and 72% height with generous whitespace and feet baseline around82%. Solid opaque white background, no words, no question marks, no extra symbols, no dog, no shadows or glow. Exactly the same thick dusty-blue worn print texture and muted apricot accents."
+    },
+    {
+      "key": "duo-calm",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-32575d72-74d8-4c90-a6a9-3527d0cac9a0.png",
+      "prompt": "Use case: compositing. Two input images: image1 CAT is the approved identity, keep that CAT unchanged; its old reclining dog is REJECTED and must NOT appear. Image2 is the NEW APPROVED PUPPY MASTER to use. Create a warm horizontal duo illustration, cat on left, NEW puppy on right sitting close with shoulders touching gently. Cat: exact round white silhouette, hook tail, apricot right triangular ear, tiny dot eyes w smile from image1. Puppy: exact front-facing round broad face, TWO floppy outlined ears framing face (viewer-right apricot, other white), compact white body, tiny centered blue nose, short round paws and small apricot tail from image2; puppy's eyes slightly lowered towards the cat, small friendly smile. Puppy is a little shorter than cat and both sit on same baseline. No neck seams, no bobbleheads. Keep the two species distinct. Thick irregular dusty-blue linocut stamp outlines and worn ink, flat white bodies, muted apricot accents. Pure opaque white backdrop, no shadows, glow or transparency. Landscape3:2 image, centered full bodies occupying about82% width and62% height, ample margins, baseline at78%. No words, icons, props, collars, gradients or 3D. Do NOT reuse the old long side-profile dog in image1."
+    },
+    {
+      "key": "duo-complete",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-67626500-91d2-458d-b369-85a80800b1ca.png",
+      "prompt": "Use case: compositing. Image1 supplies ONLY the approved cat identity; REMOVE its old side-profile reclining dog entirely. Image2 supplies the redesigned puppy identity. Draw these two characters full body, cat left and NEW puppy right, sitting with their nearest short front paws gently touching at the center, closed crescent happy eyes and tiny smiles. Keep each grounded with the other front paw resting on floor, don't make long arms or human fingers. Cat exactly retains original chunky continuous white silhouette, curved hook tail and right apricot triangular ear. Puppy exactly retains NEW master broad round face framed by TWO actual drooping ears (one apricot on viewer-right and one white), tiny blue nose, short pear-shaped white body and small apricot tail; front or slight three-quarter view, no long snout or elongated body. Gentle modest shared satisfaction, no confetti. Thick irregular dusty-blue stamped contours, subtle worn ink holes, flat white bodies and muted apricot accents. Landscape3:2 full illustration centered at82% width, about62% height, feet baseline78%, opaque purewhite background, ample margins. No text, no shadows/glow, no 3D, no gradients, no clothes."
+    }
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: web/docs/方寸-logo-留一方余地.md =====
+# 方寸 Logo 概念：留一方余地
+
+这是本轮提出的设计解释，待用户评价，不是对产品命名历史的断言。
+
+## 核心寓意
+
+在纷乱的日常里，留一小处照顾自己的空间。
+
+方寸既有小小一处的尺度感，也让人联想到内心、心绪与分寸。产品先帮助用户理解身体的信号，再给出当下可做的缓解行动。品牌语气应允许不同状态存在，而不是要求人始终平静。
+
+## 图形逻辑
+
+两段柔软的弧形围出一块留白，中心仍与外界相通。弧形表达被温柔承托的感觉；开口表达有余地、能呼吸；少量橙色呼应现有角色。猫狗是陪伴者，抽象标志代表整个产品。
+
+采用版画蓝、暖纸白和少量印章橙。小尺寸使用清晰轮廓，避免细碎版画颗粒；单色版保留相同外形。页头不再使用“方字＋印章边框”。
+
+## 本轮交付
+
+- 内置 image_gen 生成的品牌概念板，原图未修改。
+- 根据该方向重新构建的 SVG 应用标志（并非逐像素描摹）。
+- 原型页头、标签图标及练习完成署名。
+- brand-studio.html：大小尺寸、单色、深色与页头预览。
+
+## 生成提示词
+
+Use case: logo-brand. Create ONE carefully designed 2x2 logo concept board for the Chinese wellbeing app "方寸" / "FANGCUN". The brand meaning is "a small space to care for your inner self in a busy day": a little room that gently holds you and leaves space to breathe. The product combines understanding bodily stress with practical recovery; it is not just a breathing timer. Design ONE coherent abstract symbol called "breathing room" and repeat EXACTLY the same mark across the board, not multiple unrelated logos.
+LOGO IDEA: two softly sculpted, thick rounded open curves, like two cupped gestures, facing and gently offset from each other to create a SMALL ALMOST-SQUARE WHITE NEGATIVE SPACE at the center. They do not close into a frame: generous open gaps connect that inner space to the outside. Simple fluid asymmetric but optically balanced silhouette; round cut ends; a hint of hand-made warmth. Dominant deep print blue #1B355A. One very small muted terracotta #E07A5F end segment is allowed, but the silhouette must work in single blue. Aim for a compact memorable mark readable at 24px. Do NOT draw a Chinese character inside a box, a stamp, square outline, brackets, medical heart, ECG, lungs, lotus, brain, cross, yin-yang symbol, infinity sign, animal silhouette, generic leaf or gradient orb. It should look open, humane, grounded and quiet, not corporate or clinical.
+BOARD: warm off-white #FAF9F5 canvas, sparse editorial layout, generous whitespace, subtle thin dividers. Top-left hero mark large with Chinese wordmark "方寸" and small "FANGCUN". Top-right repeats mark on a clean app-icon tile and as a tiny navy monochrome mark; no 3D mockup. Bottom-left simple real-looking app header with the mark plus "方寸", restrained grey utility icons, and the short sentence "给自己，留一点空间。" Below it place the provided cat/dog artwork SMALL and unchanged as brand companions, never part of the logo. Bottom-right a large monochrome white version on deep blue with tiny text "留白 · 呼吸 · 相伴". The attached image is existing MASCOT reference only; do not derive animal shapes for logo. Keep two different roles clear: abstract brand mark and friendly animal illustrations. Clean flat vector-like edges, understated rounded Chinese sans type, blue/white with tiny orange only, no decorative grain on small logo, no gradients, no metallic gold, no shadows, no stock photos, no watermark, no meaningless construction grids. Professional but friendly consumer app identity. Landscape 3:2 board.
+
+
+===== END FILE =====
+
+===== FILE: web/docs/方寸品牌使用规范-v1.md =====
+# 方寸 · 留一方余地
+
+2026-09-18：在用户认可的标志基础上整理应用规范。保留两段软弧的原始路径，不修改已选定的猫狗原画。
+
+## 寓意与品牌语
+
+在纷乱的日常里，留一小处照顾自己的空间。
+
+日常用语：给自己，留一点空间。
+
+标志表达容纳和留白；猫狗在观察、饮品记录、休息及呼吸练习中提供具体陪伴。
+
+## 颜色与尺寸
+
+版画蓝 #1B355A 为主色，暖纸白 #FAF9F5 为背景，柔橙 #E07A5F 仅作为局部点缀。深色背景使用白色标志；深蓝 App 图标保留少量橙色。
+
+16 px 使用单色标志，24 px 起可使用双色。标志四周留出至少宽度 1/4 的空间。不要拉伸、旋转、封闭开口或额外套框；不要在小尺寸添加版画颗粒。
+
+页头以现有系统中文字体搭配，建议字重 600、字距约 0.1em。展示中的中文字标仍为系统字体，不是定制字体或已转曲的商业字标文件。
+
+## 图标源文件
+
+- fangcun-mark.svg：双色透明底标志。
+- fangcun-mark-mono.svg：蓝色单色标志。
+- fangcun-mark-white.svg：暖白单色标志。
+- fangcun-app-icon-light.svg：暖白底，1024 × 1024。
+- fangcun-app-icon-dark.svg：深蓝底，1024 × 1024。
+
+图标源文件为完整方形；圆角仅在预览中模拟。标志占图标画布约 60%，保持充足留白。以上是 SVG 设计源文件，尚未生成或安装 iOS AppIcon 资源，也未进行商标检索。
+
+## 启动展示
+
+brand-studio.html 提供按需播放的启动提案：标志从 94% 轻轻展开到 102.5%，再停在 100%；全程约 1.8 秒，字标轻微淡入。只播放一次，不循环、不自动播放。支持减少动态效果；离开可见区域或切到后台时暂停。此提案不占用真实首页的进入时间。
+
+## 已应用与验证范围
+
+Web 原型页头、练习完成页、设置页统一使用品牌标志。品牌预览页包含深浅色 App 图标、启动动效、单色和小尺寸以及角色搭配。
+
+本包不含用户健康数据。素材保存在原型项目 public/brand，原始概念提示词见《方寸-logo-留一方余地.md》。
+
+===== END FILE =====

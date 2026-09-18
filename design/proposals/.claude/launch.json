@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fangcun-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8767", "--directory", "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-proposals"],
+      "port": 8767
+    }
+  ]
+}

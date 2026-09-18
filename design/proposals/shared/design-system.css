@@ -1,0 +1,421 @@
+/* Fangcun Design System - Shared Tokens & Base Styles */
+
+:root {
+  /* Brand Colors - from confirmed reference */
+  --fc-blue: #2B5EA7;
+  --fc-blue-dark: #1E4578;
+  --fc-blue-light: #E8EFF8;
+  --fc-blue-muted: #94B3D7;
+  --fc-blue-50: #F0F5FB;
+
+  --fc-orange: #E07B4F;
+  --fc-orange-light: #FDF0EB;
+  --fc-orange-muted: #F2B89E;
+
+  /* Semantic Colors */
+  --fc-calm: #2B5EA7;
+  --fc-calm-bg: #EDF3FB;
+  --fc-elevated: #C75B2A;
+  --fc-elevated-bg: #FDF0EB;
+  --fc-neutral: #8A9AB5;
+  --fc-neutral-bg: #F3F5F8;
+
+  /* Neutrals */
+  --fc-white: #FFFFFF;
+  --fc-paper: #FAFBFD;
+  --fc-gray-50: #F5F7FA;
+  --fc-gray-100: #ECEEF3;
+  --fc-gray-200: #D8DCE5;
+  --fc-gray-300: #B8BFD0;
+  --fc-gray-400: #8A95AD;
+  --fc-gray-500: #6B7793;
+  --fc-gray-600: #4A5568;
+  --fc-gray-700: #2D3748;
+  --fc-gray-800: #1A202C;
+  --fc-text: #2D3748;
+  --fc-text-secondary: #6B7793;
+  --fc-text-tertiary: #8A95AD;
+
+  /* Typography */
+  --fc-font-display: 'SF Pro Rounded', -apple-system, 'PingFang SC', sans-serif;
+  --fc-font-body: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  --fc-font-mono: 'SF Mono', 'Menlo', monospace;
+
+  /* Spacing */
+  --fc-space-xs: 4px;
+  --fc-space-sm: 8px;
+  --fc-space-md: 12px;
+  --fc-space-lg: 16px;
+  --fc-space-xl: 20px;
+  --fc-space-2xl: 24px;
+  --fc-space-3xl: 32px;
+  --fc-space-4xl: 40px;
+
+  /* Radius - slightly organic, not perfectly round */
+  --fc-radius-sm: 8px;
+  --fc-radius-md: 12px;
+  --fc-radius-lg: 16px;
+  --fc-radius-xl: 20px;
+  --fc-radius-pill: 100px;
+
+  /* Shadows */
+  --fc-shadow-sm: 0 1px 3px rgba(43, 94, 167, 0.06);
+  --fc-shadow-md: 0 2px 8px rgba(43, 94, 167, 0.08);
+  --fc-shadow-lg: 0 4px 16px rgba(43, 94, 167, 0.10);
+
+  /* iPhone frame dimensions */
+  --iphone-width: 393px;
+  --iphone-height: 852px;
+}
+
+/* Reset */
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+/* iPhone Frame Container */
+.iphone-frame {
+  width: var(--iphone-width);
+  height: var(--iphone-height);
+  background: var(--fc-white);
+  border-radius: 47px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
+  font-family: var(--fc-font-body);
+  color: var(--fc-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Status Bar */
+.status-bar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+.status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+.status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+/* Dynamic Island */
+.dynamic-island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 37px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 10;
+}
+
+/* Home Indicator */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background: #1a1a1a;
+  border-radius: 3px;
+}
+
+/* Content Area */
+.screen-content {
+  height: calc(var(--iphone-height) - 54px - 83px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.screen-content::-webkit-scrollbar { display: none; }
+
+/* Tab Bar */
+.tab-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 83px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--fc-gray-200);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  padding-top: 8px;
+  padding-bottom: 34px;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--fc-gray-400);
+  width: 64px;
+}
+.tab-item.active { color: var(--fc-blue); }
+.tab-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Typography Classes */
+.fc-title-lg {
+  font-size: 28px; font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+.fc-title {
+  font-size: 22px; font-weight: 700; line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+.fc-title-sm {
+  font-size: 18px; font-weight: 600; line-height: 1.3;
+  letter-spacing: -0.2px;
+}
+.fc-body {
+  font-size: 15px; font-weight: 400; line-height: 1.5;
+  letter-spacing: -0.1px;
+}
+.fc-body-sm {
+  font-size: 13px; font-weight: 400; line-height: 1.45;
+}
+.fc-caption {
+  font-size: 12px; font-weight: 400; line-height: 1.35;
+  color: var(--fc-text-secondary);
+}
+.fc-label {
+  font-size: 11px; font-weight: 500; line-height: 1.2;
+  letter-spacing: 0.3px; text-transform: uppercase;
+}
+.fc-number {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* Cards */
+.fc-card {
+  background: var(--fc-white);
+  border-radius: var(--fc-radius-lg);
+  padding: var(--fc-space-lg);
+  box-shadow: var(--fc-shadow-sm);
+  border: 1px solid var(--fc-gray-100);
+}
+
+/* Buttons */
+.fc-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 48px;
+  padding: 0 24px;
+  background: var(--fc-blue);
+  color: white;
+  border: none;
+  border-radius: var(--fc-radius-pill);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+}
+.fc-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 20px;
+  background: var(--fc-blue-light);
+  color: var(--fc-blue);
+  border: none;
+  border-radius: var(--fc-radius-pill);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fc-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--fc-blue);
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Tags / Chips */
+.fc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--fc-radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+}
+.fc-tag-calm {
+  background: var(--fc-calm-bg);
+  color: var(--fc-calm);
+}
+.fc-tag-elevated {
+  background: var(--fc-elevated-bg);
+  color: var(--fc-elevated);
+}
+.fc-tag-neutral {
+  background: var(--fc-neutral-bg);
+  color: var(--fc-neutral);
+}
+
+/* Page Background */
+body.page-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #E8EEF5;
+  font-family: var(--fc-font-body);
+}
+
+/* Screen-specific layouts */
+.page-header {
+  padding: var(--fc-space-lg) var(--fc-space-xl) var(--fc-space-sm);
+}
+.page-section {
+  padding: 0 var(--fc-space-xl);
+  margin-bottom: var(--fc-space-lg);
+}
+
+/* Beverages */
+.bev-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.bev-card {
+  background: var(--fc-gray-50);
+  border-radius: var(--fc-radius-md);
+  padding: 12px;
+  text-align: center;
+}
+.bev-icon { font-size: 24px; margin-bottom: 4px; }
+.bev-value { font-size: 20px; font-weight: 700; color: var(--fc-text); }
+.bev-label { font-size: 12px; color: var(--fc-text-secondary); margin-top: 2px; }
+.bev-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.bev-stepper-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--fc-gray-200);
+  background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--fc-blue);
+  cursor: pointer;
+}
+
+/* Chart placeholder */
+.chart-area {
+  width: 100%;
+  border-radius: var(--fc-radius-md);
+  overflow: hidden;
+}
+
+/* Progress ring for breathing */
+.breath-ring {
+  width: 200px; height: 200px;
+  position: relative;
+}
+
+/* Trend bars */
+.trend-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 80px;
+  padding-top: 8px;
+}
+.trend-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+}
+.trend-bar.calm { background: var(--fc-blue-muted); }
+.trend-bar.elevated { background: var(--fc-orange-muted); }
+.trend-bar.empty { background: var(--fc-gray-100); }
+
+/* Section headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--fc-space-md);
+}
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fc-text);
+}
+.section-more {
+  font-size: 13px;
+  color: var(--fc-blue);
+  font-weight: 500;
+}
+
+/* Evidence row */
+.evidence-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+.evidence-row + .evidence-row {
+  border-top: 0.5px solid var(--fc-gray-100);
+}
+.evidence-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.evidence-content { flex: 1; }
+.evidence-title { font-size: 14px; font-weight: 500; }
+.evidence-desc { font-size: 12px; color: var(--fc-text-secondary); margin-top: 1px; }
+.evidence-value { font-size: 14px; font-weight: 600; text-align: right; }
+
+/* Utility */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: var(--fc-space-sm); }
+.gap-md { gap: var(--fc-space-md); }
+.gap-lg { gap: var(--fc-space-lg); }
+.text-center { text-align: center; }
+.w-full { width: 100%; }
+.mt-sm { margin-top: var(--fc-space-sm); }
+.mt-md { margin-top: var(--fc-space-md); }
+.mt-lg { margin-top: var(--fc-space-lg); }
+.mb-sm { margin-bottom: var(--fc-space-sm); }
+.mb-md { margin-bottom: var(--fc-space-md); }
+.px-lg { padding-left: var(--fc-space-lg); padding-right: var(--fc-space-lg); }
+.px-xl { padding-left: var(--fc-space-xl); padding-right: var(--fc-space-xl); }
+.py-md { padding-top: var(--fc-space-md); padding-bottom: var(--fc-space-md); }

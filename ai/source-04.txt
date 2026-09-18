@@ -1,0 +1,4514 @@
+
+===== FILE: InnerBalance/InnerBalanceTests/Features/PracticePresentationTests.swift =====
+import AVFAudio
+import Foundation
+import InnerBalanceCore
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Practice presentation", .serialized)
+struct PracticePresentationTests {
+  @Test("五种练习使用与动作本身匹配的视觉舞台")
+  func practiceKindsChoosePurposeBuiltStages() {
+    #expect(PracticeStageKind.for(.physiologicalSigh) == .breathing)
+    #expect(PracticeStageKind.for(.pacedBreathing) == .breathing)
+    #expect(PracticeStageKind.for(.meditation) == .settling)
+    #expect(PracticeStageKind.for(.nsdr) == .bodyScan)
+    #expect(PracticeStageKind.for(.kegel) == .pelvicFloor)
+  }
+
+  @Test("练习后只需选择相对变化即可得到可比较的强度")
+  func quickComparisonMapsFromTheStartingLevel() {
+    #expect(PracticeChangeChoice.lighter.afterRating(before: 7) == 4)
+    #expect(PracticeChangeChoice.same.afterRating(before: 7) == 7)
+    #expect(PracticeChangeChoice.heavier.afterRating(before: 7) == 9)
+    #expect(PracticeChangeChoice.heavier.afterRating(before: 10) == 10)
+  }
+
+  @Test("未填写练前状态时，只需选择练后感受即可保留")
+  func feedbackWithoutStartingRatingNeedsOnlyPostPosition() {
+    #expect(
+      PracticeFeedbackPolicy.canSave(
+        beforeRating: nil, changeChoice: nil, hasPostPosition: true))
+    #expect(
+      !PracticeFeedbackPolicy.canSave(
+        beforeRating: nil, changeChoice: nil, hasPostPosition: false))
+  }
+
+  @Test("填写过练前状态时，保留变化仍需相对变化和练后感受")
+  func comparisonRequiresBothResponses() {
+    #expect(
+      !PracticeFeedbackPolicy.canSave(
+        beforeRating: 5, changeChoice: nil, hasPostPosition: true))
+    #expect(
+      !PracticeFeedbackPolicy.canSave(
+        beforeRating: 5, changeChoice: .lighter, hasPostPosition: false))
+    #expect(
+      PracticeFeedbackPolicy.canSave(
+        beforeRating: 5, changeChoice: .lighter, hasPostPosition: true))
+  }
+
+  @Test("没有练前参照的完成文案只确认保存现在的感受")
+  func savedPostStateDoesNotClaimAComparison() {
+    let detail = PracticeSavedCopy.detail(
+      kind: .pacedBreathing,
+      healthNeedsAttention: false,
+      hasSubjectiveComparison: false
+    )
+    #expect(detail.contains("此刻的感受"))
+    #expect(!detail.contains("变化"))
+  }
+
+  @Test("练习库先说明适用场景")
+  func practiceLibraryUsesSituationLanguage() {
+    #expect(PracticeKind.physiologicalSigh.outcomeTitle == "压力突然升高")
+    #expect(PracticeKind.pacedBreathing.outcomeTitle == "压力中等，节奏偏快")
+    #expect(PracticeKind.meditation.outcomeTitle == "压力较低，思绪占满")
+    #expect(PracticeKind.nsdr.outcomeTitle == "睡眠或训练透支")
+    #expect(PracticeKind.kegel.outcomeTitle == "专项训练，不用于即时减压")
+  }
+
+  @Test("五种练习都有完整且可读的功能说明")
+  func everyPracticeExplainsPurposeTimingStepsAndSafety() {
+    for kind in PracticeKind.allCases {
+      #expect(!kind.purpose.isEmpty)
+      #expect(!kind.bestFor.isEmpty)
+      #expect(!kind.steps.isEmpty)
+      #expect(!kind.preparation.isEmpty)
+    }
+
+    #expect(PracticeKind.physiologicalSigh.steps.contains("再补一小口"))
+    #expect(PracticeKind.pacedBreathing.steps.contains("4 秒"))
+    #expect(PracticeKind.nsdr.preparation.contains("不能代替正常睡眠"))
+  }
+
+  @Test("准备页用三个可理解的起点代替数字滑杆")
+  func startingChoicesHaveStableEvidenceValues() {
+    #expect(PracticeStartingChoice.allCases.map(\.rating) == [2, 5, 8])
+    #expect(PracticeStartingChoice.allCases.map(\.title) == ["还好", "有点需要", "很需要"])
+  }
+
+  @Test("静心、身体扫描和凯格尔都有独立的可视节奏")
+  func nonBreathingStageStatesFollowTheirOwnCadence() {
+    #expect(PracticeStageState.make(kind: .meditation, elapsed: 31).focusIndex == 1)
+    #expect(PracticeStageState.make(kind: .nsdr, elapsed: 46).focusIndex == 1)
+    #expect(PracticeStageState.make(kind: .kegel, elapsed: 2).intensity == 0.5)
+    #expect(PracticeStageState.make(kind: .kegel, elapsed: 8).intensity == 0.5)
+  }
+
+  @Test("暂停和继续共享同一个播放器页面身份")
+  func pauseDoesNotRebuildTheWholePlayer() {
+    #expect(PracticeScreenIdentity.for(.running) == .active)
+    #expect(PracticeScreenIdentity.for(.paused) == .active)
+    #expect(PracticeScreenIdentity.for(.ready) == .ready)
+    #expect(PracticeScreenIdentity.for(.comparison) == .comparison)
+  }
+
+  @Test("只有需要连续动画的舞台才高频刷新")
+  func timelineCadenceMatchesTheStage() {
+    #expect(
+      PracticeTimelineCadence.interval(
+        kind: .pacedBreathing, phase: .running, reduceMotion: false) == 1.0 / 30
+    )
+    #expect(
+      PracticeTimelineCadence.interval(
+        kind: .nsdr, phase: .running, reduceMotion: false) == 1
+    )
+    #expect(
+      PracticeTimelineCadence.interval(
+        kind: .nsdr, phase: .paused, reduceMotion: false) == 1
+    )
+  }
+
+  @Test("呼吸场域用弧面开合表达相位，而不是倒计时")
+  func breathingFieldTargets() {
+    #expect(
+      BreathingFieldPresentation.targetExpansion(for: .inhale, kind: .physiologicalSigh) == 0.82
+    )
+    #expect(
+      BreathingFieldPresentation.targetExpansion(for: .topUp, kind: .physiologicalSigh) == 1
+    )
+    #expect(
+      BreathingFieldPresentation.targetExpansion(for: .exhale, kind: .physiologicalSigh) == 0.28
+    )
+    #expect(BreathingFieldPresentation.targetExpansion(for: .inhale, kind: .pacedBreathing) == 1)
+  }
+
+  @Test("节律呼吸在吸气转呼气时弧面位置连续")
+  func pacedBreathingHasNoPhaseJump() {
+    let inhaleEnd = PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 3.999_999)
+    let exhaleStart = PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 4)
+    let before = BreathingFieldPresentation.currentExpansion(
+      for: inhaleEnd,
+      kind: .pacedBreathing
+    )
+    let after = BreathingFieldPresentation.currentExpansion(
+      for: exhaleStart,
+      kind: .pacedBreathing
+    )
+    #expect(abs(before - after) < 0.001)
+  }
+
+  @Test("减少动态效果时弧面不发生物理位移")
+  func reduceMotionRemovesArcTranslation() {
+    #expect(BreathingFieldPresentation.usesPhysicalTranslation(reduceMotion: false))
+    #expect(!BreathingFieldPresentation.usesPhysicalTranslation(reduceMotion: true))
+  }
+
+  @Test("暂停后恢复只播放当前相位的剩余部分")
+  func resumedBreathUsesRemainingPhaseDuration() {
+    let state = PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 6)
+    #expect(BreathingFieldPresentation.remainingAnimationDuration(for: state) == 4)
+    #expect(
+      BreathingFieldPresentation.currentExpansion(for: state, kind: .pacedBreathing) < 0.76
+    )
+    #expect(
+      BreathingFieldPresentation.currentExpansion(for: state, kind: .pacedBreathing) > 0.28
+    )
+  }
+
+  @Test("保存失败对话框的重试动作必须再次发起保存")
+  func saveFailureRetryPolicy() {
+    #expect(PracticeSessionDialogPolicy.shouldRetry(for: .retry))
+    #expect(!PracticeSessionDialogPolicy.shouldRetry(for: .dismiss))
+  }
+
+  @Test("提前结束文案不承诺尚未发生的保存，也不要求凯格尔评价感受")
+  func finishDialogCopyMatchesTheNextStep() {
+    #expect(PracticeSessionDialogCopy.finishActionTitle == "结束练习")
+    #expect(PracticeSessionDialogCopy.finishMessage == "结束后可保留已完成的时长。")
+    #expect(!PracticeSessionDialogCopy.finishMessage.contains("主观变化"))
+  }
+
+  @Test("凯格尔只说明练习本身，不解释它和压力的关系")
+  func kegelUsesAPlainBodyPracticeDescription() {
+    #expect(
+      PracticeKind.kegel.summary
+        == "轻收 4 秒、完全放松 8 秒，同时保持自然呼吸。"
+    )
+  }
+
+  @Test("凯格尔使用完成记录而不是主观调节证据")
+  func kegelUsesCompletionOnlyFlow() {
+    #expect(PracticeCompletionMode.for(.kegel) == .completionOnly)
+    #expect(PracticeCompletionMode.for(.physiologicalSigh) == .subjectiveComparison)
+  }
+
+  @Test("凯格尔准备页包含完整的安全提醒")
+  func kegelSafetyCopyCoversThePlannedConditions() {
+    let copy = PracticeKind.kegel.preparation
+    #expect(copy.contains("盆底持续紧张"))
+    #expect(copy.contains("排尿排便异常"))
+    #expect(copy.contains("产后"))
+    #expect(copy.contains("术后"))
+    #expect(copy.contains("专业人员"))
+  }
+
+  @Test("声音模式明确控制语音、节奏与环境声层")
+  func soundModeChoosesAudioLayers() {
+    let guided = PracticeAudioPlan.make(mode: .guided, ambienceEnabled: true)
+    let silent = PracticeAudioPlan.make(mode: .silent, ambienceEnabled: true)
+
+    #expect(guided.layers == [.voice, .cue, .ambience])
+    #expect(silent.layers.isEmpty)
+  }
+
+  @Test("五种练习使用各自的声音提示时间线")
+  func practiceKindsUsePurposeBuiltAudioCues() {
+    #expect(
+      PracticeAudioTimeline.cue(for: .physiologicalSigh, elapsed: 3) == .sighTopUp
+    )
+    #expect(
+      PracticeAudioTimeline.cue(for: .pacedBreathing, elapsed: 4) == .pacedExhale
+    )
+    #expect(
+      PracticeAudioTimeline.cue(for: .meditation, elapsed: 31) == .meditationBreath
+    )
+    #expect(
+      PracticeAudioTimeline.cue(for: .nsdr, elapsed: 46) == .nsdrShoulders
+    )
+    #expect(
+      PracticeAudioTimeline.cue(for: .kegel, elapsed: 4) == .kegelRelease
+    )
+  }
+
+  @Test("声音提示在相位内只触发一次并在下一周期重新触发")
+  func audioCueIdentityTracksPhaseBoundaries() {
+    let first = PracticeAudioTimeline.moment(for: .pacedBreathing, elapsed: 0.2)
+    let samePhase = PracticeAudioTimeline.moment(for: .pacedBreathing, elapsed: 3.8)
+    let nextCycle = PracticeAudioTimeline.moment(for: .pacedBreathing, elapsed: 10.2)
+
+    #expect(first.id == samePhase.id)
+    #expect(first.id != nextCycle.id)
+    #expect(first.cue == nextCycle.cue)
+  }
+
+  @Test("重复动作只在开头完整播报，长练习保持稀疏引导")
+  func voiceGuidanceDoesNotTalkThroughEveryCycle() {
+    #expect(
+      PracticeAudioTimeline.moment(for: .physiologicalSigh, elapsed: 1).shouldSpeak
+    )
+    #expect(
+      !PracticeAudioTimeline.moment(for: .physiologicalSigh, elapsed: 25).shouldSpeak
+    )
+    #expect(
+      !PracticeAudioTimeline.moment(for: .pacedBreathing, elapsed: 21).shouldSpeak
+    )
+    #expect(PracticeAudioTimeline.moment(for: .meditation, elapsed: 181).shouldSpeak)
+    #expect(PracticeAudioTimeline.moment(for: .nsdr, elapsed: 181).shouldSpeak)
+  }
+
+  @Test("NSDR 引导不会留下超过半分钟的空白")
+  func nsdrGuidanceAdvancesWithinThirtySeconds() {
+    let opening = PracticeAudioTimeline.moment(for: .nsdr, elapsed: 1)
+    let nextGuidance = PracticeAudioTimeline.moment(for: .nsdr, elapsed: 29)
+
+    #expect(opening.id != nextGuidance.id)
+  }
+
+  @Test("NSDR 身体扫描之间穿插轻柔呼吸提示")
+  func nsdrGuidanceIncludesBreathing() {
+    let nsdrCues = PracticeAudioCue.allCases.filter { $0.rawValue.hasPrefix("nsdr") }
+
+    #expect(nsdrCues.contains { $0.spokenText.contains("呼气") })
+    #expect(PracticeAudioTimeline.cue(for: .nsdr, elapsed: 51) == .nsdrBreath)
+  }
+
+  @Test("NSDR 在结束前把用户温和带回而不是突然停下")
+  func nsdrGuidanceClosesBeforeTheSessionEnds() {
+    let closing = PracticeAudioTimeline.moment(for: .nsdr, elapsed: 575, duration: 600)
+
+    #expect(closing.cue.spokenText.contains("睁开眼睛"))
+  }
+
+  @Test(
+    "NSDR 文字、视觉和触觉在语音相位边界同步",
+    arguments: [0.0, 24.999, 25, 49.999, 50, 75, 100, 125, 150, 569.999, 570, 575, 599]
+  )
+  func nsdrPresentationFollowsTheAudioPhase(elapsed: TimeInterval) {
+    let state = PracticeBodyScanState.make(elapsed: elapsed, duration: 600)
+    let audio = PracticeAudioTimeline.moment(for: .nsdr, elapsed: elapsed, duration: 600)
+    let visual = PracticeStageState.make(kind: .nsdr, elapsed: elapsed, duration: 600)
+
+    #expect(state.cue == audio.cue)
+    #expect(state.id == audio.id)
+    #expect(
+      PracticeKind.nsdr.cue(elapsed: elapsed, duration: 600) == audio.cue.spokenText)
+    #expect(visual.focusIndex == (state.focusIndex ?? -1))
+    #expect(
+      PracticeHapticTimeline.cueID(for: .nsdr, elapsed: elapsed, duration: 600) == audio.id)
+  }
+
+  @Test("NSDR 在第 25 秒聚焦肩膀，并在最后 30 秒统一进入返回阶段")
+  func nsdrVisualFocusAndReturnAreActionable() {
+    let shoulders = PracticeBodyScanState.make(elapsed: 30, duration: 600)
+    #expect(shoulders.cue == .nsdrShoulders)
+    #expect(shoulders.focusIndex == 1)
+    #expect(!shoulders.isReturning)
+
+    let beforeReturn = PracticeBodyScanState.make(elapsed: 569.999, duration: 600)
+    let returning = PracticeBodyScanState.make(elapsed: 570, duration: 600)
+    let laterReturn = PracticeBodyScanState.make(elapsed: 599, duration: 600)
+    #expect(!beforeReturn.isReturning)
+    #expect(returning.isReturning)
+    #expect(returning.focusIndex == nil)
+    #expect(returning.id != beforeReturn.id)
+    #expect(returning.id == laterReturn.id)
+  }
+
+  @Test("提示音的升降与时长能表达动作方向")
+  func cueToneProfilesMatchTheMovement() {
+    let inhale = PracticeCueToneSpec.for(.sighInhale)
+    let topUp = PracticeCueToneSpec.for(.sighTopUp)
+    let exhale = PracticeCueToneSpec.for(.sighExhale)
+    let contract = PracticeCueToneSpec.for(.kegelContract)
+    let release = PracticeCueToneSpec.for(.kegelRelease)
+
+    #expect(topUp.endFrequency > inhale.endFrequency)
+    #expect(exhale.duration > inhale.duration)
+    #expect(exhale.endFrequency < exhale.startFrequency)
+    #expect(release.endFrequency < contract.endFrequency)
+  }
+
+  @Test("提示音渲染为有包络的本地 PCM")
+  func cueToneRendererCreatesAnAudibleFadedBuffer() throws {
+    let sampleRate = 8_000.0
+    let spec = PracticeCueToneSpec.for(.sighInhale)
+    let buffer = try #require(PracticeToneRenderer.buffer(for: spec, sampleRate: sampleRate))
+    let samples = try #require(buffer.floatChannelData?[0])
+
+    #expect(buffer.frameLength == AVAudioFrameCount(sampleRate * spec.duration))
+    #expect(abs(samples[0]) < 0.001)
+    #expect(abs(samples[Int(buffer.frameLength) - 1]) < 0.01)
+    #expect((0..<Int(buffer.frameLength)).contains { abs(samples[$0]) > 0.02 })
+  }
+
+  @Test("不同练习拥有可循环且彼此不同的环境声底色")
+  func ambienceProfilesArePurposeBuiltAndRenderable() throws {
+    let meditation = PracticeAmbienceSpec.for(.meditation)
+    let nsdr = PracticeAmbienceSpec.for(.nsdr)
+    let sampleRate = 8_000.0
+    let buffer = try #require(
+      PracticeToneRenderer.ambienceBuffer(for: meditation, sampleRate: sampleRate)
+    )
+
+    #expect(meditation.frequencies != nsdr.frequencies)
+    #expect(buffer.frameLength == AVAudioFrameCount(sampleRate * meditation.duration))
+    #expect(buffer.format.channelCount == 2)
+  }
+
+  @Test("声音选项直接说明用户会听到什么")
+  func soundModesHavePlainLanguageCopy() {
+    #expect(PracticeSoundMode.guided.title == "语音引导")
+    #expect(PracticeSoundMode.rhythmOnly.title == "仅节奏")
+    #expect(PracticeSoundMode.silent.title == "静音")
+    #expect(PracticeSoundMode.guided.supportsAmbience)
+    #expect(!PracticeSoundMode.silent.supportsAmbience)
+  }
+
+  @Test("播放类别依赖系统的 A2DP 与 AirPlay 路由，不传入非法选项")
+  func playbackSessionUsesOnlyValidCategoryOptions() {
+    #expect(PracticeAudioSessionPolicy.category == .playback)
+    #expect(PracticeAudioSessionPolicy.mode == .default)
+    #expect(PracticeAudioSessionPolicy.options.isEmpty)
+  }
+
+  @Test("没有真人语音资源时不向用户开放语音选项")
+  func unavailableVoiceModeFallsBackHonestly() {
+    #expect(
+      PracticeSoundMode.availableCases(hasVoiceAssets: false) == [.rhythmOnly, .silent]
+    )
+    #expect(
+      PracticeSoundMode.resolved(.guided, hasVoiceAssets: false) == .rhythmOnly
+    )
+    #expect(
+      PracticeSoundMode.availableCases(hasVoiceAssets: true) == [.guided, .rhythmOnly, .silent]
+    )
+  }
+
+  @Test("语音资源齐全时默认引导，缺失时安全退回节奏")
+  @MainActor
+  func guidedVoiceIsThePreferredDefault() throws {
+    let suiteName = "PracticePresentationTests.guidedVoiceIsThePreferredDefault"
+    let defaults = try #require(UserDefaults(suiteName: suiteName))
+    defaults.removePersistentDomain(forName: suiteName)
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+
+    let preferences = PracticeSoundPreferences(defaults: defaults)
+
+    #expect(preferences.preferredMode == .guided)
+    #expect(preferences.mode(hasVoiceAssets: true) == .guided)
+    #expect(preferences.mode(hasVoiceAssets: false) == .rhythmOnly)
+  }
+
+  @Test("知性女声首次启用时打开语音，之后尊重用户选择")
+  @MainActor
+  func selectedVoicePackActivatesGuidanceOnlyOnce() throws {
+    let suiteName = "PracticePresentationTests.selectedVoicePackActivatesGuidanceOnlyOnce"
+    let defaults = try #require(UserDefaults(suiteName: suiteName))
+    defaults.removePersistentDomain(forName: suiteName)
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    defaults.set(PracticeSoundMode.rhythmOnly.rawValue, forKey: "practice.sound.mode")
+
+    let activated = PracticeSoundPreferences(defaults: defaults)
+    #expect(activated.preferredMode == .guided)
+
+    activated.preferredMode = .silent
+    let reopened = PracticeSoundPreferences(defaults: defaults)
+    #expect(reopened.preferredMode == .silent)
+  }
+
+  @Test("五种练习所需的知性女声资源都随 App 打包")
+  func selectedVoicePackIsComplete() throws {
+    #expect(PracticeKind.allCases.allSatisfy { PracticeVoiceAssets.isAvailable(for: $0) })
+    for cue in PracticeAudioCue.allCases {
+      let url = try #require(PracticeVoiceAssets.url(for: cue))
+      let file = try AVAudioFile(forReading: url)
+      #expect(file.length > 0)
+    }
+  }
+
+  @Test("真实音频图可以启动持续环境声")
+  @MainActor
+  func realAudioGraphStartsContinuousAmbience() async throws {
+    let coordinator = PracticeAudioCoordinator()
+    defer { coordinator.stop() }
+
+    let continuousAudioStarted = try await coordinator.prepare(
+      kind: .physiologicalSigh,
+      plan: PracticeAudioPlan.make(mode: .guided, ambienceEnabled: true)
+    )
+
+    #expect(continuousAudioStarted)
+  }
+
+  @Test("开始练习会让声音控制器进入持续播放状态")
+  @MainActor
+  func runningSessionStartsTheAudioController() async throws {
+    let viewModel = PracticeSessionViewModel(
+      plan: PracticeCatalog.protocol(for: .physiologicalSigh)!,
+      duration: 60
+    )
+    let controller = PracticeAudioController()
+    viewModel.start(beforeRating: 5)
+
+    let runTask = Task {
+      await controller.run(viewModel, mode: .guided, ambienceEnabled: true)
+    }
+    defer {
+      runTask.cancel()
+      controller.stop()
+    }
+    try await Task.sleep(for: .milliseconds(400))
+
+    #expect(controller.canContinueInBackground)
+  }
+
+  @Test("运行中音频配置变化会自动重建而不是变成静音暂停")
+  @MainActor
+  func engineConfigurationChangeRebuildsActiveAudio() async throws {
+    let viewModel = PracticeSessionViewModel(
+      plan: PracticeCatalog.protocol(for: .physiologicalSigh)!,
+      duration: 60
+    )
+    let controller = PracticeAudioController()
+    viewModel.start(beforeRating: 5)
+    let runTask = Task {
+      await controller.run(viewModel, mode: .guided, ambienceEnabled: true)
+    }
+    defer {
+      runTask.cancel()
+      controller.stop()
+    }
+    try await Task.sleep(for: .milliseconds(400))
+    #expect(controller.canContinueInBackground)
+
+    await controller.handleEngineConfigurationChange(viewModel)
+
+    #expect(viewModel.phase == .running)
+    #expect(controller.canContinueInBackground)
+  }
+
+  @Test("连续音频配置通知只重建一次")
+  @MainActor
+  func repeatedEngineConfigurationChangesAreCoalesced() async throws {
+    let coordinator = CountingPracticeAudioCoordinator()
+    let viewModel = PracticeSessionViewModel(
+      plan: PracticeCatalog.protocol(for: .physiologicalSigh)!,
+      duration: 60
+    )
+    let controller = PracticeAudioController(coordinator: coordinator)
+    viewModel.start(beforeRating: 5)
+    let runTask = Task {
+      await controller.run(viewModel, mode: .guided, ambienceEnabled: true)
+    }
+    defer {
+      runTask.cancel()
+      controller.stop()
+    }
+    let initialDeadline = ContinuousClock.now + .seconds(1)
+    while coordinator.prepareCount < 1, ContinuousClock.now < initialDeadline {
+      await Task.yield()
+    }
+    #expect(coordinator.prepareCount == 1)
+
+    controller.scheduleEngineConfigurationRecovery(viewModel)
+    controller.scheduleEngineConfigurationRecovery(viewModel)
+    #expect(!controller.canContinueInBackground)
+    let recoveryDeadline = ContinuousClock.now + .seconds(1)
+    while coordinator.prepareCount < 2, ContinuousClock.now < recoveryDeadline {
+      try await Task.sleep(for: .milliseconds(10))
+    }
+    try await Task.sleep(for: .milliseconds(450))
+
+    #expect(coordinator.prepareCount == 2)
+    #expect(viewModel.phase == .running)
+    #expect(controller.canContinueInBackground)
+  }
+
+  @Test("退出后迟到的音频准备结果不会重新激活练习")
+  @MainActor
+  func cancelledAudioPreparationDoesNotReactivateSession() async {
+    let coordinator = SuspendedPracticeAudioCoordinator()
+    let controller = PracticeAudioController(coordinator: coordinator)
+    let viewModel = PracticeSessionViewModel(
+      plan: PracticeCatalog.protocol(for: .physiologicalSigh)!, duration: 300)
+    viewModel.start(beforeRating: nil)
+    let task = Task { await controller.run(viewModel, mode: .guided, ambienceEnabled: true) }
+    while coordinator.pending == nil { await Task.yield() }
+    viewModel.finish()
+    task.cancel()
+    controller.stop()
+    coordinator.pending?.resume(returning: true)
+    coordinator.pending = nil
+    await task.value
+    #expect(!controller.canContinueInBackground)
+    #expect(coordinator.playCount == 0)
+  }
+
+  @Test("每条语音提示都有稳定的本地资源名")
+  func voiceCuesHaveStableResourceNames() {
+    #expect(PracticeAudioCue.sighTopUp.voiceResourceName == "practice_sigh_top_up")
+    #expect(PracticeAudioCue.nsdrShoulders.voiceResourceName == "practice_nsdr_shoulders")
+    #expect(
+      Set(PracticeAudioCue.allCases.map(\.voiceResourceName)).count
+        == PracticeAudioCue.allCases.count
+    )
+  }
+
+  @Test("语音文案短而可以离屏理解")
+  func voiceScriptsAreBriefAndActionable() {
+    #expect(PracticeAudioCue.sighTopUp.spokenText == "再补一小口。")
+    #expect(PracticeAudioCue.meditationReturn.spokenText.contains("回来就好"))
+    #expect(PracticeAudioCue.allCases.allSatisfy { $0.spokenText.count <= 20 })
+  }
+
+  @Test("只有持续环境声开启时才允许锁屏继续")
+  func backgroundPolicyRequiresContinuousAudio() {
+    #expect(
+      !PracticeAudioBackgroundPolicy.shouldPauseWhenInactive(
+        mode: .guided,
+        ambienceEnabled: true,
+        continuousAudioAvailable: true
+      ))
+    #expect(
+      PracticeAudioBackgroundPolicy.shouldPauseWhenInactive(
+        mode: .guided,
+        ambienceEnabled: false,
+        continuousAudioAvailable: true
+      ))
+    #expect(
+      PracticeAudioBackgroundPolicy.shouldPauseWhenInactive(
+        mode: .silent,
+        ambienceEnabled: true,
+        continuousAudioAvailable: true
+      ))
+    #expect(
+      PracticeAudioBackgroundPolicy.shouldPauseWhenInactive(
+        mode: .rhythmOnly,
+        ambienceEnabled: true,
+        continuousAudioAvailable: false
+      ))
+    #expect(
+      PracticeAudioBackgroundPolicy.shouldPauseForRouteChange(
+        reason: .oldDeviceUnavailable
+      ))
+  }
+
+  @Test("没有可恢复配置时，音频硬件变化才暂停练习")
+  @MainActor
+  func engineConfigurationChangeRequiresARebuild() async {
+    let viewModel = PracticeSessionViewModel(
+      plan: PracticeCatalog.protocol(for: .pacedBreathing)!,
+      duration: 180
+    )
+    let audio = PracticeAudioController()
+    viewModel.start(beforeRating: 5)
+
+    await audio.handleEngineConfigurationChange(viewModel)
+
+    #expect(viewModel.phase == .paused)
+    #expect(!audio.canContinueInBackground)
+  }
+}
+
+@MainActor
+private final class CountingPracticeAudioCoordinator: PracticeAudioCoordinating {
+  private(set) var prepareCount = 0
+  let configurationChangeSource: AnyObject = NSObject()
+
+  func prepare(kind: PracticeKind, plan: PracticeAudioPlan) async throws -> Bool {
+    prepareCount += 1
+    return true
+  }
+
+  func play(_ moment: PracticeAudioMoment) {}
+  func pause() {}
+  func stop() {}
+}
+
+@MainActor
+private final class SuspendedPracticeAudioCoordinator: PracticeAudioCoordinating {
+  let configurationChangeSource: AnyObject = NSObject()
+  var pending: CheckedContinuation<Bool, Never>?
+  var playCount = 0
+  func prepare(kind: PracticeKind, plan: PracticeAudioPlan) async throws -> Bool {
+    await withCheckedContinuation { pending = $0 }
+  }
+  func play(_ moment: PracticeAudioMoment) { playCount += 1 }
+  func pause() {}
+  func stop() {}
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Features/PracticeSessionViewModelTests.swift =====
+import Foundation
+import InnerBalanceCore
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Practice session")
+struct PracticeSessionViewModelTests {
+  @Test("Pause and resume use absolute time without counting the pause")
+  @MainActor
+  func pauseAndResumeKeepAccurateTime() throws {
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let clock = PracticeTestClock(now: startedAt)
+    let plan = try #require(PracticeCatalog.protocol(for: .pacedBreathing))
+    let viewModel = PracticeSessionViewModel(
+      plan: plan,
+      duration: 300,
+      now: { clock.now }
+    )
+
+    viewModel.start(beforeRating: 7)
+    clock.now = startedAt.addingTimeInterval(50)
+    viewModel.pause()
+    clock.now = startedAt.addingTimeInterval(100)
+    #expect(viewModel.remainingTime == 250)
+
+    viewModel.resume()
+    clock.now = startedAt.addingTimeInterval(150)
+
+    #expect(viewModel.phase == .running)
+    #expect(viewModel.remainingTime == 200)
+  }
+
+  @Test("Leaving the active scene pauses the session and preserves the remaining time")
+  @MainActor
+  func sceneInterruptionPausesSession() throws {
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let clock = PracticeTestClock(now: startedAt)
+    let plan = try #require(PracticeCatalog.protocol(for: .meditation))
+    let viewModel = PracticeSessionViewModel(
+      plan: plan,
+      duration: 300,
+      now: { clock.now }
+    )
+    viewModel.start(beforeRating: 6)
+    clock.now = startedAt.addingTimeInterval(40)
+
+    viewModel.handleInterruption()
+    clock.now = startedAt.addingTimeInterval(100)
+
+    #expect(viewModel.phase == .paused)
+    #expect(viewModel.wasInterrupted)
+    #expect(viewModel.remainingTime == 260)
+  }
+
+  @Test("NSDR 暂停期间保留当前阶段，恢复后按有效练习时长切换")
+  @MainActor
+  func nsdrPausePreservesTheSharedPhase() throws {
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let clock = PracticeTestClock(now: startedAt)
+    let viewModel = PracticeSessionViewModel(
+      plan: try #require(PracticeCatalog.protocol(for: .nsdr)),
+      duration: 600,
+      now: { clock.now }
+    )
+    viewModel.start(beforeRating: nil)
+    clock.now = startedAt.addingTimeInterval(24)
+    viewModel.pause()
+    clock.now = startedAt.addingTimeInterval(90)
+
+    let paused = PracticeBodyScanState.make(
+      elapsed: viewModel.duration - viewModel.remainingTime,
+      duration: viewModel.duration
+    )
+    #expect(paused.cue == .nsdrFace)
+    viewModel.resume()
+    #expect(
+      PracticeBodyScanState.make(
+        elapsed: viewModel.duration - viewModel.remainingTime,
+        duration: viewModel.duration
+      ) == paused)
+
+    clock.now = startedAt.addingTimeInterval(91)
+    let elapsed = viewModel.duration - viewModel.remainingTime
+    #expect(PracticeBodyScanState.make(elapsed: elapsed, duration: 600).cue == .nsdrShoulders)
+    #expect(PracticeAudioTimeline.cue(for: .nsdr, elapsed: elapsed, duration: 600) == .nsdrShoulders)
+    #expect(PracticeHapticTimeline.cueID(for: .nsdr, elapsed: elapsed, duration: 600) == 1)
+  }
+
+  @Test("Completing a session creates a restrained subjective comparison record")
+  @MainActor
+  func completionCreatesSubjectiveEvidence() throws {
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let clock = PracticeTestClock(now: startedAt)
+    let plan = try #require(PracticeCatalog.protocol(for: .physiologicalSigh))
+    let viewModel = PracticeSessionViewModel(
+      plan: plan,
+      duration: 60,
+      now: { clock.now }
+    )
+    viewModel.start(beforeRating: 7)
+    clock.now = startedAt.addingTimeInterval(60)
+
+    viewModel.finish()
+    let record = try #require(
+      viewModel.makeCompletion(afterRating: 4, sessionID: "practice-test")
+    )
+
+    #expect(record.practiceKind == .physiologicalSigh)
+    #expect(record.actualDuration == 60)
+    #expect(record.beforeRating == 7)
+    #expect(record.afterRating == 4)
+    #expect(record.subjectiveChange == -3)
+
+    #expect(viewModel.phase == .comparison)
+    viewModel.markSaved()
+    #expect(viewModel.phase == .saved)
+  }
+}
+
+@MainActor
+private final class PracticeTestClock {
+  var now: Date
+
+  init(now: Date) {
+    self.now = now
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Health/HealthAuthorizationCoordinatorTests.swift =====
+import HealthKit
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Health authorization layers")
+struct HealthAuthorizationCoordinatorTests {
+  @Test("Initial access does not request workout evidence permissions")
+  func initialAuthorizationIsMinimal() {
+    let plan = HealthAuthorizationPlan.initialBodyStatus
+    let readIdentifiers = Set(plan.typesToRead.map(\.identifier))
+    let shareIdentifiers = Set(plan.typesToShare.map(\.identifier))
+
+    #expect(readIdentifiers.contains(HKQuantityTypeIdentifier.heartRate.rawValue) == false)
+    #expect(shareIdentifiers.contains(HKWorkoutType.workoutType().identifier) == false)
+    #expect(readIdentifiers.contains(HKQuantityTypeIdentifier.heartRateVariabilitySDNN.rawValue))
+    #expect(readIdentifiers.contains(HKQuantityTypeIdentifier.restingHeartRate.rawValue))
+    #expect(readIdentifiers.contains(HKCategoryTypeIdentifier.sleepAnalysis.rawValue))
+    #expect(readIdentifiers.contains(HKWorkoutType.workoutType().identifier))
+    #expect(shareIdentifiers.contains(HKCategoryTypeIdentifier.mindfulSession.rawValue))
+    #expect(shareIdentifiers.contains(HKObjectType.stateOfMindType().identifier))
+  }
+
+  @Test("A status query error remains retryable instead of hiding authorization")
+  @MainActor
+  func statusQueryErrorIsRetryable() async {
+    let coordinator = HealthAuthorizationCoordinator(
+      healthStore: ThrowingAuthorizationStore(),
+      healthDataAvailable: { true }
+    )
+
+    let snapshot = await coordinator.status(for: .initialBodyStatus)
+
+    #expect(snapshot.state == .partial)
+  }
+}
+
+@MainActor
+private final class ThrowingAuthorizationStore: HealthAuthorizationStoring {
+  struct QueryError: Error {}
+
+  func statusForAuthorizationRequest(
+    toShare typesToShare: Set<HKSampleType>,
+    read typesToRead: Set<HKObjectType>
+  ) async throws -> HKAuthorizationRequestStatus {
+    throw QueryError()
+  }
+
+  func requestAuthorization(
+    toShare typesToShare: Set<HKSampleType>,
+    read typesToRead: Set<HKObjectType>
+  ) async throws {}
+
+  func authorizationStatus(for type: HKObjectType) -> HKAuthorizationStatus {
+    .notDetermined
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Health/HealthKitRepositoryTests.swift =====
+import HealthKit
+import Testing
+
+@testable import InnerBalance
+
+@Suite("HealthKit repository")
+struct HealthKitRepositoryTests {
+  @Test("Only the iPhone and Watch app bundle identifiers are treated as owned sources")
+  func ownedSourcesIncludeCompanionWatch() {
+    #expect(HealthKitRepository.isOwnedBundleIdentifier("com.yvainair.InnerBalance"))
+    #expect(
+      HealthKitRepository.isOwnedBundleIdentifier("com.yvainair.InnerBalance.watchkitapp")
+    )
+    #expect(HealthKitRepository.isOwnedBundleIdentifier("com.apple.Health") == false)
+  }
+
+  @Test("Owned State of Mind queries are restricted by app metadata before reading")
+  func ownedQueryUsesMetadataBoundary() {
+    let predicate = HealthKitRepository.ownedStateOfMindMetadataPredicate()
+    let description = predicate.predicateFormat
+
+    #expect(description.contains(HealthMetadataKeys.origin))
+    #expect(HealthKitRepository.isOwnedSyncIdentifier("com.yvainair.innerbalance.checkin.123"))
+    #expect(HealthKitRepository.isOwnedSyncIdentifier("other-app-checkin") == false)
+  }
+
+  @Test("Anchored State of Mind changes keep the highest sync version")
+  func anchoredChangesAreDeduplicated() {
+    let date = Date(timeIntervalSince1970: 1_786_296_600)
+    let old = HKStateOfMind(
+      date: date,
+      kind: .momentaryEmotion,
+      valence: -0.2,
+      labels: [],
+      associations: [],
+      metadata: [
+        HKMetadataKeySyncIdentifier: "check-in-123",
+        HKMetadataKeySyncVersion: 1,
+      ]
+    )
+    let current = HKStateOfMind(
+      date: date,
+      kind: .momentaryEmotion,
+      valence: 0.4,
+      labels: [.calm],
+      associations: [],
+      metadata: [
+        HKMetadataKeySyncIdentifier: "check-in-123",
+        HKMetadataKeySyncVersion: 2,
+      ]
+    )
+    let unrelated = HKStateOfMind(
+      date: date,
+      kind: .momentaryEmotion,
+      valence: 0,
+      labels: [],
+      associations: [],
+      metadata: nil
+    )
+
+    let samples = HealthKitRepository.deduplicateStateOfMindSamples([
+      old, unrelated, current,
+    ])
+
+    #expect(samples.count == 1)
+    #expect(samples.first?.valence == 0.4)
+    #expect(samples.first?.metadata?[HKMetadataKeySyncVersion] as? Int == 2)
+  }
+
+  @Test("常见训练类型在身体来信中有具体名称")
+  func commonWorkoutTypesHaveReadableNames() {
+    #expect(HealthKitRepository.activityName(for: .rowing) == "划船")
+    #expect(HealthKitRepository.activityName(for: .elliptical) == "椭圆机")
+    #expect(HealthKitRepository.activityName(for: .pilates) == "普拉提")
+    #expect(HealthKitRepository.activityName(for: .cardioDance) == "舞蹈")
+    #expect(HealthKitRepository.activityName(for: .tennis) == "网球")
+    #expect(HealthKitRepository.activityName(for: .basketball) == "篮球")
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Health/HealthMetadataTests.swift =====
+import HealthKit
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Health metadata")
+struct HealthMetadataTests {
+  @Test("State of Mind metadata carries stable sync identity and typed fields")
+  func stateOfMindMetadataIsStableAndTyped() {
+    let metadata = HealthMetadataKeys.stateOfMind(
+      syncIdentifier: "check-in-123",
+      syncVersion: 2,
+      arousal: 0.75,
+      bodySensationCodes: ["shoulder_tension", "shallow_breath"],
+      unclassified: true,
+      origin: .iPhone,
+      sessionID: "practice-456",
+      phase: .post
+    )
+
+    #expect(metadata[HKMetadataKeySyncIdentifier] as? String == "check-in-123")
+    #expect(metadata[HKMetadataKeySyncVersion] as? Int == 2)
+    #expect(metadata[HealthMetadataKeys.schemaVersion] as? Int == 1)
+    #expect(metadata[HealthMetadataKeys.arousal] as? Double == 0.75)
+    #expect(
+      metadata[HealthMetadataKeys.bodySensationCodes] as? String
+        == "shallow_breath,shoulder_tension")
+    #expect(metadata[HealthMetadataKeys.unclassified] as? Int == 1)
+    #expect(metadata[HealthMetadataKeys.origin] as? String == "iphone")
+    #expect(metadata[HealthMetadataKeys.sessionID] as? String == "practice-456")
+    #expect(metadata[HealthMetadataKeys.phase] as? String == "post")
+  }
+
+  @Test("压力来源保留用户选择的主次顺序")
+  func associationOrderIsPreserved() {
+    let metadata = HealthMetadataKeys.stateOfMind(
+      syncIdentifier: "check-in-sources",
+      syncVersion: 2,
+      arousal: 0.6,
+      bodySensationCodes: [],
+      associationCodes: ["work", "sleep"],
+      unclassified: false,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+
+    #expect(metadata[HealthMetadataKeys.associationCodes] as? String == "work,sleep")
+  }
+
+  @Test("Mindful Session metadata stores only an eligible heart-rate summary")
+  func mindfulSessionMetadataStoresEligibleSummary() {
+    let metadata = HealthMetadataKeys.mindfulSession(
+      syncIdentifier: "mindful-123",
+      syncVersion: 1,
+      sessionID: "session-123",
+      practiceType: "meditation",
+      protocolVersion: 2,
+      origin: .watch,
+      evidenceMode: .heartRate,
+      heartRateEvidence: HeartRateEvidenceSummary(
+        start: 78,
+        end: 69,
+        sampleCount: 24,
+        quality: .sufficient
+      )
+    )
+
+    #expect(metadata[HKMetadataKeySyncIdentifier] as? String == "mindful-123")
+    #expect(metadata[HealthMetadataKeys.practiceType] as? String == "meditation")
+    #expect(metadata[HealthMetadataKeys.protocolVersion] as? Int == 2)
+    #expect(metadata[HealthMetadataKeys.evidenceMode] as? String == "heart_rate")
+    #expect(metadata[HealthMetadataKeys.heartRateStart] as? Double == 78)
+    #expect(metadata[HealthMetadataKeys.heartRateEnd] as? Double == 69)
+    #expect(metadata[HealthMetadataKeys.heartRateSampleCount] as? Int == 24)
+    #expect(metadata[HealthMetadataKeys.evidenceQuality] as? String == "sufficient")
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Health/HealthSyncCursorStoreTests.swift =====
+import HealthKit
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Health sync cursor")
+struct HealthSyncCursorStoreTests {
+  @Test("An anchored-query cursor can be restored and cleared")
+  func cursorRoundTrip() throws {
+    let suiteName = "HealthSyncCursorStoreTests.\(UUID().uuidString)"
+    let defaults = try #require(UserDefaults(suiteName: suiteName))
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    let store = HealthSyncCursorStore(userDefaults: defaults)
+
+    try store.save(HKQueryAnchor(fromValue: 17), for: .stateOfMind)
+
+    #expect(try store.load(for: .stateOfMind) != nil)
+    store.clear(for: .stateOfMind)
+    #expect(try store.load(for: .stateOfMind) == nil)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Health/StateOfMindMapperTests.swift =====
+import HealthKit
+import InnerBalanceCore
+import Testing
+
+@testable import InnerBalance
+
+@Suite("State of Mind mapping")
+struct StateOfMindMapperTests {
+  @Test("A classified check-in maps coordinates, labels, associations and metadata")
+  func classifiedCheckInMapsToHealthKit() throws {
+    let date = Date(timeIntervalSince1970: 1_786_296_600)
+    let record = StateOfMindRecord(
+      syncIdentifier: "check-in-123",
+      syncVersion: 1,
+      date: date,
+      valence: 0.4,
+      arousal: -0.6,
+      labels: [.calm],
+      associations: [.work],
+      bodySensationCodes: ["relaxed_shoulders"],
+      unclassified: false,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+
+    let sample = try StateOfMindMapper.sample(from: record)
+
+    #expect(sample.startDate == date)
+    #expect(sample.valence == 0.4)
+    #expect(sample.labels == [.calm])
+    #expect(sample.associations == [.work])
+    #expect(sample.metadata?[HKMetadataKeySyncIdentifier] as? String == "check-in-123")
+    #expect(sample.metadata?[HealthMetadataKeys.arousal] as? Double == -0.6)
+    #expect(StateOfMindMapper.record(from: sample) == record)
+  }
+
+  @Test("An unclassified sample round-trips with empty labels")
+  func unclassifiedRoundTrip() throws {
+    let record = StateOfMindRecord(
+      syncIdentifier: "check-in-unclassified",
+      syncVersion: 1,
+      date: Date(timeIntervalSince1970: 1_786_296_600),
+      valence: 0.55,
+      arousal: -0.7,
+      labels: [],
+      associations: [],
+      bodySensationCodes: [],
+      unclassified: true,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+
+    let sample = try StateOfMindMapper.sample(from: record)
+
+    #expect(sample.labels.isEmpty)
+    #expect(StateOfMindMapper.record(from: sample) == record)
+  }
+
+  @Test("Optional sources are capped and custom-only sources survive in metadata")
+  func optionalSourcesArePreserved() throws {
+    let record = StateOfMindRecord(
+      syncIdentifier: "check-in-context",
+      syncVersion: 2,
+      date: Date(timeIntervalSince1970: 1_786_296_600),
+      valence: -0.2,
+      arousal: -0.7,
+      labels: [.drained],
+      associations: [.work, .sleep, .family],
+      bodySensationCodes: ["fatigue"],
+      unclassified: false,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+
+    let sample = try StateOfMindMapper.sample(from: record)
+
+    #expect(sample.associations == [.work])
+    #expect(sample.metadata?[HealthMetadataKeys.associationCodes] as? String == "work,sleep")
+    #expect(StateOfMindMapper.record(from: sample)?.associations == [.work, .sleep])
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Persistence/CheckInCacheStoreTests.swift =====
+import Foundation
+import InnerBalanceCore
+import SwiftData
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Local check-in cache")
+struct CheckInCacheStoreTests {
+  @Test("A newer sync version replaces the same check-in without duplication")
+  @MainActor
+  func newerVersionReplacesExistingRecord() throws {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+      for: CachedCheckIn.self,
+      configurations: configuration
+    )
+    let store = CheckInCacheStore(modelContext: container.mainContext)
+    let version1 = makeRecord(version: 1, labels: [.anxious])
+    let version2 = makeRecord(version: 2, labels: [.stressed])
+
+    try store.upsert(version1)
+    try store.upsert(version2)
+    try store.upsert(version1)
+
+    let cached = try container.mainContext.fetch(FetchDescriptor<CachedCheckIn>())
+    #expect(cached.count == 1)
+    #expect(cached.first?.syncVersion == 2)
+    #expect(try store.latestRecord()?.labels == [.stressed])
+  }
+
+  @Test("A HealthKit deletion removes the matching cached check-in")
+  @MainActor
+  func healthKitDeletionRemovesCachedRecord() throws {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+      for: CachedCheckIn.self,
+      configurations: configuration
+    )
+    let store = CheckInCacheStore(modelContext: container.mainContext)
+    let objectUUID = UUID()
+
+    try store.upsert(
+      makeRecord(version: 1, labels: [.anxious]),
+      healthKitObjectUUID: objectUUID
+    )
+    try store.delete(healthKitObjectUUIDs: [objectUUID])
+
+    #expect(try store.latestRecord() == nil)
+  }
+
+  @Test("最后一条 HealthKit 情绪被删除后首页状态会完整清空")
+  @MainActor
+  func emptyLatestRecordClearsHomeState() {
+    let state = LatestCheckInViewState(record: nil)
+
+    #expect(state.record == nil)
+    #expect(state.date == nil)
+    #expect(state.title == nil)
+  }
+
+  @Test("练习后的空上下文不会清掉当天已选压力来源")
+  @MainActor
+  func latestContextSurvivesANewerPostPracticeRecord() throws {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+      for: CachedCheckIn.self,
+      configurations: configuration
+    )
+    let store = CheckInCacheStore(modelContext: container.mainContext)
+    let day = Date(timeIntervalSince1970: 1_786_320_000)
+    let standalone = makeRecord(version: 1, labels: [.anxious])
+    let post = StateOfMindRecord(
+      syncIdentifier: "post-practice",
+      syncVersion: 1,
+      date: day.addingTimeInterval(600),
+      valence: 0.3,
+      arousal: -0.4,
+      labels: [.relieved],
+      associations: [],
+      bodySensationCodes: [],
+      unclassified: false,
+      origin: .iPhone,
+      sessionID: "practice-1",
+      phase: .post
+    )
+
+    try store.upsert(standalone)
+    try store.upsert(post)
+
+    #expect(try store.latestRecord()?.syncIdentifier == "post-practice")
+    #expect(try store.latestContextRecord(on: day)?.associations == [.work])
+  }
+
+  private func makeRecord(version: Int, labels: [EmotionLabel]) -> StateOfMindRecord {
+    StateOfMindRecord(
+      syncIdentifier: "check-in-cache",
+      syncVersion: version,
+      date: Date(timeIntervalSince1970: 1_786_320_000),
+      valence: -0.6,
+      arousal: 0.7,
+      labels: labels,
+      associations: [.work],
+      bodySensationCodes: ["shoulders_tight"],
+      unclassified: false,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Persistence/DailyEchoStoreTests.swift =====
+import Foundation
+import InnerBalanceCore
+import SwiftData
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Daily echo")
+struct DailyEchoStoreTests {
+  @Test("Saving today's echo makes it available immediately and in history")
+  @MainActor
+  func saveAndReadHistory() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let store = DailyEchoStore(modelContext: container.mainContext)
+    let date = Date(timeIntervalSince1970: 1_786_320_000)
+
+    try store.save(
+      state: .calm,
+      note: "这句话提醒我，别把地图当成路。",
+      reflection: DailyReflection(
+        id: "korzybski-map",
+        text: "地图并非疆域本身。",
+        attribution: "阿尔弗雷德·柯日布斯基"
+      ),
+      date: date
+    )
+
+    #expect(try store.echo(on: date)?.text == "这句话提醒我，别把地图当成路。")
+    #expect(try store.echo(on: date)?.state == .calm)
+    #expect(try store.history().count == 1)
+    #expect(try store.history().first?.reflectionID == "korzybski-map")
+    #expect(try store.history().first?.reflectionText == "地图并非疆域本身。")
+    #expect(try store.history().first?.attribution == "阿尔弗雷德·柯日布斯基")
+    #expect(try store.history().first?.reflectionSource == .ideaAdaptation)
+    #expect(try store.history().first?.reflectionWork == nil)
+  }
+
+  @Test("Saving again on the same local day edits instead of duplicating")
+  @MainActor
+  func sameDaySaveUpdatesExistingEcho() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let store = DailyEchoStore(modelContext: container.mainContext)
+    let morning = Date(timeIntervalSince1970: 1_786_320_000)
+    let evening = morning.addingTimeInterval(3_600)
+
+    let reflection = DailyReflection(
+      id: "quote-a",
+      text: "今日摘句",
+      attribution: "作者"
+    )
+    try store.save(state: .tense, note: "第一句", reflection: reflection, date: morning)
+    try store.save(state: .clear, note: "后来想到的一句", reflection: reflection, date: evening)
+
+    #expect(try store.history().map(\.text) == ["后来想到的一句"])
+    #expect(try store.history().map(\.state) == [.clear])
+  }
+
+  @Test("点一下当下状态即可保存，不需要填写文字")
+  @MainActor
+  func selectedStateSavesWithoutARequiredNote() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let store = DailyEchoStore(modelContext: container.mainContext)
+    let date = Date(timeIntervalSince1970: 1_786_320_000)
+    let reflection = DailyReflection(id: "quote", text: "今日摘句", attribution: "作者")
+
+    try store.save(state: .tired, reflection: reflection, date: date)
+
+    #expect(try store.echo(on: date)?.state == .tired)
+    #expect(try store.echo(on: date)?.text.isEmpty == true)
+  }
+
+  @Test("旧版生成句在历史里会换成同日同状态的名家句")
+  @MainActor
+  func legacyGeneratedReflectionUsesASourcedQuotationInHistory() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let store = DailyEchoStore(modelContext: container.mainContext)
+    let date = Date(timeIntervalSince1970: 1_786_320_000)
+    let reflection = DailyReflection(id: "echo-calm", text: "平静不是停下，是终于不用和自己拔河。")
+
+    try store.save(state: .calm, reflection: reflection, date: date)
+
+    let echo = try store.echo(on: date)
+    let stored = try #require(echo)
+    #expect(stored.reflectionID.hasPrefix("echo-") == false)
+    #expect(stored.attribution?.isEmpty == false)
+    #expect(stored.reflectionWork?.isEmpty == false)
+    #expect(stored.reflectionSource == .collectedQuotation)
+  }
+
+  @Test("真实旧版记录首次读取后固定名家句，跨时区和重启不再变化")
+  @MainActor
+  func legacyRecordIsMaterializedOnceAcrossTimeZones() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    var shanghai = Calendar(identifier: .gregorian)
+    shanghai.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    var losAngeles = Calendar(identifier: .gregorian)
+    losAngeles.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+    let date = shanghai.date(
+      from: DateComponents(year: 2026, month: 8, day: 12, hour: 0, minute: 15)
+    )!
+    let legacy = StoredDailyEcho(
+      day: date,
+      text: "",
+      reflectionID: "echo-tense-storm",
+      reflectionText: "旧版生成句",
+      attribution: "",
+      state: .tense,
+      localDayIdentifier: "",
+      reflectionSource: .ideaAdaptation,
+      reflectionWork: nil,
+      updatedAt: date
+    )
+    container.mainContext.insert(legacy)
+    try container.mainContext.save()
+
+    let shanghaiStore = DailyEchoStore(modelContext: container.mainContext, calendar: shanghai)
+    let shanghaiHistory = try shanghaiStore.history()
+    let first = try #require(shanghaiHistory.first)
+    let persistedIdentifier = legacy.localDayIdentifier
+    let persistedReflectionID = legacy.reflectionID
+
+    let losAngelesStore = DailyEchoStore(
+      modelContext: container.mainContext,
+      calendar: losAngeles
+    )
+    let losAngelesHistory = try losAngelesStore.history()
+    let second = try #require(losAngelesHistory.first)
+
+    #expect(!persistedIdentifier.isEmpty)
+    #expect(!persistedReflectionID.hasPrefix("echo-"))
+    #expect(first.reflectionID == second.reflectionID)
+    #expect(first.reflectionText == second.reflectionText)
+    #expect(first.attribution == second.attribution)
+    #expect(first.reflectionWork == second.reflectionWork)
+  }
+
+  @Test("已保存的现代版权金句会替换为同日同状态的公版句")
+  @MainActor
+  func retiredCopyrightedQuotationMigratesToPublicDomainQuotation() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let date = calendar.date(from: DateComponents(year: 2026, month: 8, day: 12))!
+    let legacy = StoredDailyEcho(
+      day: date,
+      text: "",
+      reflectionID: "yalom-better-past",
+      reflectionText: "迟早有一天，我们要放弃拥有一个更好过去的希望。",
+      attribution: "欧文·亚隆",
+      state: .tired,
+      localDayIdentifier: "1-2026-8-12",
+      reflectionSource: .collectedQuotation,
+      reflectionWork: "《直视骄阳》",
+      updatedAt: date
+    )
+    container.mainContext.insert(legacy)
+    try container.mainContext.save()
+
+    let history = try DailyEchoStore(
+      modelContext: container.mainContext,
+      calendar: calendar
+    ).history()
+    let migrated = try #require(history.first)
+
+    #expect(DailyReflectionSelector.library.contains { $0.id == migrated.reflectionID })
+    #expect(migrated.attribution != "欧文·亚隆")
+    #expect(migrated.reflectionSource == .collectedQuotation)
+  }
+
+  @Test("同一自然日在相邻时区切换后仍是同一条回声")
+  @MainActor
+  func sameCalendarDaySurvivesTimeZoneChange() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    var shanghai = Calendar(identifier: .gregorian)
+    shanghai.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    var tokyo = Calendar(identifier: .gregorian)
+    tokyo.timeZone = TimeZone(identifier: "Asia/Tokyo")!
+    let date = shanghai.date(
+      from: DateComponents(year: 2026, month: 8, day: 12, hour: 12)
+    )!
+    let reflection = DailyReflection(id: "echo", text: "今天这一句")
+
+    try DailyEchoStore(modelContext: container.mainContext, calendar: shanghai).save(
+      state: .calm,
+      reflection: reflection,
+      date: date
+    )
+    let tokyoStore = DailyEchoStore(modelContext: container.mainContext, calendar: tokyo)
+    try tokyoStore.save(state: .clear, reflection: reflection, date: date)
+
+    let storedEcho = try tokyoStore.echo(on: date)
+    let echo = try #require(storedEcho)
+    #expect(echo.state == .clear)
+    #expect(echo.localDayIdentifier == "1-2026-8-12")
+    #expect(tokyo.component(.day, from: echo.displayDay(in: tokyo)) == 12)
+    #expect(try tokyoStore.history().count == 1)
+  }
+
+  @Test("切换时区后本地日期不同就不沿用上一天回声")
+  @MainActor
+  func differentLocalDayDoesNotReuseEcho() throws {
+    let container = try ModelContainer(
+      for: StoredDailyEcho.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    var shanghai = Calendar(identifier: .gregorian)
+    shanghai.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    var losAngeles = Calendar(identifier: .gregorian)
+    losAngeles.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+    let date = shanghai.date(
+      from: DateComponents(year: 2026, month: 8, day: 12, hour: 9)
+    )!
+
+    try DailyEchoStore(modelContext: container.mainContext, calendar: shanghai).save(
+      state: .calm,
+      reflection: DailyReflection(id: "echo", text: "今天这一句"),
+      date: date
+    )
+
+    #expect(
+      try DailyEchoStore(modelContext: container.mainContext, calendar: losAngeles)
+        .echo(on: date) == nil
+    )
+  }
+
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Persistence/PendingHealthWriteTests.swift =====
+import Foundation
+import InnerBalanceCore
+import SwiftData
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Pending HealthKit writes")
+struct PendingHealthWriteTests {
+  @Test("A failed State of Mind save is queued with its stable sync identity")
+  @MainActor
+  func failedWriteIsQueued() async throws {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+      for: PendingHealthWrite.self,
+      configurations: configuration
+    )
+    let coordinator = HealthWriteCoordinator(
+      writer: FailingHealthWriter(),
+      modelContext: container.mainContext
+    )
+    let record = StateOfMindRecord(
+      syncIdentifier: "check-in-queue-123",
+      syncVersion: 1,
+      date: Date(timeIntervalSince1970: 1_786_296_600),
+      valence: -0.3,
+      arousal: 0.8,
+      labels: [.anxious],
+      associations: [],
+      bodySensationCodes: [],
+      unclassified: false,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+
+    let result = await coordinator.saveStateOfMind(record)
+    let pending = try container.mainContext.fetch(FetchDescriptor<PendingHealthWrite>())
+
+    #expect(result == .queued)
+    #expect(pending.count == 1)
+    #expect(pending.first?.syncIdentifier == "check-in-queue-123")
+    #expect(pending.first?.syncVersion == 1)
+    #expect(pending.first?.kind == .stateOfMind)
+  }
+
+  @Test("Repeated failures for the same HealthKit identity create one pending write")
+  @MainActor
+  func repeatedFailureIsDeduplicated() async throws {
+    let container = try makeContainer()
+    let coordinator = HealthWriteCoordinator(
+      writer: FailingHealthWriter(),
+      modelContext: container.mainContext
+    )
+    let record = makeStateOfMindRecord(syncIdentifier: "check-in-deduplicated")
+
+    let firstResult = await coordinator.saveStateOfMind(record)
+    let secondResult = await coordinator.saveStateOfMind(record)
+    let pending = try container.mainContext.fetch(FetchDescriptor<PendingHealthWrite>())
+
+    #expect(firstResult == .queued)
+    #expect(secondResult == .queued)
+    #expect(pending.count == 1)
+  }
+
+  @Test("A lower sync version cannot replace a newer pending payload")
+  @MainActor
+  func lowerVersionDoesNotReplaceNewerPendingWrite() async throws {
+    let container = try makeContainer()
+    let coordinator = HealthWriteCoordinator(
+      writer: FailingHealthWriter(),
+      modelContext: container.mainContext
+    )
+    let current = makeStateOfMindRecord(
+      syncIdentifier: "check-in-versioned",
+      syncVersion: 2,
+      labels: [.stressed]
+    )
+    let stale = makeStateOfMindRecord(
+      syncIdentifier: "check-in-versioned",
+      syncVersion: 1,
+      labels: [.anxious]
+    )
+
+    _ = await coordinator.saveStateOfMind(current)
+    _ = await coordinator.saveStateOfMind(stale)
+
+    let pending = try container.mainContext.fetch(FetchDescriptor<PendingHealthWrite>())
+    let payload = try #require(pending.first?.payload)
+    let decoded = try JSONDecoder().decode(StateOfMindRecord.self, from: payload)
+    #expect(pending.first?.syncVersion == 2)
+    #expect(decoded.labels == [.stressed])
+  }
+
+  @Test("A successful retry removes the pending HealthKit write")
+  @MainActor
+  func successfulRetryRemovesPendingWrite() async throws {
+    let container = try makeContainer()
+    let record = makeStateOfMindRecord(syncIdentifier: "check-in-retry")
+    let failingCoordinator = HealthWriteCoordinator(
+      writer: FailingHealthWriter(),
+      modelContext: container.mainContext
+    )
+    _ = await failingCoordinator.saveStateOfMind(record)
+    let writer = RecordingHealthWriter()
+    let retryingCoordinator = HealthWriteCoordinator(
+      writer: writer,
+      modelContext: container.mainContext
+    )
+
+    await retryingCoordinator.retryPending(now: .distantFuture)
+    let pending = try container.mainContext.fetch(FetchDescriptor<PendingHealthWrite>())
+
+    #expect(pending.isEmpty)
+    #expect(writer.savedStateOfMindIdentifiers == ["check-in-retry"])
+  }
+
+  @MainActor
+  private func makeContainer() throws -> ModelContainer {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    return try ModelContainer(
+      for: PendingHealthWrite.self,
+      configurations: configuration
+    )
+  }
+
+  private func makeStateOfMindRecord(
+    syncIdentifier: String,
+    syncVersion: Int = 1,
+    labels: [EmotionLabel] = [.anxious]
+  ) -> StateOfMindRecord {
+    StateOfMindRecord(
+      syncIdentifier: syncIdentifier,
+      syncVersion: syncVersion,
+      date: Date(timeIntervalSince1970: 1_786_296_600),
+      valence: -0.3,
+      arousal: 0.8,
+      labels: labels,
+      associations: [],
+      bodySensationCodes: [],
+      unclassified: false,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+  }
+}
+
+@MainActor
+private struct FailingHealthWriter: HealthWriting {
+  struct WriteFailure: Error {}
+
+  func saveStateOfMind(_ record: StateOfMindRecord) async throws {
+    throw WriteFailure()
+  }
+
+  func saveMindfulSession(_ record: MindfulSessionRecord) async throws {
+    throw WriteFailure()
+  }
+}
+
+@MainActor
+private final class RecordingHealthWriter: HealthWriting {
+  private(set) var savedStateOfMindIdentifiers: [String] = []
+
+  func saveStateOfMind(_ record: StateOfMindRecord) async throws {
+    savedStateOfMindIdentifiers.append(record.syncIdentifier)
+  }
+
+  func saveMindfulSession(_ record: MindfulSessionRecord) async throws {}
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Persistence/PracticeCompletionStoreTests.swift =====
+import Foundation
+import InnerBalanceCore
+import SwiftData
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Practice completion persistence")
+struct PracticeCompletionStoreTests {
+  @Test("The latest completed practice is restored for home evidence")
+  @MainActor
+  func latestCompletionRoundTrips() throws {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+      for: StoredPracticeCompletion.self,
+      configurations: configuration
+    )
+    let store = PracticeCompletionStore(modelContext: container.mainContext)
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let record = PracticeCompletionRecord(
+      sessionID: "practice-persisted",
+      practiceKind: .pacedBreathing,
+      plannedDuration: 300,
+      actualDuration: 298,
+      startedAt: startedAt,
+      endedAt: startedAt.addingTimeInterval(300),
+      beforeRating: 7,
+      afterRating: 4
+    )
+
+    try store.save(record, mindfulWriteResult: .queued)
+
+    #expect(try store.latestRecord() == record)
+    #expect(try store.latestMindfulWriteResult() == .queued)
+  }
+
+  @Test("Kegel saves locally without being written as a Mindful Session")
+  @MainActor
+  func kegelNeverWritesMindfulSession() async throws {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+      for: StoredPracticeCompletion.self, PendingHealthWrite.self, CachedCheckIn.self,
+      configurations: configuration
+    )
+    let writer = PracticeRecordingHealthWriter()
+    let coordinator = PracticeCompletionCoordinator(
+      store: PracticeCompletionStore(modelContext: container.mainContext),
+      feedbackStore: PracticeFeedbackStore(modelContainer: container),
+      healthWriter: HealthWriteCoordinator(
+        writer: writer,
+        modelContext: container.mainContext
+      )
+    )
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let record = PracticeCompletionRecord(
+      sessionID: "kegel-local-only",
+      practiceKind: .kegel,
+      plannedDuration: 180,
+      actualDuration: 180,
+      startedAt: startedAt,
+      endedAt: startedAt.addingTimeInterval(180),
+      beforeRating: 3,
+      afterRating: 3
+    )
+
+    let result = try await coordinator.save(record, postValence: 0, postArousal: 0)
+
+    #expect(result.mindfulWriteResult == nil)
+    #expect(writer.mindfulSessions.isEmpty)
+    #expect(writer.stateOfMindRecords.isEmpty)
+    #expect(!record.hasSubjectiveComparison)
+    #expect(try coordinator.latestRecord() == record)
+  }
+
+  @Test("Completed breathing is saved locally and as one Mindful Session")
+  @MainActor
+  func breathingWritesMindfulSessionOnce() async throws {
+    let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try ModelContainer(
+      for: StoredPracticeCompletion.self, PendingHealthWrite.self, CachedCheckIn.self,
+      configurations: configuration
+    )
+    let writer = PracticeRecordingHealthWriter()
+    let coordinator = PracticeCompletionCoordinator(
+      store: PracticeCompletionStore(modelContext: container.mainContext),
+      feedbackStore: PracticeFeedbackStore(modelContainer: container),
+      healthWriter: HealthWriteCoordinator(
+        writer: writer,
+        modelContext: container.mainContext
+      )
+    )
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let record = PracticeCompletionRecord(
+      sessionID: "breathing-complete",
+      practiceKind: .pacedBreathing,
+      plannedDuration: 180,
+      actualDuration: 178,
+      startedAt: startedAt,
+      endedAt: startedAt.addingTimeInterval(178),
+      beforeRating: 8,
+      afterRating: 5
+    )
+
+    let result = try await coordinator.save(record, postValence: 0.2, postArousal: -0.4)
+
+    #expect(result.mindfulWriteResult == .saved)
+    #expect(result.postWriteResult == .saved)
+    #expect(writer.mindfulSessions.count == 1)
+    #expect(writer.mindfulSessions.first?.sessionID == record.sessionID)
+    #expect(writer.mindfulSessions.first?.practiceType == PracticeKind.pacedBreathing.rawValue)
+    #expect(writer.mindfulSessions.first?.endDate == record.endedAt)
+    #expect(
+      writer.mindfulSessions.first?.startDate
+        == record.endedAt.addingTimeInterval(-record.actualDuration)
+    )
+    #expect(
+      writer.stateOfMindRecords.first?.syncIdentifier
+        == "com.yvainair.innerbalance.state.post.\(record.sessionID)")
+    #expect(writer.stateOfMindRecords.first?.sessionID == record.sessionID)
+    #expect(writer.stateOfMindRecords.first?.valence == 0.2)
+    #expect(writer.stateOfMindRecords.first?.arousal == -0.4)
+    #expect(try coordinator.latestRecord() == record)
+  }
+
+  @Test("Local persistence failure never writes HealthKit or reports success")
+  @MainActor
+  func localFailureStopsCompletion() async throws {
+    let writer = PracticeRecordingHealthWriter()
+    let container = try ModelContainer(
+      for: PendingHealthWrite.self, CachedCheckIn.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let coordinator = PracticeCompletionCoordinator(
+      store: FailingPracticeCompletionStore(),
+      feedbackStore: PracticeFeedbackStore(modelContainer: container),
+      healthWriter: HealthWriteCoordinator(
+        writer: writer,
+        modelContext: container.mainContext
+      )
+    )
+    let startedAt = Date(timeIntervalSince1970: 1_786_320_000)
+    let record = PracticeCompletionRecord(
+      sessionID: "local-failure",
+      practiceKind: .meditation,
+      plannedDuration: 300,
+      actualDuration: 300,
+      startedAt: startedAt,
+      endedAt: startedAt.addingTimeInterval(300),
+      beforeRating: 4,
+      afterRating: 3
+    )
+
+    await #expect(throws: PracticeCompletionSaveError.localPersistenceFailed) {
+      try await coordinator.save(record, postValence: 0, postArousal: -0.2)
+    }
+    #expect(writer.mindfulSessions.isEmpty)
+    #expect(writer.stateOfMindRecords.isEmpty)
+  }
+
+  @Test("A health-status update failure preserves a successfully saved completion")
+  @MainActor
+  func finalStatusFailurePreservesCompletion() async throws {
+    let writer = PracticeRecordingHealthWriter()
+    let store = FinalStatusFailingPracticeCompletionStore()
+    let container = try ModelContainer(
+      for: PendingHealthWrite.self, CachedCheckIn.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let coordinator = PracticeCompletionCoordinator(
+      store: store,
+      feedbackStore: PracticeFeedbackStore(modelContainer: container),
+      healthWriter: HealthWriteCoordinator(
+        writer: writer,
+        modelContext: container.mainContext
+      )
+    )
+    let endedAt = Date(timeIntervalSince1970: 1_786_320_300)
+    let record = PracticeCompletionRecord(
+      sessionID: "status-update-failure",
+      practiceKind: .meditation,
+      plannedDuration: 300,
+      actualDuration: 300,
+      startedAt: endedAt.addingTimeInterval(-300),
+      endedAt: endedAt,
+      beforeRating: 4,
+      afterRating: 3
+    )
+
+    let result = try await coordinator.saveCompletion(record.withoutFeedback)
+
+    #expect(result.savedRecord == record.withoutFeedback)
+    #expect(result.healthStatusNeedsRetry)
+    #expect(result.needsHealthAttention)
+    #expect(try coordinator.latestRecord() == record.withoutFeedback)
+    #expect(store.saveCount == 2)
+    #expect(writer.mindfulSessions.count == 1)
+    #expect(writer.stateOfMindRecords.isEmpty)
+  }
+}
+
+@MainActor
+private final class PracticeRecordingHealthWriter: HealthWriting {
+  private(set) var mindfulSessions: [MindfulSessionRecord] = []
+  private(set) var stateOfMindRecords: [StateOfMindRecord] = []
+
+  func saveStateOfMind(_ record: StateOfMindRecord) async throws {
+    stateOfMindRecords.append(record)
+  }
+
+  func saveMindfulSession(_ record: MindfulSessionRecord) async throws {
+    mindfulSessions.append(record)
+  }
+}
+
+@MainActor
+private final class FailingPracticeCompletionStore: PracticeCompletionStoring {
+  func save(
+    _ record: PracticeCompletionRecord,
+    mindfulWriteResult: HealthWriteResult,
+    postWriteResult: HealthWriteResult
+  ) throws {
+    throw CocoaError(.fileWriteOutOfSpace)
+  }
+
+  func latestRecord() throws -> PracticeCompletionRecord? { nil }
+}
+
+@MainActor
+private final class FinalStatusFailingPracticeCompletionStore: PracticeCompletionStoring {
+  private(set) var saveCount = 0
+  private var snapshot: PracticeCompletionSnapshot?
+
+  func save(
+    _ record: PracticeCompletionRecord,
+    mindfulWriteResult: HealthWriteResult,
+    postWriteResult: HealthWriteResult
+  ) throws {
+    saveCount += 1
+    if saveCount == 2 {
+      throw CocoaError(.fileWriteOutOfSpace)
+    }
+    snapshot = PracticeCompletionSnapshot(
+      record: record,
+      mindfulWriteResult: mindfulWriteResult,
+      postWriteResult: postWriteResult
+    )
+  }
+
+  func latestRecord() throws -> PracticeCompletionRecord? { snapshot?.record }
+
+  func completion(sessionID: String) throws -> PracticeCompletionSnapshot? {
+    snapshot?.record.sessionID == sessionID ? snapshot : nil
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceTests/Persistence/PracticeFeedbackPersistenceTests.swift =====
+import Foundation
+import InnerBalanceCore
+import SwiftData
+import Testing
+
+@testable import InnerBalance
+
+@Suite("Practice feedback local response loop")
+@MainActor
+struct PracticeFeedbackPersistenceTests {
+  @Test("Feedback is local before HealthKit and survives a new context without a health read")
+  func feedbackIsPersistedBeforeTheHealthWrite() async throws {
+    let harness = try FeedbackHarness()
+    let record = completion()
+    let cache = harness.cache
+    harness.writer.onStateWrite = { post in
+      let persisted = try? cache.record(syncIdentifier: post.syncIdentifier)
+      #expect(persisted != nil)
+      #expect(persisted == post)
+    }
+
+    let result = try await harness.coordinator.saveFeedback(
+      record, postValence: 0.6, postArousal: -0.7
+    )
+
+    let restoredCache = CheckInCacheStore(modelContext: ModelContext(harness.container))
+    let restored = try #require(try restoredCache.latestRecord())
+    #expect(restored == result.postCheckIn)
+    #expect(restored.syncIdentifier == "com.yvainair.innerbalance.state.post.\(record.sessionID)")
+    #expect(restored.sessionID == record.sessionID)
+    #expect(restored.phase == .post)
+    #expect(restored.valence == 0.6)
+    #expect(restored.arousal == -0.7)
+    #expect(restored.date == record.endedAt)
+  }
+
+  @Test("Repeated feedback keeps one local row and one health write", arguments: [false, true])
+  func repeatedFeedbackIsIdempotent(healthWriteFails: Bool) async throws {
+    let harness = try FeedbackHarness()
+    harness.writer.shouldFailStateWrite = healthWriteFails
+    let record = completion()
+    _ = try await harness.coordinator.saveCompletion(record.withoutFeedback)
+    let before = try harness.store.completion(sessionID: record.sessionID)
+    #expect(before?.record.afterRating == nil)
+    let mainContextRecord = try #require(
+      try harness.container.mainContext.fetch(FetchDescriptor<StoredPracticeCompletion>()).first
+    )
+    #expect(mainContextRecord.afterRating == nil)
+
+    let first = try await harness.coordinator.saveFeedback(
+      record, postValence: 0.6, postArousal: -0.7
+    )
+    let repeated = try await harness.coordinator.saveFeedback(
+      record, postValence: -0.5, postArousal: 0.8
+    )
+
+    let reloaded = try harness.store.completion(sessionID: record.sessionID)
+    #expect(reloaded?.record == record)
+    #expect(reloaded?.postWriteResult == (healthWriteFails ? .queued : .saved))
+    #expect(try harness.store.latestRecord() == record)
+    #expect(first.postWriteResult == (healthWriteFails ? .queued : .saved))
+    #expect(repeated.postCheckIn == first.postCheckIn)
+    #expect(try harness.cache.latestRecord() == first.postCheckIn)
+    #expect(try harness.container.mainContext.fetch(FetchDescriptor<CachedCheckIn>()).count == 1)
+    #expect(harness.writer.states.count == 1)
+    #expect(harness.writer.mindfulSessions.count == 1)
+    let pending = try harness.container.mainContext.fetch(FetchDescriptor<PendingHealthWrite>())
+    #expect(pending.count == (healthWriteFails ? 1 : 0))
+  }
+
+  @Test("Feedback is delivered to home only after a successful local save", arguments: [false, true])
+  func savedCallbackCarriesThePersistedState(hasBeforeRating: Bool) async throws {
+    let harness = try FeedbackHarness()
+    let diagnostics = FeedbackDiagnostics()
+    let viewModel = finishedViewModel(beforeRating: hasBeforeRating ? 8 : nil)
+    var deliveredPost: StateOfMindRecord?
+    var deliveredCompletion: PracticeCompletionRecord?
+    let controller = PracticeCompletionSaveController(
+      coordinator: harness.coordinator,
+      diagnostics: diagnostics,
+      sessionID: "feedback-to-home"
+    ) { record, post in
+      deliveredCompletion = record
+      if let post {
+        let cached = try? harness.cache.record(syncIdentifier: post.syncIdentifier)
+        #expect(cached == post)
+        deliveredPost = post
+      }
+    }
+
+    await controller.save(
+      viewModel: viewModel,
+      afterRating: 4,
+      postValence: 0.7,
+      postArousal: -0.6,
+      hasPostPosition: true
+    )
+
+    #expect(controller.hasSavedFeedback)
+    #expect(controller.saveErrorMessage == nil)
+    #expect(viewModel.phase == .saved)
+    #expect(deliveredPost?.valence == 0.7)
+    #expect(deliveredPost?.arousal == -0.6)
+    #expect(deliveredCompletion?.hasSubjectiveComparison == hasBeforeRating)
+    #expect(diagnostics.events.filter { $0 == .practiceCompleted }.count == 1)
+    #expect(
+      diagnostics.events.filter { $0 == .subjectiveComparisonAvailable }.count
+        == (hasBeforeRating ? 1 : 0)
+    )
+  }
+
+  @Test("A failed feedback transaction publishes neither input; an edited retry keeps both consistent")
+  func failedTransactionCanRetryWithChangedInput() async throws {
+    let gate = FeedbackCommitGate()
+    gate.failUserCommit = true
+    let harness = try FeedbackHarness(commit: gate.commit)
+    let viewModel = finishedViewModel(beforeRating: 8)
+    let diagnostics = FeedbackDiagnostics()
+    var postCallbacks = 0
+    var deliveredRecord: PracticeCompletionRecord?
+    var deliveredPost: StateOfMindRecord?
+    let controller = PracticeCompletionSaveController(
+      coordinator: harness.coordinator,
+      diagnostics: diagnostics
+    ) { record, post in
+      if let post {
+        postCallbacks += 1
+        deliveredRecord = record
+        deliveredPost = post
+      }
+    }
+    await controller.saveCompletion(viewModel: viewModel)
+    let mainContext = harness.container.mainContext
+    mainContext.autosaveEnabled = false
+    let unrelated = LocalDiagnosticEvent(kind: .checkInOpened)
+    mainContext.insert(unrelated)
+
+    await controller.save(
+      viewModel: viewModel, afterRating: 4,
+      postValence: 0.4, postArousal: -0.6, hasPostPosition: true
+    )
+
+    #expect(controller.saveErrorMessage != nil)
+    #expect(!controller.hasSavedFeedback)
+    #expect(viewModel.phase == .comparison)
+    #expect(postCallbacks == 0)
+    #expect(try harness.cache.latestRecord() == nil)
+    #expect(harness.writer.states.isEmpty)
+    #expect(try harness.store.latestRecord()?.hasSubjectiveComparison == false)
+    #expect(gate.stagedFeedback?.completion.record.afterRating == 4)
+    #expect(gate.stagedFeedback?.postCheckIn.valence == 0.4)
+    #expect(try ModelContext(harness.container).fetch(FetchDescriptor<CachedCheckIn>()).isEmpty)
+
+    gate.failUserCommit = false
+    await controller.save(
+      viewModel: viewModel, afterRating: 9,
+      postValence: -0.7, postArousal: 0.8, hasPostPosition: true
+    )
+
+    #expect(controller.saveErrorMessage == nil)
+    #expect(controller.hasSavedFeedback)
+    #expect(viewModel.phase == .saved)
+    #expect(postCallbacks == 1)
+    #expect(harness.writer.states.count == 1)
+    #expect(harness.writer.mindfulSessions.count == 1)
+    #expect(diagnostics.events.filter { $0 == .practiceCompleted }.count == 1)
+    #expect(deliveredRecord?.afterRating == 9)
+    #expect(deliveredPost?.valence == -0.7)
+    #expect(deliveredPost?.arousal == 0.8)
+    #expect(try harness.store.latestRecord() == deliveredRecord)
+    #expect(try harness.cache.latestRecord() == deliveredPost)
+    #expect(harness.writer.states.first == deliveredPost)
+    #expect(mainContext.hasChanges)
+    #expect(try mainContext.fetch(FetchDescriptor<LocalDiagnosticEvent>()).contains { $0.id == unrelated.id })
+    #expect(try ModelContext(harness.container).fetch(FetchDescriptor<LocalDiagnosticEvent>()).isEmpty)
+  }
+
+  @Test("Skipping after a failed feedback transaction leaves no partial post state")
+  func skipAfterFailedTransactionHasNoPostState() async throws {
+    let gate = FeedbackCommitGate()
+    gate.failUserCommit = true
+    let harness = try FeedbackHarness(commit: gate.commit)
+    let viewModel = finishedViewModel(beforeRating: 8)
+    let controller = PracticeCompletionSaveController(
+      coordinator: harness.coordinator,
+      diagnostics: FeedbackDiagnostics()
+    ) { _, post in
+      #expect(post == nil)
+    }
+
+    await controller.save(
+      viewModel: viewModel, afterRating: 4,
+      postValence: 0.4, postArousal: -0.6, hasPostPosition: true
+    )
+    await controller.skipFeedback(viewModel: viewModel)
+
+    #expect(viewModel.phase == .saved)
+    #expect(controller.saveErrorMessage == nil)
+    #expect(!controller.hasSavedFeedback)
+    #expect(try harness.cache.latestRecord() == nil)
+    #expect(try harness.store.latestRecord()?.afterRating == nil)
+    #expect(harness.writer.states.isEmpty)
+  }
+
+  @Test("A post-sync status failure leaves the committed feedback saved and home available")
+  func feedbackStatusFailureDoesNotReopenEditing() async throws {
+    let gate = FeedbackCommitGate()
+    gate.failStatusCommit = true
+    let harness = try FeedbackHarness(commit: gate.commit)
+    let viewModel = finishedViewModel(beforeRating: 8)
+    var deliveredRecord: PracticeCompletionRecord?
+    var deliveredPost: StateOfMindRecord?
+    let controller = PracticeCompletionSaveController(
+      coordinator: harness.coordinator,
+      diagnostics: FeedbackDiagnostics()
+    ) { record, post in
+      if let post {
+        deliveredRecord = record
+        deliveredPost = post
+      }
+    }
+
+    await controller.save(
+      viewModel: viewModel, afterRating: 4,
+      postValence: 0.4, postArousal: -0.6, hasPostPosition: true
+    )
+
+    #expect(viewModel.phase == .saved)
+    #expect(controller.hasSavedFeedback)
+    #expect(controller.saveErrorMessage == nil)
+    #expect(controller.healthWriteNeedsAttention)
+    #expect(deliveredRecord?.afterRating == 4)
+    #expect(deliveredPost?.valence == 0.4)
+    #expect(try harness.store.latestRecord() == deliveredRecord)
+    #expect(try harness.cache.latestRecord() == deliveredPost)
+  }
+
+  @Test("The legacy save entry also preserves feedback when only sync status fails")
+  func legacySaveUsesTheSameLocalSuccessBoundary() async throws {
+    let gate = FeedbackCommitGate()
+    gate.failStatusCommit = true
+    let harness = try FeedbackHarness(commit: gate.commit)
+    let record = completion()
+
+    let result = try await harness.coordinator.save(
+      record, postValence: 0.5, postArousal: -0.6
+    )
+
+    #expect(result.healthStatusNeedsRetry)
+    #expect(result.savedRecord == record)
+    #expect(result.postCheckIn?.valence == 0.5)
+    #expect(try harness.store.latestRecord() == record)
+    #expect(try harness.cache.latestRecord() == result.postCheckIn)
+    #expect(harness.writer.states.count == 1)
+  }
+
+  @Test("Skipping feedback saves completion without creating a check-in or a comparison")
+  func skippedFeedbackHasNoPostState() async throws {
+    let harness = try FeedbackHarness()
+    let viewModel = finishedViewModel(beforeRating: 8)
+    let diagnostics = FeedbackDiagnostics()
+    var callbackCount = 0
+    let controller = PracticeCompletionSaveController(
+      coordinator: harness.coordinator,
+      diagnostics: diagnostics
+    ) { record, post in
+      callbackCount += 1
+      #expect(post == nil)
+      #expect(!record.hasSubjectiveComparison)
+    }
+
+    await controller.saveCompletion(viewModel: viewModel)
+    await controller.skipFeedback(viewModel: viewModel)
+
+    #expect(viewModel.phase == .saved)
+    #expect(!controller.hasSavedFeedback)
+    #expect(callbackCount == 1)
+    #expect(try harness.cache.latestRecord() == nil)
+    #expect(harness.writer.states.isEmpty)
+    #expect(harness.writer.mindfulSessions.count == 1)
+    #expect(!diagnostics.events.contains(.subjectiveComparisonAvailable))
+  }
+
+  private func completion() -> PracticeCompletionRecord {
+    let end = Date(timeIntervalSince1970: 1_788_000_060)
+    return PracticeCompletionRecord(
+      sessionID: "practice-feedback-local", practiceKind: .physiologicalSigh,
+      plannedDuration: 60, actualDuration: 58,
+      startedAt: end.addingTimeInterval(-58), endedAt: end,
+      beforeRating: 8, afterRating: 4
+    )
+  }
+
+  private func finishedViewModel(beforeRating: Int?) -> PracticeSessionViewModel {
+    var now = Date(timeIntervalSince1970: 1_788_000_000)
+    let viewModel = PracticeSessionViewModel(
+      plan: PracticeCatalog.protocol(for: .physiologicalSigh)!, duration: 60,
+      now: { now }
+    )
+    viewModel.start(beforeRating: beforeRating)
+    now.addTimeInterval(58)
+    viewModel.finish()
+    return viewModel
+  }
+}
+
+@MainActor
+private struct FeedbackHarness {
+  let container: ModelContainer
+  let cache: CheckInCacheStore
+  let store: PracticeCompletionStore
+  let writer: FeedbackHealthWriter
+  let healthWriter: HealthWriteCoordinator
+  let coordinator: PracticeCompletionCoordinator
+
+  init(commit: @escaping (ModelContext) throws -> Void = { try $0.save() }) throws {
+    container = try ModelContainer(
+      for: StoredPracticeCompletion.self, CachedCheckIn.self,
+      PendingHealthWrite.self, LocalDiagnosticEvent.self,
+      configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    cache = CheckInCacheStore(modelContext: container.mainContext)
+    store = PracticeCompletionStore(modelContext: container.mainContext)
+    writer = FeedbackHealthWriter()
+    healthWriter = HealthWriteCoordinator(writer: writer, modelContext: container.mainContext)
+    coordinator = PracticeCompletionCoordinator(
+      store: store,
+      feedbackStore: PracticeFeedbackStore(modelContainer: container, commit: commit),
+      healthWriter: healthWriter
+    )
+  }
+}
+
+@MainActor
+private final class FeedbackHealthWriter: HealthWriting {
+  var shouldFailStateWrite = false
+  var onStateWrite: ((StateOfMindRecord) throws -> Void)?
+  private(set) var states: [StateOfMindRecord] = []
+  private(set) var mindfulSessions: [MindfulSessionRecord] = []
+
+  func saveStateOfMind(_ record: StateOfMindRecord) async throws {
+    try onStateWrite?(record)
+    states.append(record)
+    if shouldFailStateWrite { throw CocoaError(.fileWriteNoPermission) }
+  }
+
+  func saveMindfulSession(_ record: MindfulSessionRecord) async throws {
+    mindfulSessions.append(record)
+  }
+}
+
+@MainActor
+private final class FeedbackCommitGate {
+  var failUserCommit = false
+  var failStatusCommit = false
+  private(set) var stagedFeedback: PracticeFeedbackSnapshot?
+
+  func commit(_ context: ModelContext) throws {
+    let stored = try context.fetch(FetchDescriptor<StoredPracticeCompletion>()).first
+    let cached = try context.fetch(FetchDescriptor<CachedCheckIn>()).first
+    if let completion = stored?.snapshot, let cached {
+      stagedFeedback = PracticeFeedbackSnapshot(
+        completion: completion,
+        postCheckIn: try JSONDecoder().decode(StateOfMindRecord.self, from: cached.payload)
+      )
+    }
+    if stored?.postWriteResult == .failedToQueue ? failUserCommit : failStatusCommit {
+      throw CocoaError(.fileWriteOutOfSpace)
+    }
+    try context.save()
+  }
+}
+
+@MainActor
+private final class FeedbackDiagnostics: LocalDiagnosticsRecording {
+  private(set) var events: [LocalDiagnosticKind] = []
+
+  func record(_ kind: LocalDiagnosticKind, at date: Date) {
+    events.append(kind)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift =====
+import XCTest
+
+final class CheckInFlowUITests: XCTestCase {
+  @MainActor
+  private func launchApp() -> XCUIApplication {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryLarge",
+    ]
+    app.launch()
+    return app
+  }
+
+  @MainActor
+  func testHomeLeadsWithOneStressDecision() {
+    let app = launchApp()
+
+    XCTAssertTrue(app.otherElements["home.brandPoint"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["home.date"].exists)
+    XCTAssertFalse(app.staticTexts["方寸"].exists)
+    XCTAssertTrue(app.staticTexts["当前压力"].exists)
+    XCTAssertEqual(app.staticTexts["home.stressConclusion"].label, "还没判断")
+    XCTAssertFalse(app.descendants(matching: .any)["home.stressSource"].exists)
+    XCTAssertTrue(app.staticTexts["下一步"].exists)
+    XCTAssertTrue(app.buttons["判断压力与来源"].exists)
+    XCTAssertTrue(app.staticTexts["现在怎样"].exists)
+    XCTAssertTrue(app.buttons["home.echo.state.calm"].exists)
+    XCTAssertFalse(app.staticTexts["收藏摘句"].exists)
+    XCTAssertFalse(app.staticTexts["原始出处待考"].exists)
+    XCTAssertFalse(app.staticTexts["此刻的一句"].exists)
+    XCTAssertTrue(app.descendants(matching: .any)["home.trainingSummary"].exists)
+    XCTAssertFalse(app.staticTexts["今日一事"].exists)
+    XCTAssertFalse(app.staticTexts["今日足迹"].exists)
+  }
+
+  @MainActor
+  func testStatusNeedsNoWritingAndDoesNotCreateAChoreList() {
+    let app = launchApp()
+
+    let calm = app.buttons["home.echo.state.calm"]
+    XCTAssertTrue(calm.waitForExistence(timeout: 3))
+    reveal(calm, in: app)
+    XCTAssertFalse(app.buttons["补一句"].exists)
+    XCTAssertEqual(app.textFields.count, 0)
+    calm.tap()
+    XCTAssertTrue(calm.isSelected)
+    XCTAssertFalse(app.staticTexts["今日足迹"].exists)
+    XCTAssertFalse(app.buttons["home.startRecommendation"].exists)
+    XCTAssertTrue(app.staticTexts["现在怎么做"].exists)
+    XCTAssertTrue(app.staticTexts["照常进行，不需要额外练习。"].exists)
+  }
+
+  @MainActor
+  func testEchoImmediatelyPersonalizesTheSentenceAndRecoveryAction() {
+    let app = launchApp()
+    let sentence = app.staticTexts["home.dailyReflection"]
+    var seenSentences: Set<String> = []
+
+    for state in ["calm", "clear", "moved", "tense", "tired", "uncertain"] {
+      let button = app.buttons["home.echo.state.\(state)"]
+      reveal(button, in: app)
+      button.tap()
+      XCTAssertTrue(sentence.waitForExistence(timeout: 2))
+      XCTAssertTrue(
+        seenSentences.insert(sentence.label).inserted,
+        "Every selected state must visibly receive a different sentence"
+      )
+    }
+
+    let tense = app.buttons["home.echo.state.tense"]
+    reveal(tense, in: app)
+    tense.tap()
+    let action = app.buttons["开始 · 生理性叹息"]
+    XCTAssertTrue(action.waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["现在做这个"].exists)
+  }
+
+  @MainActor
+  func testPacedBreathingLeadsWithTheCurrentBreathPhase() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    let practice = app.buttons["practice.pacedBreathing.180"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 3))
+    practice.tap()
+    let start = app.buttons["开始 3 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    start.tap()
+
+    let guide = app.descendants(matching: .any)["practice.breathGuide"]
+    XCTAssertTrue(guide.waitForExistence(timeout: 3))
+    XCTAssertTrue(app.staticTexts["吸气"].exists)
+  }
+
+  @MainActor
+  func testBreathPhaseRemainsThePrimaryGuideAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    app.tabBars.buttons["练习"].tap()
+    let practice = app.buttons["practice.pacedBreathing.180"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 3))
+    for _ in 0..<6 where !practice.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(practice.isHittable)
+    practice.tap()
+    let start = app.buttons["开始 3 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    for _ in 0..<4 where !start.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(start.isHittable)
+    start.tap()
+
+    let phase = app.staticTexts["practice.breathPhase"]
+    XCTAssertTrue(phase.waitForExistence(timeout: 3))
+    XCTAssertTrue(phase.isHittable)
+  }
+
+  @MainActor
+  func testHomeResponseRemainsReachableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    let tense = app.buttons["home.echo.state.tense"]
+    for _ in 0..<8 {
+      if tense.exists && tense.isHittable { break }
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(tense.exists)
+    XCTAssertTrue(tense.isHittable)
+    tense.tap()
+
+    let action = app.buttons["home.startRecommendation"]
+    for _ in 0..<8 {
+      if action.exists && action.isHittable { break }
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(action.exists)
+    XCTAssertTrue(action.isHittable)
+  }
+
+  @MainActor
+  func testBottomChromeDoesNotInterceptHomeScroll() {
+    let app = launchApp()
+    let tense = app.buttons["home.echo.state.tense"]
+    XCTAssertTrue(tense.waitForExistence(timeout: 3))
+    tense.tap()
+    let tabBar = app.tabBars.firstMatch
+    XCTAssertTrue(tabBar.waitForExistence(timeout: 3))
+    XCTAssertLessThan(
+      tabBar.frame.height,
+      120,
+      "The tab bar must not expose an oversized opaque host surface"
+    )
+
+    let response = app.staticTexts["home.responseExplanation"]
+    XCTAssertTrue(response.waitForExistence(timeout: 3))
+
+    let initialY = response.frame.minY
+    let dragStart = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.80))
+    let dragEnd = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
+    dragStart.press(forDuration: 0.05, thenDragTo: dragEnd)
+
+    XCTAssertLessThan(
+      response.frame.minY,
+      initialY - 12,
+      "The lower screen area must pass vertical gestures through to the home scroll view"
+    )
+
+    let checkIn = app.buttons["home.checkIn"]
+    for _ in 0..<4 where !checkIn.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(checkIn.isHittable)
+  }
+
+  @MainActor
+  func testFangcunNavigationUsesProductLanguage() {
+    let app = launchApp()
+
+    XCTAssertTrue(app.tabBars.buttons["此刻"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.tabBars.buttons["练习"].exists)
+    XCTAssertTrue(app.tabBars.buttons["设置"].exists)
+  }
+
+  @MainActor
+  func testSelectingSuggestedWordImmediatelySavesPrimaryRecord() {
+    let app = launchApp()
+    revealAndTapCheckIn(in: app)
+    XCTAssertTrue(app.staticTexts["现在怎样？"].waitForExistence(timeout: 2))
+
+    chooseHighNegativePosition(in: app)
+    XCTAssertTrue(app.staticTexts["哪个词最接近？"].waitForExistence(timeout: 2))
+    XCTAssertFalse(app.buttons["checkIn.continue"].exists)
+    XCTAssertEqual(app.sliders.count, 0)
+
+    app.buttons["emotionWord.anxious"].tap()
+
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["焦虑"].exists)
+  }
+
+  @MainActor
+  func testUnclassifiedStillSavesSelectedValence() {
+    let app = launchApp()
+    revealAndTapCheckIn(in: app)
+    chooseLowPositivePosition(in: app)
+
+    app.buttons["emotionWord.unclassified"].tap()
+
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["都不像，也已保留罗盘位置"].exists)
+  }
+
+  @MainActor
+  func testEmotionCompassDragCommitsItsEndpoint() {
+    let app = launchApp()
+    revealAndTapCheckIn(in: app)
+
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout: 2))
+    XCTAssertTrue(field.isHittable)
+
+    let start = field.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+    let end = field.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.25))
+    start.press(forDuration: 0.1, thenDragTo: end)
+
+    XCTAssertEqual(field.value as? String, "较不愉快，较有劲")
+    XCTAssertTrue(app.buttons["emotionWord.anxious"].waitForExistence(timeout: 2))
+  }
+
+  @MainActor
+  func testEmotionFieldRemainsUsableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    revealAndTapCheckIn(in: app)
+    chooseHighNegativePosition(in: app)
+
+    let unclassified = app.buttons["emotionWord.unclassified"]
+    XCTAssertTrue(unclassified.waitForExistence(timeout: 2))
+    for _ in 0..<4 where !unclassified.isHittable {
+      app.scrollViews["checkIn.scroll"].swipeUp()
+    }
+    XCTAssertTrue(unclassified.isHittable)
+  }
+
+  @MainActor
+  func testPracticeLibraryOpensARealSession() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    XCTAssertTrue(app.staticTexts["按压力状态选择"].waitForExistence(timeout: 2))
+
+    app.buttons["practice.physiologicalSigh.60"].tap()
+
+    XCTAssertTrue(app.staticTexts["生理性叹息"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["这个练什么"].exists)
+    XCTAssertTrue(app.staticTexts["适合什么时候"].exists)
+    XCTAssertTrue(app.staticTexts["怎么做"].exists)
+    XCTAssertTrue(app.staticTexts["开始前"].exists)
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].exists)
+  }
+
+  @MainActor
+  func testPracticeLibraryStartsFromTheOutcomeInsteadOfAPlainCatalog() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+
+    XCTAssertTrue(app.staticTexts["按压力状态选择"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["压力突然升高"].exists)
+    XCTAssertTrue(app.staticTexts["压力中等，节奏偏快"].exists)
+    XCTAssertTrue(app.staticTexts["压力较低，思绪占满"].exists)
+    XCTAssertTrue(app.staticTexts["睡眠或训练透支"].exists)
+    XCTAssertTrue(app.staticTexts["专项训练，不用于即时减压"].exists)
+  }
+
+  @MainActor
+  func testPracticeOffersHandsFreeSoundAndHapticGuidance() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    app.buttons["practice.physiologicalSigh.60"].tap()
+
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.descendants(matching: .any)["practice.sound.controls"].exists)
+    XCTAssertTrue(app.buttons["语音引导"].exists)
+    XCTAssertTrue(app.buttons["语音引导"].isSelected)
+    XCTAssertTrue(app.buttons["仅节奏"].exists)
+    XCTAssertTrue(app.buttons["静音"].exists)
+    XCTAssertTrue(app.switches["practice.haptics"].exists)
+  }
+
+  @MainActor
+  func testPracticePreparationIsScrollableForLargeContent() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    app.buttons["practice.physiologicalSigh.60"].tap()
+
+    XCTAssertTrue(app.scrollViews["practice.preparation"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].exists)
+  }
+
+  @MainActor
+  func testPracticeCompletionRemainsReachableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    app.tabBars.buttons["练习"].tap()
+    app.buttons["practice.physiologicalSigh.60"].tap()
+    let start = app.buttons["开始 1 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    start.tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["practice.breathGuide"].waitForExistence(timeout: 5)
+    )
+    let end = app.buttons["结束"]
+    XCTAssertTrue(end.waitForExistence(timeout: 3))
+    end.tap()
+    let confirmEnd = app.buttons["结束练习"]
+    XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
+    confirmEnd.tap()
+
+    XCTAssertFalse(app.staticTexts["和刚才比"].exists)
+    tapPracticeChoice("平和", in: app)
+    tapPracticeChoice("保留现在的感受", in: app)
+
+    let done = app.buttons["practice.saved.done"]
+    XCTAssertTrue(done.waitForExistence(timeout: 3))
+    if !done.isHittable {
+      app.scrollViews["practice.saved.scroll"].swipeUp()
+    }
+    XCTAssertTrue(done.isHittable)
+  }
+
+  @MainActor
+  func testKegelCompletionRemainsReachableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "--ui-testing-practice-save-failure",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    app.tabBars.buttons["练习"].tap()
+    let kegel = app.buttons["practice.kegel.180"]
+    for _ in 0..<8 where !kegel.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(kegel.isHittable)
+    kegel.tap()
+
+    let start = app.buttons["开始 3 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    start.tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["practice.pelvicFloorStage"].waitForExistence(timeout: 5)
+    )
+    let end = app.buttons["结束"]
+    XCTAssertTrue(end.waitForExistence(timeout: 3))
+    end.tap()
+    let confirmEnd = app.buttons["结束练习"]
+    XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
+    confirmEnd.tap()
+
+    let saveAlert = app.alerts["未能保留本次练习"]
+    XCTAssertTrue(saveAlert.waitForExistence(timeout: 5))
+    saveAlert.buttons["稍后处理"].tap()
+
+    let completionScroll = app.scrollViews["practice.completionOnly.scroll"]
+    XCTAssertTrue(completionScroll.waitForExistence(timeout: 3))
+    let save = app.buttons["记录本次完成"]
+    XCTAssertTrue(save.waitForExistence(timeout: 3))
+    if !save.isHittable {
+      completionScroll.swipeUp()
+    }
+    XCTAssertTrue(save.isHittable)
+  }
+
+  @MainActor
+  private func revealAndTapCheckIn(in app: XCUIApplication) {
+    let button = app.buttons["home.checkIn"]
+    let scroll = app.scrollViews.firstMatch
+    XCTAssertTrue(scroll.waitForExistence(timeout: 3))
+    for _ in 0..<8 where !button.isHittable {
+      scroll.swipeUp()
+    }
+    XCTAssertTrue(button.waitForExistence(timeout: 3))
+    XCTAssertTrue(button.isHittable)
+    button.tap()
+  }
+
+  @MainActor
+  private func tapPracticeChoice(_ label: String, in app: XCUIApplication) {
+    let button = app.buttons[label]
+    let scroll = app.scrollViews["practice.comparison.scroll"]
+    for _ in 0..<4 {
+      if !button.exists || button.frame.maxY > scroll.frame.maxY {
+        scroll.swipeUp()
+      } else if button.frame.minY < scroll.frame.minY {
+        scroll.swipeDown()
+      } else if button.isHittable {
+        break
+      }
+    }
+    XCTAssertTrue(button.waitForExistence(timeout: 3))
+    XCTAssertTrue(button.isHittable)
+    button.tap()
+    if label != "保留这次变化" && label != "保留现在的感受" {
+      expectation(
+        for: NSPredicate(format: "selected == true"),
+        evaluatedWith: button
+      )
+      waitForExpectations(timeout: 2)
+    }
+  }
+
+  @MainActor
+  private func chooseHighNegativePosition(in app: XCUIApplication) {
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout: 2))
+    field.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.25)).tap()
+  }
+
+  @MainActor
+  private func chooseLowPositivePosition(in app: XCUIApplication) {
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout: 2))
+    field.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.75)).tap()
+  }
+
+  @MainActor
+  private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
+    for _ in 0..<8 where !element.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(element.isHittable)
+  }
+
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift =====
+import XCTest
+
+final class FangcunAppearanceUITests: XCTestCase {
+  @MainActor
+  func testCriticalScreensInCurrentAppearance() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryLarge",
+    ]
+    app.launch()
+
+    XCTAssertTrue(app.otherElements["home.brandPoint"].waitForExistence(timeout: 3))
+    capture("home-initial", from: app)
+
+    let calm = app.buttons["home.echo.state.calm"]
+    XCTAssertTrue(calm.waitForExistence(timeout: 3))
+    XCTAssertGreaterThanOrEqual(calm.frame.width, 44)
+    XCTAssertGreaterThanOrEqual(calm.frame.height, 44)
+    calm.tap()
+    XCTAssertTrue(calm.isSelected)
+    capture("home-selected", from: app)
+
+    app.tabBars.buttons["练习"].tap()
+    let practice = app.buttons["practice.physiologicalSigh.60"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 3))
+    capture("practice-library", from: app)
+
+    practice.tap()
+    let preparation = app.scrollViews["practice.preparation"]
+    XCTAssertTrue(preparation.waitForExistence(timeout: 3))
+    capture("practice-overview", from: app)
+    let ambience = app.switches["环境声·锁屏继续"]
+    XCTAssertTrue(ambience.waitForExistence(timeout: 3))
+    for _ in 0..<5 where !ambience.isHittable {
+      preparation.swipeUp()
+    }
+    XCTAssertTrue(ambience.isHittable)
+    let ambienceValue = String(describing: ambience.value)
+    ambience.tap()
+    XCTAssertNotEqual(String(describing: ambience.value), ambienceValue)
+    let haptics = app.switches["practice.haptics"]
+    XCTAssertTrue(haptics.exists)
+    for _ in 0..<3 where !haptics.isHittable {
+      preparation.swipeUp()
+    }
+    XCTAssertTrue(haptics.isHittable)
+    capture("practice-preparation", from: app)
+
+    app.buttons["开始 1 分钟练习"].tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["practice.breathGuide"].waitForExistence(timeout: 3)
+    )
+    capture("practice-active", from: app)
+
+    app.buttons["结束"].tap()
+    let finish = app.buttons["结束练习"]
+    XCTAssertTrue(finish.waitForExistence(timeout: 3))
+    finish.tap()
+    XCTAssertTrue(
+      app.scrollViews["practice.comparison.scroll"].waitForExistence(timeout: 3)
+    )
+    capture("practice-comparison", from: app)
+
+    app.buttons["先完成"].tap()
+    XCTAssertTrue(app.scrollViews["practice.saved.scroll"].waitForExistence(timeout: 3))
+    capture("practice-complete", from: app)
+    app.buttons["practice.saved.done"].tap()
+
+    app.tabBars.buttons["此刻"].tap()
+    revealAndTapCheckIn(in: app)
+    XCTAssertTrue(app.otherElements["checkIn.emotionField"].waitForExistence(timeout: 3))
+    capture("check-in-compass", from: app)
+
+    app.otherElements["checkIn.emotionField"]
+      .coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.25))
+      .tap()
+    XCTAssertTrue(app.buttons["emotionWord.anxious"].waitForExistence(timeout: 3))
+    capture("check-in-words", from: app)
+
+    app.buttons["emotionWord.unclassified"].tap()
+    let done = app.buttons["先这样"]
+    XCTAssertTrue(done.waitForExistence(timeout: 3))
+    done.tap()
+
+    app.tabBars.buttons["设置"].tap()
+    XCTAssertTrue(app.staticTexts["设置"].waitForExistence(timeout: 3))
+    capture("settings", from: app)
+
+    app.buttons["隐私与数据"].tap()
+    XCTAssertTrue(app.staticTexts["本地优先"].waitForExistence(timeout: 3))
+    capture("privacy", from: app)
+  }
+
+  @MainActor
+  private func revealAndTapCheckIn(in app: XCUIApplication) {
+    let button = app.buttons["home.checkIn"]
+    XCTAssertTrue(button.waitForExistence(timeout: 3))
+    for _ in 0..<6 where !button.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(button.isHittable)
+    button.tap()
+  }
+
+  @MainActor
+  private func capture(_ name: String, from app: XCUIApplication) {
+    let attachment = XCTAttachment(screenshot: app.screenshot())
+    attachment.name = name
+    attachment.lifetime = .keepAlways
+    add(attachment)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift =====
+import XCTest
+
+final class FangcunRedesignUITests: XCTestCase {
+  @MainActor
+  func testNativeTodayDrinksTrendsPracticeAndSettings() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["today.conclusion"].waitForExistence(timeout: 15))
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
+    capture("redesign-home", app)
+    reveal(app.buttons["today.drinks"], app)
+    app.buttons["today.drinks"].tap()
+    let addWater = app.buttons["增加白水"]
+    XCTAssertTrue(addWater.waitForExistence(timeout: 5))
+    addWater.tap()
+    app.buttons["增加美式"].tap()
+    XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("550"))
+    app.buttons["撤销"].tap()
+    XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("250"))
+    capture("redesign-drinks", app)
+    app.buttons["完成"].tap()
+    reveal(app.buttons["today.trends"], app)
+    app.buttons["today.trends"].tap()
+    XCTAssertTrue(app.staticTexts["trends.snapshot"].waitForExistence(timeout: 5))
+    capture("redesign-trends", app)
+    app.navigationBars.buttons.firstMatch.tap()
+    for _ in 0..<4 where !app.buttons["today.start"].isHittable { app.scrollViews.firstMatch.swipeDown() }
+    app.buttons["today.start"].tap()
+    let pause = app.buttons["暂停练习"]
+    XCTAssertTrue(pause.waitForExistence(timeout: 10))
+    capture("redesign-breathing", app)
+    pause.tap()
+    XCTAssertTrue(app.staticTexts["已暂停"].waitForExistence(timeout: 4))
+    app.buttons["继续练习"].tap()
+    XCTAssertTrue(pause.waitForExistence(timeout: 4))
+    app.buttons["结束"].tap()
+    app.buttons["结束练习"].tap()
+    let finish = app.buttons["先完成"]
+    XCTAssertTrue(finish.waitForExistence(timeout: 6))
+    reveal(finish, app)
+    finish.tap()
+    let done = app.buttons["practice.saved.done"]
+    XCTAssertTrue(done.waitForExistence(timeout: 8))
+    capture("redesign-completion", app)
+    done.tap()
+    app.tabBars.buttons["设置"].tap()
+    XCTAssertTrue(app.switches["深色模式"].waitForExistence(timeout: 5))
+    capture("redesign-settings", app)
+  }
+
+  @MainActor
+  func testBreathingWithMotionEnabledCanPauseAndExit() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
+    app.launch()
+    XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
+    app.buttons["today.start"].tap()
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 10))
+    XCTAssertTrue(app.staticTexts["双吸一呼"].exists)
+    let exhale = NSPredicate(format: "label == %@", "呼气")
+    expectation(for: exhale, evaluatedWith: app.staticTexts["practice.breathPhase"])
+    waitForExpectations(timeout: 12)
+    capture("redesign-breathing-live", app)
+    app.buttons["暂停练习"].tap()
+    XCTAssertTrue(app.staticTexts["已暂停"].waitForExistence(timeout: 5))
+    capture("redesign-breathing-paused", app)
+    app.buttons["结束"].tap()
+    app.buttons["结束练习"].tap()
+    XCTAssertTrue(app.buttons["先完成"].waitForExistence(timeout: 5))
+  }
+
+  @MainActor
+  func testAcceptedSoloAndDuoScenesInDarkAndLargeType() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    for (state, title) in [("steady", "今日压力负荷平稳"), ("elevated", "今日身体负荷偏高"), ("insufficient", "还需要一点身体线索")] {
+      app.launchArguments = ["--ui-testing", "--preview-state=\(state)", "-fangcun.dark", state == "elevated" ? "YES" : "NO", "-fangcun.largeType", state == "insufficient" ? "YES" : "NO", "-fangcun.reduceMotion", "YES"]
+      app.launch()
+      XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 10))
+      capture("redesign-\(state)", app)
+      reveal(app.buttons["today.start"], app)
+      XCTAssertTrue(app.buttons["today.start"].isHittable)
+      app.terminate()
+    }
+  }
+  @MainActor private func reveal(_ element: XCUIElement, _ app: XCUIApplication) {
+    for _ in 0..<6 where !element.isHittable { app.scrollViews.firstMatch.swipeUp() }
+    XCTAssertTrue(element.isHittable)
+  }
+  @MainActor private func capture(_ name: String, _ app: XCUIApplication) {
+    let shot = XCTAttachment(screenshot: app.screenshot())
+    shot.name = name; shot.lifetime = .keepAlways; add(shot)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift =====
+import XCTest
+
+final class FangcunResponseLoopUITests: XCTestCase {
+  @MainActor
+  func testStateChoicesStayInPlaceAfterResponding() {
+    let app = launchApp()
+    let calm = app.buttons["home.echo.state.calm"]
+    XCTAssertTrue(calm.waitForExistence(timeout: 5))
+    let originalFrame = calm.frame
+    capture("home-before-selection", from: app)
+
+    calm.tap()
+    XCTAssertTrue(calm.isSelected)
+    capture("home-after-selection", from: app)
+    XCTAssertEqual(calm.frame.minY, originalFrame.minY, accuracy: 2)
+    XCTAssertTrue(calm.isHittable)
+
+    let tense = app.buttons["home.echo.state.tense"]
+    XCTAssertTrue(tense.isHittable)
+    tense.tap()
+    XCTAssertTrue(tense.isSelected)
+    XCTAssertEqual(calm.frame.minY, originalFrame.minY, accuracy: 2)
+    XCTAssertEqual(app.staticTexts["home.currentState"].label, "绷着")
+    let action = app.buttons["home.startRecommendation"]
+    XCTAssertTrue(action.isHittable)
+    XCTAssertLessThanOrEqual(action.frame.maxY, app.tabBars.firstMatch.frame.minY)
+    capture("home-tense-response", from: app)
+  }
+
+  @MainActor
+  func testSavedPostPracticeFeelingImmediatelyUpdatesHome() {
+    let app = launchApp()
+    let tense = app.buttons["home.echo.state.tense"]
+    XCTAssertTrue(tense.waitForExistence(timeout: 5))
+    tense.tap()
+    XCTAssertEqual(app.staticTexts["home.stressConclusion"].label, "压力较高")
+
+    let recommendation = app.buttons["home.startRecommendation"]
+    for _ in 0..<6 where !recommendation.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(recommendation.isHittable)
+    recommendation.tap()
+    let start = app.buttons["开始 1 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 5))
+    start.tap()
+    XCTAssertTrue(app.buttons["结束"].waitForExistence(timeout: 5))
+    app.buttons["结束"].tap()
+    app.buttons["结束练习"].tap()
+
+    let peaceful = app.buttons["平和"]
+    XCTAssertTrue(peaceful.waitForExistence(timeout: 5))
+    XCTAssertFalse(app.staticTexts["和刚才比"].exists)
+    peaceful.tap()
+    let keep = app.buttons["保留现在的感受"]
+    XCTAssertTrue(keep.isEnabled)
+    keep.tap()
+    let done = app.buttons["practice.saved.done"]
+    XCTAssertTrue(done.waitForExistence(timeout: 5))
+    capture("practice-feedback-saved", from: app)
+    done.tap()
+
+    let conclusion = app.staticTexts["home.stressConclusion"]
+    XCTAssertTrue(conclusion.waitForExistence(timeout: 5))
+    XCTAssertEqual(conclusion.label, "压力较低")
+    XCTAssertFalse(app.buttons["home.startRecommendation"].exists)
+    XCTAssertFalse(app.buttons["home.echo.state.tense"].isSelected)
+    let completion = app.descendants(matching: .any)["home.latestPractice"]
+    XCTAssertTrue(completion.exists)
+    XCTAssertFalse(completion.label.contains("持平"))
+    capture("home-after-peaceful-feedback", from: app)
+  }
+
+  @MainActor
+  func testQuickThenDetailedImmediatelyShowsOnlyTheDetailedState() {
+    let app = launchApp()
+
+    revealEchoChoices(in: app)
+    app.buttons["home.echo.state.calm"].tap()
+    revealAndTapCheckIn(in: app)
+    chooseHighNegativePosition(in: app)
+    app.buttons["emotionWord.anxious"].tap()
+    finishCheckIn(in: app)
+
+    let currentState = app.staticTexts["home.currentState"]
+    XCTAssertTrue(currentState.waitForExistence(timeout: 3))
+    expectation(
+      for: NSPredicate(format: "label == %@", "焦虑"),
+      evaluatedWith: currentState
+    )
+    waitForExpectations(timeout: 3)
+    XCTAssertEqual(currentState.label, "焦虑")
+    XCTAssertTrue(app.buttons["开始 · 生理性叹息"].exists)
+    revealEchoChoices(in: app)
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].isSelected)
+  }
+
+  @MainActor
+  func testDetailedThenQuickImmediatelyShowsOnlyTheQuickState() {
+    let app = launchApp()
+
+    revealAndTapCheckIn(in: app)
+    chooseHighNegativePosition(in: app)
+    app.buttons["emotionWord.anxious"].tap()
+    finishCheckIn(in: app)
+    revealEchoChoices(in: app)
+    app.buttons["home.echo.state.calm"].tap()
+
+    let currentState = app.staticTexts["home.currentState"]
+    XCTAssertTrue(currentState.waitForExistence(timeout: 3))
+    XCTAssertEqual(currentState.label, "平静")
+    XCTAssertTrue(app.buttons["home.echo.state.calm"].isSelected)
+    XCTAssertFalse(app.buttons["home.startRecommendation"].exists)
+    XCTAssertTrue(app.staticTexts["照常进行，不需要额外练习。"].exists)
+  }
+
+  @MainActor
+  func testFinishThenSkipFeedbackReturnsHomeWithCompletedOnly() {
+    let app = launchApp()
+
+    revealEchoChoices(in: app)
+    let tense = app.buttons["home.echo.state.tense"]
+    for _ in 0..<4 where !tense.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(tense.isHittable)
+    tense.tap()
+    let recommendation = app.buttons["home.startRecommendation"]
+    for _ in 0..<4 where !recommendation.isHittable {
+      app.scrollViews.firstMatch.swipeDown()
+    }
+    XCTAssertTrue(recommendation.isHittable)
+    recommendation.tap()
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].waitForExistence(timeout: 5))
+    app.buttons["开始 1 分钟练习"].tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["practice.breathGuide"].waitForExistence(timeout: 5)
+    )
+    let end = app.buttons["结束"]
+    XCTAssertTrue(end.waitForExistence(timeout: 3))
+    end.tap()
+    let confirmEnd = app.buttons["结束练习"]
+    XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
+    confirmEnd.tap()
+
+    let skip = app.buttons["先完成"]
+    XCTAssertTrue(skip.waitForExistence(timeout: 5))
+    skip.tap()
+    let done = app.buttons["practice.saved.done"]
+    XCTAssertTrue(done.waitForExistence(timeout: 5))
+    done.tap()
+
+    let latestPractice = app.descendants(matching: .any)["home.latestPractice"]
+    XCTAssertTrue(latestPractice.waitForExistence(timeout: 5))
+    XCTAssertTrue(latestPractice.label.contains("已完成"))
+    XCTAssertFalse(latestPractice.label.contains("持平"))
+  }
+
+  @MainActor
+  func testSelectedPressureSourceImmediatelyUpdatesTheWholeHomeResponse() {
+    let app = launchApp()
+
+    revealAndTapCheckIn(in: app)
+    chooseHighNegativePosition(in: app)
+    app.buttons["emotionWord.anxious"].tap()
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout: 3))
+
+    let work = app.buttons["工作"]
+    for _ in 0..<6 where !work.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(work.isHittable)
+    work.tap()
+
+    let save = app.buttons["保存补充"]
+    for _ in 0..<4 where !save.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(save.isHittable)
+    save.tap()
+
+    let conclusion = app.staticTexts["home.stressConclusion"]
+    XCTAssertTrue(conclusion.waitForExistence(timeout: 5))
+    XCTAssertEqual(conclusion.label, "压力较高")
+    let source = app.descendants(matching: .any)["home.stressSource"]
+    XCTAssertTrue(source.label.contains("工作"))
+    XCTAssertTrue(app.buttons["开始 · 生理性叹息"].exists)
+    XCTAssertTrue(app.staticTexts["给「工作」的一句"].exists)
+  }
+
+  @MainActor
+  private func launchApp() -> XCUIApplication {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryLarge",
+    ]
+    app.launch()
+    return app
+  }
+
+  @MainActor
+  private func revealAndTapCheckIn(in app: XCUIApplication) {
+    let button = app.buttons["home.checkIn"]
+    XCTAssertTrue(button.waitForExistence(timeout: 3))
+    for _ in 0..<4 where !button.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(button.isHittable)
+    button.tap()
+  }
+
+  @MainActor
+  private func chooseHighNegativePosition(in app: XCUIApplication) {
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout: 2))
+    field.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.25)).tap()
+  }
+
+  @MainActor
+  private func finishCheckIn(in app: XCUIApplication) {
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout: 3))
+    let done = app.buttons["先这样"]
+    for _ in 0..<4 where !done.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(done.isHittable)
+    done.tap()
+  }
+
+  @MainActor
+  private func revealEchoChoices(in app: XCUIApplication) {
+    let calm = app.buttons["home.echo.state.calm"]
+    let scroll = app.scrollViews.firstMatch
+    for _ in 0..<6 where !calm.isHittable {
+      if calm.exists && calm.frame.minY < scroll.frame.minY {
+        scroll.swipeDown()
+      } else {
+        scroll.swipeUp()
+      }
+    }
+    XCTAssertTrue(calm.waitForExistence(timeout: 3))
+    XCTAssertTrue(calm.isHittable)
+  }
+
+  @MainActor
+  private func capture(_ name: String, from app: XCUIApplication) {
+    let attachment = XCTAttachment(screenshot: app.screenshot())
+    attachment.name = name
+    attachment.lifetime = .keepAlways
+    add(attachment)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift =====
+import XCTest
+
+final class PracticeReturnHomeUITests: XCTestCase {
+  @MainActor
+  func testCompletedLibraryPracticeReturnsToNowTab() {
+    let app = launchPracticeFromLibrary()
+    app.buttons["开始 1 分钟练习"].tap()
+    let end = app.buttons["结束"]
+    XCTAssertTrue(end.waitForExistence(timeout: 5))
+    end.tap()
+    let confirmEnd = app.buttons["结束练习"]
+    XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
+    confirmEnd.tap()
+
+    let skip = app.buttons["先完成"]
+    XCTAssertTrue(skip.waitForExistence(timeout: 5))
+    for _ in 0..<4 where !skip.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(skip.isHittable)
+    skip.tap()
+    let done = app.buttons["practice.saved.done"]
+    XCTAssertTrue(done.waitForExistence(timeout: 5))
+    done.tap()
+
+    let now = app.tabBars.buttons["此刻"]
+    XCTAssertTrue(now.waitForExistence(timeout: 5))
+    XCTAssertTrue(now.isSelected)
+    XCTAssertTrue(app.descendants(matching: .any)["home.latestPractice"].exists)
+  }
+
+  @MainActor
+  func testClosingBeforeStartingKeepsThePracticeTabSelected() {
+    let app = launchPracticeFromLibrary()
+    app.buttons["关闭练习"].tap()
+
+    let practice = app.tabBars.buttons["练习"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 5))
+    XCTAssertTrue(practice.isSelected)
+    XCTAssertTrue(app.staticTexts["按压力状态选择"].exists)
+  }
+
+  @MainActor
+  private func launchPracticeFromLibrary() -> XCUIApplication {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing"]
+    app.launch()
+    let practice = app.tabBars.buttons["练习"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 5))
+    practice.tap()
+    let launch = app.buttons["开始生理性叹息，1 分钟"]
+    XCTAssertTrue(launch.waitForExistence(timeout: 5))
+    launch.tap()
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].waitForExistence(timeout: 5))
+    return app
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/App/InnerBalanceWatchApp.swift =====
+import SwiftData
+import SwiftUI
+
+@main
+struct InnerBalanceWatchApp: App {
+  private let modelContainer: ModelContainer
+
+  init() {
+    let schema = Schema([
+      WatchPendingHealthWrite.self,
+      WatchPracticeCompletion.self,
+    ])
+    let configuration = ModelConfiguration(schema: schema)
+    do {
+      modelContainer = try ModelContainer(for: schema, configurations: [configuration])
+    } catch {
+      fatalError("Unable to create the local watch persistence container.")
+    }
+  }
+
+  var body: some Scene {
+    WindowGroup {
+      WatchRootView()
+    }
+    .modelContainer(modelContainer)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/App/WatchRootView.swift =====
+import InnerBalanceCore
+import SwiftData
+import SwiftUI
+
+struct WatchRootView: View {
+  @Environment(\.modelContext) private var modelContext
+  @State private var pendingCount = 0
+  private let repository = WatchHealthRepository()
+
+  var body: some View {
+    NavigationStack {
+      List {
+        Section {
+          VStack(alignment: .leading, spacing: 7) {
+            Text("今日一句")
+              .font(.caption2.weight(.semibold))
+              .foregroundStyle(FangcunWatchColor.jade)
+            Text(dailyReflection.text)
+              .font(.headline)
+              .fixedSize(horizontal: false, vertical: true)
+            if let attribution = dailyReflection.attribution {
+              Text("—— \(attribution)")
+                .font(.caption2.weight(.medium))
+                .fixedSize(horizontal: false, vertical: true)
+            }
+          }
+          .padding(.vertical, 4)
+          .accessibilityElement(children: .combine)
+        }
+
+        Section {
+          NavigationLink {
+            WatchCheckInView(coordinator: coordinator)
+          } label: {
+            WatchCompassHomeTile()
+          }
+          NavigationLink {
+            WatchPracticeLibraryView(coordinator: coordinator)
+          } label: {
+            WatchHomeRow(
+              title: "开始调节",
+              detail: "选一个短练习",
+              systemImage: "waveform.path"
+            )
+          }
+          NavigationLink {
+            WatchSyncStatusView(coordinator: coordinator)
+          } label: {
+            WatchHomeRow(
+              title: "同步状态",
+              detail: pendingCount == 0 ? "已写入 Apple 健康" : "\(pendingCount) 条等待重试",
+              systemImage: pendingCount == 0 ? "checkmark.icloud" : "arrow.triangle.2.circlepath"
+            )
+          }
+        } header: {
+          VStack(alignment: .leading, spacing: 3) {
+            Text("方寸")
+              .font(.title3.weight(.semibold))
+            Text("照料方寸之间的自己")
+              .font(.caption2)
+              .foregroundStyle(.secondary)
+          }
+          .textCase(nil)
+        }
+      }
+      .listStyle(.carousel)
+      .navigationTitle("")
+      .task {
+        await coordinator.retryPending()
+        pendingCount = coordinator.pendingCount
+      }
+    }
+    .tint(FangcunWatchColor.jade)
+  }
+
+  private var dailyReflection: DailyReflection {
+    DailyReflectionSelector.reflection(on: .now, echo: nil)
+  }
+
+  private var coordinator: WatchHealthWriteCoordinator {
+    WatchHealthWriteCoordinator(repository: repository, modelContext: modelContext)
+  }
+}
+
+private struct WatchCompassHomeTile: View {
+  var body: some View {
+    HStack(spacing: 12) {
+      WatchCompassDial()
+        .frame(width: 68, height: 68)
+        .accessibilityHidden(true)
+      VStack(alignment: .leading, spacing: 4) {
+        Text("情绪罗盘")
+          .font(.headline)
+        Text("点两次，记下此刻")
+          .font(.caption2)
+          .foregroundStyle(.secondary)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+    }
+    .padding(.vertical, 4)
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel("情绪罗盘，点两次记下此刻")
+    .accessibilityIdentifier("watch.compass.home")
+  }
+}
+
+private struct WatchCompassDial: View {
+  var body: some View {
+    GeometryReader { proxy in
+      let size = min(proxy.size.width, proxy.size.height)
+      ZStack {
+        Circle()
+          .fill(
+            LinearGradient(
+              colors: [FangcunWatchColor.jade.opacity(0.24), Color.orange.opacity(0.14)],
+              startPoint: .topTrailing,
+              endPoint: .bottomLeading
+            )
+          )
+        Circle()
+          .stroke(FangcunWatchColor.jade.opacity(0.50), lineWidth: 1)
+        Rectangle()
+          .fill(.secondary.opacity(0.24))
+          .frame(width: 1, height: size * 0.70)
+        Rectangle()
+          .fill(.secondary.opacity(0.24))
+          .frame(width: size * 0.70, height: 1)
+        ForEach(WatchCompassRegion.all) { region in
+          Circle()
+            .fill(region.valence < -0.1 ? Color.orange : FangcunWatchColor.jade)
+            .frame(width: region.valence == 0 && region.arousal == 0 ? 7 : 5)
+            .position(
+              x: size * (0.5 + region.valence * 0.34),
+              y: size * (0.5 - region.arousal * 0.34)
+            )
+        }
+      }
+    }
+    .aspectRatio(1, contentMode: .fit)
+  }
+}
+
+private struct WatchHomeRow: View {
+  let title: String
+  let detail: String
+  let systemImage: String
+
+  var body: some View {
+    HStack(spacing: 10) {
+      Image(systemName: systemImage)
+        .font(.title3)
+        .foregroundStyle(FangcunWatchColor.jade)
+        .frame(width: 27)
+        .accessibilityHidden(true)
+      VStack(alignment: .leading, spacing: 2) {
+        Text(title)
+          .font(.headline)
+        Text(detail)
+          .font(.caption2)
+          .foregroundStyle(.secondary)
+          .lineLimit(2)
+      }
+    }
+    .padding(.vertical, 3)
+  }
+}
+
+private enum FangcunWatchColor {
+  static let jade = Color(red: 0.45, green: 0.77, blue: 0.67)
+}
+
+#Preview {
+  WatchRootView()
+    .modelContainer(
+      for: [WatchPendingHealthWrite.self, WatchPracticeCompletion.self],
+      inMemory: true
+    )
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Assets.xcassets/AccentColor.colorset/Contents.json =====
+{
+  "colors" : [
+    {
+      "color" : {
+        "color-space" : "srgb",
+        "components" : {
+          "alpha" : "1.000",
+          "blue" : "0.720",
+          "green" : "0.780",
+          "red" : "0.280"
+        }
+      },
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Assets.xcassets/AppIcon.appiconset/Contents.json =====
+{
+  "images" : [
+    {
+      "filename" : "InnerBalance-Watch-AppIcon.png",
+      "idiom" : "universal",
+      "platform" : "watchos",
+      "size" : "1024x1024"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Assets.xcassets/Contents.json =====
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Features/CheckIn/WatchCheckInView.swift =====
+import InnerBalanceCore
+import SwiftUI
+import WatchKit
+
+struct WatchCheckInView: View {
+  @Environment(\.dismiss) private var dismiss
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @State private var selectedPoint: WatchCompassRegion?
+  @State private var isSaving = false
+  @State private var saveFailed = false
+  @State private var showsSupportGuidance = false
+  let coordinator: WatchHealthWriteCoordinator
+
+  var body: some View {
+    Group {
+      if showsSupportGuidance {
+        supportGuidance
+      } else if let selectedPoint {
+        wordStep(selectedPoint)
+      } else {
+        compassStep
+      }
+    }
+    .navigationTitle(navigationTitle)
+    .navigationBarTitleDisplayMode(.inline)
+    .alert("未能保存", isPresented: $saveFailed) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text("未能写入 Apple 健康，也未能留在本地队列。请检查健康权限和可用空间。")
+    }
+  }
+
+  private var navigationTitle: String {
+    if showsSupportGuidance { return "先照顾好自己" }
+    return selectedPoint == nil ? "此刻在哪里？" : "最接近哪个？"
+  }
+
+  private var supportGuidance: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 10) {
+        Label("记录已保存", systemImage: "checkmark.circle.fill")
+          .font(.headline)
+          .foregroundStyle(.mint)
+        Text("你不必独自处理。现在可以联系一位你信任的人。")
+          .font(.footnote)
+        Text("如果你有立即伤害自己的危险，请联系当地急救或紧急支持。")
+          .font(.caption)
+          .foregroundStyle(.secondary)
+        Button("我知道了") { dismiss() }
+          .buttonStyle(.borderedProminent)
+          .tint(.mint)
+      }
+    }
+  }
+
+  private var compassStep: some View {
+    ScrollView {
+      VStack(spacing: 7) {
+        Text("上方更激活·右侧更愉快")
+          .font(.caption2)
+          .foregroundStyle(.secondary)
+        LazyVGrid(columns: compassColumns, spacing: 5) {
+          ForEach(WatchCompassRegion.all) { point in
+            Button {
+              selectedPoint = point
+            } label: {
+              VStack(spacing: 2) {
+                Image(systemName: point.systemImage)
+                  .font(.body)
+                Text(point.shortName)
+                  .font(.caption2.weight(.medium))
+                  .fixedSize(horizontal: false, vertical: true)
+              }
+              .frame(maxWidth: .infinity, minHeight: 43)
+            }
+            .buttonStyle(.plain)
+            .background(point.color.opacity(0.2), in: RoundedRectangle(cornerRadius: 10))
+            .accessibilityLabel(point.accessibilityLabel)
+          }
+        }
+      }
+    }
+  }
+
+  private var compassColumns: [GridItem] {
+    let count = dynamicTypeSize.isAccessibilitySize ? 2 : 3
+    return Array(repeating: GridItem(.flexible(), spacing: 5), count: count)
+  }
+
+  private func wordStep(_ point: WatchCompassRegion) -> some View {
+    ScrollView {
+      VStack(spacing: 7) {
+        ForEach(point.suggestions, id: \.rawValue) { label in
+          Button(label.watchDisplayName) {
+            Task { await save(point: point, label: label) }
+          }
+          .buttonStyle(.bordered)
+          .tint(.mint)
+          .disabled(isSaving)
+        }
+        Button("不知道") {
+          Task { await save(point: point, label: nil) }
+        }
+        .buttonStyle(.borderless)
+        .foregroundStyle(.secondary)
+        .disabled(isSaving)
+      }
+    }
+    .overlay {
+      if isSaving { ProgressView() }
+    }
+  }
+
+  private func save(point: WatchCompassRegion, label: EmotionLabel?) async {
+    guard !isSaving else { return }
+    isSaving = true
+    let identifier = "com.yvainair.innerbalance.state.watch.\(UUID().uuidString)"
+    let saved = await coordinator.save(
+      .stateOfMind(
+        WatchStateOfMindPayload(
+          syncIdentifier: identifier,
+          date: .now,
+          valence: point.valence,
+          arousal: point.arousal,
+          label: label,
+          unclassified: label == nil
+        )
+      )
+    )
+    isSaving = false
+    if saved {
+      WKInterfaceDevice.current().play(.success)
+      if label == .hopeless {
+        showsSupportGuidance = true
+      } else {
+        dismiss()
+      }
+    } else {
+      saveFailed = true
+    }
+  }
+}
+
+extension WatchCompassRegion {
+  var shortName: String {
+    switch (valence, arousal) {
+    case (...(-0.1), 0.1...): "紧绷"
+    case (0.1..., 0.1...): "振奋"
+    case (...(-0.1), ...(-0.1)): "低落"
+    case (0.1..., ...(-0.1)): "松弛"
+    default: "中间"
+    }
+  }
+
+  var systemImage: String {
+    if arousal > 0.1 { return "arrow.up" }
+    if arousal < -0.1 { return "arrow.down" }
+    return "minus"
+  }
+
+  var color: Color {
+    if valence < -0.1 { return .orange }
+    if valence > 0.1 { return .mint }
+    return .gray
+  }
+
+  var accessibilityLabel: String {
+    let pleasure = valence < -0.1 ? "不愉快" : valence > 0.1 ? "愉快" : "中性"
+    let activation = arousal < -0.1 ? "低激活" : arousal > 0.1 ? "高激活" : "中等激活"
+    return "\(pleasure)，\(activation)"
+  }
+
+  var suggestions: [EmotionLabel] {
+    let quadrant = EmotionCatalog.quadrant(valence: valence, arousal: arousal)
+    let labels = EmotionCatalog.labels(for: quadrant)
+    let fallback: [EmotionLabel] = [.indifferent, .calm, .content, .satisfied]
+    return Array((labels.count >= 4 ? labels : labels + fallback).uniqued().prefix(5))
+  }
+}
+
+extension Array where Element: Hashable {
+  fileprivate func uniqued() -> [Element] {
+    var seen = Set<Element>()
+    return filter { seen.insert($0).inserted }
+  }
+}
+
+extension EmotionLabel {
+  fileprivate var watchDisplayName: String {
+    switch self {
+    case .amazed: "惊叹"
+    case .amused: "愉快"
+    case .angry: "生气"
+    case .anxious: "焦虑"
+    case .ashamed: "羞愧"
+    case .brave: "勇敢"
+    case .calm: "平静"
+    case .content: "知足"
+    case .disappointed: "失望"
+    case .discouraged: "泄气"
+    case .disgusted: "厌恶"
+    case .embarrassed: "尴尬"
+    case .excited: "兴奋"
+    case .frustrated: "挫败"
+    case .grateful: "感激"
+    case .guilty: "内疚"
+    case .happy: "开心"
+    case .hopeless: "绝望"
+    case .irritated: "烦躁"
+    case .jealous: "嫉妒"
+    case .joyful: "喜悦"
+    case .lonely: "孤独"
+    case .passionate: "热情"
+    case .peaceful: "安宁"
+    case .proud: "自豪"
+    case .relieved: "释然"
+    case .sad: "难过"
+    case .scared: "害怕"
+    case .stressed: "紧张"
+    case .surprised: "惊讶"
+    case .worried: "担心"
+    case .annoyed: "恼火"
+    case .confident: "自信"
+    case .drained: "疲惫"
+    case .hopeful: "希望"
+    case .indifferent: "无所谓"
+    case .overwhelmed: "不堪重负"
+    case .satisfied: "满意"
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Features/Practice/LiveHeartRateSession.swift =====
+import HealthKit
+import InnerBalanceCore
+import Observation
+
+enum LiveHeartRateSessionState: Equatable, Sendable {
+  case idle
+  case starting
+  case running
+  case paused
+  case unavailable
+  case stopped
+}
+
+@MainActor
+@Observable
+final class LiveHeartRateSession: NSObject {
+  private let healthStore = HKHealthStore()
+  private var workoutSession: HKWorkoutSession?
+  private var workoutBuilder: HKLiveWorkoutBuilder?
+  private var samples: [HeartRateSample] = []
+  private var cleanupCompleted = false
+  private var isCleaningUp = false
+  private var finalEvidence: HeartRateEvidence?
+
+  private(set) var state: LiveHeartRateSessionState = .idle
+  private(set) var latestBeatsPerMinute: Double?
+  private(set) var startDate: Date?
+  private(set) var endDate: Date?
+
+  func start() async -> Bool {
+    guard state == .idle else { return state == .running }
+    state = .starting
+    let heartRateType = HKQuantityType(.heartRate)
+    do {
+      try await healthStore.requestAuthorization(
+        toShare: [HKWorkoutType.workoutType()],
+        read: [heartRateType]
+      )
+      let configuration = HKWorkoutConfiguration()
+      configuration.activityType = .mindAndBody
+      configuration.locationType = .unknown
+
+      let session = try HKWorkoutSession(
+        healthStore: healthStore,
+        configuration: configuration
+      )
+      let builder = session.associatedWorkoutBuilder()
+      builder.dataSource = HKLiveWorkoutDataSource(
+        healthStore: healthStore,
+        workoutConfiguration: configuration
+      )
+      session.delegate = self
+      builder.delegate = self
+      workoutSession = session
+      workoutBuilder = builder
+
+      let start = Date.now
+      startDate = start
+      session.startActivity(with: start)
+      try await builder.beginCollection(at: start)
+      state = .running
+      return true
+    } catch {
+      _ = await shutdownAndDiscard(finalState: .unavailable)
+      return false
+    }
+  }
+
+  func pause() {
+    guard state == .running else { return }
+    workoutSession?.pause()
+    state = .paused
+  }
+
+  func resume() {
+    guard state == .paused else { return }
+    workoutSession?.resume()
+    state = .running
+  }
+
+  func stopAndDiscard() async -> HeartRateEvidence? {
+    await shutdownAndDiscard(finalState: .stopped)
+  }
+
+  private func shutdownAndDiscard(
+    finalState: LiveHeartRateSessionState
+  ) async -> HeartRateEvidence? {
+    if cleanupCompleted { return finalEvidence }
+    if isCleaningUp {
+      while isCleaningUp {
+        await Task.yield()
+      }
+      return finalEvidence
+    }
+    isCleaningUp = true
+    defer {
+      isCleaningUp = false
+      cleanupCompleted = true
+    }
+    let end = Date.now
+    endDate = end
+    workoutSession?.stopActivity(with: end)
+    if let workoutBuilder {
+      _ = try? await workoutBuilder.endCollection(at: end)
+      workoutBuilder.discardWorkout()
+    }
+    workoutSession?.end()
+    self.workoutBuilder = nil
+    workoutSession = nil
+    if let startDate {
+      finalEvidence = HeartRateEvidenceAnalyzer.analyze(
+        samples: samples,
+        startDate: startDate,
+        endDate: end
+      )
+    }
+    state = finalState
+    return finalEvidence
+  }
+
+  private func collect(from builder: HKLiveWorkoutBuilder) {
+    let heartRateType = HKQuantityType(.heartRate)
+    guard let statistics = builder.statistics(for: heartRateType),
+      let quantity = statistics.mostRecentQuantity(),
+      let dateInterval = statistics.mostRecentQuantityDateInterval()
+    else { return }
+    let value = quantity.doubleValue(for: .count().unitDivided(by: .minute()))
+    guard value.isFinite, (30...220).contains(value) else { return }
+    if samples.last?.date != dateInterval.end {
+      samples.append(HeartRateSample(date: dateInterval.end, beatsPerMinute: value))
+    }
+    latestBeatsPerMinute = value
+  }
+}
+
+extension LiveHeartRateSession: HKWorkoutSessionDelegate {
+  nonisolated func workoutSession(
+    _ workoutSession: HKWorkoutSession,
+    didChangeTo toState: HKWorkoutSessionState,
+    from fromState: HKWorkoutSessionState,
+    date: Date
+  ) {
+    Task { @MainActor in
+      guard !cleanupCompleted else { return }
+      switch toState {
+      case .running: state = .running
+      case .paused: state = .paused
+      case .ended, .stopped: state = .stopped
+      default: break
+      }
+    }
+  }
+
+  nonisolated func workoutSession(
+    _ workoutSession: HKWorkoutSession,
+    didFailWithError error: any Error
+  ) {
+    Task { @MainActor in
+      _ = await shutdownAndDiscard(finalState: .unavailable)
+    }
+  }
+}
+
+extension LiveHeartRateSession: HKLiveWorkoutBuilderDelegate {
+  nonisolated func workoutBuilder(
+    _ workoutBuilder: HKLiveWorkoutBuilder,
+    didCollectDataOf collectedTypes: Set<HKSampleType>
+  ) {
+    Task { @MainActor in
+      guard collectedTypes.contains(HKQuantityType(.heartRate)) else { return }
+      collect(from: workoutBuilder)
+    }
+  }
+
+  nonisolated func workoutBuilderDidCollectEvent(_ workoutBuilder: HKLiveWorkoutBuilder) {}
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Features/Practice/WatchPracticeView.swift =====
+import InnerBalanceCore
+import SwiftData
+import SwiftUI
+import WatchKit
+
+struct WatchPracticeLibraryView: View {
+  let coordinator: WatchHealthWriteCoordinator
+
+  var body: some View {
+    List(PracticeCatalog.buildOne, id: \.kind.rawValue) { plan in
+      NavigationLink {
+        WatchPracticeDurationView(plan: plan, coordinator: coordinator)
+      } label: {
+        VStack(alignment: .leading, spacing: 2) {
+          Text(plan.kind.watchTitle)
+            .font(.headline)
+          Text(plan.kind.watchDetail)
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .lineLimit(2)
+        }
+      }
+    }
+    .navigationTitle("开始调节")
+  }
+}
+
+private struct WatchPracticeDurationView: View {
+  let plan: PracticeProtocol
+  let coordinator: WatchHealthWriteCoordinator
+
+  var body: some View {
+    List {
+      Section {
+        Text(plan.kind.watchPreparation)
+          .font(.footnote)
+          .foregroundStyle(.secondary)
+        if plan.kind == .kegel {
+          Label("疼痛或不适立即停止", systemImage: "exclamationmark.triangle")
+            .font(.caption2)
+            .foregroundStyle(.yellow)
+        }
+      }
+      Section("选择时长") {
+        ForEach(plan.durationOptions, id: \.self) { duration in
+          NavigationLink {
+            WatchPracticeSessionView(
+              plan: plan,
+              duration: duration,
+              coordinator: coordinator
+            )
+          } label: {
+            Label("开始 \(max(1, Int(duration / 60))) 分钟", systemImage: "play.fill")
+          }
+        }
+      }
+    }
+    .navigationTitle(plan.kind.watchTitle)
+  }
+}
+
+private struct WatchPracticeSessionView: View {
+  @Environment(\.dismiss) private var dismiss
+  @Environment(\.modelContext) private var modelContext
+  @State private var startedAt: Date?
+  @State private var pausedAt: Date?
+  @State private var pausedDuration: TimeInterval = 0
+  @State private var isCompleted = false
+  @State private var isSaving = false
+  @State private var isStarting = false
+  @State private var evidenceRequested = false
+  @State private var hapticCadenceEnabled = true
+  @State private var lastHapticCueID: Int?
+  @State private var evidenceUnavailable = false
+  @State private var evidenceSession = LiveHeartRateSession()
+  @State private var saveErrorMessage: String?
+  @State private var sessionID = UUID().uuidString
+  @State private var completionFreezer = WatchPracticeCompletionFreezer()
+
+  let plan: PracticeProtocol
+  let duration: TimeInterval
+  let coordinator: WatchHealthWriteCoordinator
+
+  var body: some View {
+    VStack(spacing: 9) {
+      if isCompleted {
+        Image(systemName: "checkmark.circle.fill")
+          .font(.largeTitle)
+          .foregroundStyle(.mint)
+        Text("已保留本次练习")
+          .font(.headline)
+          .multilineTextAlignment(.center)
+        Button("完成") { dismiss() }
+          .buttonStyle(.borderedProminent)
+          .tint(.mint)
+      } else if startedAt == nil {
+        ScrollView {
+          VStack(spacing: 8) {
+            Image(systemName: plan.kind.watchSystemImage)
+              .font(.largeTitle)
+              .foregroundStyle(.mint)
+            Text(plan.kind.watchPreparation)
+              .font(.footnote)
+              .multilineTextAlignment(.center)
+              .foregroundStyle(.secondary)
+            Toggle("触觉节奏", isOn: $hapticCadenceEnabled)
+              .tint(.mint)
+              .accessibilityHint("在节奏切换时轻触提示")
+              .accessibilityIdentifier("watch.practice.haptics")
+            if isEvidenceEligible {
+              Toggle("身体证据", isOn: $evidenceRequested)
+                .tint(.mint)
+              Text("开启后使用训练会话取得心率；结束时丢弃训练，不产生训练记录。")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            }
+            if evidenceUnavailable {
+              Text("心率证据不可用，本次已退化为普通练习。")
+                .font(.caption2)
+                .foregroundStyle(.yellow)
+                .multilineTextAlignment(.center)
+            }
+            Button(isStarting ? "正在准备…" : "开始") {
+              Task { await startPractice() }
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.mint)
+            .disabled(isStarting)
+          }
+          .padding(.vertical, 4)
+        }
+      } else {
+        ScrollView {
+          TimelineView(.periodic(from: .now, by: 0.5)) { context in
+            VStack(spacing: 8) {
+              if isBreathingPractice {
+                watchBreathGuide(at: context.date)
+              } else {
+                Text(clock(remaining(at: context.date)))
+                  .font(.system(.title, design: .rounded, weight: .semibold))
+                  .monospacedDigit()
+                Text(pausedAt == nil ? cue(at: context.date) : "已暂停")
+                  .font(.headline)
+                  .multilineTextAlignment(.center)
+                  .frame(minHeight: 42)
+              }
+              if let heartRate = evidenceSession.latestBeatsPerMinute {
+                Label("\(Int(heartRate.rounded())) 次/分", systemImage: "heart.fill")
+                  .font(.caption2.monospacedDigit())
+                  .foregroundStyle(.mint)
+                  .accessibilityLabel("实时心率 \(Int(heartRate.rounded())) 次每分钟")
+              }
+            }
+          }
+        }
+        HStack {
+          Button {
+            togglePause()
+          } label: {
+            Image(systemName: pausedAt == nil ? "pause.fill" : "play.fill")
+          }
+          .accessibilityLabel(pausedAt == nil ? "暂停" : "继续")
+          Button {
+            Task { await finish() }
+          } label: {
+            Image(systemName: "stop.fill")
+          }
+          .accessibilityLabel("结束并保存")
+          .disabled(isSaving)
+        }
+      }
+    }
+    .navigationTitle(plan.kind.watchTitle)
+    .navigationBarTitleDisplayMode(.inline)
+    .task(id: startedAt) {
+      while !Task.isCancelled, startedAt != nil, !isCompleted,
+        completionFreezer.snapshot == nil
+      {
+        let now = Date.now
+        if remaining(at: now) <= 0 {
+          await finish()
+          return
+        }
+        let elapsed = duration - remaining(at: now)
+        if PracticeHapticCadence.consumeCue(
+          for: plan.kind,
+          elapsed: elapsed,
+          isActive: pausedAt == nil,
+          isEnabled: hapticCadenceEnabled,
+          lastCueID: &lastHapticCueID
+        ) {
+          WKInterfaceDevice.current().play(.click)
+        }
+        try? await Task.sleep(for: .milliseconds(250))
+      }
+    }
+    .onDisappear {
+      guard evidenceRequested else { return }
+      Task { _ = await evidenceSession.stopAndDiscard() }
+    }
+    .alert(
+      "未能完成保存",
+      isPresented: Binding(
+        get: { saveErrorMessage != nil },
+        set: { if !$0 { saveErrorMessage = nil } }
+      )
+    ) {
+      Button("重试") {
+        saveErrorMessage = nil
+        Task { await finish() }
+      }
+      Button("稍后", role: .cancel) {}
+    } message: {
+      Text(saveErrorMessage ?? "请重试。")
+    }
+  }
+
+  private var isEvidenceEligible: Bool {
+    guard let minimum = plan.minimumEvidenceDuration else { return false }
+    return duration >= minimum
+  }
+
+  private var isBreathingPractice: Bool {
+    plan.kind == .physiologicalSigh || plan.kind == .pacedBreathing
+  }
+
+  @ViewBuilder
+  private func watchBreathGuide(at date: Date) -> some View {
+    let elapsed = duration - remaining(at: date)
+    let state = PracticeBreathGuide.state(for: plan.kind, elapsed: elapsed)
+    VStack(spacing: 5) {
+      Text(pausedAt == nil ? state.phase.title : "已暂停")
+        .font(.title2.weight(.semibold))
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+      ZStack {
+        Circle()
+          .stroke(Color.mint.opacity(0.18), lineWidth: 9)
+        Circle()
+          .trim(from: 0, to: pausedAt == nil ? state.progress : 0)
+          .stroke(
+            Color.mint,
+            style: StrokeStyle(lineWidth: 5, lineCap: .round)
+          )
+          .rotationEffect(.degrees(-90))
+        if pausedAt == nil {
+          Text("\(state.remainingWholeSeconds) 秒")
+            .font(.caption2.monospacedDigit())
+            .foregroundStyle(.secondary)
+        }
+      }
+      .frame(width: 82, height: 82)
+      Text("整段还有 \(clock(remaining(at: date)))")
+        .font(.caption2.monospacedDigit())
+        .foregroundStyle(.secondary)
+    }
+  }
+
+  private func remaining(at date: Date) -> TimeInterval {
+    guard let startedAt else { return duration }
+    let reference = pausedAt ?? date
+    return max(0, duration - reference.timeIntervalSince(startedAt) + pausedDuration)
+  }
+
+  private func cue(at date: Date) -> String {
+    let elapsed = duration - remaining(at: date)
+    switch plan.kind {
+    case .physiologicalSigh:
+      return switch Int(elapsed) % 12 {
+      case 0..<3: "轻吸一口"
+      case 3..<5: "再补一小口"
+      default: "缓慢呼出"
+      }
+    case .pacedBreathing: return Int(elapsed) % 10 < 4 ? "慢慢吸气" : "更慢地呼气"
+    case .meditation: return "注意一次自然呼吸"
+    case .nsdr: return "感受身体的支撑"
+    case .kegel: return Int(elapsed) % 12 < 4 ? "轻轻收紧" : "完全放松"
+    }
+  }
+
+  private func clock(_ interval: TimeInterval) -> String {
+    let seconds = max(0, Int(interval.rounded(.up)))
+    return String(format: "%d:%02d", seconds / 60, seconds % 60)
+  }
+
+  private func togglePause() {
+    if let pausedAt {
+      pausedDuration += Date.now.timeIntervalSince(pausedAt)
+      self.pausedAt = nil
+      evidenceSession.resume()
+    } else {
+      pausedAt = .now
+      evidenceSession.pause()
+    }
+  }
+
+  private func startPractice() async {
+    guard !isStarting else { return }
+    isStarting = true
+    if evidenceRequested {
+      let startedEvidence = await evidenceSession.start()
+      evidenceUnavailable = !startedEvidence
+    }
+    startedAt = evidenceSession.startDate ?? .now
+    lastHapticCueID = PracticeHapticCadence.cueID(for: plan.kind, elapsed: 0)
+    isStarting = false
+    WKInterfaceDevice.current().play(.start)
+  }
+
+  private func finish() async {
+    guard startedAt != nil, !isSaving else { return }
+    isSaving = true
+    let end = completionFreezer.snapshot?.endedAt ?? Date.now
+    var snapshot = completionFreezer.freeze(
+      sessionID: sessionID,
+      endedAt: end,
+      activeDuration: duration - remaining(at: end),
+      heartRateEvidenceRequested: evidenceRequested
+    )
+    pausedAt = snapshot.endedAt
+    if !snapshot.heartRateEvidenceCaptureCompleted {
+      let evidence = await evidenceSession.stopAndDiscard()
+      snapshot = completionFreezer.completeHeartRateEvidenceCapture(evidence) ?? snapshot
+    }
+    guard snapshot.activeDuration > 0 else {
+      saveErrorMessage = "练习时间太短，请继续后再保存。"
+      isSaving = false
+      return
+    }
+    guard
+      persistLocalCompletion(
+        snapshot,
+        healthWriteStatus: plan.kind == .kegel ? "local_only" : "local_pending"
+      )
+    else {
+      saveErrorMessage = "本地存储失败，方寸没有把本次练习标记为已保存。"
+      isSaving = false
+      return
+    }
+    var healthSavedOrQueued = true
+    if plan.kind != .kegel {
+      healthSavedOrQueued = await coordinator.save(
+        .mindful(
+          WatchMindfulPayload(
+            syncIdentifier: "com.yvainair.innerbalance.mindful.watch.\(snapshot.sessionID)",
+            sessionID: snapshot.sessionID,
+            practiceKind: plan.kind,
+            startDate: snapshot.endedAt.addingTimeInterval(-snapshot.activeDuration),
+            endDate: snapshot.endedAt,
+            heartRateEvidenceRequested: snapshot.heartRateEvidenceRequested,
+            heartRateEvidence: snapshot.heartRateEvidence
+          )
+        )
+      )
+    }
+    isSaving = false
+    guard healthSavedOrQueued else {
+      _ = persistLocalCompletion(
+        snapshot,
+        healthWriteStatus: "health_attention"
+      )
+      saveErrorMessage = "练习已保存在手表，但 Apple 健康写入未能加入重试队列。请在「同步状态」中重试。"
+      return
+    }
+    _ = persistLocalCompletion(
+      snapshot,
+      healthWriteStatus: plan.kind == .kegel ? "local_only" : "saved_or_queued"
+    )
+    isCompleted = true
+    WKInterfaceDevice.current().play(.success)
+  }
+
+  private func persistLocalCompletion(
+    _ snapshot: WatchPracticeCompletionSnapshot,
+    healthWriteStatus: String
+  ) -> Bool {
+    let identifier = snapshot.sessionID
+    let descriptor = FetchDescriptor<WatchPracticeCompletion>(
+      predicate: #Predicate { $0.sessionID == identifier }
+    )
+    do {
+      if let existing = try modelContext.fetch(descriptor).first {
+        existing.activeDuration = snapshot.activeDuration
+        existing.endedAt = snapshot.endedAt
+        existing.healthWriteStatus = healthWriteStatus
+      } else {
+        modelContext.insert(
+          WatchPracticeCompletion(
+            sessionID: snapshot.sessionID,
+            practiceKind: plan.kind,
+            activeDuration: snapshot.activeDuration,
+            endedAt: snapshot.endedAt,
+            healthWriteStatus: healthWriteStatus
+          )
+        )
+      }
+      try modelContext.save()
+      return true
+    } catch {
+      return false
+    }
+  }
+}
+
+extension PracticeKind {
+  fileprivate var watchTitle: String {
+    switch self {
+    case .physiologicalSigh: "生理性叹息"
+    case .pacedBreathing: "节律呼吸"
+    case .meditation: "冥想放松"
+    case .nsdr: "NSDR"
+    case .kegel: "凯格尔"
+    }
+  }
+
+  fileprivate var watchDetail: String {
+    switch self {
+    case .physiologicalSigh: "1 分钟·高激活"
+    case .pacedBreathing: "3 / 5 分钟"
+    case .meditation: "5 / 10 分钟"
+    case .nsdr: "10 / 20 分钟·疲惫"
+    case .kegel: "盆底肌收紧与放松·3 分钟"
+    }
+  }
+
+  fileprivate var watchPreparation: String {
+    switch self {
+    case .physiologicalSigh: "站稳或坐稳，呼吸不用很深。"
+    case .pacedBreathing: "找到不费力的呼吸节律。"
+    case .meditation: "把注意力放在呼吸和支撑感上。"
+    case .nsdr: "请躺下或半躺，确保暂时不需要驾驶。"
+    case .kegel: "保持自然呼吸，不在排尿时练习。"
+    }
+  }
+
+  fileprivate var watchSystemImage: String {
+    switch self {
+    case .physiologicalSigh: "wind"
+    case .pacedBreathing: "circle.dotted.circle"
+    case .meditation: "figure.mind.and.body"
+    case .nsdr: "bed.double.fill"
+    case .kegel: "figure.core.training"
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Features/Sync/WatchSyncStatusView.swift =====
+import SwiftUI
+
+struct WatchSyncStatusView: View {
+  @State private var summary = WatchPendingSummary(
+    totalCount: 0,
+    terminalCount: 0,
+    authorizationRequiredCount: 0
+  )
+  @State private var isRetrying = false
+  let coordinator: WatchHealthWriteCoordinator
+
+  var body: some View {
+    VStack(spacing: 10) {
+      Image(
+        systemName: summary.totalCount == 0
+          ? "checkmark.icloud.fill" : "arrow.triangle.2.circlepath.icloud"
+      )
+      .font(.largeTitle)
+      .foregroundStyle(summary.totalCount == 0 ? .mint : .yellow)
+      Text(summary.totalCount == 0 ? "无等待写入" : "\(summary.totalCount) 条等待写入")
+        .font(.headline)
+        .multilineTextAlignment(.center)
+      Text("跨设备以 Apple 健康为事实源，不上传到任何服务器。")
+        .font(.caption2)
+        .foregroundStyle(.secondary)
+        .multilineTextAlignment(.center)
+      if summary.authorizationRequiredCount > 0 {
+        Text("请在手表「设置 > 健康 > App > 方寸」中允许心境或正念写入。")
+          .font(.caption2)
+          .foregroundStyle(.yellow)
+          .multilineTextAlignment(.center)
+      }
+      if summary.terminalCount > 0 {
+        Text("\(summary.terminalCount) 条本地数据已损坏，无法重试。")
+          .font(.caption2)
+          .foregroundStyle(.red)
+          .multilineTextAlignment(.center)
+        Button("移除损坏记录", role: .destructive) {
+          coordinator.discardTerminalWrites()
+          summary = coordinator.pendingSummary
+        }
+        .font(.caption)
+      }
+      if summary.totalCount > summary.terminalCount {
+        Button(isRetrying ? "正在重试…" : "现在重试") {
+          Task {
+            isRetrying = true
+            await coordinator.retryPending(force: true)
+            summary = coordinator.pendingSummary
+            isRetrying = false
+          }
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.mint)
+        .disabled(isRetrying)
+      }
+    }
+    .padding(.horizontal, 6)
+    .navigationTitle("同步状态")
+    .task { summary = coordinator.pendingSummary }
+  }
+}
+
+===== END FILE =====

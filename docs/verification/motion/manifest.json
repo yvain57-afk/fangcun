@@ -1,0 +1,26 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "43469171-776F-413B-8EBE-C71693ECC76F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-breathing-paused_0_D2A5B150-30FC-46FA-AA2C-3834F0329995.png",
+        "timestamp" : 1789698073.866
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4A6CDF16-DDEF-4337-A59D-E708E1CD09EF",
+        "deviceName" : "Fangcun UI Review",
+        "exportedFileName" : "E40F80CA-3DE4-47EB-A25A-1FEFBE3D2D38.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "redesign-breathing-live_0_FCE76DDB-9283-4C98-A920-CDE938469F96.png",
+        "timestamp" : 1789698072.186
+      }
+    ],
+    "testIdentifier" : "FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit()",
+    "testIdentifierURL" : "test://com.apple.xcode/InnerBalance/InnerBalanceUITests/FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit"
+  }
+]

@@ -1,0 +1,36 @@
+import SwiftData
+import SwiftUI
+
+@main
+struct InnerBalanceApp: App {
+  private let modelContainer: ModelContainer
+
+  init() {
+    let schema = Schema([
+      PendingHealthWrite.self,
+      CheckInDiagnosticEvent.self,
+      LocalDiagnosticEvent.self,
+      CachedCheckIn.self,
+      StoredPracticeCompletion.self,
+      StoredDailyEcho.self,
+    ])
+    let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+    let configuration = ModelConfiguration(
+      schema: schema,
+      isStoredInMemoryOnly: isUITesting
+    )
+    do {
+      modelContainer = try ModelContainer(for: schema, configurations: [configuration])
+    } catch {
+      fatalError("Unable to create the local persistence container.")
+    }
+  }
+
+  var body: some Scene {
+    WindowGroup {
+      RootView()
+        .modifier(FangcunDisplayPreferences())
+    }
+    .modelContainer(modelContainer)
+  }
+}

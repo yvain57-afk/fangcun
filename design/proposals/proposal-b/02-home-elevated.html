@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - Proposal B - 首页(偏高)</title>
+<style>
+  :root {
+    --fc-blue: #2B5EA7; --fc-blue-dark: #1E4578; --fc-blue-light: #E8EFF8;
+    --fc-blue-muted: #94B3D7; --fc-blue-50: #F0F5FB;
+    --fc-orange: #E07B4F; --fc-orange-light: #FDF0EB; --fc-orange-muted: #F2B89E;
+    --fc-calm: #2B5EA7; --fc-calm-bg: #EDF3FB;
+    --fc-elevated: #C75B2A; --fc-elevated-bg: #FDF0EB;
+    --fc-neutral: #8A9AB5; --fc-neutral-bg: #F3F5F8;
+    --fc-text: #2D3748; --fc-text-secondary: #6B7793; --fc-text-tertiary: #8A95AD;
+    --fc-gray-50: #F5F7FA; --fc-gray-100: #ECEEF3; --fc-gray-200: #D8DCE5;
+    --fc-gray-400: #8A95AD;
+    --fc-shadow-sm: 0 1px 3px rgba(43,94,167,0.06);
+    --fc-shadow-md: 0 2px 8px rgba(43,94,167,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#E8EEF5;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,'PingFang SC',sans-serif;-webkit-font-smoothing:antialiased}
+  .iphone-frame{width:393px;height:852px;border-radius:47px;box-shadow:0 0 0 3px #1a1a1a,0 20px 60px rgba(0,0,0,.15);background:#FEFDFB;position:relative;overflow:hidden}
+  .dynamic-island{width:126px;height:37px;background:#000;border-radius:20px;position:absolute;top:11px;left:50%;transform:translateX(-50%);z-index:10}
+  .status-bar{height:54px;padding:14px 28px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:5}
+  .status-time{font-size:16px;font-weight:700;color:var(--fc-text);letter-spacing:.5px}
+  .status-icons{display:flex;align-items:center;gap:6px}
+  .content-area{height:calc(852px - 54px - 83px);overflow-y:auto;scrollbar-width:none}
+  .content-area::-webkit-scrollbar{display:none}
+  .tab-bar{height:83px;position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:.5px solid #D8DCE5;display:flex;justify-content:space-around;align-items:flex-start;padding-top:8px;z-index:10}
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+  .tab-label{font-size:10px;color:#8A95AD}
+  .tab-item.active .tab-label{color:#2B5EA7}
+  .home-indicator{width:134px;height:5px;background:#1a1a1a;border-radius:3px;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:11}
+
+  .date-line{font-size:14px;color:var(--fc-text-secondary);padding:16px 20px 8px}
+  .character-scene{display:flex;justify-content:center;align-items:flex-end;gap:12px;padding:8px 20px 4px;height:140px}
+  .character-cat,.character-dog{animation:gentle-float 5s ease-in-out infinite}
+  .character-dog{animation-delay:-2s}
+  @keyframes gentle-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+
+  .conclusion-card{margin:0 20px;background:var(--fc-elevated-bg);border:1px solid var(--fc-orange-muted);border-radius:16px;padding:20px;position:relative;text-align:center;box-shadow:0 2px 8px rgba(199,91,42,.08)}
+  .bubble-pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:16px;height:8px}
+  .conclusion-title{font-size:20px;font-weight:600;color:var(--fc-elevated);margin-bottom:10px}
+  .elevated-tag{display:inline-block;background:rgba(199,91,42,.15);color:var(--fc-elevated);font-size:13px;font-weight:500;padding:4px 14px;border-radius:100px}
+
+  .evidence-section{padding:16px 20px 0}
+  .evidence-pills{display:flex;gap:10px;justify-content:center}
+  .evidence-pill{background:var(--fc-elevated-bg);border-radius:100px;padding:8px 14px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--fc-text)}
+  .evidence-pill svg{flex-shrink:0}
+  .evidence-note{text-align:center;font-size:12px;color:#B8755A;margin-top:8px}
+
+  .action-btn{margin:20px 20px 0;background:var(--fc-elevated);color:#fff;height:48px;border-radius:100px;border:none;font-size:16px;font-weight:600;width:calc(100% - 40px);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-family:inherit;transition:opacity .2s}
+  .action-btn:active{opacity:.85}
+
+  .quick-record{padding:20px 20px 24px}
+  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .section-title{font-size:15px;font-weight:600;color:var(--fc-text)}
+  .section-link{font-size:13px;color:var(--fc-blue-muted);text-decoration:none}
+  .record-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+  .record-scroll::-webkit-scrollbar{display:none}
+  .record-card{background:#fff;border-radius:12px;padding:10px;min-width:80px;text-align:center;box-shadow:var(--fc-shadow-sm);flex-shrink:0}
+  .record-card.warn{background:#FDF0EB}
+  .record-icon{font-size:22px;margin-bottom:4px}
+  .record-value{font-size:14px;font-weight:600;color:var(--fc-text);margin-bottom:2px;white-space:nowrap}
+  .record-label{font-size:11px;color:var(--fc-text-tertiary)}
+</style>
+</head>
+<body>
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="8" width="3" height="4" rx=".5" fill="#2D3748"/><rect x="4.5" y="5" width="3" height="7" rx=".5" fill="#2D3748"/><rect x="9" y="2" width="3" height="10" rx=".5" fill="#2D3748"/><rect x="13.5" y="0" width="3" height="12" rx=".5" fill="#2D3748"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 11.5a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z" fill="#2D3748"/><path d="M4.7 8.1a4.7 4.7 0 016.6 0" stroke="#2D3748" stroke-width="1.3" stroke-linecap="round"/><path d="M2.3 5.5a8 8 0 0111.4 0" stroke="#2D3748" stroke-width="1.3" stroke-linecap="round"/><path d="M0 3a11.2 11.2 0 0116 0" stroke="#2D3748" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <svg width="27" height="12" viewBox="0 0 27 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="2.5" stroke="#2D3748" stroke-opacity=".35"/><rect x="2" y="2" width="20" height="8" rx="1.5" fill="#2D3748"/><path d="M25 4v4a2 2 0 000-4z" fill="#2D3748" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <div class="date-line">9月17日 周三</div>
+
+    <!-- Characters: gentle/calm posture for elevated state -->
+    <div class="character-scene">
+      <!-- Cat with half-closed peaceful eyes -->
+      <svg class="character-cat" width="100" height="120" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="50" cy="82" rx="28" ry="32" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M75 90c8-2 16-8 18-18s-4-14-10-10c-4 3-6 10-4 16" fill="none" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="50" cy="48" rx="22" ry="19" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M32 38L26 18l16 14z" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M68 38l6-20-16 14z" fill="#E07B4F" stroke="#2B5EA7" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- Half-closed eyes -->
+        <path d="M38 47c2-1.5 4-1.5 6 0" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <path d="M56 47c2-1.5 4-1.5 6 0" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <ellipse cx="50" cy="53" rx="2.5" ry="1.8" fill="#E07B4F"/>
+        <line x1="28" y1="50" x2="40" y2="52" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="29" y1="55" x2="40" y2="54" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="60" y1="52" x2="72" y2="50" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="60" y1="54" x2="71" y2="55" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="38" cy="110" rx="8" ry="5" fill="white" stroke="#2B5EA7" stroke-width="2.5"/>
+        <ellipse cx="62" cy="110" rx="8" ry="5" fill="white" stroke="#2B5EA7" stroke-width="2.5"/>
+      </svg>
+
+      <!-- Dog lying still, head lower, tail resting -->
+      <svg class="character-dog" width="120" height="90" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="60" cy="58" rx="38" ry="20" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse cx="70" cy="55" rx="14" ry="10" fill="#E07B4F" opacity=".3"/>
+        <!-- Tail resting flat -->
+        <path d="M96 54c5-1 10 1 11 4s-1 6-4 6" fill="none" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="28" cy="44" rx="20" ry="17" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse cx="14" cy="48" rx="10" ry="8" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse cx="8" cy="46" rx="3.5" ry="2.8" fill="#1a1a1a"/>
+        <path d="M16 34c-6-4-14-2-16 6s2 14 8 14" fill="white" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M38 32c4-6 12-8 16-2s0 14-6 16" fill="#E07B4F" stroke="#2B5EA7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Half-closed gentle eyes -->
+        <path d="M19 42c1.5-1 3-1 4.5 0" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M31 41c1.5-1 3-1 4.5 0" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M10 51c2 1.5 5 1.5 7 0" fill="none" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="30" cy="76" rx="10" ry="5" fill="white" stroke="#2B5EA7" stroke-width="2.5"/>
+        <ellipse cx="52" cy="77" rx="10" ry="5" fill="white" stroke="#2B5EA7" stroke-width="2.5"/>
+        <ellipse cx="88" cy="76" rx="8" ry="5" fill="white" stroke="#2B5EA7" stroke-width="2.5"/>
+      </svg>
+    </div>
+
+    <!-- Warm conclusion -->
+    <div class="conclusion-card">
+      <svg class="bubble-pointer" viewBox="0 0 16 8" fill="none"><path d="M0 8L8 0l8 8H0z" fill="#FDF0EB"/><path d="M0 8L8 0l8 8" fill="none" stroke="#F2B89E" stroke-width="1"/></svg>
+      <div class="conclusion-title">今日压力负荷偏高</div>
+      <span class="elevated-tag">偏高</span>
+    </div>
+
+    <div class="evidence-section">
+      <div class="evidence-pills">
+        <div class="evidence-pill">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#C75B2A" stroke-width="1.5" fill="none"/><path d="M8 4v4.5" stroke="#C75B2A" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="5" r="1.5" fill="#C75B2A" opacity=".2"/></svg>
+          5小时10分
+        </div>
+        <div class="evidence-pill">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 14s-5.5-3.5-5.5-7A3.5 3.5 0 018 4.5 3.5 3.5 0 0113.5 7C13.5 10.5 8 14 8 14z" fill="none" stroke="#C75B2A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          68 bpm
+        </div>
+      </div>
+      <div class="evidence-note">明显低于均值 · 高于基线</div>
+    </div>
+
+    <button class="action-btn">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10c2-3 4-5 7-5s5 2 7 5" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity=".8"/><path d="M3 10c2 3 4 5 7 5s5-2 7-5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+      要不要先做个叹息练习？
+    </button>
+
+    <div class="quick-record">
+      <div class="section-header">
+        <span class="section-title">今日记录</span>
+        <a class="section-link" href="#">编辑</a>
+      </div>
+      <div class="record-scroll">
+        <div class="record-card"><div class="record-icon">💧</div><div class="record-value">3杯</div><div class="record-label">水</div></div>
+        <div class="record-card"><div class="record-icon">☕</div><div class="record-value">2杯</div><div class="record-label">拿铁</div></div>
+        <div class="record-card"><div class="record-icon">🍺</div><div class="record-value">1罐</div><div class="record-label">啤酒</div></div>
+        <div class="record-card"><div class="record-icon">🚶</div><div class="record-value">3,100步</div><div class="record-label">步数</div></div>
+        <div class="record-card warn"><div class="record-icon">⚠️</div><div class="record-value">3天</div><div class="record-label">未运动</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#2B5EA7" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="#2B5EA7"/></svg>
+      <span class="tab-label" style="color:#2B5EA7">此刻</span>
+    </div>
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12c3-4 5-7 8-7s5 3 8 7" stroke="#8A95AD" stroke-width="1.8" stroke-linecap="round"/><path d="M4 12c3 4 5 7 8 7s5-3 8-7" stroke="#8A95AD" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="tab-label">练习</span>
+    </div>
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#8A95AD" stroke-width="1.8"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="#8A95AD" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,4059 @@
+
+===== FILE: InnerBalance/InnerBalanceWatch/Health/WatchHealthRepository.swift =====
+import HealthKit
+import InnerBalanceCore
+
+struct WatchStateOfMindPayload: Codable, Equatable, Sendable {
+  let syncIdentifier: String
+  let date: Date
+  let valence: Double
+  let arousal: Double
+  let label: EmotionLabel?
+  let unclassified: Bool
+}
+
+enum WatchHealthPayload: Codable, Equatable, Sendable {
+  case stateOfMind(WatchStateOfMindPayload)
+  case mindful(WatchMindfulPayload)
+}
+
+@MainActor
+final class WatchHealthRepository {
+  private let healthStore = HKHealthStore()
+
+  func requestBasicAuthorization() async -> Bool {
+    guard HKHealthStore.isHealthDataAvailable() else { return false }
+    do {
+      try await healthStore.requestAuthorization(
+        toShare: [HKObjectType.stateOfMindType(), HKCategoryType(.mindfulSession)],
+        read: []
+      )
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  func save(_ payload: WatchHealthPayload) async throws {
+    switch payload {
+    case .stateOfMind(let record):
+      try await saveStateOfMind(record)
+    case .mindful(let record):
+      try await saveMindful(record)
+    }
+  }
+
+  func hasWriteAuthorization(for payload: WatchHealthPayload) -> Bool {
+    let type: HKObjectType =
+      switch payload {
+      case .stateOfMind: HKObjectType.stateOfMindType()
+      case .mindful: HKCategoryType(.mindfulSession)
+      }
+    return healthStore.authorizationStatus(for: type) == .sharingAuthorized
+  }
+
+  private func saveStateOfMind(_ record: WatchStateOfMindPayload) async throws {
+    let metadata: [String: Any] = [
+      HKMetadataKeySyncIdentifier: record.syncIdentifier,
+      HKMetadataKeySyncVersion: 1,
+      "com.yvainair.innerbalance.schemaVersion": 1,
+      "com.yvainair.innerbalance.arousal": record.arousal,
+      "com.yvainair.innerbalance.bodySensationCodes": "",
+      "com.yvainair.innerbalance.associationCodes": "",
+      "com.yvainair.innerbalance.unclassified": record.unclassified ? 1 : 0,
+      "com.yvainair.innerbalance.origin": "watch",
+      "com.yvainair.innerbalance.phase": "standalone",
+    ]
+    let sample = HKStateOfMind(
+      date: record.date,
+      kind: .momentaryEmotion,
+      valence: record.valence,
+      labels: record.label.map { [Self.healthKitLabel($0)] } ?? [],
+      associations: [],
+      metadata: metadata
+    )
+    try await healthStore.save(sample)
+  }
+
+  private func saveMindful(_ record: WatchMindfulPayload) async throws {
+    guard record.practiceKindRawValue != PracticeKind.kegel.rawValue,
+      record.endDate > record.startDate
+    else { return }
+    let heartRateEvidenceRequested = HeartRateEvidenceRequestCompatibility.resolved(
+      explicitRequest: record.heartRateEvidenceRequested,
+      evidence: record.heartRateEvidence
+    )
+    var metadata: [String: Any] = [
+      HKMetadataKeySyncIdentifier: record.syncIdentifier,
+      HKMetadataKeySyncVersion: 1,
+      "com.yvainair.innerbalance.schemaVersion": 1,
+      "com.yvainair.innerbalance.sessionID": record.sessionID,
+      "com.yvainair.innerbalance.practiceType": record.practiceKindRawValue,
+      "com.yvainair.innerbalance.protocolVersion": 1,
+      "com.yvainair.innerbalance.origin": "watch",
+      "com.yvainair.innerbalance.evidenceMode":
+        record.heartRateEvidence == nil ? "subjective" : "heart_rate",
+      "com.yvainair.innerbalance.heartRateEvidenceRequested":
+        heartRateEvidenceRequested ? 1 : 0,
+      "com.yvainair.innerbalance.evidenceQuality":
+        record.heartRateEvidence == nil ? "insufficient" : "sufficient",
+    ]
+    if let evidence = record.heartRateEvidence {
+      metadata["com.yvainair.innerbalance.heartRateStart"] = evidence.startBeatsPerMinute
+      metadata["com.yvainair.innerbalance.heartRateEnd"] = evidence.endBeatsPerMinute
+      metadata["com.yvainair.innerbalance.heartRateSampleCount"] = evidence.sampleCount
+    }
+    let sample = HKCategorySample(
+      type: HKCategoryType(.mindfulSession),
+      value: HKCategoryValue.notApplicable.rawValue,
+      start: record.startDate,
+      end: record.endDate,
+      metadata: metadata
+    )
+    try await healthStore.save(sample)
+  }
+
+  private static func healthKitLabel(_ label: EmotionLabel) -> HKStateOfMind.Label {
+    switch label {
+    case .amazed: .amazed
+    case .amused: .amused
+    case .angry: .angry
+    case .anxious: .anxious
+    case .ashamed: .ashamed
+    case .brave: .brave
+    case .calm: .calm
+    case .content: .content
+    case .disappointed: .disappointed
+    case .discouraged: .discouraged
+    case .disgusted: .disgusted
+    case .embarrassed: .embarrassed
+    case .excited: .excited
+    case .frustrated: .frustrated
+    case .grateful: .grateful
+    case .guilty: .guilty
+    case .happy: .happy
+    case .hopeless: .hopeless
+    case .irritated: .irritated
+    case .jealous: .jealous
+    case .joyful: .joyful
+    case .lonely: .lonely
+    case .passionate: .passionate
+    case .peaceful: .peaceful
+    case .proud: .proud
+    case .relieved: .relieved
+    case .sad: .sad
+    case .scared: .scared
+    case .stressed: .stressed
+    case .surprised: .surprised
+    case .worried: .worried
+    case .annoyed: .annoyed
+    case .confident: .confident
+    case .drained: .drained
+    case .hopeful: .hopeful
+    case .indifferent: .indifferent
+    case .overwhelmed: .overwhelmed
+    case .satisfied: .satisfied
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/InnerBalanceWatch.entitlements =====
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.healthkit</key>
+	<true/>
+</dict>
+</plist>
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Persistence/WatchPendingHealthWrite.swift =====
+import Foundation
+import HealthKit
+import InnerBalanceCore
+import SwiftData
+
+@Model
+final class WatchPendingHealthWrite {
+  @Attribute(.unique) var syncIdentifier: String
+  var payload: Data
+  var createdAt: Date
+  var attemptCount: Int
+  var nextRetryAt: Date = Date.distantPast
+  var lastErrorCode: String = ""
+  var isTerminal: Bool = false
+
+  init(
+    syncIdentifier: String,
+    payload: Data,
+    createdAt: Date = .now,
+    lastErrorCode: String
+  ) {
+    self.syncIdentifier = syncIdentifier
+    self.payload = payload
+    self.createdAt = createdAt
+    attemptCount = 0
+    nextRetryAt = createdAt
+    self.lastErrorCode = lastErrorCode
+    isTerminal = false
+  }
+}
+
+struct WatchPendingSummary: Equatable, Sendable {
+  let totalCount: Int
+  let terminalCount: Int
+  let authorizationRequiredCount: Int
+}
+
+@MainActor
+final class WatchHealthWriteCoordinator {
+  private let repository: WatchHealthRepository
+  private let modelContext: ModelContext
+  private let encoder = JSONEncoder()
+  private let decoder = JSONDecoder()
+
+  init(repository: WatchHealthRepository, modelContext: ModelContext) {
+    self.repository = repository
+    self.modelContext = modelContext
+  }
+
+  func save(_ payload: WatchHealthPayload) async -> Bool {
+    guard await repository.requestBasicAuthorization() else {
+      return enqueue(payload, errorCode: "authorization_required")
+    }
+    guard repository.hasWriteAuthorization(for: payload) else {
+      return enqueue(payload, errorCode: "authorization_required")
+    }
+    do {
+      try await repository.save(payload)
+      return true
+    } catch {
+      return enqueue(payload, errorCode: Self.errorCode(for: error))
+    }
+  }
+
+  func retryPending(now: Date = .now, force: Bool = false) async {
+    let descriptor =
+      if force {
+        FetchDescriptor<WatchPendingHealthWrite>(
+          predicate: #Predicate { !$0.isTerminal },
+          sortBy: [SortDescriptor(\.createdAt)]
+        )
+      } else {
+        FetchDescriptor<WatchPendingHealthWrite>(
+          predicate: #Predicate { !$0.isTerminal && $0.nextRetryAt <= now },
+          sortBy: [SortDescriptor(\.createdAt)]
+        )
+      }
+    guard let writes = try? modelContext.fetch(descriptor) else {
+      return
+    }
+    guard !writes.isEmpty else { return }
+    guard await repository.requestBasicAuthorization() else {
+      for write in writes {
+        scheduleRetry(write, now: now, errorCode: "authorization_required")
+      }
+      try? modelContext.save()
+      return
+    }
+    for write in writes {
+      do {
+        let payload = try decoder.decode(WatchHealthPayload.self, from: write.payload)
+        guard repository.hasWriteAuthorization(for: payload) else {
+          scheduleRetry(write, now: now, errorCode: "authorization_required")
+          continue
+        }
+        try await repository.save(payload)
+        modelContext.delete(write)
+      } catch is DecodingError {
+        write.lastErrorCode = "invalid_payload"
+        write.isTerminal = true
+      } catch {
+        scheduleRetry(write, now: now, errorCode: Self.errorCode(for: error))
+      }
+    }
+    try? modelContext.save()
+  }
+
+  var pendingCount: Int {
+    pendingSummary.totalCount
+  }
+
+  var pendingSummary: WatchPendingSummary {
+    let writes =
+      (try? modelContext.fetch(FetchDescriptor<WatchPendingHealthWrite>())) ?? []
+    return WatchPendingSummary(
+      totalCount: writes.count,
+      terminalCount: writes.filter(\.isTerminal).count,
+      authorizationRequiredCount: writes.filter { $0.lastErrorCode == "authorization_required" }
+        .count
+    )
+  }
+
+  func discardTerminalWrites() {
+    let descriptor = FetchDescriptor<WatchPendingHealthWrite>(
+      predicate: #Predicate { $0.isTerminal }
+    )
+    guard let writes = try? modelContext.fetch(descriptor) else { return }
+    for write in writes {
+      modelContext.delete(write)
+    }
+    try? modelContext.save()
+  }
+
+  private func enqueue(_ payload: WatchHealthPayload, errorCode: String) -> Bool {
+    do {
+      let data = try encoder.encode(payload)
+      let identifier = payload.syncIdentifier
+      let descriptor = FetchDescriptor<WatchPendingHealthWrite>(
+        predicate: #Predicate { $0.syncIdentifier == identifier }
+      )
+      if let existing = try modelContext.fetch(descriptor).first {
+        existing.payload = data
+        existing.lastErrorCode = errorCode
+        existing.nextRetryAt = .now
+        existing.isTerminal = false
+      } else {
+        modelContext.insert(
+          WatchPendingHealthWrite(
+            syncIdentifier: identifier,
+            payload: data,
+            lastErrorCode: errorCode
+          )
+        )
+      }
+      try modelContext.save()
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  private func scheduleRetry(
+    _ write: WatchPendingHealthWrite,
+    now: Date,
+    errorCode: String
+  ) {
+    write.attemptCount += 1
+    write.lastErrorCode = errorCode
+    write.nextRetryAt = now.addingTimeInterval(
+      PendingRetryPolicy.delay(afterAttempt: write.attemptCount)
+    )
+  }
+
+  private static func errorCode(for error: any Error) -> String {
+    let error = error as NSError
+    guard error.domain == HKErrorDomain else { return "write_failed" }
+    let authorizationCodes: Set<Int> = [
+      HKError.Code.errorAuthorizationDenied.rawValue,
+      HKError.Code.errorAuthorizationNotDetermined.rawValue,
+      HKError.Code.errorHealthDataRestricted.rawValue,
+      HKError.Code.errorRequiredAuthorizationDenied.rawValue,
+    ]
+    return authorizationCodes.contains(error.code) ? "authorization_required" : "write_failed"
+  }
+}
+
+extension WatchHealthPayload {
+  fileprivate var syncIdentifier: String {
+    switch self {
+    case .stateOfMind(let payload): payload.syncIdentifier
+    case .mindful(let payload): payload.syncIdentifier
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceWatch/Persistence/WatchPracticeCompletion.swift =====
+import Foundation
+import InnerBalanceCore
+import SwiftData
+
+@Model
+final class WatchPracticeCompletion {
+  @Attribute(.unique) var sessionID: String
+  var practiceKindRawValue: String
+  var activeDuration: TimeInterval
+  var endedAt: Date
+  var healthWriteStatus: String
+
+  init(
+    sessionID: String,
+    practiceKind: PracticeKind,
+    activeDuration: TimeInterval,
+    endedAt: Date,
+    healthWriteStatus: String
+  ) {
+    self.sessionID = sessionID
+    practiceKindRawValue = practiceKind.rawValue
+    self.activeDuration = activeDuration
+    self.endedAt = endedAt
+    self.healthWriteStatus = healthWriteStatus
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Package.swift =====
+// swift-tools-version: 6.2
+
+import PackageDescription
+
+let package = Package(
+  name: "InnerBalanceCore",
+  platforms: [
+    .iOS(.v18),
+    .watchOS(.v11),
+    .macOS(.v15),
+  ],
+  products: [
+    .library(name: "InnerBalanceCore", targets: ["InnerBalanceCore"])
+  ],
+  targets: [
+    .target(name: "InnerBalanceCore"),
+    .testTarget(
+      name: "InnerBalanceCoreTests",
+      dependencies: ["InnerBalanceCore"]
+    ),
+  ]
+)
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/BodyLoadEngine.swift =====
+import Foundation
+
+public struct HealthMetricSample: Equatable, Sendable {
+  public let value: Double
+  public let date: Date
+  public let isAppleWatch: Bool
+
+  public init(value: Double, date: Date, isAppleWatch: Bool) {
+    self.value = value
+    self.date = date
+    self.isAppleWatch = isAppleWatch
+  }
+}
+
+public struct HealthMetricSummary: Equatable, Sendable {
+  public let value: Double
+  public let latestDate: Date
+  public let sampleCount: Int
+  public let usesAppleWatch: Bool
+}
+
+public enum BodyLoadEvidenceState: Equatable, Sendable {
+  case withinRange
+  case elevated
+}
+
+public enum BodyLoadEvidenceKind: String, Hashable, Sendable {
+  case heartRateVariability = "hrv"
+  case restingHeartRate = "rhr"
+  case respiratoryRate = "respiratory_rate"
+  case sleep
+
+  fileprivate var isWorkoutSensitive: Bool {
+    switch self {
+    case .heartRateVariability, .restingHeartRate: true
+    case .respiratoryRate, .sleep: false
+    }
+  }
+}
+
+public struct BodyLoadEvidence: Equatable, Sendable {
+  public let kind: BodyLoadEvidenceKind
+  public let state: BodyLoadEvidenceState
+  public let isReliable: Bool
+
+  public init(
+    kind: BodyLoadEvidenceKind,
+    state: BodyLoadEvidenceState,
+    isReliable: Bool
+  ) {
+    self.kind = kind
+    self.state = state
+    self.isReliable = isReliable
+  }
+}
+
+public enum BodyLoadLevel: Equatable, Sendable {
+  case buildingBaseline
+  case steady
+  case watch
+  case elevated
+}
+
+public struct BodyLoadAssessment: Equatable, Sendable {
+  public let level: BodyLoadLevel
+  public let elevatedEvidenceIDs: [String]
+}
+
+public enum BodyLoadEngine {
+  public static func median(_ values: [Double]) -> Double? {
+    let sorted = values.filter(\.isFinite).sorted()
+    guard !sorted.isEmpty else { return nil }
+
+    let middle = sorted.count / 2
+    if sorted.count.isMultiple(of: 2) {
+      return (sorted[middle - 1] + sorted[middle]) / 2
+    }
+    return sorted[middle]
+  }
+
+  public static func dailyMedianBaseline(
+    from samples: [HealthMetricSample],
+    now: Date,
+    minimumDays: Int = 5,
+    calendar: Calendar = .current
+  ) -> Double? {
+    guard let cutoff = calendar.date(byAdding: .day, value: -14, to: now) else {
+      return nil
+    }
+    let valid = samples.filter {
+      $0.value.isFinite
+        && $0.value > 0
+        && $0.date >= cutoff
+        && $0.date <= now
+    }
+    let watchSamples = valid.filter(\.isAppleWatch)
+    let selected =
+      distinctDayCount(in: watchSamples, calendar: calendar) >= minimumDays
+      ? watchSamples
+      : valid
+
+    let grouped = Dictionary(grouping: selected) { calendar.startOfDay(for: $0.date) }
+    guard grouped.count >= minimumDays else { return nil }
+    return median(grouped.values.compactMap { median($0.map(\.value)) })
+  }
+
+  public static func recentSummary(
+    from samples: [HealthMetricSample],
+    now: Date,
+    window: TimeInterval
+  ) -> HealthMetricSummary? {
+    let valid = samples.filter {
+      $0.value.isFinite
+        && $0.value > 0
+        && $0.date <= now
+        && $0.date >= now.addingTimeInterval(-window)
+    }
+    let watchSamples = valid.filter(\.isAppleWatch)
+    let selected = watchSamples.isEmpty ? valid : watchSamples
+    guard let value = median(selected.map(\.value)),
+      let latestDate = selected.map(\.date).max()
+    else { return nil }
+
+    return HealthMetricSummary(
+      value: value,
+      latestDate: latestDate,
+      sampleCount: selected.count,
+      usesAppleWatch: !watchSamples.isEmpty
+    )
+  }
+
+  public static func latestSample(
+    from samples: [HealthMetricSample],
+    now: Date,
+    window: TimeInterval
+  ) -> HealthMetricSample? {
+    let valid = samples.filter {
+      $0.value.isFinite
+        && $0.value > 0
+        && $0.date <= now
+        && $0.date >= now.addingTimeInterval(-window)
+    }
+    let watchSamples = valid.filter(\.isAppleWatch)
+    return (watchSamples.isEmpty ? valid : watchSamples).max { $0.date < $1.date }
+  }
+
+  public static func assess(
+    evidence: [BodyLoadEvidence],
+    baselineDays: Int,
+    recentWorkout: Bool = false
+  ) -> BodyLoadAssessment {
+    guard baselineDays >= 5 else {
+      return BodyLoadAssessment(level: .buildingBaseline, elevatedEvidenceIDs: [])
+    }
+
+    let elevatedKinds = Set(
+      evidence
+        .filter {
+          $0.isReliable
+            && $0.state == .elevated
+            && (!recentWorkout || !$0.kind.isWorkoutSensitive)
+        }
+        .map(\.kind)
+    )
+    let elevatedIDs = elevatedKinds.map(\.rawValue).sorted()
+    let level: BodyLoadLevel
+    level =
+      switch elevatedKinds.count {
+      case 2...: .elevated
+      case 1: .watch
+      default: .steady
+      }
+
+    return BodyLoadAssessment(level: level, elevatedEvidenceIDs: elevatedIDs)
+  }
+
+  private static func distinctDayCount(
+    in samples: [HealthMetricSample],
+    calendar: Calendar
+  ) -> Int {
+    Set(samples.map { calendar.startOfDay(for: $0.date) }).count
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/SleepEpisodeAnalyzer.swift =====
+import Foundation
+
+public struct SleepSampleInterval: Equatable, Sendable {
+  public let start: Date
+  public let end: Date
+  public let sourceName: String
+  public let isAppleWatch: Bool
+
+  public init(start: Date, end: Date, sourceName: String, isAppleWatch: Bool) {
+    self.start = start
+    self.end = end
+    self.sourceName = sourceName
+    self.isAppleWatch = isAppleWatch
+  }
+}
+
+public enum SleepDataQuality: Equatable, Sendable {
+  case reliable
+  case needsReview
+}
+
+public struct SleepEpisode: Equatable, Sendable {
+  public let start: Date
+  public let end: Date
+  public let asleepDuration: TimeInterval
+  public let sampleCount: Int
+  public let sourceNames: [String]
+  public let usesAppleWatch: Bool
+  public let quality: SleepDataQuality
+
+  public var isUsableForBodyLoad: Bool {
+    quality == .reliable
+  }
+}
+
+public enum SleepEpisodeAnalyzer {
+  public static func primarySleep(
+    from samples: [SleepSampleInterval],
+    now: Date,
+    lookback: TimeInterval = 48 * 3_600,
+    maximumEpisodeGap: TimeInterval = 90 * 60
+  ) -> SleepEpisode? {
+    let valid =
+      samples
+      .filter { $0.end > $0.start && $0.end <= now && $0.end >= now.addingTimeInterval(-lookback) }
+      .sorted { $0.start < $1.start }
+    guard !valid.isEmpty else { return nil }
+
+    var groups: [[SleepSampleInterval]] = []
+    for sample in valid {
+      if let latestEnd = groups.last?.map(\.end).max(),
+        sample.start.timeIntervalSince(latestEnd) <= maximumEpisodeGap
+      {
+        groups[groups.index(before: groups.endIndex)].append(sample)
+      } else {
+        groups.append([sample])
+      }
+    }
+
+    let episodes = groups.map(makeEpisode)
+    return episodes.max { left, right in
+      if left.asleepDuration == right.asleepDuration {
+        return left.end < right.end
+      }
+      return left.asleepDuration < right.asleepDuration
+    }
+  }
+
+  private static func makeEpisode(from samples: [SleepSampleInterval]) -> SleepEpisode {
+    let sorted = samples.sorted { $0.start < $1.start }
+    var merged: [(start: Date, end: Date)] = []
+    for sample in sorted {
+      guard let last = merged.last else {
+        merged.append((sample.start, sample.end))
+        continue
+      }
+
+      if sample.start <= last.end {
+        merged[merged.index(before: merged.endIndex)].end = max(last.end, sample.end)
+      } else {
+        merged.append((sample.start, sample.end))
+      }
+    }
+
+    let duration = merged.reduce(0) { $0 + $1.end.timeIntervalSince($1.start) }
+    return SleepEpisode(
+      start: sorted.map(\.start).min()!,
+      end: sorted.map(\.end).max()!,
+      asleepDuration: duration,
+      sampleCount: sorted.count,
+      sourceNames: Array(Set(sorted.map(\.sourceName))).sorted(),
+      usesAppleWatch: sorted.contains(where: \.isAppleWatch),
+      quality: (2 * 3_600...12 * 3_600).contains(duration) ? .reliable : .needsReview
+    )
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Emotion/EmotionCatalog.swift =====
+public enum EmotionLabel: String, CaseIterable, Hashable, Codable, Sendable {
+  case amazed
+  case amused
+  case angry
+  case anxious
+  case ashamed
+  case brave
+  case calm
+  case content
+  case disappointed
+  case discouraged
+  case disgusted
+  case embarrassed
+  case excited
+  case frustrated
+  case grateful
+  case guilty
+  case happy
+  case hopeless
+  case irritated
+  case jealous
+  case joyful
+  case lonely
+  case passionate
+  case peaceful
+  case proud
+  case relieved
+  case sad
+  case scared
+  case stressed
+  case surprised
+  case worried
+  case annoyed
+  case confident
+  case drained
+  case hopeful
+  case indifferent
+  case overwhelmed
+  case satisfied
+}
+
+public enum EmotionQuadrant: CaseIterable, Sendable {
+  case highActivationPositive
+  case lowActivationPositive
+  case highActivationNegative
+  case lowActivationNegative
+  case neutral
+}
+
+public enum EmotionCatalog {
+  public static func label(forAppleIdentifier identifier: String) -> EmotionLabel? {
+    EmotionLabel(rawValue: identifier)
+  }
+
+  public static func quadrant(
+    valence: Double,
+    arousal: Double,
+    neutralThreshold: Double = 0.15
+  ) -> EmotionQuadrant {
+    if abs(valence) <= neutralThreshold, abs(arousal) <= neutralThreshold {
+      return .neutral
+    }
+
+    return switch (valence >= 0, arousal >= 0) {
+    case (true, true): .highActivationPositive
+    case (true, false): .lowActivationPositive
+    case (false, true): .highActivationNegative
+    case (false, false): .lowActivationNegative
+    }
+  }
+
+  public static func labels(for quadrant: EmotionQuadrant) -> [EmotionLabel] {
+    switch quadrant {
+    case .highActivationPositive:
+      [
+        .amazed, .amused, .brave, .excited, .happy, .joyful, .passionate, .proud, .confident,
+        .hopeful, .surprised,
+      ]
+    case .lowActivationPositive:
+      [.calm, .content, .grateful, .peaceful, .relieved, .satisfied]
+    case .highActivationNegative:
+      [
+        .angry, .anxious, .ashamed, .disgusted, .embarrassed, .frustrated, .guilty, .irritated,
+        .jealous, .scared, .stressed, .worried, .annoyed, .overwhelmed,
+      ]
+    case .lowActivationNegative:
+      [.disappointed, .discouraged, .hopeless, .lonely, .sad, .drained]
+    case .neutral:
+      [.indifferent]
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Emotion/WatchCompassRegion.swift =====
+public struct WatchCompassRegion: Equatable, Hashable, Identifiable, Sendable {
+  public let valence: Double
+  public let arousal: Double
+
+  public init(valence: Double, arousal: Double) {
+    self.valence = valence
+    self.arousal = arousal
+  }
+
+  public var id: String { "\(valence)-\(arousal)" }
+
+  public static let all: [WatchCompassRegion] = [0.75, 0, -0.75].flatMap { arousal in
+    [-0.75, 0, 0.75].map { valence in
+      WatchCompassRegion(valence: valence, arousal: arousal)
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Health/PendingRetryPolicy.swift =====
+import Foundation
+
+public enum PendingRetryPolicy {
+  public static func delay(afterAttempt attempt: Int) -> TimeInterval {
+    let exponent = max(0, min(attempt - 1, 20))
+    return min(pow(2, Double(exponent)) * 60, 86_400)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/InnerBalanceCore.swift =====
+// The package is intentionally Foundation-only so iPhone and Watch can share it.
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/HeartRateEvidenceAnalyzer.swift =====
+import Foundation
+
+public struct HeartRateSample: Equatable, Sendable {
+  public let date: Date
+  public let beatsPerMinute: Double
+
+  public init(date: Date, beatsPerMinute: Double) {
+    self.date = date
+    self.beatsPerMinute = beatsPerMinute
+  }
+}
+
+public struct HeartRateEvidence: Codable, Equatable, Sendable {
+  public let startBeatsPerMinute: Double
+  public let endBeatsPerMinute: Double
+  public let sampleCount: Int
+
+  public init(
+    startBeatsPerMinute: Double,
+    endBeatsPerMinute: Double,
+    sampleCount: Int
+  ) {
+    self.startBeatsPerMinute = startBeatsPerMinute
+    self.endBeatsPerMinute = endBeatsPerMinute
+    self.sampleCount = sampleCount
+  }
+}
+
+public enum HeartRateEvidenceAnalyzer {
+  public static func analyze(
+    samples: [HeartRateSample],
+    startDate: Date,
+    endDate: Date,
+    windowDuration: TimeInterval = 60,
+    minimumSamplesPerWindow: Int = 3
+  ) -> HeartRateEvidence? {
+    guard endDate > startDate,
+      windowDuration > 0,
+      minimumSamplesPerWindow > 0,
+      endDate.timeIntervalSince(startDate) >= windowDuration * 2
+    else { return nil }
+
+    let valid = samples.filter {
+      $0.date >= startDate
+        && $0.date <= endDate
+        && $0.beatsPerMinute.isFinite
+        && (30...220).contains($0.beatsPerMinute)
+    }
+    let startWindow = valid.filter { $0.date <= startDate.addingTimeInterval(windowDuration) }
+    let endWindow = valid.filter { $0.date >= endDate.addingTimeInterval(-windowDuration) }
+    guard startWindow.count >= minimumSamplesPerWindow,
+      endWindow.count >= minimumSamplesPerWindow,
+      let start = median(startWindow.map(\.beatsPerMinute)),
+      let end = median(endWindow.map(\.beatsPerMinute))
+    else { return nil }
+
+    return HeartRateEvidence(
+      startBeatsPerMinute: start,
+      endBeatsPerMinute: end,
+      sampleCount: startWindow.count + endWindow.count
+    )
+  }
+
+  private static func median(_ values: [Double]) -> Double? {
+    let sorted = values.sorted()
+    guard !sorted.isEmpty else { return nil }
+    let middle = sorted.count / 2
+    return sorted.count.isMultiple(of: 2)
+      ? (sorted[middle - 1] + sorted[middle]) / 2
+      : sorted[middle]
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeBreathGuide.swift =====
+import Foundation
+
+public enum PracticeBreathPhase: Equatable, Sendable {
+  case inhale
+  case topUp
+  case exhale
+
+  public var title: String {
+    switch self {
+    case .inhale: "吸气"
+    case .topUp: "再轻吸一口"
+    case .exhale: "呼气"
+    }
+  }
+}
+
+public struct PracticeBreathState: Equatable, Sendable {
+  public let phase: PracticeBreathPhase
+  public let phaseDuration: TimeInterval
+  public let elapsedInPhase: TimeInterval
+
+  public var progress: Double {
+    guard phaseDuration > 0 else { return 0 }
+    return min(max(elapsedInPhase / phaseDuration, 0), 1)
+  }
+
+  public var remainingWholeSeconds: Int {
+    max(1, Int((phaseDuration - elapsedInPhase).rounded(.up)))
+  }
+}
+
+public enum PracticeBreathGuide {
+  public static func state(
+    for kind: PracticeKind,
+    elapsed: TimeInterval
+  ) -> PracticeBreathState {
+    let elapsed = max(0, elapsed)
+    switch kind {
+    case .physiologicalSigh:
+      let position = elapsed.truncatingRemainder(dividingBy: 12)
+      if position < 3 {
+        return PracticeBreathState(
+          phase: .inhale,
+          phaseDuration: 3,
+          elapsedInPhase: position
+        )
+      }
+      if position < 5 {
+        return PracticeBreathState(
+          phase: .topUp,
+          phaseDuration: 2,
+          elapsedInPhase: position - 3
+        )
+      }
+      return PracticeBreathState(
+        phase: .exhale,
+        phaseDuration: 7,
+        elapsedInPhase: position - 5
+      )
+    case .pacedBreathing:
+      let position = elapsed.truncatingRemainder(dividingBy: 10)
+      if position < 4 {
+        return PracticeBreathState(
+          phase: .inhale,
+          phaseDuration: 4,
+          elapsedInPhase: position
+        )
+      }
+      return PracticeBreathState(
+        phase: .exhale,
+        phaseDuration: 6,
+        elapsedInPhase: position - 4
+      )
+    case .meditation, .nsdr, .kegel:
+      return PracticeBreathState(
+        phase: .inhale,
+        phaseDuration: 1,
+        elapsedInPhase: 0
+      )
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeCatalog.swift =====
+import Foundation
+
+public struct PracticeProtocol: Equatable, Sendable {
+  public let kind: PracticeKind
+  public let durationOptions: [TimeInterval]
+  public let isAutomaticallyRecommended: Bool
+  public let minimumEvidenceDuration: TimeInterval?
+  public let writesMindfulSession: Bool
+
+  public var defaultDuration: TimeInterval {
+    durationOptions[0]
+  }
+
+  public init(
+    kind: PracticeKind,
+    durationOptions: [TimeInterval],
+    isAutomaticallyRecommended: Bool,
+    minimumEvidenceDuration: TimeInterval?,
+    writesMindfulSession: Bool
+  ) {
+    self.kind = kind
+    self.durationOptions = durationOptions
+    self.isAutomaticallyRecommended = isAutomaticallyRecommended
+    self.minimumEvidenceDuration = minimumEvidenceDuration
+    self.writesMindfulSession = writesMindfulSession
+  }
+}
+
+public enum PracticeCatalog {
+  public static let buildOne: [PracticeProtocol] = [
+    PracticeProtocol(
+      kind: .physiologicalSigh,
+      durationOptions: [60, 300],
+      isAutomaticallyRecommended: true,
+      minimumEvidenceDuration: nil,
+      writesMindfulSession: true
+    ),
+    PracticeProtocol(
+      kind: .pacedBreathing,
+      durationOptions: [180, 300],
+      isAutomaticallyRecommended: true,
+      minimumEvidenceDuration: 300,
+      writesMindfulSession: true
+    ),
+    PracticeProtocol(
+      kind: .meditation,
+      durationOptions: [300, 600],
+      isAutomaticallyRecommended: true,
+      minimumEvidenceDuration: 300,
+      writesMindfulSession: true
+    ),
+    PracticeProtocol(
+      kind: .nsdr,
+      durationOptions: [600, 1_200],
+      isAutomaticallyRecommended: true,
+      minimumEvidenceDuration: 600,
+      writesMindfulSession: true
+    ),
+    PracticeProtocol(
+      kind: .kegel,
+      durationOptions: [180],
+      isAutomaticallyRecommended: false,
+      minimumEvidenceDuration: nil,
+      writesMindfulSession: false
+    ),
+  ]
+
+  public static func `protocol`(for kind: PracticeKind) -> PracticeProtocol? {
+    buildOne.first { $0.kind == kind }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeHapticCadence.swift =====
+import Foundation
+
+public enum PracticeHapticCadence {
+  public static func consumeCue(
+    for kind: PracticeKind,
+    elapsed: TimeInterval,
+    isActive: Bool,
+    isEnabled: Bool,
+    lastCueID: inout Int?
+  ) -> Bool {
+    guard isActive, isEnabled else { return false }
+    let currentCueID = cueID(for: kind, elapsed: elapsed)
+    guard currentCueID != lastCueID else { return false }
+    lastCueID = currentCueID
+    return true
+  }
+
+  public static func cueID(for kind: PracticeKind, elapsed: TimeInterval) -> Int {
+    let elapsed = max(0, elapsed)
+    switch kind {
+    case .physiologicalSigh:
+      let cycle = Int(elapsed / 12)
+      let position = elapsed.truncatingRemainder(dividingBy: 12)
+      let phase = position < 3 ? 0 : position < 5 ? 1 : 2
+      return cycle * 3 + phase
+    case .pacedBreathing:
+      let cycle = Int(elapsed / 10)
+      let phase = elapsed.truncatingRemainder(dividingBy: 10) < 4 ? 0 : 1
+      return cycle * 2 + phase
+    case .meditation:
+      return Int(elapsed / 10)
+    case .nsdr:
+      return Int(elapsed / 20)
+    case .kegel:
+      let cycle = Int(elapsed / 12)
+      let phase = elapsed.truncatingRemainder(dividingBy: 12) < 4 ? 0 : 1
+      return cycle * 2 + phase
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeKind.swift =====
+public enum PracticeKind: String, CaseIterable, Equatable, Sendable {
+  case physiologicalSigh
+  case pacedBreathing
+  case meditation
+  case nsdr
+  case kegel
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchMindfulPayload.swift =====
+import Foundation
+
+public struct WatchMindfulPayload: Codable, Equatable, Sendable {
+  public let syncIdentifier: String
+  public let sessionID: String
+  public let practiceKindRawValue: String
+  public let startDate: Date
+  public let endDate: Date
+  public let heartRateEvidenceRequested: Bool?
+  public let heartRateEvidence: HeartRateEvidence?
+
+  public init(
+    syncIdentifier: String,
+    sessionID: String,
+    practiceKind: PracticeKind,
+    startDate: Date,
+    endDate: Date,
+    heartRateEvidenceRequested: Bool = false,
+    heartRateEvidence: HeartRateEvidence? = nil
+  ) {
+    self.syncIdentifier = syncIdentifier
+    self.sessionID = sessionID
+    practiceKindRawValue = practiceKind.rawValue
+    self.startDate = startDate
+    self.endDate = endDate
+    self.heartRateEvidenceRequested = heartRateEvidenceRequested
+    self.heartRateEvidence = heartRateEvidence
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchPracticeCompletionFreezer.swift =====
+import Foundation
+
+public struct WatchPracticeCompletionSnapshot: Equatable, Sendable {
+  public let sessionID: String
+  public let endedAt: Date
+  public let activeDuration: TimeInterval
+  public let heartRateEvidenceRequested: Bool
+  public let heartRateEvidence: HeartRateEvidence?
+  public let heartRateEvidenceCaptureCompleted: Bool
+
+  fileprivate init(
+    sessionID: String,
+    endedAt: Date,
+    activeDuration: TimeInterval,
+    heartRateEvidenceRequested: Bool,
+    heartRateEvidence: HeartRateEvidence?,
+    heartRateEvidenceCaptureCompleted: Bool
+  ) {
+    self.sessionID = sessionID
+    self.endedAt = endedAt
+    self.activeDuration = activeDuration
+    self.heartRateEvidenceRequested = heartRateEvidenceRequested
+    self.heartRateEvidence = heartRateEvidence
+    self.heartRateEvidenceCaptureCompleted = heartRateEvidenceCaptureCompleted
+  }
+}
+
+public struct WatchPracticeCompletionFreezer: Equatable, Sendable {
+  public private(set) var snapshot: WatchPracticeCompletionSnapshot?
+
+  public init() {}
+
+  public mutating func freeze(
+    sessionID: String,
+    endedAt: Date,
+    activeDuration: TimeInterval,
+    heartRateEvidenceRequested: Bool
+  ) -> WatchPracticeCompletionSnapshot {
+    if let snapshot {
+      return snapshot
+    }
+    let frozen = WatchPracticeCompletionSnapshot(
+      sessionID: sessionID,
+      endedAt: endedAt,
+      activeDuration: activeDuration,
+      heartRateEvidenceRequested: heartRateEvidenceRequested,
+      heartRateEvidence: nil,
+      heartRateEvidenceCaptureCompleted: !heartRateEvidenceRequested
+    )
+    snapshot = frozen
+    return frozen
+  }
+
+  public mutating func completeHeartRateEvidenceCapture(
+    _ evidence: HeartRateEvidence?
+  ) -> WatchPracticeCompletionSnapshot? {
+    guard let snapshot else { return nil }
+    guard !snapshot.heartRateEvidenceCaptureCompleted else { return snapshot }
+    let completed = WatchPracticeCompletionSnapshot(
+      sessionID: snapshot.sessionID,
+      endedAt: snapshot.endedAt,
+      activeDuration: snapshot.activeDuration,
+      heartRateEvidenceRequested: snapshot.heartRateEvidenceRequested,
+      heartRateEvidence: evidence,
+      heartRateEvidenceCaptureCompleted: true
+    )
+    self.snapshot = completed
+    return completed
+  }
+}
+
+public enum HeartRateEvidenceRequestCompatibility {
+  public static func resolved(
+    explicitRequest: Bool?,
+    evidence: HeartRateEvidence?
+  ) -> Bool {
+    explicitRequest ?? (evidence != nil)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/CurrentMomentDecision.swift =====
+import Foundation
+
+public enum CurrentStressLevel: String, CaseIterable, Codable, Hashable, Sendable {
+  case low
+  case moderate
+  case high
+}
+
+public enum CurrentStressSource: String, CaseIterable, Codable, Hashable, Sendable {
+  case none
+  case work
+  case tasks
+  case health
+  case family
+  case relationship
+  case money
+  case training
+  case sleep
+  case physicalTension
+  case mentalLoad
+  case lowEnergy
+  case bodySignals
+}
+
+public struct CurrentStressProfile: Equatable, Hashable, Codable, Sendable {
+  public let level: CurrentStressLevel
+  public let source: CurrentStressSource
+
+  public init(level: CurrentStressLevel, source: CurrentStressSource) {
+    self.level = level
+    self.source = source
+  }
+}
+
+public enum CurrentStressAssessmentBasis: String, Codable, Hashable, Sendable {
+  case selfReport
+  case bodyData
+  case needsInput
+}
+
+public struct CurrentMomentQuickState: Equatable, Sendable {
+  public let state: DailyEchoState
+  public let recordedAt: Date
+
+  public init(state: DailyEchoState, recordedAt: Date) {
+    self.state = state
+    self.recordedAt = recordedAt
+  }
+}
+
+public struct CurrentMomentDetailedState: Equatable, Sendable {
+  public let valence: Double
+  public let arousal: Double
+  public let emotion: EmotionLabel?
+  public let recordedAt: Date
+  public let stressSources: [CurrentStressSource]
+  public let bodySensationCodes: [String]
+
+  public init(
+    valence: Double,
+    arousal: Double,
+    emotion: EmotionLabel?,
+    recordedAt: Date,
+    stressSources: [CurrentStressSource] = [],
+    bodySensationCodes: [String] = []
+  ) {
+    self.valence = valence
+    self.arousal = arousal
+    self.emotion = emotion
+    self.recordedAt = recordedAt
+    self.stressSources = stressSources
+    self.bodySensationCodes = bodySensationCodes
+  }
+}
+
+public enum CurrentMomentSource: Equatable, Sendable {
+  case none
+  case quick(DailyEchoState)
+  case detailed(CurrentMomentDetailedState)
+}
+
+public struct CurrentMomentDecision: Equatable, Sendable {
+  public let source: CurrentMomentSource
+  public let assessmentBasis: CurrentStressAssessmentBasis
+  public let stressProfile: CurrentStressProfile
+  public let recommendation: PracticeKind?
+  public let reflectionEcho: DailyEchoState
+  public let reasonCode: String
+  public let ruleVersion: String
+}
+
+public enum CurrentMomentDecisionEngine {
+  public static let ruleVersion = "fangcun-stress-response-v2"
+
+  public static func decide(
+    quick: CurrentMomentQuickState?,
+    detailed: CurrentMomentDetailedState?,
+    bodyLoadLevel: BodyLoadLevel,
+    bodyStressSource: CurrentStressSource? = nil,
+    now: Date,
+    calendar: Calendar = .current
+  ) -> CurrentMomentDecision {
+    let activeQuick = quick.flatMap {
+      isActive(recordedAt: $0.recordedAt, now: now, calendar: calendar) ? $0 : nil
+    }
+    let activeDetailed = detailed.flatMap {
+      isActive(recordedAt: $0.recordedAt, now: now, calendar: calendar) ? $0 : nil
+    }
+
+    if let activeDetailed,
+      activeQuick.map({ activeDetailed.recordedAt >= $0.recordedAt }) ?? true
+    {
+      let level = stressLevel(for: activeDetailed)
+      let stressSource = stressSource(
+        for: activeDetailed,
+        bodyStressSource: bodyStressSource
+      )
+      return makeDecision(
+        source: .detailed(activeDetailed),
+        assessmentBasis: .selfReport,
+        level: level,
+        stressSource: stressSource,
+        reflectionEcho: reflectionEcho(
+          level: level,
+          source: stressSource,
+          detailed: activeDetailed
+        )
+      )
+    }
+
+    if let activeQuick {
+      let level = stressLevel(for: activeQuick.state)
+      let stressSource = bodyStressSource ?? fallbackSource(for: activeQuick.state)
+      return makeDecision(
+        source: .quick(activeQuick.state),
+        assessmentBasis: .selfReport,
+        level: level,
+        stressSource: stressSource,
+        reflectionEcho: activeQuick.state
+      )
+    }
+
+    guard bodyLoadLevel != .buildingBaseline else {
+      return CurrentMomentDecision(
+        source: .none,
+        assessmentBasis: .needsInput,
+        stressProfile: CurrentStressProfile(level: .low, source: .none),
+        recommendation: nil,
+        reflectionEcho: .calm,
+        reasonCode: "stress.needsInput",
+        ruleVersion: ruleVersion
+      )
+    }
+
+    let level = stressLevel(for: bodyLoadLevel)
+    let stressSource = bodyStressSource ?? .none
+    return makeDecision(
+      source: .none,
+      assessmentBasis: .bodyData,
+      level: level,
+      stressSource: stressSource,
+      reflectionEcho: reflectionEcho(
+        level: level,
+        source: stressSource,
+        detailed: nil
+      )
+    )
+  }
+
+  private static func makeDecision(
+    source: CurrentMomentSource,
+    assessmentBasis: CurrentStressAssessmentBasis,
+    level: CurrentStressLevel,
+    stressSource: CurrentStressSource,
+    reflectionEcho: DailyEchoState
+  ) -> CurrentMomentDecision {
+    let practice = recommendedPractice(level: level, source: stressSource)
+    return CurrentMomentDecision(
+      source: source,
+      assessmentBasis: assessmentBasis,
+      stressProfile: CurrentStressProfile(level: level, source: stressSource),
+      recommendation: practice,
+      reflectionEcho: reflectionEcho,
+      reasonCode: "stress.\(level.rawValue).\(stressSource.rawValue).\(practice.rawValue)",
+      ruleVersion: ruleVersion
+    )
+  }
+
+  private static func stressLevel(for state: DailyEchoState) -> CurrentStressLevel {
+    switch state {
+    case .calm, .clear, .moved:
+      .low
+    case .tired, .uncertain:
+      .moderate
+    case .tense:
+      .high
+    }
+  }
+
+  private static func stressLevel(
+    for detailed: CurrentMomentDetailedState
+  ) -> CurrentStressLevel {
+    let quadrant = EmotionCatalog.quadrant(
+      valence: detailed.valence,
+      arousal: detailed.arousal
+    )
+    var level: CurrentStressLevel =
+      switch quadrant {
+      case .highActivationPositive, .lowActivationPositive:
+        .low
+      case .lowActivationNegative, .neutral:
+        .moderate
+      case .highActivationNegative:
+        .high
+      }
+
+    switch detailed.emotion {
+    case .stressed, .overwhelmed:
+      level = higher(level, .high)
+    case .anxious, .scared, .worried, .drained, .hopeless:
+      level = higher(level, .moderate)
+    default:
+      break
+    }
+    return level
+  }
+
+  private static func stressLevel(for bodyLoadLevel: BodyLoadLevel) -> CurrentStressLevel {
+    switch bodyLoadLevel {
+    case .buildingBaseline, .steady:
+      .low
+    case .watch:
+      .moderate
+    case .elevated:
+      .high
+    }
+  }
+
+  private static func higher(
+    _ lhs: CurrentStressLevel,
+    _ rhs: CurrentStressLevel
+  ) -> CurrentStressLevel {
+    rank(lhs) >= rank(rhs) ? lhs : rhs
+  }
+
+  private static func rank(_ level: CurrentStressLevel) -> Int {
+    switch level {
+    case .low: 0
+    case .moderate: 1
+    case .high: 2
+    }
+  }
+
+  private static func stressSource(
+    for detailed: CurrentMomentDetailedState,
+    bodyStressSource: CurrentStressSource?
+  ) -> CurrentStressSource {
+    if let explicitSource = detailed.stressSources.first {
+      return explicitSource
+    }
+
+    let sensations = Set(detailed.bodySensationCodes.map { $0.lowercased() })
+    if !sensations.isDisjoint(with: ["fatigue", "heavy_head"]) {
+      return .lowEnergy
+    }
+    if !sensations.isDisjoint(
+      with: ["shoulders_tight", "chest_tight", "stomach_discomfort", "shallow_breath"]
+    ) {
+      return .physicalTension
+    }
+    if let bodyStressSource {
+      return bodyStressSource
+    }
+    return fallbackSource(for: detailed)
+  }
+
+  private static func fallbackSource(for state: DailyEchoState) -> CurrentStressSource {
+    switch state {
+    case .tense:
+      .physicalTension
+    case .tired:
+      .lowEnergy
+    case .uncertain:
+      .mentalLoad
+    case .calm, .clear, .moved:
+      .none
+    }
+  }
+
+  private static func fallbackSource(
+    for detailed: CurrentMomentDetailedState
+  ) -> CurrentStressSource {
+    switch EmotionCatalog.quadrant(
+      valence: detailed.valence,
+      arousal: detailed.arousal
+    ) {
+    case .highActivationNegative:
+      .physicalTension
+    case .lowActivationNegative:
+      .lowEnergy
+    case .neutral:
+      .mentalLoad
+    case .highActivationPositive, .lowActivationPositive:
+      .none
+    }
+  }
+
+  private static func recommendedPractice(
+    level: CurrentStressLevel,
+    source: CurrentStressSource
+  ) -> PracticeKind {
+    switch source {
+    case .sleep, .lowEnergy:
+      .nsdr
+    case .training:
+      level == .low ? .pacedBreathing : .nsdr
+    case .physicalTension:
+      .physiologicalSigh
+    case .work, .tasks, .money:
+      level == .high ? .physiologicalSigh : .pacedBreathing
+    case .family, .relationship:
+      level == .high ? .physiologicalSigh : .meditation
+    case .health, .bodySignals:
+      level == .high ? .physiologicalSigh : .pacedBreathing
+    case .mentalLoad, .none:
+      switch level {
+      case .low: .meditation
+      case .moderate: .pacedBreathing
+      case .high: .physiologicalSigh
+      }
+    }
+  }
+
+  private static func reflectionEcho(
+    level: CurrentStressLevel,
+    source: CurrentStressSource,
+    detailed: CurrentMomentDetailedState?
+  ) -> DailyEchoState {
+    switch source {
+    case .work, .tasks, .money:
+      return level == .low ? .clear : .tense
+    case .family, .relationship:
+      return level == .low ? .moved : .tense
+    case .training, .sleep, .lowEnergy:
+      return .tired
+    case .physicalTension, .health, .bodySignals:
+      return level == .high ? .tense : .tired
+    case .mentalLoad:
+      switch level {
+      case .low: return .clear
+      case .moderate: return .uncertain
+      case .high: return .tense
+      }
+    case .none:
+      if let detailed {
+        return
+          switch EmotionCatalog.quadrant(
+            valence: detailed.valence,
+            arousal: detailed.arousal
+          )
+        {
+        case .highActivationPositive: .moved
+        case .lowActivationPositive: .calm
+        case .highActivationNegative: .tense
+        case .lowActivationNegative: .tired
+        case .neutral: .uncertain
+        }
+      }
+      return switch level {
+      case .low: .calm
+      case .moderate: .uncertain
+      case .high: .tense
+      }
+    }
+  }
+
+  private static func isActive(
+    recordedAt: Date,
+    now: Date,
+    calendar: Calendar
+  ) -> Bool {
+    recordedAt <= now && calendar.isDate(recordedAt, inSameDayAs: now)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/EchoPersonalization.swift =====
+public enum EchoPersonalization {
+  public static func recommendedPractice(
+    for echo: DailyEchoState,
+    bodyLoadLevel: BodyLoadLevel
+  ) -> PracticeKind {
+    if bodyLoadLevel == .elevated, echo != .tense, echo != .tired {
+      return .pacedBreathing
+    }
+    return switch echo {
+    case .tense: .physiologicalSigh
+    case .tired: .nsdr
+    case .uncertain, .clear: .pacedBreathing
+    case .calm, .moved: .meditation
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/RecommendationEngine.swift =====
+public struct RecommendationInput: Equatable, Sendable {
+  public let valence: Double
+  public let arousal: Double
+  public let emotion: EmotionLabel?
+  public let bodyLoadLevel: BodyLoadLevel
+
+  public init(
+    valence: Double,
+    arousal: Double,
+    emotion: EmotionLabel?,
+    bodyLoadLevel: BodyLoadLevel
+  ) {
+    self.valence = valence
+    self.arousal = arousal
+    self.emotion = emotion
+    self.bodyLoadLevel = bodyLoadLevel
+  }
+}
+
+public struct PracticeRecommendation: Equatable, Sendable {
+  public let practice: PracticeKind
+  public let reasonCode: String
+}
+
+public enum RecommendationEngine {
+  public static func recommend(for input: RecommendationInput) -> PracticeRecommendation {
+    let quadrant = EmotionCatalog.quadrant(
+      valence: input.valence,
+      arousal: input.arousal
+    )
+
+    if quadrant == .highActivationNegative {
+      return PracticeRecommendation(
+        practice: .physiologicalSigh,
+        reasonCode: "high_activation_negative"
+      )
+    }
+
+    if input.emotion == .drained
+      || (quadrant == .lowActivationNegative && input.arousal < -0.35)
+    {
+      return PracticeRecommendation(
+        practice: .nsdr,
+        reasonCode: "low_activation_recovery"
+      )
+    }
+
+    if input.bodyLoadLevel == .elevated {
+      return PracticeRecommendation(
+        practice: .pacedBreathing,
+        reasonCode: "elevated_body_load"
+      )
+    }
+
+    return PracticeRecommendation(practice: .meditation, reasonCode: "gentle_reset")
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyEchoState.swift =====
+public enum DailyEchoState: String, CaseIterable, Codable, Hashable, Sendable {
+  case calm
+  case clear
+  case moved
+  case tense
+  case tired
+  case uncertain
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyReflection.swift =====
+import Foundation
+
+public enum DailyReflectionTheme: String, Sendable {
+  case universal
+  case steady
+  case attention
+  case recovery
+
+  public static func forBodyLoad(_ level: BodyLoadLevel) -> DailyReflectionTheme {
+    switch level {
+    case .buildingBaseline: .universal
+    case .steady: .steady
+    case .watch: .attention
+    case .elevated: .recovery
+    }
+  }
+}
+
+public enum DailyReflectionSource: String, Sendable {
+  case collectedQuotation
+  case ideaAdaptation
+}
+
+public struct DailyReflectionProvenance: Equatable, Sendable {
+  public let authorDeathYear: Int
+  public let sourcePublicationYear: Int
+  public let sourceURL: String
+  public let translationCredit: String
+
+  public init(
+    authorDeathYear: Int,
+    sourcePublicationYear: Int,
+    sourceURL: String,
+    translationCredit: String
+  ) {
+    self.authorDeathYear = authorDeathYear
+    self.sourcePublicationYear = sourcePublicationYear
+    self.sourceURL = sourceURL
+    self.translationCredit = translationCredit
+  }
+}
+
+public struct DailyReflection: Equatable, Identifiable, Sendable {
+  public let id: String
+  public let text: String
+  public let attribution: String?
+  public let work: String?
+  public let source: DailyReflectionSource
+  public let provenance: DailyReflectionProvenance?
+
+  public init(
+    id: String,
+    text: String,
+    attribution: String? = nil,
+    work: String? = nil,
+    source: DailyReflectionSource = .ideaAdaptation,
+    provenance: DailyReflectionProvenance? = nil
+  ) {
+    self.id = id
+    self.text = text
+    self.attribution = attribution
+    self.work = work
+    self.source = source
+    self.provenance = provenance
+  }
+}
+
+public enum DailyReflectionSelector {
+  public static let library = PublicDomainQuotationLibrary.reflections
+  private static let blockedCareContextIDs: Set<String> = [
+    "montaigne-death", "nietzsche-monster", "nietzsche-abyss", "pascal-room",
+  ]
+  private static let echoSchedules = makeEchoSchedules()
+  private static let stressReflectionPools:
+    [StressReflectionGroup: [CurrentStressLevel: [String]]] = [
+      .workAndTasks: [
+        .low: ["james-effort", "aurelius-last-act", "seneca-begin", "montaigne-use"],
+        .moderate: ["james-wise", "james-attention", "epictetus-use", "seneca-postponing"],
+        .high: ["epictetus-control", "seneca-imagination", "aurelius-no-opinion", "seneca-delay"],
+      ],
+      .relationships: [
+        .low: ["seneca-company", "james-appreciation", "montaigne-belong", "nietzsche-love"],
+        .moderate: ["pascal-heart", "spinoza-hatred", "aurelius-revenge", "epictetus-insult"],
+        .high: ["seneca-delay", "epictetus-control", "aurelius-within", "spinoza-opposite"],
+      ],
+      .money: [
+        .low: ["schopenhauer-possession", "seneca-poor", "montaigne-use", "spinoza-good"],
+        .moderate: ["schopenhauer-cards", "nietzsche-desire", "spinoza-desire", "james-wise"],
+        .high: [
+          "epictetus-control", "seneca-imagination", "aurelius-no-opinion", "epictetus-wish",
+        ],
+      ],
+      .healthAndBody: [
+        .low: ["montaigne-live", "spinoza-life", "aurelius-within", "montaigne-cheerful"],
+        .moderate: ["spinoza-clear", "epictetus-use", "pascal-reed", "aurelius-judgment"],
+        .high: [
+          "seneca-imagination", "epictetus-control", "aurelius-no-opinion", "spinoza-opposite",
+        ],
+      ],
+      .training: [
+        .low: ["james-effort", "aurelius-last-act", "epictetus-progress", "montaigne-use"],
+        .moderate: ["schopenhauer-cards", "epictetus-use", "seneca-brave", "aurelius-be-one"],
+        .high: [
+          "epictetus-control", "aurelius-no-opinion", "seneca-imagination", "aurelius-within",
+        ],
+      ],
+      .sleepAndEnergy: [
+        .low: ["montaigne-cheerful", "spinoza-life", "james-worth-living", "montaigne-live"],
+        .moderate: ["schopenhauer-alone", "pascal-present", "james-wise", "montaigne-belong"],
+        .high: ["aurelius-within", "epictetus-wish", "seneca-imagination", "spinoza-clear"],
+      ],
+      .mentalLoad: [
+        .low: ["james-attention", "james-wise", "aurelius-thoughts", "montaigne-belong"],
+        .moderate: ["james-wandering", "epictetus-views", "spinoza-clear", "aurelius-judgment"],
+        .high: ["seneca-imagination", "epictetus-control", "aurelius-no-opinion", "seneca-delay"],
+      ],
+      .unspecified: [
+        .low: ["montaigne-live", "james-worth-living", "spinoza-life", "aurelius-color"],
+        .moderate: ["james-attention", "epictetus-use", "spinoza-clear", "aurelius-within"],
+        .high: [
+          "epictetus-control", "seneca-imagination", "aurelius-no-opinion", "spinoza-opposite",
+        ],
+      ],
+    ]
+
+  public static func reflection(
+    on date: Date,
+    theme: DailyReflectionTheme,
+    calendar: Calendar = .current
+  ) -> DailyReflection {
+    _ = theme
+    return select(from: selectableLibrary, on: date, salt: 0, calendar: calendar)
+  }
+
+  public static func reflection(
+    on date: Date,
+    echo: DailyEchoState?,
+    calendar: Calendar = .current
+  ) -> DailyReflection {
+    guard let echo else {
+      return select(from: selectableLibrary, on: date, salt: 0, calendar: calendar)
+    }
+    let schedule = echoSchedules[echo] ?? selectableLibrary
+    return select(from: schedule, on: date, salt: 0, calendar: calendar)
+  }
+
+  public static func reflection(
+    on date: Date,
+    stressProfile: CurrentStressProfile,
+    calendar: Calendar = .current
+  ) -> DailyReflection {
+    let group = stressReflectionGroup(for: stressProfile.source)
+    guard let ids = stressReflectionPools[group]?[stressProfile.level], !ids.isEmpty else {
+      preconditionFailure("Every stress profile must have a targeted reflection pool")
+    }
+
+    let reflectionsByID = Dictionary(uniqueKeysWithValues: library.map { ($0.id, $0) })
+    let reflections = ids.compactMap { reflectionsByID[$0] }
+    precondition(
+      reflections.count == ids.count
+        && reflections.allSatisfy { !blockedCareContextIDs.contains($0.id) },
+      "Stress reflection pools must use approved public-domain quotations"
+    )
+    return select(
+      from: reflections,
+      on: date,
+      salt: stressSelectionSalt(for: stressProfile),
+      calendar: calendar
+    )
+  }
+
+  private static var selectableLibrary: [DailyReflection] {
+    library.filter { !blockedCareContextIDs.contains($0.id) }
+  }
+
+  private static func makeEchoSchedules() -> [DailyEchoState: [DailyReflection]] {
+    let openingSchedule = selectableLibrary
+    var usedIDsByDay = openingSchedule.map { Set([$0.id]) }
+    var schedules: [DailyEchoState: [DailyReflection]] = [:]
+
+    for state in DailyEchoState.allCases {
+      let preferred = rotated(
+        reflectionPool(for: state),
+        by: echoSelectionSalt(for: state)
+      )
+      let preferredIDs = Set(preferred.map(\.id))
+      let fallback = rotated(
+        selectableLibrary.filter { !preferredIDs.contains($0.id) },
+        by: echoSelectionSalt(for: state)
+      )
+      var schedule = preferred + fallback
+      precondition(schedule.count == openingSchedule.count)
+
+      for dayIndex in schedule.indices
+      where usedIDsByDay[dayIndex].contains(schedule[dayIndex].id) {
+        let conflictingReflection = schedule[dayIndex]
+        guard
+          let swapIndex = schedule.indices.first(where: { candidateIndex in
+            candidateIndex != dayIndex
+              && !usedIDsByDay[dayIndex].contains(schedule[candidateIndex].id)
+              && !usedIDsByDay[candidateIndex].contains(conflictingReflection.id)
+          })
+        else {
+          preconditionFailure("Daily reflection schedules must be collision free")
+        }
+        schedule.swapAt(dayIndex, swapIndex)
+      }
+
+      precondition(
+        schedule.indices.allSatisfy {
+          !usedIDsByDay[$0].contains(schedule[$0].id)
+        }
+      )
+      for dayIndex in schedule.indices {
+        usedIDsByDay[dayIndex].insert(schedule[dayIndex].id)
+      }
+      schedules[state] = schedule
+    }
+
+    return schedules
+  }
+
+  private static func rotated(
+    _ reflections: [DailyReflection],
+    by offset: Int
+  ) -> [DailyReflection] {
+    guard !reflections.isEmpty else { return [] }
+    let normalizedOffset = offset % reflections.count
+    return Array(reflections[normalizedOffset...] + reflections[..<normalizedOffset])
+  }
+
+  private static func reflectionPool(for echo: DailyEchoState) -> [DailyReflection] {
+    let ids =
+      switch echo {
+      case .calm:
+        [
+          "aurelius-no-opinion", "aurelius-thoughts", "aurelius-be-one",
+          "aurelius-color", "aurelius-within", "aurelius-last-act",
+          "epictetus-control", "epictetus-wish", "epictetus-use", "epictetus-actor",
+          "seneca-begin", "seneca-company", "seneca-brave",
+          "montaigne-belong", "montaigne-profession", "montaigne-use",
+          "montaigne-cheerful", "montaigne-quote", "montaigne-live",
+          "spinoza-clear", "spinoza-hatred", "spinoza-life", "spinoza-blessedness",
+          "schopenhauer-alone", "schopenhauer-freedom", "schopenhauer-possession",
+          "nietzsche-love", "nietzsche-maturity", "james-attention", "james-wise",
+          "james-worth-living", "james-effort", "james-fate", "pascal-heart",
+          "pascal-present", "pascal-reed", "pascal-dignity",
+        ]
+      case .clear:
+        [
+          "aurelius-no-opinion", "aurelius-judgment", "aurelius-be-one",
+          "aurelius-last-act", "epictetus-control", "epictetus-views", "epictetus-use",
+          "epictetus-progress", "seneca-poor", "seneca-postponing", "seneca-begin",
+          "seneca-company", "montaigne-quote", "montaigne-belief", "montaigne-live",
+          "spinoza-desire", "spinoza-clear", "spinoza-opposite", "spinoza-good",
+          "schopenhauer-horizon", "schopenhauer-time", "schopenhauer-cards",
+          "schopenhauer-possession", "nietzsche-desire", "nietzsche-maturity",
+          "nietzsche-interpretation", "james-attention", "james-wandering", "james-habit",
+          "james-wise", "james-effort", "james-fate", "pascal-present", "pascal-habit",
+          "pascal-dignity", "pascal-justice", "pascal-truth",
+        ]
+      case .moved:
+        [
+          "aurelius-color", "aurelius-within", "aurelius-revenge", "epictetus-wish",
+          "epictetus-actor", "epictetus-returned", "seneca-imagination", "seneca-company",
+          "seneca-adversity", "montaigne-belong", "montaigne-profession", "montaigne-use",
+          "montaigne-cheerful", "montaigne-death", "spinoza-clear", "spinoza-hope",
+          "spinoza-hatred", "spinoza-life", "spinoza-blessedness", "schopenhauer-alone",
+          "schopenhauer-loss", "schopenhauer-possession", "nietzsche-love",
+          "nietzsche-desire", "nietzsche-maturity", "james-appreciation",
+          "james-worth-living", "james-effort", "james-fate", "pascal-heart",
+          "pascal-reed", "pascal-dignity", "pascal-truth",
+        ]
+      case .tense:
+        [
+          "aurelius-no-opinion", "aurelius-judgment", "aurelius-within",
+          "epictetus-control", "epictetus-views", "epictetus-wish", "epictetus-use",
+          "epictetus-insult", "epictetus-returned", "seneca-imagination",
+          "seneca-postponing", "seneca-delay", "seneca-brave", "montaigne-cheerful",
+          "montaigne-death", "montaigne-live", "spinoza-clear", "spinoza-hope",
+          "spinoza-opposite", "spinoza-life", "schopenhauer-alone", "schopenhauer-freedom",
+          "schopenhauer-horizon", "schopenhauer-loss", "nietzsche-monster",
+          "nietzsche-abyss", "nietzsche-desire", "james-attention", "james-wandering",
+          "james-wise", "james-effort", "pascal-room", "pascal-heart", "pascal-present",
+          "pascal-habit",
+        ]
+      case .tired:
+        [
+          "aurelius-no-opinion", "aurelius-thoughts", "aurelius-color", "aurelius-within",
+          "aurelius-last-act", "epictetus-control", "epictetus-wish", "epictetus-use",
+          "epictetus-progress", "epictetus-returned", "seneca-imagination", "seneca-begin",
+          "seneca-company", "seneca-adversity", "montaigne-belong", "montaigne-use",
+          "montaigne-cheerful", "montaigne-live", "spinoza-clear", "spinoza-hope",
+          "spinoza-life", "spinoza-blessedness", "schopenhauer-alone",
+          "schopenhauer-freedom", "schopenhauer-loss", "schopenhauer-possession",
+          "nietzsche-love", "nietzsche-maturity", "james-attention", "james-wandering",
+          "james-wise", "james-worth-living", "james-effort", "pascal-room", "pascal-heart",
+          "pascal-present", "pascal-reed",
+        ]
+      case .uncertain:
+        [
+          "aurelius-judgment", "aurelius-thoughts", "aurelius-be-one", "aurelius-color",
+          "aurelius-within", "epictetus-control", "epictetus-views", "epictetus-wish",
+          "epictetus-use", "epictetus-actor", "seneca-imagination", "seneca-poor",
+          "seneca-begin", "seneca-company", "montaigne-belong", "montaigne-profession",
+          "montaigne-quote", "montaigne-belief", "montaigne-live", "spinoza-desire",
+          "spinoza-clear", "spinoza-hope", "spinoza-good", "schopenhauer-horizon",
+          "schopenhauer-loss", "schopenhauer-cards", "schopenhauer-possession",
+          "nietzsche-abyss", "nietzsche-desire", "nietzsche-maturity",
+          "nietzsche-interpretation", "james-attention", "james-wandering", "james-wise",
+          "james-effort", "james-fate", "pascal-heart", "pascal-present", "pascal-reed",
+          "pascal-dignity", "pascal-truth",
+        ]
+      }
+
+    let reflectionsByID = Dictionary(uniqueKeysWithValues: library.map { ($0.id, $0) })
+    return ids.compactMap { reflectionsByID[$0] }
+      .filter { !blockedCareContextIDs.contains($0.id) }
+  }
+
+  private static func echoSelectionSalt(for echo: DailyEchoState) -> Int {
+    switch echo {
+    case .calm: 5
+    case .clear: 11
+    case .moved: 17
+    case .tense: 23
+    case .tired: 29
+    case .uncertain: 35
+    }
+  }
+
+  private static func stressReflectionGroup(
+    for source: CurrentStressSource
+  ) -> StressReflectionGroup {
+    switch source {
+    case .work, .tasks:
+      .workAndTasks
+    case .family, .relationship:
+      .relationships
+    case .money:
+      .money
+    case .health, .physicalTension, .bodySignals:
+      .healthAndBody
+    case .training:
+      .training
+    case .sleep, .lowEnergy:
+      .sleepAndEnergy
+    case .mentalLoad:
+      .mentalLoad
+    case .none:
+      .unspecified
+    }
+  }
+
+  private static func stressSelectionSalt(for profile: CurrentStressProfile) -> Int {
+    let sourceSalt =
+      switch profile.source {
+      case .none: 0
+      case .work: 1
+      case .tasks: 2
+      case .health: 3
+      case .family: 4
+      case .relationship: 5
+      case .money: 6
+      case .training: 7
+      case .sleep: 8
+      case .physicalTension: 9
+      case .mentalLoad: 10
+      case .lowEnergy: 11
+      case .bodySignals: 12
+      }
+    let levelSalt =
+      switch profile.level {
+      case .low: 0
+      case .moderate: 17
+      case .high: 31
+      }
+    return sourceSalt + levelSalt
+  }
+
+  private static func select(
+    from reflections: [DailyReflection],
+    on date: Date,
+    salt: Int,
+    calendar: Calendar
+  ) -> DailyReflection {
+    precondition(!reflections.isEmpty)
+    let localDay = calendar.startOfDay(for: date)
+    let localDaySeed = calendar.ordinality(of: .day, in: .era, for: localDay) ?? 0
+    return reflections[(localDaySeed + salt) % reflections.count]
+  }
+
+  private enum StressReflectionGroup: Hashable {
+    case workAndTasks
+    case relationships
+    case money
+    case healthAndBody
+    case training
+    case sleepAndEnergy
+    case mentalLoad
+    case unspecified
+  }
+
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Reflection/PublicDomainQuotationLibrary.swift =====
+import Foundation
+
+enum PublicDomainQuotationLibrary {
+  static let reflections: [DailyReflection] = [
+    quote(
+      "aurelius-no-opinion", "你随时都有不对一件事下判断的自由。", "马可·奥勒留", "《沉思录》"),
+    quote(
+      "aurelius-judgment", "外物使你痛苦时，扰乱你的不是它，而是你对它的判断。", "马可·奥勒留", "《沉思录》"),
+    quote(
+      "aurelius-thoughts", "你一生的幸福，取决于你思想的品质。", "马可·奥勒留", "《沉思录》"),
+    quote(
+      "aurelius-be-one", "不要再争论一个好人应当是什么样子。去成为那样的人。", "马可·奥勒留", "《沉思录》"),
+    quote(
+      "aurelius-revenge", "最好的报复，是不让自己变得和伤害你的人一样。", "马可·奥勒留", "《沉思录》"),
+    quote(
+      "aurelius-color", "灵魂会染上它经常思想的颜色。", "马可·奥勒留", "《沉思录》"),
+    quote(
+      "aurelius-within", "只要你愿意，随时可以退回自己的内心。", "马可·奥勒留", "《沉思录》"),
+    quote(
+      "aurelius-last-act", "把眼前每一个行动，都当作此生最后一个行动来完成。", "马可·奥勒留", "《沉思录》"),
+
+    quote(
+      "epictetus-control", "有些事情由我们掌握，有些事情不由我们掌握。", "爱比克泰德", "《手册》"),
+    quote(
+      "epictetus-views", "困扰人的不是事情本身，而是人对事情的看法。", "爱比克泰德", "《手册》"),
+    quote(
+      "epictetus-wish", "不要要求事情照你的愿望发生；愿它如其所是。", "爱比克泰德", "《手册》"),
+    quote(
+      "epictetus-use", "遇到每件事，都回到自己这里，问问你有什么能力可以善用它。", "爱比克泰德", "《手册》"),
+    quote(
+      "epictetus-progress", "若想进步，就要甘愿在外人看来有些愚笨。", "爱比克泰德", "《手册》"),
+    quote(
+      "epictetus-insult", "伤害你的不是别人的侮辱，而是你认定自己受了侮辱。", "爱比克泰德", "《手册》"),
+    quote(
+      "epictetus-actor", "记住，你是剧中的演员；角色长短由编剧决定，演好它由你决定。", "爱比克泰德", "《手册》"),
+    quote(
+      "epictetus-returned", "失去一件东西时，不说“我失去了”，而说“我把它交还了”。", "爱比克泰德", "《手册》"),
+
+    quote(
+      "seneca-imagination", "我们在想象中受的苦，往往多于现实。", "塞内加", "《道德书简》"),
+    quote(
+      "seneca-poor", "真正贫穷的，不是拥有太少的人，而是渴求更多的人。", "塞内加", "《道德书简》"),
+    quote(
+      "seneca-postponing", "我们一再拖延，而生命已经疾驰而过。", "塞内加", "《道德书简》"),
+    quote(
+      "seneca-begin", "立刻开始生活，把每一天都当成一段完整的生命。", "塞内加", "《道德书简》"),
+    quote(
+      "seneca-company", "和那些能使你变得更好的人相处。", "塞内加", "《道德书简》"),
+    quote(
+      "seneca-adversity", "没有经历过逆境的人最不幸，因为他没有机会证明自己。", "塞内加", "《天意论》"),
+    quote(
+      "seneca-brave", "勇敢的人是自由的。", "塞内加", "《道德书简》"),
+    quote(
+      "seneca-delay", "愤怒最好的药，是等待。", "塞内加", "《论愤怒》"),
+
+    quote(
+      "montaigne-belong", "世界上最重要的事，是知道怎样属于自己。", "米歇尔·德·蒙田", "《随笔集》"),
+    quote(
+      "montaigne-profession", "我的技艺与职业，就是生活。", "米歇尔·德·蒙田", "《随笔集》"),
+    quote(
+      "montaigne-use", "生命的价值不在日子的长短，而在我们如何使用它。", "米歇尔·德·蒙田", "《随笔集》"),
+    quote(
+      "montaigne-cheerful", "智慧最可靠的标志，是恒常的愉快。", "米歇尔·德·蒙田", "《随笔集》"),
+    quote(
+      "montaigne-death", "我们用对死亡的忧虑扰乱生活，又用对生活的忧虑扰乱死亡。", "米歇尔·德·蒙田", "《随笔集》"),
+    quote(
+      "montaigne-quote", "我引用别人，是为了更好地表达自己。", "米歇尔·德·蒙田", "《随笔集》"),
+    quote(
+      "montaigne-belief", "没有什么比我们知之最少的事，更容易被坚定相信。", "米歇尔·德·蒙田", "《随笔集》"),
+    quote(
+      "montaigne-live", "学会好好地、自然地生活，是最难获得的学问。", "米歇尔·德·蒙田", "《随笔集》"),
+
+    quote(
+      "spinoza-desire", "欲望，就是人的本质。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+    quote(
+      "spinoza-clear", "一种情感一旦被我们形成清晰而明确的观念，就不再只是被动的激情。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+    quote(
+      "spinoza-hope", "没有希望不夹杂恐惧，也没有恐惧不夹杂希望。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+    quote(
+      "spinoza-hatred", "仇恨会因相互仇恨而增长，也能被爱消解。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+    quote(
+      "spinoza-opposite", "一种情感，只能被另一种更强、方向相反的情感所克制。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+    quote(
+      "spinoza-life", "自由的人最少想到死亡；他的智慧，是对生命的思考。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+    quote(
+      "spinoza-blessedness", "幸福不是德性的奖赏，幸福就是德性本身。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+    quote(
+      "spinoza-good", "我们不是因为判断某物为好才追求它；而是因为追求它，才判断它为好。", "巴鲁赫·斯宾诺莎", "《伦理学》"),
+
+    quote(
+      "schopenhauer-alone", "一个人只有独处时，才能完全成为自己。", "阿瑟·叔本华", "《人生的智慧》"),
+    quote(
+      "schopenhauer-freedom", "如果一个人不热爱独处，他也不会热爱自由。", "阿瑟·叔本华", "《人生的智慧》"),
+    quote(
+      "schopenhauer-horizon", "每个人都把自己视野的边界，当成世界的边界。", "阿瑟·叔本华", "《心理随笔》"),
+    quote(
+      "schopenhauer-quarters", "为了和别人一样，我们常常放弃了自己的四分之三。", "阿瑟·叔本华", "《人生的智慧》"),
+    quote(
+      "schopenhauer-loss", "多数时候，只有失去才教会我们认识价值。", "阿瑟·叔本华", "《忠告与格言》"),
+    quote(
+      "schopenhauer-time", "普通人只想着怎样打发时间；有才能的人想着怎样利用时间。", "阿瑟·叔本华", "《忠告与格言》"),
+    quote(
+      "schopenhauer-cards", "命运洗牌，而我们出牌。", "阿瑟·叔本华", "《忠告与格言》"),
+    quote(
+      "schopenhauer-possession", "一个人自身所拥有的，比他身外所拥有的更决定幸福。", "阿瑟·叔本华", "《人生的智慧》"),
+
+    quote(
+      "nietzsche-monster", "与怪物战斗的人，应当小心自己不要也变成怪物。", "弗里德里希·尼采", "《善恶的彼岸》"),
+    quote(
+      "nietzsche-abyss", "当你长久凝视深渊，深渊也在凝视你。", "弗里德里希·尼采", "《善恶的彼岸》"),
+    quote(
+      "nietzsche-love", "出于爱而做的事，总发生在善恶之外。", "弗里德里希·尼采", "《善恶的彼岸》"),
+    quote(
+      "nietzsche-desire", "人最终爱的是自己的欲望，不是欲望的对象。", "弗里德里希·尼采", "《善恶的彼岸》"),
+    quote(
+      "nietzsche-madness", "个人身上很少有疯狂；群体、党派、民族和时代中，疯狂却是常态。", "弗里德里希·尼采", "《善恶的彼岸》"),
+    quote(
+      "nietzsche-maturity", "人的成熟，是重新找回孩童游戏时的那份认真。", "弗里德里希·尼采", "《善恶的彼岸》"),
+    quote(
+      "nietzsche-despises", "轻视自己的人，仍然尊重自己——尊重那个能够轻视的人。", "弗里德里希·尼采", "《善恶的彼岸》"),
+    quote(
+      "nietzsche-interpretation", "不存在道德现象，只存在对现象的道德解释。", "弗里德里希·尼采", "《善恶的彼岸》"),
+
+    quote(
+      "james-attention", "我的经验，就是我愿意注意的事物。", "威廉·詹姆斯", "《心理学原理》"),
+    quote(
+      "james-wandering", "能够主动把游离的注意力一次次带回来，是判断力、性格和意志的根。", "威廉·詹姆斯", "《心理学原理》"),
+    quote(
+      "james-habit", "习惯是社会巨大的飞轮，也是最珍贵的保守力量。", "威廉·詹姆斯", "《心理学原理》"),
+    quote(
+      "james-wise", "智慧的艺术，就是知道该忽略什么。", "威廉·詹姆斯", "《心理学原理》"),
+    quote(
+      "james-appreciation", "人性最深的原则，是渴望得到欣赏。", "威廉·詹姆斯", "《与教师谈心理学》"),
+    quote(
+      "james-worth-living", "相信生命值得活，你的信念会帮助这个事实成为现实。", "威廉·詹姆斯", "《信仰的意志》"),
+    quote(
+      "james-effort", "每天做一点不必做却值得做的事，让努力的能力保持活着。", "威廉·詹姆斯", "《与教师谈心理学》"),
+    quote(
+      "james-fate", "我们正在编织自己的命运，不论好坏，而且永远无法拆线。", "威廉·詹姆斯", "《与教师谈心理学》"),
+
+    quote(
+      "pascal-room", "人的全部不幸，都源于不能独自安静地待在一个房间里。", "布莱兹·帕斯卡", "《思想录》"),
+    quote(
+      "pascal-heart", "心有它的理由，理性并不知道。", "布莱兹·帕斯卡", "《思想录》"),
+    quote(
+      "pascal-present", "我们几乎从不真正活在当下。", "布莱兹·帕斯卡", "《思想录》"),
+    quote(
+      "pascal-reed", "人不过是一根芦苇，是自然界最脆弱的东西；但他是一根会思想的芦苇。", "布莱兹·帕斯卡", "《思想录》"),
+    quote(
+      "pascal-habit", "习惯是第二天性，它会摧毁第一天性。", "布莱兹·帕斯卡", "《思想录》"),
+    quote(
+      "pascal-dignity", "人显然生来就要思想；这就是他的全部尊严。", "布莱兹·帕斯卡", "《思想录》"),
+    quote(
+      "pascal-justice", "正义若没有力量便无能，力量若没有正义便暴虐。", "布莱兹·帕斯卡", "《思想录》"),
+    quote(
+      "pascal-truth", "真理不仅要说清楚，还要让人乐于听见。", "布莱兹·帕斯卡", "《思想录》"),
+  ]
+
+  private static func quote(
+    _ id: String,
+    _ text: String,
+    _ attribution: String,
+    _ work: String
+  ) -> DailyReflection {
+    DailyReflection(
+      id: id,
+      text: text,
+      attribution: attribution,
+      work: work,
+      source: .collectedQuotation,
+      provenance: provenance(for: attribution)
+    )
+  }
+
+  private static func provenance(for attribution: String) -> DailyReflectionProvenance {
+    let source: (deathYear: Int, publicationYear: Int, url: String) =
+      switch attribution {
+      case "马可·奥勒留":
+        (180, 1862, "https://www.gutenberg.org/ebooks/2680")
+      case "爱比克泰德":
+        (135, 1865, "https://www.gutenberg.org/ebooks/45109")
+      case "塞内加":
+        (65, 1925, "https://www.gutenberg.org/ebooks/author/1308")
+      case "米歇尔·德·蒙田":
+        (1592, 1877, "https://www.gutenberg.org/ebooks/3600")
+      case "巴鲁赫·斯宾诺莎":
+        (1677, 1883, "https://www.gutenberg.org/ebooks/3800")
+      case "阿瑟·叔本华":
+        (1860, 1891, "https://www.gutenberg.org/ebooks/author/3648")
+      case "弗里德里希·尼采":
+        (1900, 1907, "https://www.gutenberg.org/ebooks/19634")
+      case "威廉·詹姆斯":
+        (1910, 1899, "https://www.gutenberg.org/ebooks/author/325")
+      case "布莱兹·帕斯卡":
+        (1662, 1901, "https://www.gutenberg.org/ebooks/18269")
+      default:
+        preconditionFailure("公版金句缺少作者来源：\(attribution)")
+      }
+
+    return DailyReflectionProvenance(
+      authorDeathYear: source.deathYear,
+      sourcePublicationYear: source.publicationYear,
+      sourceURL: source.url,
+      translationCredit: "方寸自译"
+    )
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/BodyLoadEngineTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Body load baseline")
+struct BodyLoadEngineTests {
+  @Test("Median is resistant to an extreme sample")
+  func medianIgnoresExtremeSample() {
+    #expect(BodyLoadEngine.median([42, 44, 45, 46, 190]) == 45)
+  }
+
+  @Test("Baseline requires five distinct valid days")
+  func baselineRequiresFiveDays() {
+    let fourDays = (1...4).map { day in
+      HealthMetricSample(value: Double(day * 10), date: date(day), isAppleWatch: true)
+    }
+    let fifthDay = HealthMetricSample(value: 50, date: date(5), isAppleWatch: true)
+
+    #expect(
+      BodyLoadEngine.dailyMedianBaseline(
+        from: fourDays,
+        now: date(10),
+        calendar: calendar
+      ) == nil
+    )
+    #expect(
+      BodyLoadEngine.dailyMedianBaseline(
+        from: fourDays + [fifthDay],
+        now: date(10),
+        calendar: calendar
+      ) != nil
+    )
+  }
+
+  @Test("Baseline ignores samples older than 14 days")
+  func baselineUsesFourteenDayWindow() {
+    let now = date(31)
+    let recentDays = (18...21).map { day in
+      HealthMetricSample(value: Double(day), date: date(day), isAppleWatch: true)
+    }
+    let expiredDay = HealthMetricSample(value: 999, date: date(16), isAppleWatch: true)
+
+    #expect(
+      BodyLoadEngine.dailyMedianBaseline(
+        from: recentDays + [expiredDay],
+        now: now,
+        calendar: calendar
+      ) == nil
+    )
+  }
+
+  @Test("Recent summary prefers valid Apple Watch samples")
+  func recentSummaryPrefersWatch() {
+    let now = date(10)
+    let samples = [
+      HealthMetricSample(value: 90, date: now.addingTimeInterval(-900), isAppleWatch: false),
+      HealthMetricSample(value: 50, date: now.addingTimeInterval(-1_800), isAppleWatch: true),
+      HealthMetricSample(value: 60, date: now.addingTimeInterval(-600), isAppleWatch: true),
+      HealthMetricSample(value: 999, date: now.addingTimeInterval(-90_000), isAppleWatch: true),
+      HealthMetricSample(value: .nan, date: now, isAppleWatch: true),
+    ]
+
+    let summary = BodyLoadEngine.recentSummary(
+      from: samples,
+      now: now,
+      window: 24 * 3_600
+    )
+
+    #expect(summary?.value == 55)
+    #expect(summary?.sampleCount == 2)
+    #expect(summary?.usesAppleWatch == true)
+  }
+
+  @Test("Latest reading is the newest valid Watch sample, not the recent median")
+  func latestReadingPrefersNewestWatchSample() {
+    let now = date(10)
+    let samples = [
+      HealthMetricSample(value: 90, date: now.addingTimeInterval(-60), isAppleWatch: false),
+      HealthMetricSample(value: 48, date: now.addingTimeInterval(-1_800), isAppleWatch: true),
+      HealthMetricSample(value: 62, date: now.addingTimeInterval(-300), isAppleWatch: true),
+      HealthMetricSample(value: .nan, date: now, isAppleWatch: true),
+    ]
+
+    let latest = BodyLoadEngine.latestSample(from: samples, now: now, window: 36 * 3_600)
+
+    #expect(latest?.value == 62)
+    #expect(latest?.date == now.addingTimeInterval(-300))
+    #expect(latest?.isAppleWatch == true)
+  }
+
+  @Test("Elevated load requires two independent reliable signals")
+  func elevatedLoadRequiresTwoSignals() {
+    let hrv = BodyLoadEvidence(kind: .heartRateVariability, state: .elevated, isReliable: true)
+    let restingHeartRate = BodyLoadEvidence(
+      kind: .restingHeartRate,
+      state: .elevated,
+      isReliable: true
+    )
+    let unreliableSleep = BodyLoadEvidence(kind: .sleep, state: .elevated, isReliable: false)
+
+    #expect(BodyLoadEngine.assess(evidence: [hrv], baselineDays: 5).level == .watch)
+    #expect(
+      BodyLoadEngine.assess(evidence: [hrv, unreliableSleep], baselineDays: 5).level == .watch)
+    #expect(
+      BodyLoadEngine.assess(evidence: [hrv, restingHeartRate], baselineDays: 5).level == .elevated)
+  }
+
+  @Test("Recent workout suppresses an elevated conclusion")
+  func recentWorkoutSuppressesElevatedConclusion() {
+    let evidence = [
+      BodyLoadEvidence(kind: .heartRateVariability, state: .elevated, isReliable: true),
+      BodyLoadEvidence(kind: .restingHeartRate, state: .elevated, isReliable: true),
+    ]
+
+    let assessment = BodyLoadEngine.assess(
+      evidence: evidence,
+      baselineDays: 5,
+      recentWorkout: true
+    )
+
+    #expect(assessment.level == .steady)
+  }
+
+  @Test("Recent workout keeps non-workout-sensitive evidence")
+  func recentWorkoutKeepsIndependentEvidence() {
+    let evidence = [
+      BodyLoadEvidence(kind: .sleep, state: .elevated, isReliable: true),
+      BodyLoadEvidence(kind: .respiratoryRate, state: .elevated, isReliable: true),
+    ]
+
+    let assessment = BodyLoadEngine.assess(
+      evidence: evidence,
+      baselineDays: 5,
+      recentWorkout: true
+    )
+
+    #expect(assessment.level == .elevated)
+  }
+
+  private var calendar: Calendar {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    return calendar
+  }
+
+  private func date(_ day: Int) -> Date {
+    calendar.date(from: DateComponents(year: 2026, month: 8, day: day, hour: 8))!
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/CurrentMomentDecisionTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Current moment stress decision")
+struct CurrentMomentDecisionTests {
+  @Test("A newer detailed check-in replaces the quick state")
+  func newerDetailedCheckInWins() {
+    let now = date(day: 29, hour: 12)
+    let detailed = CurrentMomentDetailedState(
+      valence: -0.8,
+      arousal: 0.9,
+      emotion: .stressed,
+      recordedAt: date(day: 29, hour: 11),
+      stressSources: [.work]
+    )
+
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .calm,
+        recordedAt: date(day: 29, hour: 10)
+      ),
+      detailed: detailed,
+      bodyLoadLevel: .steady,
+      now: now,
+      calendar: calendar
+    )
+
+    #expect(decision.source == .detailed(detailed))
+    #expect(decision.assessmentBasis == .selfReport)
+    #expect(decision.stressProfile == CurrentStressProfile(level: .high, source: .work))
+    #expect(decision.recommendation == .physiologicalSigh)
+    #expect(decision.reflectionEcho == .tense)
+    #expect(decision.reasonCode == "stress.high.work.physiologicalSigh")
+  }
+
+  @Test("A newer quick state replaces the detailed check-in")
+  func newerQuickStateWins() {
+    let now = date(day: 29, hour: 12)
+
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .calm,
+        recordedAt: date(day: 29, hour: 11)
+      ),
+      detailed: CurrentMomentDetailedState(
+        valence: -0.8,
+        arousal: 0.9,
+        emotion: .stressed,
+        recordedAt: date(day: 29, hour: 10)
+      ),
+      bodyLoadLevel: .elevated,
+      now: now,
+      calendar: calendar
+    )
+
+    #expect(decision.source == .quick(.calm))
+    #expect(decision.assessmentBasis == .selfReport)
+    #expect(decision.stressProfile == CurrentStressProfile(level: .low, source: .none))
+    #expect(decision.recommendation == .meditation)
+    #expect(decision.reflectionEcho == .calm)
+  }
+
+  @Test("A detailed check-in wins when timestamps are equal")
+  func equalTimestampsPreferDetailedCheckIn() {
+    let timestamp = date(day: 29, hour: 11)
+    let detailed = CurrentMomentDetailedState(
+      valence: -0.7,
+      arousal: 0.8,
+      emotion: .anxious,
+      recordedAt: timestamp,
+      stressSources: [.relationship]
+    )
+
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(state: .tired, recordedAt: timestamp),
+      detailed: detailed,
+      bodyLoadLevel: .watch,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+
+    #expect(decision.source == .detailed(detailed))
+    #expect(decision.stressProfile == CurrentStressProfile(level: .high, source: .relationship))
+    #expect(decision.recommendation == .physiologicalSigh)
+  }
+
+  @Test("All six quick states produce a definite targeted response")
+  func quickStatesProduceDefiniteResponses() {
+    let expectations: [(DailyEchoState, CurrentStressLevel, CurrentStressSource, PracticeKind)] = [
+      (.calm, .low, .none, .meditation),
+      (.clear, .low, .none, .meditation),
+      (.moved, .low, .none, .meditation),
+      (.tense, .high, .physicalTension, .physiologicalSigh),
+      (.tired, .moderate, .lowEnergy, .nsdr),
+      (.uncertain, .moderate, .mentalLoad, .pacedBreathing),
+    ]
+
+    for (state, level, source, practice) in expectations {
+      let decision = CurrentMomentDecisionEngine.decide(
+        quick: CurrentMomentQuickState(
+          state: state,
+          recordedAt: date(day: 29, hour: 11)
+        ),
+        detailed: nil,
+        bodyLoadLevel: .elevated,
+        now: date(day: 29, hour: 12),
+        calendar: calendar
+      )
+
+      #expect(decision.stressProfile == CurrentStressProfile(level: level, source: source))
+      #expect(decision.recommendation == practice)
+      #expect(decision.reflectionEcho == state)
+      #expect(decision.recommendation != .kegel)
+    }
+  }
+
+  @Test("Detailed quadrants map to a clear stress level and fallback source")
+  func detailedQuadrantsMapToStress() {
+    let expectations:
+      [(Double, Double, CurrentStressLevel, CurrentStressSource, PracticeKind, DailyEchoState)] = [
+        (0.8, 0.8, .low, .none, .meditation, .moved),
+        (0.8, -0.8, .low, .none, .meditation, .calm),
+        (-0.8, 0.8, .high, .physicalTension, .physiologicalSigh, .tense),
+        (-0.8, -0.8, .moderate, .lowEnergy, .nsdr, .tired),
+        (0, 0, .moderate, .mentalLoad, .pacedBreathing, .uncertain),
+      ]
+
+    for (valence, arousal, level, source, practice, echo) in expectations {
+      let decision = CurrentMomentDecisionEngine.decide(
+        quick: nil,
+        detailed: CurrentMomentDetailedState(
+          valence: valence,
+          arousal: arousal,
+          emotion: nil,
+          recordedAt: date(day: 29, hour: 11)
+        ),
+        bodyLoadLevel: .buildingBaseline,
+        now: date(day: 29, hour: 12),
+        calendar: calendar
+      )
+
+      #expect(decision.stressProfile == CurrentStressProfile(level: level, source: source))
+      #expect(decision.recommendation == practice)
+      #expect(decision.reflectionEcho == echo)
+    }
+  }
+
+  @Test("High-pressure and vulnerable emotions set a minimum stress level")
+  func emotionFloorsAreApplied() {
+    let highEmotions: [EmotionLabel] = [.stressed, .overwhelmed]
+    let moderateEmotions: [EmotionLabel] = [.anxious, .scared, .worried, .drained, .hopeless]
+
+    for emotion in highEmotions {
+      let decision = detailedDecision(valence: 0.8, arousal: 0.8, emotion: emotion)
+      #expect(decision.stressProfile.level == .high)
+    }
+
+    for emotion in moderateEmotions {
+      let decision = detailedDecision(valence: 0.8, arousal: 0.8, emotion: emotion)
+      #expect(decision.stressProfile.level == .moderate)
+    }
+  }
+
+  @Test("A current expression owns the level even when body load is higher")
+  func expressionLevelIsNotOverriddenByBodyLoad() {
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .calm,
+        recordedAt: date(day: 29, hour: 11)
+      ),
+      detailed: nil,
+      bodyLoadLevel: .elevated,
+      bodyStressSource: .sleep,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+
+    #expect(decision.stressProfile == CurrentStressProfile(level: .low, source: .sleep))
+    #expect(decision.recommendation == .nsdr)
+    #expect(decision.reflectionEcho == .calm)
+  }
+
+  @Test("Explicit context, sensations, and body signals use a stable source priority")
+  func sourcePriorityIsStable() {
+    let explicit = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      stressSources: [.work],
+      bodySensationCodes: ["fatigue", "shoulders_tight"],
+      bodyStressSource: .sleep
+    )
+    #expect(explicit.stressProfile.source == .work)
+
+    let recoverySensation = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      bodySensationCodes: ["shoulders_tight", "heavy_head"],
+      bodyStressSource: .sleep
+    )
+    #expect(recoverySensation.stressProfile.source == .lowEnergy)
+
+    let tensionSensation = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      bodySensationCodes: ["chest_tight"],
+      bodyStressSource: .sleep
+    )
+    #expect(tensionSensation.stressProfile.source == .physicalTension)
+
+    let bodySignal = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      bodyStressSource: .training
+    )
+    #expect(bodySignal.stressProfile.source == .training)
+  }
+
+  @Test("Every source routes low, moderate, and high pressure to a targeted practice")
+  func sourcesRouteToTargetedPractices() {
+    let expectations: [(CurrentStressSource, CurrentStressLevel, PracticeKind, DailyEchoState)] = [
+      (.sleep, .moderate, .nsdr, .tired),
+      (.lowEnergy, .high, .nsdr, .tired),
+      (.training, .low, .pacedBreathing, .tired),
+      (.training, .high, .nsdr, .tired),
+      (.physicalTension, .moderate, .physiologicalSigh, .tired),
+      (.work, .low, .pacedBreathing, .clear),
+      (.tasks, .high, .physiologicalSigh, .tense),
+      (.money, .moderate, .pacedBreathing, .tense),
+      (.family, .low, .meditation, .moved),
+      (.relationship, .high, .physiologicalSigh, .tense),
+      (.health, .moderate, .pacedBreathing, .tired),
+      (.bodySignals, .high, .physiologicalSigh, .tense),
+      (.mentalLoad, .low, .meditation, .clear),
+      (.mentalLoad, .moderate, .pacedBreathing, .uncertain),
+      (.none, .high, .physiologicalSigh, .tense),
+    ]
+
+    for (source, level, practice, echo) in expectations {
+      let decision = decision(level: level, explicitSource: source)
+
+      #expect(decision.stressProfile.source == source)
+      #expect(decision.recommendation == practice)
+      #expect(decision.reflectionEcho == echo)
+      #expect(decision.recommendation != .kegel)
+    }
+  }
+
+  @Test("No current expression asks for input until body evidence can support a result")
+  func noExpressionUsesBodyLoad() {
+    let waiting = CurrentMomentDecisionEngine.decide(
+      quick: nil,
+      detailed: nil,
+      bodyLoadLevel: .buildingBaseline,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+    #expect(waiting.source == .none)
+    #expect(waiting.assessmentBasis == .needsInput)
+    #expect(waiting.recommendation == nil)
+    #expect(waiting.reasonCode == "stress.needsInput")
+
+    let expectations: [(BodyLoadLevel, CurrentStressLevel, PracticeKind)] = [
+      (.steady, .low, .meditation),
+      (.watch, .moderate, .pacedBreathing),
+      (.elevated, .high, .physiologicalSigh),
+    ]
+
+    for (bodyLevel, stressLevel, practice) in expectations {
+      let decision = CurrentMomentDecisionEngine.decide(
+        quick: nil,
+        detailed: nil,
+        bodyLoadLevel: bodyLevel,
+        now: date(day: 29, hour: 12),
+        calendar: calendar
+      )
+
+      #expect(decision.source == .none)
+      #expect(decision.assessmentBasis == .bodyData)
+      #expect(decision.stressProfile == CurrentStressProfile(level: stressLevel, source: .none))
+      #expect(decision.recommendation == practice)
+      #expect(decision.recommendation != .kegel)
+      #expect(decision.ruleVersion == "fangcun-stress-response-v2")
+    }
+  }
+
+  @Test("Expressions from a previous local day expire before body-only assessment")
+  func previousDayExpressionsExpire() {
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .tense,
+        recordedAt: date(day: 28, hour: 23, minute: 59)
+      ),
+      detailed: CurrentMomentDetailedState(
+        valence: -0.9,
+        arousal: 0.9,
+        emotion: .overwhelmed,
+        recordedAt: date(day: 28, hour: 22)
+      ),
+      bodyLoadLevel: .elevated,
+      now: date(day: 29, hour: 0, minute: 1),
+      calendar: calendar
+    )
+
+    #expect(decision.source == .none)
+    #expect(decision.stressProfile == CurrentStressProfile(level: .high, source: .none))
+    #expect(decision.recommendation == .physiologicalSigh)
+  }
+
+  @Test("Detailed state context defaults preserve existing call sites")
+  func detailedContextDefaultsAreEmpty() {
+    let state = CurrentMomentDetailedState(
+      valence: 0,
+      arousal: 0,
+      emotion: nil,
+      recordedAt: date(day: 29, hour: 11)
+    )
+
+    #expect(state.stressSources.isEmpty)
+    #expect(state.bodySensationCodes.isEmpty)
+  }
+
+  private func detailedDecision(
+    valence: Double,
+    arousal: Double,
+    emotion: EmotionLabel? = nil,
+    stressSources: [CurrentStressSource] = [],
+    bodySensationCodes: [String] = [],
+    bodyStressSource: CurrentStressSource? = nil
+  ) -> CurrentMomentDecision {
+    CurrentMomentDecisionEngine.decide(
+      quick: nil,
+      detailed: CurrentMomentDetailedState(
+        valence: valence,
+        arousal: arousal,
+        emotion: emotion,
+        recordedAt: date(day: 29, hour: 11),
+        stressSources: stressSources,
+        bodySensationCodes: bodySensationCodes
+      ),
+      bodyLoadLevel: .steady,
+      bodyStressSource: bodyStressSource,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+  }
+
+  private func decision(
+    level: CurrentStressLevel,
+    explicitSource: CurrentStressSource
+  ) -> CurrentMomentDecision {
+    let state: (Double, Double) =
+      switch level {
+      case .low: (0.8, 0.8)
+      case .moderate: (0, 0)
+      case .high: (-0.8, 0.8)
+      }
+    return detailedDecision(
+      valence: state.0,
+      arousal: state.1,
+      stressSources: [explicitSource]
+    )
+  }
+
+  private var calendar: Calendar {
+    var value = Calendar(identifier: .gregorian)
+    value.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    return value
+  }
+
+  private func date(day: Int, hour: Int, minute: Int = 0) -> Date {
+    calendar.date(
+      from: DateComponents(
+        year: 2026,
+        month: 8,
+        day: day,
+        hour: hour,
+        minute: minute
+      )
+    )!
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/DailyReflectionTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Daily reflection")
+struct DailyReflectionTests {
+  @Test("The reflection remains stable throughout one local day")
+  func reflectionIsStableWithinOneDay() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let morning = calendar.date(
+      from: DateComponents(year: 2026, month: 8, day: 11, hour: 7)
+    )!
+    let evening = calendar.date(
+      from: DateComponents(year: 2026, month: 8, day: 11, hour: 22)
+    )!
+
+    let morningReflection = DailyReflectionSelector.reflection(
+      on: morning,
+      theme: .universal,
+      calendar: calendar
+    )
+    let eveningReflection = DailyReflectionSelector.reflection(
+      on: evening,
+      theme: .universal,
+      calendar: calendar
+    )
+
+    #expect(morningReflection == eveningReflection)
+  }
+
+  @Test("A body-load refresh cannot replace today's quotation")
+  func bodyLoadChangeKeepsTheSameDailyQuotation() {
+    let date = Date(timeIntervalSince1970: 1_786_320_000)
+    let steady = DailyReflectionSelector.reflection(on: date, theme: .steady)
+    let recovery = DailyReflectionSelector.reflection(on: date, theme: .recovery)
+
+    #expect(steady == recovery)
+  }
+
+  @Test("Elevated body load uses a recovery reflection theme")
+  func elevatedBodyLoadUsesRecoveryTheme() {
+    #expect(DailyReflectionTheme.forBodyLoad(.elevated) == .recovery)
+  }
+
+  @Test("Consecutive local days reveal different reflections")
+  func consecutiveDaysRevealDifferentReflections() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let firstDay = calendar.date(
+      from: DateComponents(year: 2026, month: 8, day: 11, hour: 8)
+    )!
+    let nextDay = calendar.date(byAdding: .day, value: 1, to: firstDay)!
+
+    let first = DailyReflectionSelector.reflection(
+      on: firstDay,
+      theme: .steady,
+      calendar: calendar
+    )
+    let next = DailyReflectionSelector.reflection(
+      on: nextDay,
+      theme: .steady,
+      calendar: calendar
+    )
+
+    #expect(first != next)
+  }
+
+  @Test("The last day of a 31-day month does not collide with the next month")
+  func monthBoundaryUsesDistinctDailySeed() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let lastDay = calendar.date(
+      from: DateComponents(year: 2026, month: 8, day: 31, hour: 8)
+    )!
+    let nextMonth = calendar.date(
+      from: DateComponents(year: 2026, month: 9, day: 1, hour: 8)
+    )!
+
+    let first = DailyReflectionSelector.reflection(
+      on: lastDay,
+      theme: .universal,
+      calendar: calendar
+    )
+    let next = DailyReflectionSelector.reflection(
+      on: nextMonth,
+      theme: .universal,
+      calendar: calendar
+    )
+
+    #expect(first != next)
+  }
+
+  @Test("Daily selections always carry an author and a work")
+  func dailySelectionsCarryAuthorsAndWorks() {
+    let reflection = DailyReflectionSelector.reflection(
+      on: Date(timeIntervalSince1970: 0),
+      theme: .universal
+    )
+
+    #expect(!reflection.id.isEmpty)
+    #expect(reflection.attribution?.isEmpty == false)
+    #expect(reflection.work?.isEmpty == false)
+    #expect(reflection.source == .collectedQuotation)
+  }
+
+  @Test("金句库只收录有明确作品的哲学与心理学名家句")
+  func quotationLibraryContainsOnlySourcedFamousWords() {
+    let library = DailyReflectionSelector.library
+
+    #expect(library.count >= 72)
+    #expect(Set(library.map(\.id)).count == library.count)
+    #expect(library.allSatisfy { $0.source == .collectedQuotation })
+    #expect(library.allSatisfy { $0.work?.isEmpty == false })
+    #expect(library.allSatisfy { $0.attribution?.isEmpty == false })
+    #expect(!library.contains { $0.attribution == "庄子" })
+    #expect(!library.contains { $0.work?.contains("薄伽梵歌") == true })
+    let modernAuthors = [
+      "卡尔·罗杰斯", "丹尼尔·卡尼曼", "维克多·弗兰克尔",
+      "伯特兰·罗素", "迈克尔·波兰尼", "理查德·费曼",
+      "乔治·奥威尔", "亚伯拉罕·马斯洛", "埃里希·弗洛姆",
+      "欧文·亚隆", "唐纳德·温尼科特", "罗洛·梅",
+      "利昂·费斯廷格", "阿尔贝·加缪", "让-保罗·萨特",
+      "西蒙娜·韦伊",
+    ]
+    #expect(library.allSatisfy { !modernAuthors.contains($0.attribution ?? "") })
+    let internalWords = ["待考", "转述", "参照", "原句", "收藏摘句"]
+    #expect(
+      library.allSatisfy { reflection in
+        internalWords.allSatisfy { !(reflection.attribution ?? "").contains($0) }
+      }
+    )
+    #expect(library.contains { $0.id == "kierkegaard-backwards-forwards" } == false)
+    #expect(library.contains { $0.id == "schopenhauer-will" } == false)
+    #expect(library.first { $0.id == "aurelius-judgment" }?.work == "《沉思录》")
+    #expect(library.first { $0.id == "james-attention" }?.work == "《心理学原理》")
+    #expect(library.first { $0.id == "spinoza-clear" }?.work == "《伦理学》")
+  }
+
+  @Test("每条金句都有可审核的公版来源与方寸自译声明")
+  func everyQuotationCarriesAuditablePublicDomainProvenance() throws {
+    for reflection in DailyReflectionSelector.library {
+      let provenance = try #require(reflection.provenance)
+
+      #expect(provenance.authorDeathYear <= 1910)
+      #expect(provenance.sourcePublicationYear <= 1925)
+      #expect(provenance.sourceURL.hasPrefix("https://"))
+      #expect(provenance.translationCredit == "方寸自译")
+    }
+  }
+
+  @Test("Daily copy avoids abstract coaching language")
+  func dailyCopyAvoidsAbstractCoachingLanguage() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    let start = calendar.date(from: DateComponents(year: 2026, month: 8, day: 1))!
+    let unwantedPhrases = [
+      "觉察", "节律", "余地", "信号", "真正的",
+      "今天可以放心", "身体今天没", "身体安安静静", "你是真的有点累",
+    ]
+
+    for theme in [
+      DailyReflectionTheme.universal,
+      .steady,
+      .attention,
+      .recovery,
+    ] {
+      for offset in 0..<14 {
+        let reflection = DailyReflectionSelector.reflection(
+          on: calendar.date(byAdding: .day, value: offset, to: start)!,
+          theme: theme,
+          calendar: calendar
+        )
+        let copy = reflection.text + (reflection.attribution ?? "")
+
+        for phrase in unwantedPhrases {
+          #expect(!copy.contains(phrase))
+        }
+      }
+    }
+  }
+
+  @Test("Every body theme offers a week of varied words")
+  func everyThemeOffersAWeekOfVariety() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    let start = calendar.date(from: DateComponents(year: 2026, month: 8, day: 1))!
+
+    for theme in [
+      DailyReflectionTheme.universal,
+      .steady,
+      .attention,
+      .recovery,
+    ] {
+      let words = Set(
+        (0..<14).map { offset in
+          DailyReflectionSelector.reflection(
+            on: calendar.date(byAdding: .day, value: offset, to: start)!,
+            theme: theme,
+            calendar: calendar
+          ).text
+        })
+
+      #expect(words.count >= 7)
+    }
+  }
+
+  @Test(
+    "Pressure reflections stay inside the source and level pool",
+    arguments: CurrentStressSource.allCases,
+    CurrentStressLevel.allCases
+  )
+  func pressureReflectionsUseOnlyTheirRestrictedPool(
+    source: CurrentStressSource,
+    level: CurrentStressLevel
+  ) {
+    let calendar = utcCalendar
+    let start = calendar.date(from: DateComponents(year: 2026, month: 9, day: 1))!
+    let profile = CurrentStressProfile(level: level, source: source)
+    let selectedIDs = Set(
+      (0..<12).map { offset in
+        DailyReflectionSelector.reflection(
+          on: calendar.date(byAdding: .day, value: offset, to: start)!,
+          stressProfile: profile,
+          calendar: calendar
+        ).id
+      })
+
+    #expect(selectedIDs == expectedPressureQuoteIDs(for: profile))
+    #expect(selectedIDs.count == 4)
+    #expect(selectedIDs.count < DailyReflectionSelector.library.count)
+  }
+
+  @Test("The same pressure profile remains stable throughout one local day")
+  func pressureReflectionIsStableWithinOneDay() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let morning = calendar.date(
+      from: DateComponents(year: 2026, month: 9, day: 2, hour: 7)
+    )!
+    let evening = calendar.date(
+      from: DateComponents(year: 2026, month: 9, day: 2, hour: 23)
+    )!
+    let profile = CurrentStressProfile(level: .high, source: .work)
+
+    let morningReflection = DailyReflectionSelector.reflection(
+      on: morning,
+      stressProfile: profile,
+      calendar: calendar
+    )
+    let eveningReflection = DailyReflectionSelector.reflection(
+      on: evening,
+      stressProfile: profile,
+      calendar: calendar
+    )
+
+    #expect(morningReflection == eveningReflection)
+  }
+
+  @Test(
+    "Pressure level changes the eligible quotation",
+    arguments: CurrentStressSource.allCases
+  )
+  func pressureLevelChangesTheQuotation(source: CurrentStressSource) {
+    let date = Date(timeIntervalSince1970: 1_788_278_400)
+    let reflections = CurrentStressLevel.allCases.map { level in
+      DailyReflectionSelector.reflection(
+        on: date,
+        stressProfile: CurrentStressProfile(level: level, source: source),
+        calendar: utcCalendar
+      )
+    }
+
+    #expect(Set(reflections.map(\.id)).count == CurrentStressLevel.allCases.count)
+  }
+
+  private var utcCalendar: Calendar {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    return calendar
+  }
+
+  private func expectedPressureQuoteIDs(
+    for profile: CurrentStressProfile
+  ) -> Set<String> {
+    let ids: [String] =
+      switch (pressureQuoteGroup(for: profile.source), profile.level) {
+      case (.workAndTasks, .low):
+        ["james-effort", "aurelius-last-act", "seneca-begin", "montaigne-use"]
+      case (.workAndTasks, .moderate):
+        ["james-wise", "james-attention", "epictetus-use", "seneca-postponing"]
+      case (.workAndTasks, .high):
+        ["epictetus-control", "seneca-imagination", "aurelius-no-opinion", "seneca-delay"]
+      case (.relationships, .low):
+        ["seneca-company", "james-appreciation", "montaigne-belong", "nietzsche-love"]
+      case (.relationships, .moderate):
+        ["pascal-heart", "spinoza-hatred", "aurelius-revenge", "epictetus-insult"]
+      case (.relationships, .high):
+        ["seneca-delay", "epictetus-control", "aurelius-within", "spinoza-opposite"]
+      case (.money, .low):
+        ["schopenhauer-possession", "seneca-poor", "montaigne-use", "spinoza-good"]
+      case (.money, .moderate):
+        ["schopenhauer-cards", "nietzsche-desire", "spinoza-desire", "james-wise"]
+      case (.money, .high):
+        ["epictetus-control", "seneca-imagination", "aurelius-no-opinion", "epictetus-wish"]
+      case (.healthAndBody, .low):
+        ["montaigne-live", "spinoza-life", "aurelius-within", "montaigne-cheerful"]
+      case (.healthAndBody, .moderate):
+        ["spinoza-clear", "epictetus-use", "pascal-reed", "aurelius-judgment"]
+      case (.healthAndBody, .high):
+        ["seneca-imagination", "epictetus-control", "aurelius-no-opinion", "spinoza-opposite"]
+      case (.training, .low):
+        ["james-effort", "aurelius-last-act", "epictetus-progress", "montaigne-use"]
+      case (.training, .moderate):
+        ["schopenhauer-cards", "epictetus-use", "seneca-brave", "aurelius-be-one"]
+      case (.training, .high):
+        ["epictetus-control", "aurelius-no-opinion", "seneca-imagination", "aurelius-within"]
+      case (.sleepAndEnergy, .low):
+        ["montaigne-cheerful", "spinoza-life", "james-worth-living", "montaigne-live"]
+      case (.sleepAndEnergy, .moderate):
+        ["schopenhauer-alone", "pascal-present", "james-wise", "montaigne-belong"]
+      case (.sleepAndEnergy, .high):
+        ["aurelius-within", "epictetus-wish", "seneca-imagination", "spinoza-clear"]
+      case (.mentalLoad, .low):
+        ["james-attention", "james-wise", "aurelius-thoughts", "montaigne-belong"]
+      case (.mentalLoad, .moderate):
+        ["james-wandering", "epictetus-views", "spinoza-clear", "aurelius-judgment"]
+      case (.mentalLoad, .high):
+        ["seneca-imagination", "epictetus-control", "aurelius-no-opinion", "seneca-delay"]
+      case (.unspecified, .low):
+        ["montaigne-live", "james-worth-living", "spinoza-life", "aurelius-color"]
+      case (.unspecified, .moderate):
+        ["james-attention", "epictetus-use", "spinoza-clear", "aurelius-within"]
+      case (.unspecified, .high):
+        ["epictetus-control", "seneca-imagination", "aurelius-no-opinion", "spinoza-opposite"]
+      }
+    return Set(ids)
+  }
+
+  private func pressureQuoteGroup(for source: CurrentStressSource) -> PressureQuoteGroup {
+    switch source {
+    case .work, .tasks:
+      .workAndTasks
+    case .family, .relationship:
+      .relationships
+    case .money:
+      .money
+    case .health, .physicalTension, .bodySignals:
+      .healthAndBody
+    case .training:
+      .training
+    case .sleep, .lowEnergy:
+      .sleepAndEnergy
+    case .mentalLoad:
+      .mentalLoad
+    case .none:
+      .unspecified
+    }
+  }
+
+  private enum PressureQuoteGroup {
+    case workAndTasks
+    case relationships
+    case money
+    case healthAndBody
+    case training
+    case sleepAndEnergy
+    case mentalLoad
+    case unspecified
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/EchoPersonalizationTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Echo personalization")
+struct EchoPersonalizationTests {
+  @Test("同一天的不同回声会得到不同的一句")
+  func differentEchoesReceiveDifferentReflections() {
+    let date = Date(timeIntervalSince1970: 1_786_320_000)
+
+    let calm = DailyReflectionSelector.reflection(on: date, echo: .calm)
+    let tense = DailyReflectionSelector.reflection(on: date, echo: .tense)
+
+    #expect(calm.id != tense.id)
+    #expect(calm.text != tense.text)
+  }
+
+  @Test("开场句和六种状态在一年内每天都各不相同")
+  func openingAndEveryEchoStayUniqueAcrossAYear() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let start = calendar.date(from: DateComponents(year: 2026, month: 9, day: 1))!
+
+    for offset in 0..<366 {
+      let date = calendar.date(byAdding: .day, value: offset, to: start)!
+      let reflections =
+        [
+          DailyReflectionSelector.reflection(on: date, echo: nil, calendar: calendar)
+        ]
+        + DailyEchoState.allCases.map {
+          DailyReflectionSelector.reflection(on: date, echo: $0, calendar: calendar)
+        }
+
+      #expect(Set(reflections.map(\.id)).count == reflections.count)
+    }
+  }
+
+  @Test("照顾情绪的金句不出现死亡深渊或怪物意象")
+  func careContextAvoidsDistressingQuotationImagery() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let start = calendar.date(from: DateComponents(year: 2026, month: 9, day: 1))!
+    let blockedIDs: Set<String> = [
+      "montaigne-death", "nietzsche-monster", "nietzsche-abyss", "pascal-room",
+    ]
+
+    for offset in 0..<366 {
+      let date = calendar.date(byAdding: .day, value: offset, to: start)!
+      let reflections =
+        [
+          DailyReflectionSelector.reflection(on: date, echo: nil, calendar: calendar)
+        ]
+        + DailyEchoState.allCases.map {
+          DailyReflectionSelector.reflection(on: date, echo: $0, calendar: calendar)
+        }
+      #expect(reflections.allSatisfy { !blockedIDs.contains($0.id) })
+    }
+  }
+
+  @Test("回声会直接得到一个对应的恢复动作")
+  func echoSelectsOneRecoveryPractice() {
+    #expect(
+      EchoPersonalization.recommendedPractice(for: .tense, bodyLoadLevel: .steady)
+        == .physiologicalSigh)
+    #expect(EchoPersonalization.recommendedPractice(for: .tired, bodyLoadLevel: .steady) == .nsdr)
+    #expect(
+      EchoPersonalization.recommendedPractice(for: .calm, bodyLoadLevel: .steady) == .meditation)
+    #expect(
+      EchoPersonalization.recommendedPractice(for: .uncertain, bodyLoadLevel: .steady)
+        == .pacedBreathing)
+  }
+
+  @Test("身体负荷偏高时会调整没有明确恢复指向的回声推荐")
+  func elevatedBodyLoadAdjustsAGentleEchoRecommendation() {
+    #expect(
+      EchoPersonalization.recommendedPractice(for: .calm, bodyLoadLevel: .elevated)
+        == .pacedBreathing)
+    #expect(
+      EchoPersonalization.recommendedPractice(for: .tense, bodyLoadLevel: .elevated)
+        == .physiologicalSigh)
+    #expect(EchoPersonalization.recommendedPractice(for: .tired, bodyLoadLevel: .elevated) == .nsdr)
+  }
+
+  @Test("每种状态都有一周不重复且有明确出处的名家句")
+  func everyEchoHasAWeekOfSourcedQuotations() {
+    let start = Date(timeIntervalSince1970: 1_786_320_000)
+
+    for echo in DailyEchoState.allCases {
+      let reflections = (0..<7).map { offset in
+        DailyReflectionSelector.reflection(
+          on: start.addingTimeInterval(Double(offset) * 86_400),
+          echo: echo
+        )
+      }
+
+      #expect(Set(reflections.map(\.text)).count == 7)
+      #expect(reflections.allSatisfy { $0.source == .collectedQuotation })
+      #expect(reflections.allSatisfy { $0.attribution?.isEmpty == false })
+      #expect(reflections.allSatisfy { $0.work?.isEmpty == false })
+      #expect(reflections.allSatisfy { !$0.id.hasPrefix("echo-") })
+    }
+  }
+
+  @Test("每种状态至少一个月不重复金句")
+  func everyEchoHasAMonthWithoutRepeatingAQuotation() {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    let start = calendar.date(from: DateComponents(year: 2026, month: 9, day: 1))!
+
+    for echo in DailyEchoState.allCases {
+      let reflections = (0..<30).map { offset in
+        DailyReflectionSelector.reflection(
+          on: calendar.date(byAdding: .day, value: offset, to: start)!,
+          echo: echo,
+          calendar: calendar
+        )
+      }
+
+      #expect(Set(reflections.map(\.id)).count == 30)
+    }
+  }
+
+  @Test("尚未选择状态时也先给一句有作者和作品的名家句")
+  func openingReflectionUsesTheSourcedQuotationPool() {
+    let reflection = DailyReflectionSelector.reflection(
+      on: Date(timeIntervalSince1970: 1_786_320_000),
+      echo: nil
+    )
+
+    #expect(DailyReflectionSelector.library.contains(reflection))
+    #expect(reflection.source == .collectedQuotation)
+    #expect(reflection.attribution?.isEmpty == false)
+    #expect(reflection.work?.isEmpty == false)
+  }
+
+  @Test("回声句只回应主观状态，不替身体数据下结论")
+  func echoReflectionsDoNotTurnFeelingsIntoBodyEvidence() {
+    let start = Date(timeIntervalSince1970: 1_786_320_000)
+    let reflections = DailyEchoState.allCases.flatMap { echo in
+      (0..<7).map { offset in
+        DailyReflectionSelector.reflection(
+          on: start.addingTimeInterval(Double(offset) * 86_400),
+          echo: echo
+        )
+      }
+    }
+
+    #expect(reflections.allSatisfy { $0.text.contains("身体") == false })
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/EmotionCatalogTests.swift =====
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Emotion catalog")
+struct EmotionCatalogTests {
+  @Test("All 38 Apple labels are mapped exactly once")
+  func everyLabelIsMappedExactlyOnce() {
+    let mapped = EmotionQuadrant.allCases.flatMap { EmotionCatalog.labels(for: $0) }
+    let expectedAppleIdentifiers: Set<String> = [
+      "amazed", "amused", "angry", "anxious", "ashamed", "brave", "calm", "content",
+      "disappointed", "discouraged", "disgusted", "embarrassed", "excited", "frustrated",
+      "grateful", "guilty", "happy", "hopeless", "irritated", "jealous", "joyful", "lonely",
+      "passionate", "peaceful", "proud", "relieved", "sad", "scared", "stressed", "surprised",
+      "worried", "annoyed", "confident", "drained", "hopeful", "indifferent", "overwhelmed",
+      "satisfied",
+    ]
+
+    #expect(expectedAppleIdentifiers.count == 38)
+    #expect(Set(EmotionLabel.allCases.map(\.rawValue)) == expectedAppleIdentifiers)
+    #expect(mapped.count == expectedAppleIdentifiers.count)
+    #expect(Set(mapped.map(\.rawValue)) == expectedAppleIdentifiers)
+  }
+
+  @Test("Unknown Apple label is left unclassified")
+  func unknownAppleLabelIsUnclassified() {
+    #expect(EmotionCatalog.label(forAppleIdentifier: "calm") == .calm)
+    #expect(EmotionCatalog.label(forAppleIdentifier: "future_apple_label") == nil)
+  }
+
+  @Test("Compass coordinates resolve to a stable quadrant")
+  func compassCoordinatesResolveToQuadrant() {
+    #expect(EmotionCatalog.quadrant(valence: 0.7, arousal: 0.8) == .highActivationPositive)
+    #expect(EmotionCatalog.quadrant(valence: 0.7, arousal: -0.8) == .lowActivationPositive)
+    #expect(EmotionCatalog.quadrant(valence: -0.7, arousal: 0.8) == .highActivationNegative)
+    #expect(EmotionCatalog.quadrant(valence: -0.7, arousal: -0.8) == .lowActivationNegative)
+    #expect(EmotionCatalog.quadrant(valence: 0.05, arousal: 0.05) == .neutral)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/HeartRateEvidenceAnalyzerTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Heart-rate evidence windows")
+struct HeartRateEvidenceAnalyzerTests {
+  @Test("Uses valid samples from the first and last minute")
+  func firstAndLastWindows() throws {
+    let start = Date(timeIntervalSince1970: 1_786_320_000)
+    let end = start.addingTimeInterval(300)
+    let samples = [
+      HeartRateSample(date: start.addingTimeInterval(5), beatsPerMinute: 70),
+      HeartRateSample(date: start.addingTimeInterval(20), beatsPerMinute: 72),
+      HeartRateSample(date: start.addingTimeInterval(50), beatsPerMinute: 74),
+      HeartRateSample(date: start.addingTimeInterval(150), beatsPerMinute: 120),
+      HeartRateSample(date: end.addingTimeInterval(-50), beatsPerMinute: 63),
+      HeartRateSample(date: end.addingTimeInterval(-20), beatsPerMinute: 65),
+      HeartRateSample(date: end.addingTimeInterval(-5), beatsPerMinute: 67),
+    ]
+
+    let evidence = try #require(
+      HeartRateEvidenceAnalyzer.analyze(samples: samples, startDate: start, endDate: end)
+    )
+
+    #expect(evidence.startBeatsPerMinute == 72)
+    #expect(evidence.endBeatsPerMinute == 65)
+    #expect(evidence.sampleCount == 6)
+  }
+
+  @Test("Overlapping windows and implausible samples never create evidence")
+  func insufficientIndependentWindows() {
+    let start = Date(timeIntervalSince1970: 1_786_320_000)
+    let end = start.addingTimeInterval(90)
+    let samples = [
+      HeartRateSample(date: start.addingTimeInterval(35), beatsPerMinute: 65),
+      HeartRateSample(date: start.addingTimeInterval(45), beatsPerMinute: 500),
+      HeartRateSample(date: start.addingTimeInterval(50), beatsPerMinute: 67),
+      HeartRateSample(date: start.addingTimeInterval(55), beatsPerMinute: 69),
+    ]
+
+    #expect(
+      HeartRateEvidenceAnalyzer.analyze(samples: samples, startDate: start, endDate: end) == nil
+    )
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/PendingRetryPolicyTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Pending write retry policy")
+struct PendingRetryPolicyTests {
+  @Test("Retry delay backs off and is capped at one day")
+  func exponentialBackoff() {
+    #expect(PendingRetryPolicy.delay(afterAttempt: 1) == 60)
+    #expect(PendingRetryPolicy.delay(afterAttempt: 2) == 120)
+    #expect(PendingRetryPolicy.delay(afterAttempt: 20) == 86_400)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/PracticeCatalogTests.swift =====
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Practice catalog")
+struct PracticeCatalogTests {
+  @Test("Build 1 contains the five approved practices and Kegel is never automatic")
+  func buildOneCatalogIsComplete() throws {
+    #expect(PracticeCatalog.buildOne.map(\.kind) == PracticeKind.allCases)
+
+    let sigh = try #require(PracticeCatalog.protocol(for: .physiologicalSigh))
+    #expect(sigh.durationOptions == [60, 300])
+    #expect(sigh.minimumEvidenceDuration == nil)
+
+    let breathing = try #require(PracticeCatalog.protocol(for: .pacedBreathing))
+    #expect(breathing.durationOptions == [180, 300])
+    #expect(breathing.minimumEvidenceDuration == 300)
+
+    let kegel = try #require(PracticeCatalog.protocol(for: .kegel))
+    #expect(kegel.durationOptions == [180])
+    #expect(kegel.isAutomaticallyRecommended == false)
+    #expect(kegel.writesMindfulSession == false)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/PracticeHapticCadenceTests.swift =====
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Practice haptic cadence")
+struct PracticeHapticCadenceTests {
+  @Test("Paced breathing exposes the breath phase instead of a session countdown")
+  func pacedBreathingGuideTracksTheCurrentBreath() {
+    #expect(PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 0).phase == .inhale)
+    #expect(PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 3.9).phase == .inhale)
+    #expect(PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 4).phase == .exhale)
+    #expect(PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 9.9).phase == .exhale)
+    #expect(PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 10).phase == .inhale)
+    #expect(PracticeBreathGuide.state(for: .pacedBreathing, elapsed: 4).phaseDuration == 6)
+  }
+
+  @Test("Cue identifiers change only at protocol boundaries")
+  func cueBoundariesAreStable() {
+    #expect(PracticeHapticCadence.cueID(for: .physiologicalSigh, elapsed: 0) == 0)
+    #expect(PracticeHapticCadence.cueID(for: .physiologicalSigh, elapsed: 2.9) == 0)
+    #expect(PracticeHapticCadence.cueID(for: .physiologicalSigh, elapsed: 3) == 1)
+    #expect(PracticeHapticCadence.cueID(for: .physiologicalSigh, elapsed: 5) == 2)
+    #expect(PracticeHapticCadence.cueID(for: .physiologicalSigh, elapsed: 12) == 3)
+
+    #expect(PracticeHapticCadence.cueID(for: .pacedBreathing, elapsed: 3.9) == 0)
+    #expect(PracticeHapticCadence.cueID(for: .pacedBreathing, elapsed: 4) == 1)
+    #expect(PracticeHapticCadence.cueID(for: .pacedBreathing, elapsed: 10) == 2)
+    #expect(PracticeHapticCadence.cueID(for: .kegel, elapsed: 4) == 1)
+  }
+
+  @Test("手表仅在启用且运行中的相位边界播放一次触觉")
+  func phaseHapticConsumptionIsStateful() {
+    var lastCueID: Int?
+
+    #expect(
+      PracticeHapticCadence.consumeCue(
+        for: .pacedBreathing,
+        elapsed: 0,
+        isActive: true,
+        isEnabled: true,
+        lastCueID: &lastCueID
+      )
+    )
+    #expect(
+      !PracticeHapticCadence.consumeCue(
+        for: .pacedBreathing,
+        elapsed: 2,
+        isActive: true,
+        isEnabled: true,
+        lastCueID: &lastCueID
+      )
+    )
+    #expect(
+      PracticeHapticCadence.consumeCue(
+        for: .pacedBreathing,
+        elapsed: 4,
+        isActive: true,
+        isEnabled: true,
+        lastCueID: &lastCueID
+      )
+    )
+    #expect(
+      !PracticeHapticCadence.consumeCue(
+        for: .pacedBreathing,
+        elapsed: 10,
+        isActive: false,
+        isEnabled: true,
+        lastCueID: &lastCueID
+      )
+    )
+    #expect(
+      !PracticeHapticCadence.consumeCue(
+        for: .pacedBreathing,
+        elapsed: 10,
+        isActive: true,
+        isEnabled: false,
+        lastCueID: &lastCueID
+      )
+    )
+  }
+
+  @Test("Slow practices use calm sparse cues")
+  func slowPracticeCadenceIsSparse() {
+    #expect(PracticeHapticCadence.cueID(for: .meditation, elapsed: 9.9) == 0)
+    #expect(PracticeHapticCadence.cueID(for: .meditation, elapsed: 10) == 1)
+    #expect(PracticeHapticCadence.cueID(for: .nsdr, elapsed: 19.9) == 0)
+    #expect(PracticeHapticCadence.cueID(for: .nsdr, elapsed: 20) == 1)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/RecommendationEngineTests.swift =====
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Practice recommendation")
+struct RecommendationEngineTests {
+  @Test("High-activation negative state recommends a physiological sigh")
+  func highActivationNegativeRecommendsSigh() {
+    let input = RecommendationInput(
+      valence: -0.8,
+      arousal: 0.9,
+      emotion: .stressed,
+      bodyLoadLevel: .watch
+    )
+
+    let recommendation = RecommendationEngine.recommend(for: input)
+
+    #expect(recommendation.practice == .physiologicalSigh)
+    #expect(recommendation.reasonCode == "high_activation_negative")
+  }
+
+  @Test("A drained low-activation state recommends NSDR")
+  func drainedStateRecommendsNSDR() {
+    let input = RecommendationInput(
+      valence: -0.6,
+      arousal: -0.8,
+      emotion: .drained,
+      bodyLoadLevel: .elevated
+    )
+
+    let recommendation = RecommendationEngine.recommend(for: input)
+
+    #expect(recommendation.practice == .nsdr)
+    #expect(recommendation.reasonCode == "low_activation_recovery")
+  }
+
+  @Test("Neutral compass coordinates do not trigger a negative-state practice")
+  func neutralCoordinatesUseGentleReset() {
+    let input = RecommendationInput(
+      valence: -0.01,
+      arousal: 0.01,
+      emotion: nil,
+      bodyLoadLevel: .steady
+    )
+
+    let recommendation = RecommendationEngine.recommend(for: input)
+
+    #expect(recommendation.practice == .meditation)
+    #expect(recommendation.reasonCode == "gentle_reset")
+  }
+
+  @Test("Kegel is never returned by automatic recommendations")
+  func kegelIsNeverAutomaticallyRecommended() {
+    for valence in [-1.0, 0, 1.0] {
+      for arousal in [-1.0, 0, 1.0] {
+        for level in [BodyLoadLevel.steady, .watch, .elevated] {
+          let recommendation = RecommendationEngine.recommend(
+            for: RecommendationInput(
+              valence: valence,
+              arousal: arousal,
+              emotion: nil,
+              bodyLoadLevel: level
+            )
+          )
+
+          #expect(recommendation.practice != .kegel)
+        }
+      }
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Sleep episode analysis")
+struct SleepEpisodeAnalyzerTests {
+  @Test("Overlapping sleep samples are counted once")
+  func overlappingSamplesAreDeduplicated() {
+    let samples = [
+      SleepSampleInterval(
+        start: date(day: 9, hour: 22),
+        end: date(day: 10, hour: 2),
+        sourceName: "Apple Watch",
+        isAppleWatch: true
+      ),
+      SleepSampleInterval(
+        start: date(day: 10, hour: 0),
+        end: date(day: 10, hour: 6),
+        sourceName: "Health",
+        isAppleWatch: false
+      ),
+    ]
+
+    let result = SleepEpisodeAnalyzer.primarySleep(
+      from: samples,
+      now: date(day: 10, hour: 8)
+    )
+
+    #expect(result?.asleepDuration == TimeInterval(8 * 3_600))
+    #expect(result?.sampleCount == 2)
+  }
+
+  @Test("A daytime nap is not added to the primary sleep")
+  func napIsSeparatedFromPrimarySleep() {
+    let samples = [
+      SleepSampleInterval(
+        start: date(day: 9, hour: 13),
+        end: date(day: 9, hour: 14),
+        sourceName: "Apple Watch",
+        isAppleWatch: true
+      ),
+      SleepSampleInterval(
+        start: date(day: 9, hour: 22),
+        end: date(day: 10, hour: 6),
+        sourceName: "Apple Watch",
+        isAppleWatch: true
+      ),
+    ]
+
+    let result = SleepEpisodeAnalyzer.primarySleep(
+      from: samples,
+      now: date(day: 10, hour: 8)
+    )
+
+    #expect(result?.asleepDuration == TimeInterval(8 * 3_600))
+    #expect(result?.start == date(day: 9, hour: 22))
+    #expect(result?.sampleCount == 1)
+  }
+
+  @Test("An implausibly long episode is excluded from body load")
+  func implausiblyLongSleepNeedsReview() {
+    let sample = SleepSampleInterval(
+      start: date(day: 9, hour: 10),
+      end: date(day: 10, hour: 4),
+      sourceName: "Imported sleep",
+      isAppleWatch: false
+    )
+
+    let result = SleepEpisodeAnalyzer.primarySleep(
+      from: [sample],
+      now: date(day: 10, hour: 8)
+    )
+
+    #expect(result?.quality == .needsReview)
+    #expect(result?.isUsableForBodyLoad == false)
+  }
+
+  private func date(day: Int, hour: Int, minute: Int = 0) -> Date {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    return calendar.date(
+      from: DateComponents(year: 2026, month: 8, day: day, hour: hour, minute: minute)
+    )!
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchCompassGridTests.swift =====
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Watch compass grid")
+struct WatchCompassGridTests {
+  @Test("Watch 情绪罗盘固定提供九个不重复区域")
+  func gridContainsNineUniqueRegions() {
+    #expect(WatchCompassRegion.all.count == 9)
+    #expect(Set(WatchCompassRegion.all.map(\.id)).count == 9)
+    #expect(WatchCompassRegion.all.contains { $0.valence == 0 && $0.arousal == 0 })
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchPracticeCompletionTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Watch practice completion recovery")
+struct WatchPracticeCompletionTests {
+  @Test("A delayed retry reuses the first frozen completion window")
+  func retryReusesFirstSnapshot() throws {
+    let firstEnd = Date(timeIntervalSince1970: 1_786_320_060)
+    var freezer = WatchPracticeCompletionFreezer()
+
+    let first = freezer.freeze(
+      sessionID: "watch-session",
+      endedAt: firstEnd,
+      activeDuration: 60,
+      heartRateEvidenceRequested: true
+    )
+    let retry = freezer.freeze(
+      sessionID: "watch-session",
+      endedAt: firstEnd.addingTimeInterval(90),
+      activeDuration: 150,
+      heartRateEvidenceRequested: true
+    )
+
+    #expect(retry == first)
+    #expect(retry.endedAt == firstEnd)
+    #expect(retry.activeDuration == 60)
+
+    let evidence = HeartRateEvidence(
+      startBeatsPerMinute: 72,
+      endBeatsPerMinute: 64,
+      sampleCount: 8
+    )
+    let completedValue = freezer.completeHeartRateEvidenceCapture(evidence)
+    let completed = try #require(completedValue)
+    let retryAfterCapture = freezer.freeze(
+      sessionID: "watch-session",
+      endedAt: firstEnd.addingTimeInterval(180),
+      activeDuration: 240,
+      heartRateEvidenceRequested: true
+    )
+
+    #expect(completed.heartRateEvidenceCaptureCompleted)
+    #expect(completed.heartRateEvidence == evidence)
+    #expect(retryAfterCapture == completed)
+  }
+
+  @Test("Old payloads infer an evidence request only when evidence exists")
+  func oldEvidencePayloadRemainsEligible() {
+    let evidence = HeartRateEvidence(
+      startBeatsPerMinute: 72,
+      endBeatsPerMinute: 64,
+      sampleCount: 8
+    )
+
+    #expect(
+      HeartRateEvidenceRequestCompatibility.resolved(
+        explicitRequest: nil,
+        evidence: evidence
+      )
+    )
+    #expect(
+      HeartRateEvidenceRequestCompatibility.resolved(
+        explicitRequest: nil,
+        evidence: nil
+      ) == false
+    )
+    #expect(
+      HeartRateEvidenceRequestCompatibility.resolved(
+        explicitRequest: false,
+        evidence: evidence
+      ) == false
+    )
+  }
+
+  @Test("A legacy mindful payload decodes without the request field")
+  func legacyMindfulPayloadDecodes() throws {
+    let evidence = HeartRateEvidence(
+      startBeatsPerMinute: 72,
+      endBeatsPerMinute: 64,
+      sampleCount: 8
+    )
+    let current = WatchMindfulPayload(
+      syncIdentifier: "legacy.mindful",
+      sessionID: "legacy-session",
+      practiceKind: .pacedBreathing,
+      startDate: Date(timeIntervalSince1970: 1_786_320_000),
+      endDate: Date(timeIntervalSince1970: 1_786_320_300),
+      heartRateEvidenceRequested: true,
+      heartRateEvidence: evidence
+    )
+    let encoded = try JSONEncoder().encode(current)
+    var object = try #require(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+    object.removeValue(forKey: "heartRateEvidenceRequested")
+    let legacyData = try JSONSerialization.data(withJSONObject: object)
+
+    let decoded = try JSONDecoder().decode(WatchMindfulPayload.self, from: legacyData)
+
+    #expect(decoded.heartRateEvidenceRequested == nil)
+    #expect(decoded.heartRateEvidence == evidence)
+    #expect(
+      HeartRateEvidenceRequestCompatibility.resolved(
+        explicitRequest: decoded.heartRateEvidenceRequested,
+        evidence: decoded.heartRateEvidence
+      )
+    )
+  }
+}
+
+===== END FILE =====
+
+===== FILE: README.md =====
+# 方寸 Fangcun
+
+留一方余地，给自己一点缓冲。
+
+方寸是一个以身体数据为线索、提供呼吸与恢复练习的 iOS App，带有 watchOS 伴侣。本仓库汇总当前原生实现、可运行网页原型、猫狗角色、品牌资产、设计方案与验证记录。
+
+**给 GPT / AI 阅读：[AI_CONTEXT.md](AI_CONTEXT.md)** · [完整文件索引](FILE_INDEX.md) · [分卷源码文本](ai/README.md) · [当前交付状态](docs/verification/STATUS.md)
+
+## 当前版本
+
+2026-09-18：整套新版已迁入 SwiftUI，并将最终修复版覆盖安装、启动于开发者的 iPhone 16 Pro。不是仅替换 Logo，也不是将网页套进手机 App。安装与测试的公开摘要见验证目录；原始设备标识和签名留在本机。
+
+| 今日首页 | 呼吸练习 | 饮品记录 |
+| --- | --- | --- |
+| ![今日首页](docs/verification/screenshots/259B610F-B230-4660-BA62-2D0D341B50E9.png) | ![呼吸练习](docs/verification/motion/E40F80CA-3DE4-47EB-A25A-1FEFBE3D2D38.png) | ![饮品记录](docs/verification/screenshots/DCC9B472-D944-49A8-A9C5-7F53D8E8FE03.png) |
+
+以上为原生 App 的模拟器截图。健康状态演示截图仅用于 UI 验证，不是用户的健康记录。
+
+## 已实现
+
+- 今日结论、依据摘要和详情；依据真实 HealthKit 数据及个人基线，缺少数据时明确显示数据不足。
+- 已确认的蓝橙双色版画猫狗；按平稳、休息、观察、饮品记录、呼吸和结束分别出场。保留独处场景，减少动态效果时停止角色变形。
+- 一键开始 5 分钟双吸一呼；共用练习时钟驱动阶段和胸腹动效；暂停、继续、提前结束、保存和返回首页。
+- 饮品半屏记录，支持复合增减与撤销；甜咖啡同时累计咖啡因和糖饮，但不重复累计体积。
+- 7 天真实状态快照、饮品和既有练习记录；不虚构过去的数据。
+- 深浅色、较大字号、减少动态效果；沿用本机存储、健康授权和现有其他练习。
+
+## 目录
+
+| 路径 | 内容 |
+| --- | --- |
+| `InnerBalance/` | iOS / watchOS Xcode 工程、原生资源、App 与 UI 测试 |
+| `InnerBalanceCore/` | 独立 Swift Package：状态评估、练习、健康数据领域逻辑与测试 |
+| `web/` | React 高保真交互原型、角色工作室、品牌工作室、原始完整设计规格 |
+| `web/public/characters/` | v3 / v4 原画；v4 猫狗为当前主形象，呼吸沿用 v3 |
+| `web/public/brand/` | 留一方余地 Logo、深浅色 App 图标、品牌素材包 |
+| `design/brief/` | 整套 UI 设计提示词、用户确认的双角色参考图 |
+| `design/proposals/` | 早期三套界面方案，用于追溯设计过程 |
+| `design/claude-proposal-c/` | 用户提供的 Claude 方案 C 与可视化 |
+| `docs/design/` | 原生迁移说明、早期猫狗探索及角色规范 |
+| `docs/plans/` | 历史计划，不能作为当前实现或发布状态 |
+| `docs/verification/` | 原生实测截图、测试与真机安装摘要 |
+| `ai/` | 可直接通过公开 raw URL 阅读的分卷源码文本 |
+
+## 运行网页原型
+
+需要 Node.js 22.12+（或满足 Vite 8 要求的较新版本）。
+
+```sh
+cd web
+npm ci
+npm run dev
+```
+
+打开 `http://127.0.0.1:4173/`；角色工作室为 `/character-studio.html`，品牌工作室为 `/brand-studio.html`。
+
+```sh
+npm test
+npm run build
+```
+
+网页采用 Mock 健康数据，存储在浏览器 localStorage。它用来测试设计和交互，不能代替原生健康数据链路。
+
+## 运行原生 App
+
+1. 用支持 Swift 6.2+ 的 Xcode 打开 `InnerBalance/InnerBalance.xcodeproj`。
+2. 选择 `InnerBalance` scheme 与 iPhone 模拟器。当前验证工具链是 Xcode 27 beta；部署目标为 iOS 18 / watchOS 11。
+3. 真机运行时，在 Signing & Capabilities 选择自己的 Team，并按需设置自己的 Bundle Identifier。公开工程不附带签名、描述文件或账户信息。
+4. 保持 `InnerBalanceCore` 与 `InnerBalance` 同级，工程引用的是本地 Package。
+
+```sh
+swift test --package-path InnerBalanceCore
+xcodebuild build -project InnerBalance/InnerBalance.xcodeproj \
+  -scheme InnerBalance -destination 'generic/platform=iOS Simulator' \
+  CODE_SIGNING_ALLOWED=NO
+```
+
+如 Xcode 提示缺少 Metal Toolchain，使用 Xcode 的组件下载完成安装；角色局部动效使用 Metal shader。
+
+## 设计的当前定案
+
+暖纸白、版画蓝、克制的印章橙。保留确认过的圆润猫狗轮廓及印痕，不把角色改造成几何占位图。Logo 的寓意是“留一方余地”，不是“方”字加边框。以原生当前入口和 `web/docs/` 最新规范为准；历史方案保留作对比。
+
+## 阅读范围
+
+源码、设计原文、PNG / SVG、测试和原型均以普通 Git 文件提供，未使用需要另行鉴权的 LFS。可公开访问不等于任意 GPT 会自动读取整个仓库；请把 [AI_CONTEXT.md](AI_CONTEXT.md) 的链接交给具备网页读取能力的 GPT，并按索引读取所需文件。图片需要支持视觉的工具，音频需要支持音频的工具。
+
+没有上传个人健康导出、开发证书、令牌、手机标识、依赖缓存或签名 App。当前并未发布到 TestFlight / App Store。历史备份和重复 ZIP 的可读内容已由对应源码及素材目录提供。公开供查看不额外授予软件或素材的商业使用许可。
+
+===== END FILE =====
+
+===== FILE: design/brief/交付核验.json =====
+{
+  "brief": "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-design-brief/方寸App-整套UI改造设计提示词.md",
+  "reference": "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-design-brief/方寸猫狗-确认稿.png",
+  "package": "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-design-brief/方寸App-UI设计委托包.zip",
+  "reference_sha256": "0f920086ea47f43e082301ad0dcbeec81f92916d77d644a3b75ff431292ee60b",
+  "reference_matches_user_selection": true,
+  "archive_verified": true,
+  "brief_characters": 7768,
+  "code_modified": false
+}
+===== END FILE =====

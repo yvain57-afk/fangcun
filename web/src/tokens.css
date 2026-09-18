@@ -1,0 +1,56 @@
+/* Supplied full design specification. CSS pixels represent pt for this web prototype. */
+:root {
+  --print-blue: #1B355A;
+  --stamp-orange: #E07A5F;
+  --paper-white: #FAF9F5;
+  --paper: var(--paper-white);
+  --surface: #FFFFFF;
+  --brand: var(--print-blue);
+  --ink: #1A2530;
+  --muted: #5C6B7B;
+  --tertiary: #8E9FA5;
+  --line: #DCE4EC;
+  --wash: #F0F4F8;
+  --orange-wash: #FDEEE9;
+  --steady: #3D7B80;
+  --elevated: #C86D51;
+  --neutral: #64748B;
+  --accent: var(--stamp-orange);
+  --action: var(--print-blue);
+  --on-action: #FFFFFF;
+  --pet-ink: #1B355A;
+  --pet-fur: #FFFFFF;
+  --radius-card: 20px;
+  --radius-hero: 24px;
+  --radius-control: 24px;
+  --radius-sheet: 24px;
+  --space-unit: 4px;
+  --page-inset: 16px;
+  --font-scale: 1;
+  color-scheme: light;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+[data-theme="dark"] {
+  --paper: #12161A;
+  --surface: #1C2228;
+  --brand: #8EAECF;
+  --ink: #EDF2F7;
+  --muted: #94A3B8;
+  --tertiary: #64748B;
+  --line: #2E3A46;
+  --wash: #252E36;
+  --orange-wash: #3B302E;
+  --accent: #F29E85;
+  --steady: #5FA4A9;
+  --elevated: #E5886E;
+  --neutral: #8FA0B3;
+  --action: #8EAECF;
+  --on-action: #12161A;
+  --pet-ink: #8EAECF;
+  --pet-fur: #252E36;
+  color-scheme: dark;
+}
+[data-large="true"] { --font-scale: 1.22; }

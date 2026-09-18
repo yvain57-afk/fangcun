@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - 今日(平稳)</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #E8EEF5;
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .iphone-frame {
+    width: 393px;
+    height: 852px;
+    background: #FFFFFF;
+    border-radius: 47px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
+    color: #2D3748;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .status-bar {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  .screen-content {
+    height: calc(852px - 54px - 83px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid #D8DCE5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 8px;
+    padding-bottom: 34px;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    color: #8A95AD;
+    width: 64px;
+    cursor: pointer;
+  }
+  .tab-item.active { color: #2B5EA7; }
+  .tab-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: #1a1a1a;
+    border-radius: 3px;
+  }
+
+  /* Page content styles */
+  .greeting {
+    padding: 8px 20px 0;
+    font-size: 13px;
+    color: #6B7793;
+    letter-spacing: 0.2px;
+  }
+
+  .conclusion-card {
+    margin: 12px 20px 0;
+    background: linear-gradient(135deg, #EDF3FB 0%, #F0F5FB 50%, #E8EFF8 100%);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(43,94,167,0.08);
+  }
+  .conclusion-card::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(43,94,167,0.05) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .conclusion-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(43,94,167,0.1);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #2B5EA7;
+    margin-bottom: 10px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2B5EA7;
+  }
+
+  .conclusion-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1E4578;
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .conclusion-body {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .evidence-list {
+    flex: 1;
+  }
+  .evidence-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: #4A5568;
+  }
+  .evidence-item + .evidence-item {
+    border-top: 0.5px solid rgba(43,94,167,0.1);
+  }
+  .evidence-icon-sm {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(43,94,167,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .evidence-text { flex: 1; }
+  .evidence-value { font-weight: 600; color: #2B5EA7; font-size: 13px; }
+
+  .mascot-area {
+    width: 90px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .action-section {
+    padding: 16px 20px 0;
+  }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 48px;
+    background: #2B5EA7;
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .ghost-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #2B5EA7;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .section-card {
+    margin: 16px 20px 0;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(43,94,167,0.06);
+    border: 1px solid #ECEEF3;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2D3748;
+  }
+  .section-add {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #F0F5FB;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .bev-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .bev-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #F5F7FA;
+    border-radius: 100px;
+    font-size: 13px;
+    color: #4A5568;
+  }
+  .bev-chip-icon { font-size: 16px; }
+
+  .activity-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #4A5568;
+  }
+  .activity-row .act-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #F0F5FB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .activity-row .act-value {
+    font-weight: 600;
+    color: #2D3748;
+  }
+  .activity-row + .activity-row { margin-top: 8px; }
+
+  .bottom-pad { height: 20px; }
+</style>
+</head>
+<body>
+
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#2D3748"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#2D3748"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#2D3748"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#2D3748"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.2 2.6 10.7 1.5 8 1.5S2.8 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#2D3748"/><path d="M8 7.2C9.3 7.2 10.5 7.7 11.3 8.6L8 12L4.7 8.6C5.5 7.7 6.7 7.2 8 7.2Z" fill="#2D3748"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0" y="1" width="22" height="10" rx="2" stroke="#2D3748" stroke-width="1" fill="none"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="#2D3748"/><rect x="1.5" y="2.5" width="18" height="7" rx="1" fill="#2D3748"/></svg>
+    </div>
+  </div>
+
+  <div class="screen-content">
+    <!-- Greeting -->
+    <div class="greeting">9月17日 周三 · 早上好</div>
+
+    <!-- Conclusion Card -->
+    <div class="conclusion-card">
+      <div class="conclusion-status">
+        <span class="status-dot"></span>
+        平稳
+      </div>
+      <div class="conclusion-title">今日压力负荷平稳</div>
+      <div class="conclusion-body">
+        <div class="evidence-list">
+          <div class="evidence-item">
+            <div class="evidence-icon-sm">🌙</div>
+            <span class="evidence-text">睡眠 7小时20分</span>
+            <span class="evidence-value">略高于均值</span>
+          </div>
+          <div class="evidence-item">
+            <div class="evidence-icon-sm">💓</div>
+            <span class="evidence-text">静息心率 58</span>
+            <span class="evidence-value">正常范围</span>
+          </div>
+        </div>
+        <div class="mascot-area">
+          <!-- Cat and Dog peaceful -->
+          <svg width="85" height="80" viewBox="0 0 85 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cat sitting upright -->
+            <g transform="translate(0, 5)">
+              <!-- Cat body -->
+              <ellipse cx="22" cy="52" rx="14" ry="18" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Cat head -->
+              <circle cx="22" cy="28" r="12" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Left ear -->
+              <path d="M13 19 L10 6 L19 15Z" fill="white" stroke="#2B5EA7" stroke-width="1.5" stroke-linejoin="round"/>
+              <!-- Right ear (orange) -->
+              <path d="M31 19 L34 6 L25 15Z" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.5" stroke-linejoin="round"/>
+              <!-- Eyes -->
+              <circle cx="18" cy="27" r="1.5" fill="#2B5EA7"/>
+              <circle cx="26" cy="27" r="1.5" fill="#2B5EA7"/>
+              <!-- Nose -->
+              <path d="M21 30 L22 31.5 L23 30" stroke="#E07B4F" stroke-width="1" stroke-linecap="round" fill="none"/>
+              <!-- Whiskers -->
+              <line x1="7" y1="29" x2="15" y2="28" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="7" y1="32" x2="15" y2="31" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="29" y1="28" x2="37" y2="29" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="29" y1="31" x2="37" y2="32" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <!-- Tail (curled) -->
+              <path d="M36 55 C42 50, 44 42, 38 38" stroke="#2B5EA7" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            </g>
+            <!-- Dog lying down -->
+            <g transform="translate(42, 30)">
+              <!-- Dog body -->
+              <ellipse cx="20" cy="35" rx="18" ry="10" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Body patch -->
+              <ellipse cx="24" cy="33" rx="8" ry="5" fill="#E07B4F" opacity="0.15"/>
+              <!-- Dog head -->
+              <circle cx="8" cy="25" r="10" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Floppy left ear -->
+              <path d="M1 18 C-4 14, -6 22, -2 26" fill="white" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Floppy right ear (orange) -->
+              <path d="M15 18 C20 14, 22 22, 18 26" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Eyes -->
+              <circle cx="5" cy="24" r="1.3" fill="#2B5EA7"/>
+              <circle cx="11" cy="24" r="1.3" fill="#2B5EA7"/>
+              <!-- Nose -->
+              <ellipse cx="8" cy="28" rx="2" ry="1.3" fill="#2B5EA7"/>
+              <!-- Tail -->
+              <path d="M38 32 C42 28, 43 34, 40 36" stroke="#2B5EA7" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+              <!-- Front paws -->
+              <ellipse cx="5" cy="44" rx="4" ry="2.5" fill="white" stroke="#2B5EA7" stroke-width="1.2"/>
+              <ellipse cx="14" cy="44" rx="4" ry="2.5" fill="white" stroke="#2B5EA7" stroke-width="1.2"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action -->
+    <div class="action-section">
+      <button class="action-btn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="white" stroke-width="1.5"/><path d="M10 5V10L13 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        开始节律呼吸 · 5分钟
+      </button>
+      <div class="ghost-link">
+        查看完整依据
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3L9 7L5 11" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <!-- Beverage Summary -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">今日饮品</span>
+        <button class="section-add">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="7" y1="2" x2="7" y2="12" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/><line x1="2" y1="7" x2="12" y2="7" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="bev-summary">
+        <div class="bev-chip">
+          <span class="bev-chip-icon">💧</span>
+          水 4杯
+        </div>
+        <div class="bev-chip">
+          <span class="bev-chip-icon">☕</span>
+          美式 1杯
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">今日活动</span>
+        <span style="font-size:13px;color:#2B5EA7;font-weight:500;cursor:pointer;">更多</span>
+      </div>
+      <div class="activity-row">
+        <div class="act-icon">👟</div>
+        <span>今日步数</span>
+        <span class="act-value" style="margin-left:auto;">8,200步</span>
+      </div>
+      <div class="activity-row">
+        <div class="act-icon">🧘</div>
+        <span>昨日瑜伽</span>
+        <span class="act-value" style="margin-left:auto;">30分钟</span>
+      </div>
+    </div>
+
+    <div class="bottom-pad"></div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 9.5L11 3L19 9.5V18C19 18.6 18.6 19 18 19H4C3.4 19 3 18.6 3 18V9.5Z" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="8" y="13" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <span>今日</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M11 7V11.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <span>练习</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 17V8M8 17V5M12 17V10M16 17V7M20 17V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <span>记录</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M4 19C4 15.7 7.1 13 11 13C14.9 13 18 15.7 18 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <span>设置</span>
+    </div>
+  </div>
+
+  <div class="home-indicator"></div>
+</div>
+
+</body>
+</html>

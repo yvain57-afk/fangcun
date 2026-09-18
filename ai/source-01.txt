@@ -1,0 +1,4529 @@
+
+===== FILE: AGENTS.md =====
+# Project Collaboration Guide
+
+## Scope
+
+This repository contains an iOS app and its watchOS companion app.
+
+## Working Rules
+
+- Inspect the Xcode project and nearby code before making changes.
+- Keep changes small, focused, and consistent with the existing architecture.
+- Do not invent targets, schemes, bundle identifiers, entitlements, or file paths.
+- Preserve user changes and avoid unrelated refactors.
+- Never commit secrets, signing certificates, provisioning profiles, tokens, or private configuration.
+- Do not add analytics, telemetry, or network calls unless explicitly requested.
+
+## Swift and Apple Platform Code
+
+- Prefer Swift concurrency and type-safe APIs when they match the deployment target.
+- Keep iOS-only and watchOS-only behavior inside the appropriate targets or conditional compilation blocks.
+- Put genuinely shared code in the project's established shared module or shared target membership.
+- Treat HealthKit, notifications, background modes, App Groups, and WatchConnectivity changes as permission-sensitive changes.
+- Maintain accessibility labels and Dynamic Type support for user-facing UI.
+
+## Verification
+
+- Run the fastest relevant build or test first.
+- When schemes exist, verify each affected iOS or watchOS scheme.
+- Add or update tests for behavior changes when a test target exists.
+- Report commands run, failures, and any verification that could not be completed.
+
+## Git
+
+- Use `main` as the stable branch.
+- Work in focused branches such as `feature/...`, `fix/...`, or `chore/...`.
+- Do not rewrite shared history or use destructive Git commands without explicit approval.
+
+
+===== END FILE =====
+
+===== FILE: AI_CONTEXT.md =====
+# 方寸：给 GPT / AI 的项目入口
+
+仓库：<https://github.com/yvain57-afk/fangcun>
+
+本文 raw 地址：<https://raw.githubusercontent.com/yvain57-afk/fangcun/main/AI_CONTEXT.md>
+
+## 阅读顺序
+
+1. [README](README.md)：产品、运行方式、当前目录。
+2. [当前验证与安装状态](docs/verification/STATUS.md)：区分源码、测试、真机安装和商店发布。
+3. [设计决策](docs/CURRENT_DESIGN.md)：已确认方向与历史版本优先级。
+4. [原始完整设计规格](web/docs/用户提供的完整设计规格.md)：设计目标；不是完成声明。
+5. [架构与数据流](docs/ARCHITECTURE.md)：原生真实数据和网页 Mock 的边界。
+6. [所有文件索引](FILE_INDEX.md)：每个源文件及图片的可点击链接。
+7. [分卷源码](ai/README.md)：原生代码、Core、网页与设计文字的纯文本分卷，适合无法递归遍历仓库的阅读工具。
+
+所有文件均可通过 `https://raw.githubusercontent.com/yvain57-afk/fangcun/main/<文件路径>` 读取。中文和空格路径需要 URL 编码。分卷文件使用 ASCII 文件名；文件索引同时提供原文件和 raw 链接。
+
+## 目标与明确偏好
+
+方寸帮助一部分需要缓释压力的人理解身体线索并开始一个合适的练习。用户重视明确且有依据的结论，不希望首页强迫从“绷着”等预设标签中选心情。缺少数据必须如实表示缺少数据，不能用虚假的确定性补齐。
+
+界面轻松、安静、有趣；猫狗是情境陪伴。角色的原画、耳朵、花纹、五官和身形不能被随意重画；允许局部动作，脚底固定，避免全身夸张缩放与持续摇晃。猫狗需要独处场景，不必每次一起出现。
+
+## 当前实现入口
+
+- `InnerBalance/InnerBalanceApp/App/RootView.swift`：今日 / 练习 / 设置，真实数据与练习持久化连接。
+- `Features/Home/FangcunTodayView.swift`：新首页与依据详情。旧 `HomeView.swift` 保留但不是根入口。
+- `Features/Home/FangcunDrinkSheet.swift`、`Persistence/FangcunDiary.swift`：饮品、撤销、日快照。
+- `Features/Home/FangcunTrendsView.swift`：周视图与真实已存记录。
+- `DesignSystem/FangcunCompanion.swift`、同名 Metal shader：确认原画的局部动效。
+- `Features/Practice/PracticeSessionView.swift`：练习完整流程；`PracticeAudioCoordinator.swift` 将可能阻塞的音频 session 准备移出主线程。
+- `DesignSystem/FangcunDisplayPreferences.swift`：深浅色、字号、减少动态。
+
+上面相对 `Features/`、`DesignSystem/`、`Persistence/` 的路径均位于 `InnerBalance/InnerBalanceApp/` 内。
+
+## 事实边界
+
+- 原生：HealthKit 真实数据查询与本机记录。UI 测试可注入三种演示场景；正式首页不展示演示开关。
+- 网页：Mock 数据、浏览器本地记录，用来讨论设计与交互。
+- 饮品：杯量及成分估算，不等同实测浓度；不会仅凭一杯咖啡把健康压力结论强行改成偏高。
+- 历史：日状态从实际记录开始积累，空白日期不推测过去。
+- 当前安装和测试详情见 STATUS；不能把 GitHub 上传或真机开发安装称为 App Store 上架。
+- 旧设计文档中的 BLOCKED / PROGRESS 只描述当时阶段。发生矛盾时，以本文件、STATUS、当前源码和最新用户指示为准。
+
+## 后续修改原则
+
+保留原有健康权限边界、SwiftData 数据与用户记录。不添加遥测、账户、在线 AI 或新网络调用，除非另有授权。验证受影响的 iOS / watchOS 编译和相关交互。角色与产品审美参考 `docs/CURRENT_DESIGN.md`，先读现有代码再改。
+
+===== END FILE =====
+
+===== FILE: InnerBalance/Configuration/InnerBalance-Info.plist =====
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+</dict>
+</plist>
+
+===== END FILE =====
+
+===== FILE: InnerBalance/Configuration/InnerBalanceWatch-Info.plist =====
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>workout-processing</string>
+	</array>
+</dict>
+</plist>
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalance.xcodeproj/project.pbxproj =====
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1000000000000000000000C /* InnerBalance Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* InnerBalance Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1000000000000000000000F /* InnerBalanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = A30000000000000000000002 /* InnerBalanceCore */; };
+		A2000000000000000000000A /* InnerBalanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = A30000000000000000000003 /* InnerBalanceCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A1000000000000000000000E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A00000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A20000000000000000000001;
+			remoteInfo = "InnerBalance Watch App";
+		};
+		A4000000000000000000000A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A00000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000001;
+			remoteInfo = InnerBalance;
+		};
+		A5000000000000000000000A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A00000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000001;
+			remoteInfo = InnerBalance;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1000000000000000000000B /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				A1000000000000000000000C /* InnerBalance Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A10000000000000000000002 /* InnerBalance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InnerBalance.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000002 /* InnerBalance Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "InnerBalance Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A40000000000000000000002 /* InnerBalanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InnerBalanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A50000000000000000000002 /* InnerBalanceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InnerBalanceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A10000000000000000000003 /* InnerBalanceApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = InnerBalanceApp;
+			sourceTree = "<group>";
+		};
+		A20000000000000000000003 /* InnerBalanceWatch */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = InnerBalanceWatch;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000003 /* InnerBalanceTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = InnerBalanceTests;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000003 /* InnerBalanceUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = InnerBalanceUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A10000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000000F /* InnerBalanceCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A20000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2000000000000000000000A /* InnerBalanceCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A50000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A00000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000003 /* InnerBalanceApp */,
+				A20000000000000000000003 /* InnerBalanceWatch */,
+				A40000000000000000000003 /* InnerBalanceTests */,
+				A50000000000000000000003 /* InnerBalanceUITests */,
+				A00000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A00000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000002 /* InnerBalance.app */,
+				A20000000000000000000002 /* InnerBalance Watch App.app */,
+				A40000000000000000000002 /* InnerBalanceTests.xctest */,
+				A50000000000000000000002 /* InnerBalanceUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A10000000000000000000001 /* InnerBalance */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalance" */;
+			buildPhases = (
+				A10000000000000000000004 /* Sources */,
+				A10000000000000000000005 /* Frameworks */,
+				A10000000000000000000006 /* Resources */,
+				A1000000000000000000000B /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1000000000000000000000D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A10000000000000000000003 /* InnerBalanceApp */,
+			);
+			name = InnerBalance;
+			packageProductDependencies = (
+				A30000000000000000000002 /* InnerBalanceCore */,
+			);
+			productName = InnerBalance;
+			productReference = A10000000000000000000002 /* InnerBalance.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A20000000000000000000001 /* InnerBalance Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A20000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalance Watch App" */;
+			buildPhases = (
+				A20000000000000000000004 /* Sources */,
+				A20000000000000000000005 /* Frameworks */,
+				A20000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A20000000000000000000003 /* InnerBalanceWatch */,
+			);
+			name = "InnerBalance Watch App";
+			packageProductDependencies = (
+				A30000000000000000000003 /* InnerBalanceCore */,
+			);
+			productName = "InnerBalance Watch App";
+			productReference = A20000000000000000000002 /* InnerBalance Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A40000000000000000000001 /* InnerBalanceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A40000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalanceTests" */;
+			buildPhases = (
+				A40000000000000000000004 /* Sources */,
+				A40000000000000000000005 /* Frameworks */,
+				A40000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A40000000000000000000009 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A40000000000000000000003 /* InnerBalanceTests */,
+			);
+			name = InnerBalanceTests;
+			packageProductDependencies = (
+			);
+			productName = InnerBalanceTests;
+			productReference = A40000000000000000000002 /* InnerBalanceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A50000000000000000000001 /* InnerBalanceUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A50000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalanceUITests" */;
+			buildPhases = (
+				A50000000000000000000004 /* Sources */,
+				A50000000000000000000005 /* Frameworks */,
+				A50000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A5000000000000000000000B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A50000000000000000000003 /* InnerBalanceUITests */,
+			);
+			name = InnerBalanceUITests;
+			packageProductDependencies = (
+			);
+			productName = InnerBalanceUITests;
+			productReference = A50000000000000000000002 /* InnerBalanceUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A00000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					A10000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					A20000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					A40000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = A10000000000000000000001;
+					};
+					A50000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = A10000000000000000000001;
+					};
+				};
+			};
+			buildConfigurationList = A00000000000000000000004 /* Build configuration list for PBXProject "InnerBalance" */;
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				"zh-Hans",
+				en,
+				Base,
+			);
+			mainGroup = A00000000000000000000002;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A30000000000000000000001 /* XCLocalSwiftPackageReference "../InnerBalanceCore" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A00000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A10000000000000000000001 /* InnerBalance */,
+				A20000000000000000000001 /* InnerBalance Watch App */,
+				A40000000000000000000001 /* InnerBalanceTests */,
+				A50000000000000000000001 /* InnerBalanceUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A10000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A20000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A50000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A10000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A20000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A50000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1000000000000000000000D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A20000000000000000000001 /* InnerBalance Watch App */;
+			targetProxy = A1000000000000000000000E /* PBXContainerItemProxy */;
+		};
+		A40000000000000000000009 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10000000000000000000001 /* InnerBalance */;
+			targetProxy = A4000000000000000000000A /* PBXContainerItemProxy */;
+		};
+		A5000000000000000000000B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10000000000000000000001 /* InnerBalance */;
+			targetProxy = A5000000000000000000000A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A00000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A00000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A10000000000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = InnerBalanceApp/InnerBalance.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Configuration/InnerBalance-Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "方寸";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "方寸读取 Apple Watch 的 HRV、静息心率、睡眠和近期训练，用于建立你的个人身体负荷基线。";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "方寸将你主动提交的心境和完成的正念练习写入 Apple 健康，便于在你的苹果设备间查看。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = FangcunLaunch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalance;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A10000000000000000000009 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = InnerBalanceApp/InnerBalance.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Configuration/InnerBalance-Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "方寸";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "方寸读取 Apple Watch 的 HRV、静息心率、睡眠和近期训练，用于建立你的个人身体负荷基线。";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "方寸将你主动提交的心境和完成的正念练习写入 Apple 健康，便于在你的苹果设备间查看。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = FangcunLaunch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalance;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A20000000000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = InnerBalanceWatch/InnerBalanceWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Configuration/InnerBalanceWatch-Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "方寸";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "方寸只在你主动开启身体证据练习时读取心率，用于描述本次练习中的变化。";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "方寸将你在手表上主动提交的心境和正念练习写入 Apple 健康；身体证据模式需要训练写入权限来启动传感器采样。";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.yvainair.InnerBalance;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalance.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		A20000000000000000000009 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = InnerBalanceWatch/InnerBalanceWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Configuration/InnerBalanceWatch-Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "方寸";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "方寸只在你主动开启身体证据练习时读取心率，用于描述本次练习中的变化。";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "方寸将你在手表上主动提交的心境和正念练习写入 Apple 健康；身体证据模式需要训练写入权限来启动传感器采样。";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.yvainair.InnerBalance;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalance.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		A40000000000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalanceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/InnerBalance.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/InnerBalance";
+			};
+			name = Debug;
+		};
+		A4000000000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalanceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/InnerBalance.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/InnerBalance";
+			};
+			name = Release;
+		};
+		A50000000000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalanceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = InnerBalance;
+			};
+			name = Debug;
+		};
+		A50000000000000000000009 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yvainair.InnerBalanceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = InnerBalance;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A00000000000000000000004 /* Build configuration list for PBXProject "InnerBalance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000005 /* Debug */,
+				A00000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000008 /* Debug */,
+				A10000000000000000000009 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A20000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalance Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A20000000000000000000008 /* Debug */,
+				A20000000000000000000009 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A40000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalanceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A40000000000000000000008 /* Debug */,
+				A4000000000000000000000B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A50000000000000000000007 /* Build configuration list for PBXNativeTarget "InnerBalanceUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A50000000000000000000008 /* Debug */,
+				A50000000000000000000009 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A30000000000000000000001 /* XCLocalSwiftPackageReference "../InnerBalanceCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../InnerBalanceCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A30000000000000000000002 /* InnerBalanceCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30000000000000000000001 /* XCLocalSwiftPackageReference "../InnerBalanceCore" */;
+			productName = InnerBalanceCore;
+		};
+		A30000000000000000000003 /* InnerBalanceCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30000000000000000000001 /* XCLocalSwiftPackageReference "../InnerBalanceCore" */;
+			productName = InnerBalanceCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A00000000000000000000001 /* Project object */;
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/App/InnerBalanceApp.swift =====
+import SwiftData
+import SwiftUI
+
+@main
+struct InnerBalanceApp: App {
+  private let modelContainer: ModelContainer
+
+  init() {
+    let schema = Schema([
+      PendingHealthWrite.self,
+      CheckInDiagnosticEvent.self,
+      LocalDiagnosticEvent.self,
+      CachedCheckIn.self,
+      StoredPracticeCompletion.self,
+      StoredDailyEcho.self,
+    ])
+    let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+    let configuration = ModelConfiguration(
+      schema: schema,
+      isStoredInMemoryOnly: isUITesting
+    )
+    do {
+      modelContainer = try ModelContainer(for: schema, configurations: [configuration])
+    } catch {
+      fatalError("Unable to create the local persistence container.")
+    }
+  }
+
+  var body: some Scene {
+    WindowGroup {
+      RootView()
+        .modifier(FangcunDisplayPreferences())
+    }
+    .modelContainer(modelContainer)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/App/RootView.swift =====
+import InnerBalanceCore
+import SwiftData
+import SwiftUI
+
+struct LatestCheckInViewState: Equatable {
+  let record: StateOfMindRecord?
+
+  var date: Date? { record?.date }
+
+  var title: String? {
+    guard let record else { return nil }
+    return record.labels.first?.displayName ?? "已记录 · 未分类"
+  }
+}
+
+struct RootView: View {
+  private enum Tab: Hashable {
+    case now
+    case practice
+    case settings
+  }
+
+  @Environment(\.modelContext) private var modelContext
+  @Environment(\.scenePhase) private var scenePhase
+  @State private var diary: FangcunDiary
+  @State private var homeViewModel: HomeViewModel
+  @State private var selectedTab = Tab.now
+  @State private var isShowingCheckIn = false
+  @State private var latestCheckIn = LatestCheckInViewState(record: nil)
+  @State private var latestStressContext: StateOfMindRecord?
+  @State private var latestPractice: PracticeCompletionRecord?
+  @State private var selectedPractice: PracticeLaunch?
+  @State private var selectedPracticeWasRecommended = false
+  private let authorizationCoordinator: HealthAuthorizationCoordinator
+  private let healthRepository: HealthKitRepository?
+  private let healthWriter: any HealthWriting
+  private let isUITesting: Bool
+  private let shouldFailPracticeSaveForUITesting: Bool
+
+  init() {
+    let arguments = ProcessInfo.processInfo.arguments
+    let isUITesting = arguments.contains("--ui-testing")
+    self.isUITesting = isUITesting
+    _diary = State(initialValue: FangcunDiary(defaults: isUITesting ? UserDefaults(suiteName: "fangcun.ui." + UUID().uuidString)! : .standard))
+    shouldFailPracticeSaveForUITesting = arguments.contains(
+      "--ui-testing-practice-save-failure"
+    )
+    authorizationCoordinator = HealthAuthorizationCoordinator()
+
+    #if DEBUG
+      if isUITesting {
+        let service = UITestingHealthService()
+        _homeViewModel = State(initialValue: HomeViewModel(provider: service))
+        healthRepository = nil
+        healthWriter = service
+        return
+      }
+    #endif
+
+    let repository = HealthKitRepository()
+    _homeViewModel = State(initialValue: HomeViewModel(provider: repository))
+    healthRepository = repository
+    healthWriter = repository
+  }
+
+  var body: some View {
+    TabView(selection: $selectedTab) {
+      FangcunTodayView(
+        model: homeViewModel,
+        authorization: authorizationCoordinator,
+        latestPractice: latestPractice,
+        isUITesting: isUITesting,
+        onStart: {
+          selectedPracticeWasRecommended = true
+          selectedPractice = PracticeLaunch(kind: .physiologicalSigh, duration: 300, startsImmediately: true)
+        },
+        onCheckIn: { isShowingCheckIn = true }
+      )
+      .tabItem { Label("今日", systemImage: "house") }
+      .tag(Tab.now)
+
+      PracticeLibraryView(onStart: {
+        selectedPracticeWasRecommended = false
+        selectedPractice = $0
+      })
+      .tabItem {
+        Label("练习", systemImage: "wind")
+      }
+      .tag(Tab.practice)
+
+      SettingsView(
+        authorizationCoordinator: authorizationCoordinator,
+        homeViewModel: homeViewModel,
+        healthRepository: healthRepository,
+        isUITesting: isUITesting,
+        diagnosticsAvailable: Self.diagnosticsAvailable
+      )
+      .tabItem {
+        Label("设置", systemImage: "gearshape.fill")
+      }
+      .tag(Tab.settings)
+    }
+    .environment(diary)
+    .tint(InnerBalanceTheme.strongFill)
+    .fullScreenCover(isPresented: $isShowingCheckIn) {
+      CheckInFlowView(
+        saver: HealthWriteCoordinator(writer: healthWriter, modelContext: modelContext),
+        diagnostics: SwiftDataCheckInDiagnosticsRecorder(modelContext: modelContext)
+      ) { record in
+        let cacheStore = CheckInCacheStore(modelContext: modelContext)
+        try? cacheStore.upsert(record)
+        latestCheckIn = LatestCheckInViewState(record: record)
+        if !record.associations.isEmpty || !record.bodySensationCodes.isEmpty {
+          latestStressContext = record
+        }
+      }
+    }
+    .fullScreenCover(item: $selectedPractice) { launch in
+      PracticeSessionView(
+        launch: launch,
+        coordinator: PracticeCompletionCoordinator(
+          store: makePracticeCompletionStore(),
+          feedbackStore: PracticeFeedbackStore(modelContainer: modelContext.container),
+          healthWriter: HealthWriteCoordinator(
+            writer: healthWriter,
+            modelContext: modelContext
+          )
+        ),
+        diagnostics: SwiftDataLocalDiagnosticsRecorder(modelContext: modelContext),
+        wasRecommended: selectedPracticeWasRecommended,
+        onReturnToHome: { selectedTab = .now }
+      ) { record, postCheckIn in
+        latestPractice = record
+        if let postCheckIn {
+          latestCheckIn = LatestCheckInViewState(record: postCheckIn)
+        }
+      }
+    }
+    .task {
+      await refreshLocalState()
+    }
+    .onChange(of: scenePhase) { _, phase in
+      guard phase == .active else { return }
+      Task { await refreshLocalState() }
+    }
+  }
+
+  private func refreshLocalState() async {
+    let cacheStore = CheckInCacheStore(modelContext: modelContext)
+    latestCheckIn = LatestCheckInViewState(record: try? cacheStore.latestRecord())
+    latestStressContext = try? cacheStore.latestContextRecord()
+
+    latestPractice = try? PracticeCompletionStore(modelContext: modelContext).latestRecord()
+
+    let writeCoordinator = HealthWriteCoordinator(
+      writer: healthWriter,
+      modelContext: modelContext
+    )
+    await writeCoordinator.retryPending()
+
+    guard let healthRepository else { return }
+    let syncCoordinator = CheckInSyncCoordinator(
+      repository: healthRepository,
+      cacheStore: cacheStore
+    )
+    latestCheckIn = LatestCheckInViewState(record: await syncCoordinator.refresh())
+    latestStressContext = try? cacheStore.latestContextRecord()
+  }
+
+  private func startPractice(_ kind: PracticeKind) {
+    guard let plan = PracticeCatalog.protocol(for: kind) else { return }
+    selectedPracticeWasRecommended = true
+    selectedPractice = PracticeLaunch(kind: kind, duration: plan.defaultDuration)
+  }
+
+  private func makePracticeCompletionStore() -> any PracticeCompletionStoring {
+    #if DEBUG
+      if shouldFailPracticeSaveForUITesting {
+        return UITestingFailingPracticeCompletionStore()
+      }
+    #endif
+    return PracticeCompletionStore(modelContext: modelContext)
+  }
+
+  private static var diagnosticsAvailable: Bool {
+    #if DEBUG
+      let isDebug = true
+    #else
+      let isDebug = false
+    #endif
+    return DiagnosticsAvailability.isAvailable(
+      isDebug: isDebug,
+      receiptName: Bundle.main.appStoreReceiptURL?.lastPathComponent
+    )
+  }
+}
+
+#if DEBUG
+  @MainActor
+  private final class UITestingHealthService: BodyHealthDataProviding, HealthWriting {
+    func fetchBodyHealthData(now: Date) async -> BodyHealthDataSnapshot {
+      .empty(at: now)
+    }
+
+    func saveStateOfMind(_ record: StateOfMindRecord) async throws {}
+
+    func saveMindfulSession(_ record: MindfulSessionRecord) async throws {}
+  }
+
+  @MainActor
+  private final class UITestingFailingPracticeCompletionStore: PracticeCompletionStoring {
+    func save(
+      _ record: PracticeCompletionRecord,
+      mindfulWriteResult: HealthWriteResult,
+      postWriteResult: HealthWriteResult
+    ) throws {
+      throw UITestingPracticeSaveError.forcedFailure
+    }
+
+    func latestRecord() throws -> PracticeCompletionRecord? { nil }
+  }
+
+  private enum UITestingPracticeSaveError: Error {
+    case forcedFailure
+  }
+#endif
+
+#Preview {
+  RootView()
+    .modelContainer(
+      for: [
+        PendingHealthWrite.self,
+        CheckInDiagnosticEvent.self,
+        LocalDiagnosticEvent.self,
+        CachedCheckIn.self,
+        StoredPracticeCompletion.self,
+        StoredDailyEcho.self,
+      ],
+      inMemory: true
+    )
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/AccentColor.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.10588235",
+          "green": "0.20784314",
+          "blue": "0.35294118",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.60784314",
+          "green": "0.72549020",
+          "blue": "0.87058824",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/AppIcon.appiconset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "AppIcon-Light.png",
+      "idiom": "universal",
+      "platform": "ios",
+      "size": "1024x1024"
+    },
+    {
+      "filename": "AppIcon-Dark.png",
+      "idiom": "universal",
+      "platform": "ios",
+      "size": "1024x1024",
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Companion-breathing.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Artwork.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Companion-cat-curious.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Artwork.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Companion-dog-drink.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Artwork.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Companion-dog-greeting.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Artwork.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Companion-dog-rest.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Artwork.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Companion-duo-calm.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Artwork.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Companion-duo-complete.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Artwork.png",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/Contents.json =====
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunAccent.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.10588235",
+          "green": "0.20784314",
+          "blue": "0.35294118",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.60784314",
+          "green": "0.72549020",
+          "blue": "0.87058824",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunAccentWash.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.93333333",
+          "green": "0.94901961",
+          "blue": "0.96078431",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.15686275",
+          "green": "0.21568627",
+          "blue": "0.28235294",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunBackground.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.98039216",
+          "green": "0.97647059",
+          "blue": "0.96078431",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.07843137",
+          "green": "0.10196078",
+          "blue": "0.13333333",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunBrandCanvas.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.98039216",
+          "green": "0.97647059",
+          "blue": "0.96078431",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.10588235",
+          "green": "0.20784314",
+          "blue": "0.35294118",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunButtonText.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "1.00000000",
+          "green": "1.00000000",
+          "blue": "1.00000000",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.07843137",
+          "green": "0.13333333",
+          "blue": "0.22352941",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunCard.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "1.00000000",
+          "green": "1.00000000",
+          "blue": "1.00000000",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.11764706",
+          "green": "0.14901961",
+          "blue": "0.19215686",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunMark.imageset/Contents.json =====
+{
+  "images": [
+    {
+      "filename": "Mark-Light-1x.png",
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Mark-Light-2x.png",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Mark-Light-3x.png",
+      "idiom": "universal",
+      "scale": "3x"
+    },
+    {
+      "filename": "Mark-Dark-1x.png",
+      "idiom": "universal",
+      "scale": "1x",
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    },
+    {
+      "filename": "Mark-Dark-2x.png",
+      "idiom": "universal",
+      "scale": "2x",
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    },
+    {
+      "filename": "Mark-Dark-3x.png",
+      "idiom": "universal",
+      "scale": "3x",
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunPrimaryText.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.14509804",
+          "green": "0.19607843",
+          "blue": "0.26666667",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.92941176",
+          "green": "0.94901961",
+          "blue": "0.96470588",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunRaisedCard.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "1.00000000",
+          "green": "1.00000000",
+          "blue": "1.00000000",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.13725490",
+          "green": "0.18039216",
+          "blue": "0.23529412",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunSecondaryText.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.40784314",
+          "green": "0.45882353",
+          "blue": "0.51764706",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.67450980",
+          "green": "0.72549020",
+          "blue": "0.78431373",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunWarmHighlight.colorset/Contents.json =====
+{
+  "colors": [
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.76078431",
+          "green": "0.42745098",
+          "blue": "0.32941176",
+          "alpha": "1.000"
+        }
+      }
+    },
+    {
+      "idiom": "universal",
+      "color": {
+        "color-space": "srgb",
+        "components": {
+          "red": "0.89411765",
+          "green": "0.60392157",
+          "blue": "0.50980392",
+          "alpha": "1.000"
+        }
+      },
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ]
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/DesignSystem/FangcunBrand.swift =====
+import SwiftUI
+
+/// The approved open-curve mark. Assets retain the original SVG geometry.
+struct FangcunBrandMark: View {
+  var size: CGFloat = 32
+
+  var body: some View {
+    Image("FangcunMark")
+      .resizable()
+      .scaledToFit()
+      .frame(width: size, height: size)
+      .accessibilityHidden(true)
+  }
+}
+
+struct FangcunBrandAboutView: View {
+  @ScaledMetric(relativeTo: .title) private var markSize = 80
+
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 28) {
+        VStack(spacing: 16) {
+          FangcunBrandMark(size: markSize)
+          Text("方寸")
+            .font(.title.weight(.semibold))
+            .tracking(3)
+          Text("给自己，留一点空间。")
+            .font(.subheadline)
+            .foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 28)
+
+        Text("留一方余地。")
+          .font(.title2.weight(.semibold))
+          .accessibilityAddTraits(.isHeader)
+        Text("在纷乱的日常里，留一小处照顾自己的空间。先听懂身体的信号，再慢慢找回自己的节奏。")
+        Text("中心的留白，是属于自己的那一小处空间。柔软的弧形像被轻轻托住，向外的开口留有余地，也容得下呼吸。")
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
+      .font(.body)
+      .fixedSize(horizontal: false, vertical: true)
+      .padding(24)
+    }
+    .foregroundStyle(InnerBalanceTheme.ink)
+    .background(InnerBalanceTheme.canvas)
+    .navigationTitle("关于方寸")
+    .navigationBarTitleDisplayMode(.inline)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/DesignSystem/FangcunCompanion.metal =====
+#include <metal_stdlib>
+using namespace metal;
+float fcArea(float2 p, float2 c, float2 r) { float2 q=(p-c)/r; float a=clamp(1-dot(q,q),0.0,1.0); return a*a; }
+float fcHead(float2 p, float2 c, float2 r) { float e=clamp((1-length((p-c)/r))/.4,0.0,1.0); return e*e*(3-2*e); }
+float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F*t/d); return s*s; }
+[[ stitchable ]] float2 fangcunCompanionWarp(float2 position, float2 size, float mode, float time, float breath, float reduced) {
+ if(reduced>0.5) return position;
+ float2 p=position/max(size,float2(1)), delta=0;
+ float grounded=clamp((.79-p.y)/.11,0.0,1.0);
+ if(mode<.5) {
+  float hello=fcGesture(fmod(time,14.0),2.2), wag=hello*sin(time*5);
+  float tail=fcArea(p,float2(.80,.74),float2(.10,.12));
+  float head=fcHead(p,float2(.67,.43),float2(.22,.28))*grounded;
+  delta=float2(.015,-.010)*wag*tail+float2(-(p.y-.43),p.x-.67)*.025*hello*head;
+ } else if(mode<1.5) {
+  delta.y=-.0045*(1-cos(time*M_PI_F/4))/2*fcArea(p,float2(.72,.53),float2(.18,.20))*grounded;
+ } else if(mode<2.5) {
+  float look=fcGesture(fmod(time,16.0),3.2)*fcHead(p,float2(.54,.43),float2(.31,.32))*grounded;
+  delta=float2(.008-(p.y-.43)*.024,.004+(p.x-.54)*.024)*look;
+ } else if(mode<3.5) {
+  delta.y=.014*fcGesture(time,.85)*fcHead(p,float2(.51,.43),float2(.30,.30))*grounded;
+ } else if(mode<4.5) {
+  float chest=fcArea(p,float2(.52,.58),float2(.35,.32))*clamp((.82-p.y)/.16,0.0,1.0);
+  delta=float2((p.x-.52)*.065,-.018)*breath*chest;
+ } else {
+  float touch=fcGesture(time,1.3)*fcArea(p,float2(.51,.61),float2(.15,.14));
+  delta=float2(p.x<.5?.007:-.007,-.005)*touch;
+ }
+ return position-delta*size;
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/DesignSystem/FangcunCompanion.swift =====
+import SwiftUI
+
+enum FangcunCompanionScene: String {
+  case calm = "duo-calm", rest = "dog-rest", curious = "cat-curious"
+  case drink = "dog-drink", breathe = "breathing", complete = "duo-complete"
+  var mode: Float {
+    switch self { case .calm: 0; case .rest: 1; case .curious: 2; case .drink: 3; case .breathe: 4; case .complete: 5 }
+  }
+  var ratio: CGFloat { self == .calm || self == .complete ? 1.5 : 1 }
+  var label: String {
+    switch self {
+    case .calm: "猫咪和小狗安静相伴"
+    case .rest: "小狗趴下陪你休息"
+    case .curious: "猫咪好奇地观察"
+    case .drink: "小狗在水杯旁陪你记录"
+    case .breathe: "猫咪跟随节拍呼吸"
+    case .complete: "猫咪和小狗轻轻碰爪"
+    }
+  }
+}
+
+struct FangcunCompanion: View {
+  let scene: FangcunCompanionScene
+  var breath: Double = 0
+  var paused = false
+  var reaction = 0
+  @Environment(\.accessibilityReduceMotion) private var systemReduced
+  @Environment(\.scenePhase) private var phase
+  @AppStorage("fangcun.reduceMotion") private var reduced = false
+  @State private var start = Date.now
+  @State private var visible = true
+  @State private var frozenTime = 0.0
+  @State private var gestureFinished = false
+
+  var body: some View {
+    let mode = scene.mode
+    let amount = Float(breath)
+    let reduceValue: Float = systemReduced || reduced ? 1 : 0
+    TimelineView(.animation(minimumInterval: 1.0 / 30, paused: stopped)) { context in
+      let time = stopped ? frozenTime : context.date.timeIntervalSince(start)
+      Image("Companion-\(scene.rawValue)")
+        .resizable().aspectRatio(contentMode: .fit)
+        .visualEffect { content, geometry in
+          content.distortionEffect(
+            ShaderLibrary.fangcunCompanionWarp(.float2(geometry.size), .float(mode),
+              .float(Float(time)), .float(amount), .float(reduceValue)),
+            maxSampleOffset: CGSize(width: 10, height: 10))
+        }
+    }
+    .aspectRatio(scene.ratio, contentMode: .fit)
+    .background(.white)
+    .clipShape(RoundedRectangle(cornerRadius: 20))
+    .accessibilityLabel(scene.label)
+    .onAppear { start = .now; visible = true }
+    .onDisappear { visible = false }
+    .onScrollVisibilityChange { isVisible in visible = isVisible }
+    .onChange(of: stopped) { wasStopped, isStopped in
+      if isStopped { frozenTime = Date.now.timeIntervalSince(start) }
+      else if wasStopped { start = Date.now.addingTimeInterval(-frozenTime) }
+    }
+    .onChange(of: reaction) { _, _ in start = .now; frozenTime = 0 }
+    .task(id: reaction) {
+      guard scene == .drink || scene == .complete else { return }
+      gestureFinished = false
+      do { try await Task.sleep(for: .milliseconds(1500)) }
+      catch { return }
+      gestureFinished = true
+    }
+  }
+  // Breathing receives its expansion from the session clock; it needs no second clock.
+  private var stopped: Bool { scene == .breathe || gestureFinished || paused || systemReduced || reduced || !visible || phase != .active }
+}
+
+extension View {
+  func fangcunPaperCard() -> some View {
+    self.padding(20)
+      .background(InnerBalanceTheme.surface, in: RoundedRectangle(cornerRadius: 24))
+      .overlay { RoundedRectangle(cornerRadius: 24).strokeBorder(InnerBalanceTheme.hairline.opacity(0.5), lineWidth: 0.7) }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/DesignSystem/FangcunDisplayPreferences.swift =====
+import SwiftUI
+
+extension EnvironmentValues {
+  @Entry var fangcunReduceMotion = false
+}
+
+struct FangcunDisplayPreferences: ViewModifier {
+  @Environment(\.dynamicTypeSize) private var systemTypeSize
+  @Environment(\.accessibilityReduceMotion) private var systemReduced
+  @AppStorage("fangcun.dark") private var dark = false
+  @AppStorage("fangcun.largeType") private var large = false
+  @AppStorage("fangcun.reduceMotion") private var reduced = false
+
+  func body(content: Content) -> some View {
+    content.preferredColorScheme(dark ? .dark : .light)
+      .dynamicTypeSize(large ? max(.xxxLarge, systemTypeSize) : systemTypeSize)
+      .environment(\.fangcunReduceMotion, reduced || systemReduced)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/DesignSystem/InnerBalanceTheme.swift =====
+import SwiftUI
+
+enum FangcunLayout {
+  static let gridUnit: CGFloat = 4
+  static let pageHorizontalPadding: CGFloat = 24
+
+  static func spacing(_ units: CGFloat) -> CGFloat {
+    gridUnit * units
+  }
+}
+
+enum FangcunSurface {
+  static let levelOneBorderOpacity = 0.04
+  static let levelOneCornerRadius: CGFloat = 24
+  static let responseCornerRadius: CGFloat = 28
+  static let compactCornerRadius: CGFloat = 18
+  static let editorialResponseCornerRadius: CGFloat = 12
+  static let editorialActionCornerRadius: CGFloat = 8
+}
+
+struct FangcunTypographyToken: Equatable {
+  let basePointSize: CGFloat
+  let tracking: CGFloat
+}
+
+enum FangcunTypography {
+  static let display = FangcunTypographyToken(basePointSize: 50, tracking: -1.2)
+  static let quote = FangcunTypographyToken(basePointSize: 22, tracking: 0.33)
+  static let action = FangcunTypographyToken(basePointSize: 28, tracking: -0.28)
+  static let body = FangcunTypographyToken(basePointSize: 16, tracking: 0)
+}
+
+enum FangcunMotion {
+  static let pressDuration = 0.14
+  static let stateDuration = 0.18
+  static let entranceDuration = 0.20
+  static let reducedMotionFadeDuration = 0.12
+  static let entranceOffset: CGFloat = 8
+  static let entranceDelayStep = 0.03
+
+  static func pressScale(isPressed: Bool, reduceMotion: Bool) -> CGFloat {
+    isPressed && !reduceMotion ? 0.97 : 1
+  }
+
+  static func pressOpacity(isPressed: Bool) -> Double {
+    isPressed ? 0.84 : 1
+  }
+
+  static func entranceTranslation(isPresented: Bool, reduceMotion: Bool) -> CGFloat {
+    isPresented || reduceMotion ? 0 : entranceOffset
+  }
+
+  static func entranceDelay(for index: Int, reduceMotion: Bool) -> Double {
+    reduceMotion ? 0 : Double(max(0, index)) * entranceDelayStep
+  }
+
+  static func pressAnimation(reduceMotion: Bool) -> Animation {
+    reduceMotion
+      ? .easeOut(duration: reducedMotionFadeDuration)
+      : strongEaseOut(duration: pressDuration)
+  }
+
+  static func stateAnimation(reduceMotion: Bool) -> Animation {
+    reduceMotion
+      ? .easeOut(duration: reducedMotionFadeDuration)
+      : strongEaseOut(duration: stateDuration)
+  }
+
+  static func entranceAnimation(index: Int, reduceMotion: Bool) -> Animation {
+    if reduceMotion {
+      return .easeOut(duration: reducedMotionFadeDuration)
+    }
+    return strongEaseOut(duration: entranceDuration)
+      .delay(entranceDelay(for: index, reduceMotion: false))
+  }
+
+  private static func strongEaseOut(duration: Double) -> Animation {
+    .timingCurve(0.23, 1, 0.32, 1, duration: duration)
+  }
+}
+
+enum InnerBalanceTheme {
+  static let canvas = Color("FangcunBackground")
+  static let surface = Color("FangcunCard")
+  static let elevatedSurface = Color("FangcunRaisedCard")
+  static let ink = Color("FangcunPrimaryText")
+  static let mutedInk = Color("FangcunSecondaryText")
+  static let strongFill = Color("FangcunAccent")
+  static let subtleFill = Color("FangcunAccentWash")
+  static let emphasis = Color("FangcunWarmHighlight")
+  static let inverseInk = Color("FangcunButtonText")
+  static let hairline = ink.opacity(0.10)
+}
+
+private struct FangcunQuoteTextStyle: ViewModifier {
+  @ScaledMetric(relativeTo: .title2) private var pointSize = FangcunTypography.quote.basePointSize
+  @ScaledMetric(relativeTo: .title2) private var lineSpacing: CGFloat = 9
+
+  func body(content: Content) -> some View {
+    content
+      .font(.system(size: pointSize, weight: .semibold, design: .default))
+      .tracking(FangcunTypography.quote.tracking)
+      .lineSpacing(lineSpacing)
+  }
+}
+
+private struct FangcunActionTextStyle: ViewModifier {
+  @ScaledMetric(relativeTo: .title) private var pointSize = FangcunTypography.action.basePointSize
+
+  func body(content: Content) -> some View {
+    content
+      .font(.system(size: pointSize, weight: .semibold, design: .default))
+      .tracking(FangcunTypography.action.tracking)
+  }
+}
+
+private struct FangcunBodyTextStyle: ViewModifier {
+  @ScaledMetric(relativeTo: .body) private var pointSize = FangcunTypography.body.basePointSize
+
+  func body(content: Content) -> some View {
+    content.font(.system(size: pointSize, weight: .regular, design: .default))
+  }
+}
+
+private struct FangcunSectionLabelTextStyle: ViewModifier {
+  func body(content: Content) -> some View {
+    content
+      .font(.caption.weight(.semibold))
+      .tracking(1.2)
+      .foregroundStyle(InnerBalanceTheme.strongFill)
+  }
+}
+
+private struct FangcunLevelOneSurface: ViewModifier {
+  let cornerRadius: CGFloat
+
+  func body(content: Content) -> some View {
+    content
+      .background(
+        InnerBalanceTheme.elevatedSurface,
+        in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+          .strokeBorder(
+            Color.primary.opacity(FangcunSurface.levelOneBorderOpacity),
+            lineWidth: 1
+          )
+      }
+  }
+}
+
+private struct FangcunResponseSurface: ViewModifier {
+  let cornerRadius: CGFloat
+
+  func body(content: Content) -> some View {
+    content
+      .background(
+        InnerBalanceTheme.elevatedSurface,
+        in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+          .strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1)
+      }
+  }
+}
+
+struct FangcunEditorialRule: View {
+  @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+
+  let emphasized: Bool
+
+  init(emphasized: Bool = false) {
+    self.emphasized = emphasized
+  }
+
+  var body: some View {
+    Rectangle()
+      .fill(
+        InnerBalanceTheme.ink.opacity(
+          emphasized ? 0.92 : (colorSchemeContrast == .increased ? 0.36 : 0.12)
+        )
+      )
+      .accessibilityHidden(true)
+  }
+}
+
+private struct FangcunEntranceModifier: ViewModifier {
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+
+  let index: Int
+  let isPresented: Bool
+
+  func body(content: Content) -> some View {
+    content
+      .opacity(isPresented ? 1 : 0)
+      .offset(
+        y: FangcunMotion.entranceTranslation(
+          isPresented: isPresented,
+          reduceMotion: reduceMotion
+        )
+      )
+      .animation(
+        FangcunMotion.entranceAnimation(index: index, reduceMotion: reduceMotion),
+        value: isPresented
+      )
+  }
+}
+
+extension View {
+  func fangcunQuoteStyle() -> some View {
+    modifier(FangcunQuoteTextStyle())
+  }
+
+  func fangcunActionStyle() -> some View {
+    modifier(FangcunActionTextStyle())
+  }
+
+  func fangcunBodyStyle() -> some View {
+    modifier(FangcunBodyTextStyle())
+  }
+
+  func fangcunSectionLabelStyle() -> some View {
+    modifier(FangcunSectionLabelTextStyle())
+  }
+
+  func fangcunLevelOneSurface(
+    cornerRadius: CGFloat = FangcunSurface.levelOneCornerRadius
+  ) -> some View {
+    modifier(FangcunLevelOneSurface(cornerRadius: cornerRadius))
+  }
+
+  func fangcunResponseSurface(
+    cornerRadius: CGFloat = FangcunSurface.responseCornerRadius
+  ) -> some View {
+    modifier(FangcunResponseSurface(cornerRadius: cornerRadius))
+  }
+
+  func fangcunEntrance(index: Int, isPresented: Bool) -> some View {
+    modifier(FangcunEntranceModifier(index: index, isPresented: isPresented))
+  }
+}
+
+struct FangcunPressButtonStyle: ButtonStyle {
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .scaleEffect(
+        FangcunMotion.pressScale(
+          isPressed: configuration.isPressed,
+          reduceMotion: reduceMotion
+        )
+      )
+      .opacity(FangcunMotion.pressOpacity(isPressed: configuration.isPressed))
+      .animation(
+        FangcunMotion.pressAnimation(reduceMotion: reduceMotion),
+        value: configuration.isPressed
+      )
+  }
+}
+
+struct InnerBalancePrimaryButtonStyle: ButtonStyle {
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+
+  let onStrongSurface: Bool
+  let cornerRadius: CGFloat
+
+  init(
+    onStrongSurface: Bool = false,
+    cornerRadius: CGFloat = FangcunLayout.spacing(5)
+  ) {
+    self.onStrongSurface = onStrongSurface
+    self.cornerRadius = cornerRadius
+  }
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .font(.headline)
+      .foregroundStyle(
+        onStrongSurface ? InnerBalanceTheme.strongFill : InnerBalanceTheme.inverseInk
+      )
+      .frame(maxWidth: .infinity)
+      .padding(.vertical, FangcunLayout.spacing(4))
+      .background(
+        onStrongSurface ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.strongFill,
+        in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+      )
+      .scaleEffect(
+        FangcunMotion.pressScale(
+          isPressed: configuration.isPressed,
+          reduceMotion: reduceMotion
+        )
+      )
+      .opacity(FangcunMotion.pressOpacity(isPressed: configuration.isPressed))
+      .animation(
+        FangcunMotion.pressAnimation(reduceMotion: reduceMotion),
+        value: configuration.isPressed
+      )
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/CheckIn/CheckInFlowView.swift =====
+import SwiftUI
+
+struct CheckInFlowView: View {
+  @Environment(\.dismiss) private var dismiss
+  @State private var viewModel: CheckInViewModel
+  let onPrimarySaved: (StateOfMindRecord) -> Void
+
+  init(
+    saver: any CheckInSaving,
+    diagnostics: any CheckInDiagnosticsRecording,
+    onPrimarySaved: @escaping (StateOfMindRecord) -> Void
+  ) {
+    _viewModel = State(
+      initialValue: CheckInViewModel(saver: saver, diagnostics: diagnostics)
+    )
+    self.onPrimarySaved = onPrimarySaved
+  }
+
+  var body: some View {
+    ZStack {
+      InnerBalanceTheme.canvas.ignoresSafeArea()
+      switch viewModel.step {
+      case .compass, .words:
+        EmotionCompassView(viewModel: viewModel) { dismiss() }
+      case .saved:
+        OptionalContextSheet(viewModel: viewModel) {
+          publishLatestRecordAndDismiss()
+        }
+      }
+    }
+    .onChange(of: viewModel.step) { _, step in
+      guard step == .saved, let record = viewModel.savedRecord else { return }
+      onPrimarySaved(record)
+    }
+    .sensoryFeedback(.success, trigger: viewModel.saveState == .saved)
+  }
+
+  private func publishLatestRecordAndDismiss() {
+    if let record = viewModel.savedRecord {
+      onPrimarySaved(record)
+    }
+    dismiss()
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/CheckIn/CheckInViewModel.swift =====
+import Foundation
+import InnerBalanceCore
+import Observation
+
+enum CheckInStep: Equatable, Sendable {
+  case compass
+  case words
+  case saved
+}
+
+enum CheckInSaveState: Equatable, Sendable {
+  case idle
+  case saving
+  case saved
+  case failed
+}
+
+@MainActor
+protocol CheckInSaving {
+  func saveCheckIn(_ record: StateOfMindRecord) async -> HealthWriteResult
+}
+
+extension HealthWriteCoordinator: CheckInSaving {
+  func saveCheckIn(_ record: StateOfMindRecord) async -> HealthWriteResult {
+    await saveStateOfMind(record)
+  }
+}
+
+@MainActor
+@Observable
+final class CheckInViewModel {
+  private let saver: any CheckInSaving
+  private let diagnostics: any CheckInDiagnosticsRecording
+  private let now: () -> Date
+  private let makeIdentifier: () -> String
+  private let startedAt: Date
+  private var recordedCompassCompletion = false
+  private var recordedEmotionWord = false
+  private var recordedOptionalSupplement = false
+
+  private(set) var step = CheckInStep.compass
+  private(set) var hasSelectedPosition = false
+  private(set) var saveState = CheckInSaveState.idle
+  private(set) var savedRecord: StateOfMindRecord?
+  private(set) var optionalContextFailed = false
+  private(set) var primaryWriteResult: HealthWriteResult?
+  var valence = 0.0
+  var arousal = 0.0
+
+  init(
+    saver: any CheckInSaving,
+    diagnostics: any CheckInDiagnosticsRecording,
+    now: @escaping () -> Date = { .now },
+    makeIdentifier: @escaping () -> String = { UUID().uuidString.lowercased() }
+  ) {
+    self.saver = saver
+    self.diagnostics = diagnostics
+    self.now = now
+    self.makeIdentifier = makeIdentifier
+    startedAt = now()
+    diagnostics.recordStage(.opened, at: startedAt)
+  }
+
+  var suggestedLabels: [EmotionLabel] {
+    let quadrant = EmotionCatalog.quadrant(valence: valence, arousal: arousal)
+    if case .neutral = quadrant {
+      return [.indifferent, .calm, .content, .worried, .drained, .surprised]
+    }
+    return Array(
+      EmotionCatalog.labels(for: quadrant).prefix(6)
+    )
+  }
+
+  var showsSupportGuidance: Bool {
+    savedRecord?.labels.contains(.hopeless) == true
+  }
+
+  func select(valence: Double, arousal: Double) {
+    self.valence = min(max(valence, -1), 1)
+    self.arousal = min(max(arousal, -1), 1)
+    hasSelectedPosition = true
+  }
+
+  func continueToWords() {
+    guard hasSelectedPosition else { return }
+    step = .words
+    if !recordedCompassCompletion {
+      recordedCompassCompletion = true
+      diagnostics.recordStage(.compassCompleted, at: now())
+    }
+  }
+
+  func returnToCompass() {
+    guard saveState != .saving else { return }
+    step = .compass
+  }
+
+  func select(label: EmotionLabel) async {
+    await savePrimary(label: label, unclassified: false)
+  }
+
+  func selectUnclassified() async {
+    await savePrimary(label: nil, unclassified: true)
+  }
+
+  func saveOptionalContext(
+    bodySensationCodes: [String],
+    associations: [CheckInAssociation]
+  ) async {
+    guard let primary = savedRecord else { return }
+    optionalContextFailed = false
+    let updated = StateOfMindRecord(
+      syncIdentifier: primary.syncIdentifier,
+      syncVersion: primary.syncVersion + 1,
+      date: primary.date,
+      valence: primary.valence,
+      arousal: primary.arousal,
+      labels: primary.labels,
+      associations: Array(associations.prefix(2)),
+      bodySensationCodes: Array(Set(bodySensationCodes)).sorted(),
+      unclassified: primary.unclassified,
+      origin: primary.origin,
+      sessionID: primary.sessionID,
+      phase: primary.phase
+    )
+    let result = await saver.saveCheckIn(updated)
+    if result == .failedToQueue {
+      optionalContextFailed = true
+    } else {
+      savedRecord = updated
+      if !recordedOptionalSupplement,
+        !bodySensationCodes.isEmpty || !associations.isEmpty
+      {
+        recordedOptionalSupplement = true
+        diagnostics.recordStage(.optionalSupplementCompleted, at: now())
+      }
+    }
+  }
+
+  private func savePrimary(label: EmotionLabel?, unclassified: Bool) async {
+    guard step == .words, saveState != .saving else { return }
+    saveState = .saving
+    let selectedAt = now()
+    if label != nil, !recordedEmotionWord {
+      recordedEmotionWord = true
+      diagnostics.recordStage(.emotionWordSelected, at: selectedAt)
+    }
+    let record = StateOfMindRecord(
+      syncIdentifier: "com.yvainair.innerbalance.checkin.\(makeIdentifier())",
+      syncVersion: 1,
+      date: selectedAt,
+      valence: valence,
+      arousal: arousal,
+      labels: label.map { [$0] } ?? [],
+      associations: [],
+      bodySensationCodes: [],
+      unclassified: unclassified,
+      origin: .iPhone,
+      sessionID: nil,
+      phase: .standalone
+    )
+    let result = await saver.saveCheckIn(record)
+    primaryWriteResult = result
+    guard result != .failedToQueue else {
+      saveState = .failed
+      return
+    }
+
+    savedRecord = record
+    saveState = .saved
+    step = .saved
+    let completedAt = now()
+    diagnostics.recordCompletion(
+      startedAt: startedAt,
+      completedAt: completedAt,
+      unclassified: unclassified
+    )
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/CheckIn/CompassSupportingViews.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+struct CompassAtmosphere: View {
+  var body: some View {
+    InnerBalanceTheme.canvas
+      .ignoresSafeArea()
+      .accessibilityHidden(true)
+  }
+}
+
+struct EmotionWordSuggestions: View {
+  @Bindable var viewModel: CheckInViewModel
+  private let columns = [
+    GridItem(.flexible(), spacing: FangcunLayout.spacing(3)),
+    GridItem(.flexible(), spacing: FangcunLayout.spacing(3)),
+  ]
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      Text("哪个词最接近？").font(.title3.weight(.semibold))
+      LazyVGrid(columns: columns, spacing: FangcunLayout.spacing(3)) {
+        ForEach(viewModel.suggestedLabels, id: \.self) { label in
+          Button {
+            Task { await viewModel.select(label: label) }
+          } label: {
+            Text(label.displayName)
+              .font(.headline)
+              .frame(maxWidth: .infinity, minHeight: 52)
+              .background(
+                InnerBalanceTheme.surface,
+                in: RoundedRectangle(
+                  cornerRadius: FangcunLayout.spacing(5),
+                  style: .continuous
+                )
+              )
+              .overlay {
+                RoundedRectangle(
+                  cornerRadius: FangcunLayout.spacing(5),
+                  style: .continuous
+                )
+                .strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1)
+              }
+          }
+          .buttonStyle(.plain)
+          .foregroundStyle(InnerBalanceTheme.ink)
+          .disabled(viewModel.saveState == .saving)
+          .accessibilityIdentifier("emotionWord.\(label.rawValue)")
+          .accessibilityHint("选择后立即保存")
+        }
+      }
+      Button {
+        Task { await viewModel.selectUnclassified() }
+      } label: {
+        Text("都不像 / 不知道")
+          .font(.subheadline.weight(.semibold))
+          .frame(maxWidth: .infinity, minHeight: 48)
+          .background(
+            InnerBalanceTheme.subtleFill,
+            in: RoundedRectangle(
+              cornerRadius: FangcunLayout.spacing(5),
+              style: .continuous
+            )
+          )
+          .overlay {
+            RoundedRectangle(
+              cornerRadius: FangcunLayout.spacing(5),
+              style: .continuous
+            )
+            .strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1)
+          }
+      }
+      .buttonStyle(.plain)
+      .foregroundStyle(InnerBalanceTheme.mutedInk)
+      .disabled(viewModel.saveState == .saving)
+      .accessibilityIdentifier("emotionWord.unclassified")
+
+      if viewModel.saveState == .failed {
+        Label(
+          "这次没存上。位置还在，重新点一个词即可。",
+          systemImage: "exclamationmark.circle"
+        )
+        .font(.caption)
+        .foregroundStyle(InnerBalanceTheme.emphasis)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+}
+
+struct CheckInHeader: View {
+  let step: String
+  let onClose: () -> Void
+
+  var body: some View {
+    HStack {
+      Text(step)
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(InnerBalanceTheme.emphasis)
+      Spacer()
+      Button(action: onClose) {
+        Image(systemName: "xmark")
+          .font(.subheadline.weight(.semibold))
+          .frame(width: 44, height: 44)
+          .background(InnerBalanceTheme.subtleFill, in: Circle())
+          .overlay { Circle().strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1) }
+      }
+      .buttonStyle(.plain)
+      .foregroundStyle(InnerBalanceTheme.ink)
+      .accessibilityLabel("关闭")
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/CheckIn/EmotionCompassView.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+enum CompassGesturePhase {
+  case changing
+  case committed
+}
+
+enum EmotionCompassPresentation {
+  static func orbOpacity(hasSelectedPosition: Bool) -> Double {
+    hasSelectedPosition ? 1 : 0
+  }
+
+  static func shouldPlayHaptic(for phase: CompassGesturePhase) -> Bool {
+    phase == .committed
+  }
+
+  static func wordTransitionDuration(reduceMotion: Bool) -> TimeInterval {
+    reduceMotion ? 0 : 0.32
+  }
+
+}
+
+struct EmotionCompassView: View {
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+  @Bindable var viewModel: CheckInViewModel
+  @State private var commitHapticTrigger = 0
+  let onClose: () -> Void
+
+  var body: some View {
+    ZStack {
+      CompassAtmosphere()
+      ScrollViewReader { proxy in
+        ScrollView {
+          VStack(spacing: FangcunLayout.spacing(6)) {
+            CheckInHeader(step: "记录此刻", onClose: onClose)
+            introduction
+            SpatialEmotionField(
+              valence: viewModel.valence,
+              arousal: viewModel.arousal,
+              hasSelectedPosition: viewModel.hasSelectedPosition,
+              onPositionChanged: updatePosition,
+              onPositionCommitted: commitPosition,
+              onAdjust: adjust
+            )
+
+            if viewModel.step == .words {
+              EmotionWordSuggestions(viewModel: viewModel)
+                .id("checkIn.words")
+                .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
+            } else {
+              Label("轻点或拖到最接近的位置", systemImage: "hand.draw")
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(InnerBalanceTheme.mutedInk)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+          }
+          .padding(.horizontal, FangcunLayout.pageHorizontalPadding)
+          .padding(.vertical, FangcunLayout.spacing(5))
+        }
+        .accessibilityIdentifier("checkIn.scroll")
+        .onChange(of: viewModel.step) { _, step in
+          guard step == .words else { return }
+          withAnimation(reduceMotion ? nil : .easeOut(duration: 0.28)) {
+            proxy.scrollTo("checkIn.words", anchor: .top)
+          }
+        }
+      }
+
+      if viewModel.saveState == .saving {
+        ProgressView("正在保存…")
+          .padding(20)
+          .background(
+            InnerBalanceTheme.elevatedSurface,
+            in: RoundedRectangle(
+              cornerRadius: FangcunLayout.spacing(5),
+              style: .continuous
+            )
+          )
+          .overlay {
+            RoundedRectangle(
+              cornerRadius: FangcunLayout.spacing(5),
+              style: .continuous
+            )
+            .strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1)
+          }
+          .tint(InnerBalanceTheme.emphasis)
+      }
+    }
+    .foregroundStyle(InnerBalanceTheme.ink)
+    .sensoryFeedback(.impact(flexibility: .rigid), trigger: commitHapticTrigger)
+  }
+
+  private var introduction: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+      Text("现在怎样？").font(.largeTitle.weight(.medium))
+      Text("往右更愉快，往上更有劲。找到最接近你的地方。")
+        .font(.subheadline)
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private func updatePosition(_ location: CGPoint, size: CGFloat) {
+    let coordinates = CompassGeometry.coordinates(for: location, size: size)
+    viewModel.select(valence: coordinates.valence, arousal: coordinates.arousal)
+  }
+
+  private func commitPosition(_ location: CGPoint, size: CGFloat) {
+    updatePosition(location, size: size)
+    if EmotionCompassPresentation.shouldPlayHaptic(for: .committed) {
+      commitHapticTrigger += 1
+    }
+    withAnimation(wordTransitionAnimation) { viewModel.continueToWords() }
+  }
+
+  private func adjust(valence: Double, arousal: Double) {
+    viewModel.select(valence: viewModel.valence + valence, arousal: viewModel.arousal + arousal)
+    commitHapticTrigger += 1
+    withAnimation(wordTransitionAnimation) { viewModel.continueToWords() }
+  }
+
+  private var wordTransitionAnimation: Animation? {
+    let duration = EmotionCompassPresentation.wordTransitionDuration(reduceMotion: reduceMotion)
+    return duration > 0 ? .easeOut(duration: duration) : nil
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/CheckIn/EmotionLabelPresentation.swift =====
+import InnerBalanceCore
+
+extension EmotionLabel {
+  var displayName: String {
+    switch self {
+    case .amazed: "惊叹"
+    case .amused: "愉快"
+    case .angry: "生气"
+    case .anxious: "焦虑"
+    case .ashamed: "羞愧"
+    case .brave: "勇敢"
+    case .calm: "平静"
+    case .content: "知足"
+    case .disappointed: "失望"
+    case .discouraged: "泄气"
+    case .disgusted: "厌恶"
+    case .embarrassed: "尴尬"
+    case .excited: "兴奋"
+    case .frustrated: "挫败"
+    case .grateful: "感激"
+    case .guilty: "内疚"
+    case .happy: "开心"
+    case .hopeless: "绝望"
+    case .irritated: "烦躁"
+    case .jealous: "嫉妒"
+    case .joyful: "喜悦"
+    case .lonely: "孤独"
+    case .passionate: "热情"
+    case .peaceful: "安宁"
+    case .proud: "自豪"
+    case .relieved: "如释重负"
+    case .sad: "难过"
+    case .scared: "害怕"
+    case .stressed: "紧张"
+    case .surprised: "惊讶"
+    case .worried: "担心"
+    case .annoyed: "恼火"
+    case .confident: "自信"
+    case .drained: "疲惫"
+    case .hopeful: "充满希望"
+    case .indifferent: "无所谓"
+    case .overwhelmed: "不堪重负"
+    case .satisfied: "满意"
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/CheckIn/OptionalContextSheet.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+struct OptionalContextSheet: View {
+  @Bindable var viewModel: CheckInViewModel
+  let onDone: () -> Void
+
+  @State private var bodyCodes: Set<String> = []
+  @State private var associations: [CheckInAssociation] = []
+  @State private var isSaving = false
+
+  private let columns = [
+    GridItem(.adaptive(minimum: FangcunLayout.spacing(26)), spacing: FangcunLayout.spacing(2))
+  ]
+  private let bodyOptions: [(code: String, title: String)] = [
+    ("shoulders_tight", "肩颈紧"),
+    ("chest_tight", "胸口紧"),
+    ("stomach_discomfort", "胃部不适"),
+    ("shallow_breath", "呼吸浅"),
+    ("heavy_head", "头沉"),
+    ("fatigue", "疲惫"),
+    ("none", "无明显感觉"),
+  ]
+
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(6)) {
+        savedHeader
+
+        if viewModel.showsSupportGuidance {
+          supportGuidance
+        }
+
+        optionalSection(title: "压力主要来自哪里（选一个即可）") {
+          LazyVGrid(columns: columns, alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+            ForEach(CheckInAssociation.allCases, id: \.self) { association in
+              associationChip(association)
+            }
+          }
+        }
+
+        optionalSection(title: "身体有什么感觉（可选）") {
+          LazyVGrid(columns: columns, alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+            ForEach(bodyOptions, id: \.code) { option in
+              chip(option.title, selected: bodyCodes.contains(option.code)) {
+                toggleBodyCode(option.code)
+              }
+            }
+          }
+        }
+
+        if viewModel.optionalContextFailed {
+          Label(
+            "补充信息暂时无法安全保存；主记录已经保留，不受影响。",
+            systemImage: "exclamationmark.circle"
+          )
+          .font(.caption)
+          .foregroundStyle(InnerBalanceTheme.emphasis)
+        }
+
+        VStack(spacing: FangcunLayout.spacing(3)) {
+          if !bodyCodes.isEmpty || !associations.isEmpty {
+            Button(isSaving ? "正在保存补充…" : "保存补充") {
+              Task { await saveOptionalContext() }
+            }
+            .buttonStyle(InnerBalancePrimaryButtonStyle())
+            .disabled(isSaving)
+          }
+          Button("先这样", action: onDone)
+            .font(.headline)
+            .foregroundStyle(InnerBalanceTheme.mutedInk)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+            .buttonStyle(.plain)
+        }
+      }
+      .padding(.horizontal, FangcunLayout.pageHorizontalPadding)
+      .padding(.vertical, FangcunLayout.spacing(6))
+    }
+    .background(InnerBalanceTheme.canvas)
+    .foregroundStyle(InnerBalanceTheme.ink)
+  }
+
+  private var savedHeader: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+      Image(systemName: "checkmark.circle.fill")
+        .font(.system(size: 38))
+        .foregroundStyle(InnerBalanceTheme.strongFill)
+        .accessibilityHidden(true)
+      Text("已记录此刻")
+        .font(.title.weight(.semibold))
+      if let record = viewModel.savedRecord, record.unclassified {
+        Text("都不像，也已保留罗盘位置")
+          .font(.headline)
+      } else if let label = viewModel.savedRecord?.labels.first {
+        Text(label.displayName)
+          .font(.title3.weight(.medium))
+      }
+      Text(saveDetail)
+        .font(.subheadline)
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+    }
+  }
+
+  private var saveDetail: String {
+    viewModel.primaryWriteResult == .queued
+      ? "已保存在本机，将在健康权限可用时重试。下面都可以跳过。"
+      : "主记录已经保存。下面都可以跳过，不会阻塞完成。"
+  }
+
+  private var supportGuidance: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      Label("不用独自承受", systemImage: "person.2.fill")
+        .font(.headline)
+        .foregroundStyle(InnerBalanceTheme.emphasis)
+      Text("如果这份绝望很难独自承受，请现在联系一位你信任的人，或寻求当地的专业或紧急支持。")
+        .font(.subheadline)
+    }
+    .fixedSize(horizontal: false, vertical: true)
+    .padding(16)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(
+      InnerBalanceTheme.subtleFill,
+      in: RoundedRectangle(
+        cornerRadius: FangcunLayout.spacing(5),
+        style: .continuous
+      )
+    )
+    .overlay {
+      RoundedRectangle(
+        cornerRadius: FangcunLayout.spacing(5),
+        style: .continuous
+      )
+      .strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1)
+    }
+    .accessibilityElement(children: .combine)
+  }
+
+  private func optionalSection<Content: View>(
+    title: String,
+    @ViewBuilder content: () -> Content
+  ) -> some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+      Text(title)
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+      content()
+    }
+  }
+
+  private func chip(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
+    Button(action: action) {
+      Text(title)
+        .font(.subheadline.weight(.medium))
+        .padding(.horizontal, 12)
+        .padding(.vertical, FangcunLayout.spacing(3))
+        .frame(minHeight: 44)
+        .frame(maxWidth: .infinity)
+        .background(
+          selected ? InnerBalanceTheme.strongFill : InnerBalanceTheme.surface,
+          in: Capsule()
+        )
+        .overlay {
+          Capsule()
+            .strokeBorder(
+              selected ? InnerBalanceTheme.emphasis : InnerBalanceTheme.hairline,
+              lineWidth: selected ? 2 : 1
+            )
+        }
+    }
+    .buttonStyle(.plain)
+    .foregroundStyle(selected ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink)
+    .accessibilityAddTraits(selected ? .isSelected : [])
+  }
+
+  private func associationChip(_ association: CheckInAssociation) -> some View {
+    let position = associations.firstIndex(of: association)
+    let selected = position != nil
+    let selectionRole = position == 0 ? "主要" : (position == 1 ? "其次" : nil)
+
+    return Button {
+      toggleAssociation(association)
+    } label: {
+      VStack(spacing: 2) {
+        Text(association.displayName)
+          .font(.subheadline.weight(.medium))
+        if let selectionRole {
+          Text(selectionRole)
+            .font(.caption2.weight(.bold))
+        }
+      }
+      .padding(.horizontal, 12)
+      .padding(.vertical, FangcunLayout.spacing(2))
+      .frame(minHeight: 44)
+      .frame(maxWidth: .infinity)
+      .background(
+        selected ? InnerBalanceTheme.strongFill : InnerBalanceTheme.surface,
+        in: Capsule()
+      )
+      .overlay {
+        Capsule()
+          .strokeBorder(
+            selected ? InnerBalanceTheme.emphasis : InnerBalanceTheme.hairline,
+            lineWidth: selected ? 2 : 1
+          )
+      }
+    }
+    .buttonStyle(.plain)
+    .foregroundStyle(selected ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink)
+    .disabled(!selected && associations.count == 2)
+    .accessibilityLabel(
+      selectionRole.map { "\(association.displayName)，\($0)来源" }
+        ?? association.displayName
+    )
+    .accessibilityHint(
+      !selected && associations.count == 2 ? "先取消一个已选来源" : ""
+    )
+    .accessibilityAddTraits(selected ? .isSelected : [])
+  }
+
+  private func toggleBodyCode(_ code: String) {
+    if code == "none" {
+      bodyCodes = bodyCodes == ["none"] ? [] : ["none"]
+    } else {
+      bodyCodes.remove("none")
+      if bodyCodes.contains(code) {
+        bodyCodes.remove(code)
+      } else {
+        bodyCodes.insert(code)
+      }
+    }
+  }
+
+  private func toggleAssociation(_ association: CheckInAssociation) {
+    if let index = associations.firstIndex(of: association) {
+      associations.remove(at: index)
+    } else if associations.count < 2 {
+      associations.append(association)
+    }
+  }
+
+  private func saveOptionalContext() async {
+    isSaving = true
+    await viewModel.saveOptionalContext(
+      bodySensationCodes: Array(bodyCodes),
+      associations: associations
+    )
+    isSaving = false
+    if !viewModel.optionalContextFailed {
+      onDone()
+    }
+  }
+}
+
+extension CheckInAssociation {
+  var displayName: String {
+    switch self {
+    case .work: "工作"
+    case .tasks: "任务"
+    case .health: "健康"
+    case .family: "家庭"
+    case .relationship: "关系"
+    case .money: "金钱"
+    case .training: "训练"
+    case .sleep: "睡眠"
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/CheckIn/SpatialEmotionField.swift =====
+import SwiftUI
+
+enum CompassGeometry {
+  static let selectionDiameter: CGFloat = 76
+
+  static func coordinates(for location: CGPoint, size: CGFloat) -> (
+    valence: Double, arousal: Double
+  ) {
+    let center = CGPoint(x: size / 2, y: size / 2)
+    let vector = CGVector(dx: location.x - center.x, dy: location.y - center.y)
+    let distance = hypot(vector.dx, vector.dy)
+    let radius = drawableRadius(for: size)
+    guard radius > 0 else { return (0, 0) }
+    let scale = distance > radius ? radius / distance : 1
+    return (
+      Double(vector.dx * scale / radius),
+      Double(-vector.dy * scale / radius)
+    )
+  }
+
+  static func position(valence: Double, arousal: Double, size: CGFloat) -> CGPoint {
+    let center = CGPoint(x: size / 2, y: size / 2)
+    let radius = drawableRadius(for: size)
+    guard radius > 0 else { return center }
+
+    let vector = CGVector(dx: CGFloat(valence), dy: -CGFloat(arousal))
+    let distance = hypot(vector.dx, vector.dy)
+    let scale = distance > 1 ? 1 / distance : 1
+    return CGPoint(
+      x: center.x + vector.dx * scale * radius,
+      y: center.y + vector.dy * scale * radius
+    )
+  }
+
+  private static func drawableRadius(for size: CGFloat) -> CGFloat {
+    max(0, size / 2 - selectionDiameter / 2)
+  }
+}
+
+struct SpatialEmotionField: View {
+  let valence: Double
+  let arousal: Double
+  let hasSelectedPosition: Bool
+  let onPositionChanged: (CGPoint, CGFloat) -> Void
+  let onPositionCommitted: (CGPoint, CGFloat) -> Void
+  let onAdjust: (Double, Double) -> Void
+
+  var body: some View {
+    GeometryReader { proxy in
+      let size = min(proxy.size.width, proxy.size.height)
+      ZStack {
+        emotionField
+        CompassAxes()
+        selectionOrb(size: size)
+      }
+      .frame(width: size, height: size)
+      .contentShape(Circle())
+      .gesture(
+        DragGesture(minimumDistance: 0)
+          .onChanged { onPositionChanged($0.location, size) }
+          .onEnded { onPositionCommitted($0.location, size) }
+      )
+      .accessibilityElement(children: .ignore)
+      .accessibilityLabel("情绪罗盘")
+      .accessibilityValue(accessibilityPosition)
+      .accessibilityHint("轻点或拖动选择位置，也可使用四个方向操作")
+      .accessibilityIdentifier("checkIn.emotionField")
+      .accessibilityAction(named: "向愉快") { onAdjust(0.35, 0) }
+      .accessibilityAction(named: "向不愉快") { onAdjust(-0.35, 0) }
+      .accessibilityAction(named: "向有劲") { onAdjust(0, 0.35) }
+      .accessibilityAction(named: "向低缓") { onAdjust(0, -0.35) }
+    }
+    .aspectRatio(1, contentMode: .fit)
+  }
+
+  private var emotionField: some View {
+    Circle()
+      .fill(InnerBalanceTheme.surface)
+      .overlay { Circle().strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1) }
+  }
+
+  private func selectionOrb(size: CGFloat) -> some View {
+    let position = CompassGeometry.position(valence: valence, arousal: arousal, size: size)
+    return ZStack {
+      Circle()
+        .stroke(InnerBalanceTheme.subtleFill, lineWidth: 12)
+        .frame(
+          width: CompassGeometry.selectionDiameter,
+          height: CompassGeometry.selectionDiameter
+        )
+      Circle()
+        .stroke(InnerBalanceTheme.emphasis, lineWidth: 2)
+        .frame(width: 46, height: 46)
+      Circle()
+        .fill(InnerBalanceTheme.strongFill)
+        .frame(width: 24, height: 24)
+    }
+    .position(position)
+    .opacity(EmotionCompassPresentation.orbOpacity(hasSelectedPosition: hasSelectedPosition))
+    .accessibilityHidden(true)
+  }
+
+  private var accessibilityPosition: String {
+    guard hasSelectedPosition else { return "尚未选择" }
+    return "\(valence >= 0 ? "较愉快" : "较不愉快")，\(arousal >= 0 ? "较有劲" : "较低缓")"
+  }
+}
+
+private struct CompassAxes: View {
+  var body: some View {
+    ZStack {
+      Rectangle().fill(InnerBalanceTheme.hairline).frame(height: 1)
+      Rectangle().fill(InnerBalanceTheme.hairline).frame(width: 1)
+      VStack {
+        Text("有劲")
+        Spacer()
+        Text("低缓")
+      }
+      .padding(.vertical, 16)
+      HStack {
+        Text("不愉快")
+        Spacer()
+        Text("愉快")
+      }
+      .padding(.horizontal, 16)
+    }
+    .font(.caption2.weight(.semibold))
+    .foregroundStyle(InnerBalanceTheme.mutedInk)
+    .clipShape(Circle())
+    .accessibilityHidden(true)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Diagnostics/DiagnosticsExporter.swift =====
+import Foundation
+import InnerBalanceCore
+import SwiftData
+
+struct DiagnosticsSnapshot: Codable, Equatable, Sendable {
+  let generatedAt: Date
+  let baselineDays: Int
+  let availableEvidenceCount: Int
+  let unavailableDataKinds: [String]
+  let pendingHealthWriteCount: Int
+  let checkInCount: Int
+  let checkInOpenedCount: Int
+  let compassCompletedCount: Int
+  let emotionWordSelectedCount: Int
+  let optionalSupplementCompletedCount: Int
+  let medianCheckInDuration: TimeInterval?
+  let p90CheckInDuration: TimeInterval?
+  let unclassifiedCheckInCount: Int
+  let recommendationAcceptedCount: Int
+  let practiceStartedCount: Int
+  let practiceCompletionCount: Int
+  let subjectiveComparisonAvailableCount: Int
+  let watchHeartRateEligibleCount: Int
+  let watchHeartRateAvailableCount: Int
+  let notificationScheduledCount: Int
+  let notificationRespondedCount: Int
+  let syncErrorCounts: [String: Int]
+}
+
+enum DiagnosticsExporter {
+  static func encode(_ snapshot: DiagnosticsSnapshot) throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.dateEncodingStrategy = .iso8601
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    return try encoder.encode(snapshot)
+  }
+}
+
+@MainActor
+enum DiagnosticsSnapshotBuilder {
+  static func build(
+    homeViewModel: HomeViewModel,
+    modelContext: ModelContext,
+    watchHeartRateCounts: WatchHeartRateDiagnosticCounts = .zero,
+    now: Date = .now
+  ) -> DiagnosticsSnapshot {
+    let checkIns =
+      (try? modelContext.fetch(
+        FetchDescriptor<CheckInDiagnosticEvent>(sortBy: [SortDescriptor(\.completedAt)])
+      )) ?? []
+    let pendingWrites =
+      (try? modelContext.fetch(FetchDescriptor<PendingHealthWrite>())) ?? []
+    let practiceCount =
+      (try? modelContext.fetchCount(FetchDescriptor<StoredPracticeCompletion>())) ?? 0
+    let diagnosticEvents =
+      (try? modelContext.fetch(FetchDescriptor<LocalDiagnosticEvent>())) ?? []
+    let durations = checkIns.map(\.duration).sorted()
+
+    func eventCount(_ kind: LocalDiagnosticKind) -> Int {
+      diagnosticEvents.count { $0.kind == kind }
+    }
+
+    let errorCounts = Dictionary(
+      grouping: diagnosticEvents.filter { $0.kind == .syncError }.compactMap(\.categoryCode),
+      by: { $0 }
+    ).mapValues(\.count)
+
+    return DiagnosticsSnapshot(
+      generatedAt: now,
+      baselineDays: homeViewModel.baselineDays,
+      availableEvidenceCount: homeViewModel.evidence.count,
+      unavailableDataKinds: homeViewModel.unavailableKinds.map(\.rawValue).sorted(),
+      pendingHealthWriteCount: pendingWrites.count,
+      checkInCount: checkIns.count,
+      checkInOpenedCount: eventCount(.checkInOpened),
+      compassCompletedCount: eventCount(.compassCompleted),
+      emotionWordSelectedCount: eventCount(.emotionWordSelected),
+      optionalSupplementCompletedCount: eventCount(.optionalSupplementCompleted),
+      medianCheckInDuration: median(durations),
+      p90CheckInDuration: percentile90(durations),
+      unclassifiedCheckInCount: checkIns.filter(\.unclassified).count,
+      recommendationAcceptedCount: eventCount(.recommendationAccepted),
+      practiceStartedCount: eventCount(.practiceStarted),
+      practiceCompletionCount: practiceCount,
+      subjectiveComparisonAvailableCount: eventCount(.subjectiveComparisonAvailable),
+      watchHeartRateEligibleCount: watchHeartRateCounts.eligible,
+      watchHeartRateAvailableCount: watchHeartRateCounts.available,
+      notificationScheduledCount: eventCount(.notificationScheduled),
+      notificationRespondedCount: eventCount(.notificationResponded),
+      syncErrorCounts: errorCounts
+    )
+  }
+
+  private static func median(_ values: [TimeInterval]) -> TimeInterval? {
+    guard !values.isEmpty else { return nil }
+    let middle = values.count / 2
+    return values.count.isMultiple(of: 2)
+      ? (values[middle - 1] + values[middle]) / 2
+      : values[middle]
+  }
+
+  private static func percentile90(_ values: [TimeInterval]) -> TimeInterval? {
+    guard !values.isEmpty else { return nil }
+    let index = max(0, Int(ceil(Double(values.count) * 0.9)) - 1)
+    return values[index]
+  }
+}
+
+enum DiagnosticsAvailability {
+  static func isAvailable(isDebug: Bool, receiptName: String?) -> Bool {
+    isDebug || receiptName == "sandboxReceipt"
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Diagnostics/DiagnosticsView.swift =====
+import InnerBalanceCore
+import SwiftData
+import SwiftUI
+
+struct DiagnosticsView: View {
+  @Environment(\.modelContext) private var modelContext
+  @State private var snapshot: DiagnosticsSnapshot?
+  let homeViewModel: HomeViewModel
+  let healthRepository: HealthKitRepository?
+
+  var body: some View {
+    List {
+      if let snapshot {
+        Section("身体数据状态") {
+          LabeledContent("基线进度", value: "\(snapshot.baselineDays) / 5 天")
+          LabeledContent("可用证据", value: "\(snapshot.availableEvidenceCount) 项")
+          LabeledContent("当前判断", value: bodyLoadText)
+          LabeledContent(
+            "不可用类型",
+            value: snapshot.unavailableDataKinds.isEmpty
+              ? "无" : snapshot.unavailableDataKinds.joined(separator: "、")
+          )
+        }
+        .listRowBackground(InnerBalanceTheme.surface)
+        .listRowSeparatorTint(InnerBalanceTheme.hairline)
+        Section("本地写入状态") {
+          LabeledContent("等待 HealthKit", value: "\(snapshot.pendingHealthWriteCount) 条")
+          LabeledContent("情绪登记", value: "\(snapshot.checkInCount) 次")
+          LabeledContent("未分类登记", value: "\(snapshot.unclassifiedCheckInCount) 次")
+          LabeledContent("已完成练习", value: "\(snapshot.practiceCompletionCount) 次")
+          LabeledContent("登记中位用时", value: durationText(snapshot.medianCheckInDuration))
+          LabeledContent("登记 P90 用时", value: durationText(snapshot.p90CheckInDuration))
+        }
+        .listRowBackground(InnerBalanceTheme.surface)
+        .listRowSeparatorTint(InnerBalanceTheme.hairline)
+        Section("本地漏斗") {
+          LabeledContent("打开登记", value: "\(snapshot.checkInOpenedCount) 次")
+          LabeledContent("完成罗盘", value: "\(snapshot.compassCompletedCount) 次")
+          LabeledContent("选择情绪词", value: "\(snapshot.emotionWordSelectedCount) 次")
+          LabeledContent(
+            "完成可选补充",
+            value: "\(snapshot.optionalSupplementCompletedCount) 次"
+          )
+          LabeledContent("接受推荐", value: "\(snapshot.recommendationAcceptedCount) 次")
+          LabeledContent("开始练习", value: "\(snapshot.practiceStartedCount) 次")
+          LabeledContent(
+            "主观对比可用",
+            value: "\(snapshot.subjectiveComparisonAvailableCount) 次"
+          )
+          LabeledContent(
+            "Watch 心率窗口",
+            value:
+              "\(snapshot.watchHeartRateAvailableCount) / \(snapshot.watchHeartRateEligibleCount)"
+          )
+          LabeledContent(
+            "提醒响应",
+            value:
+              "\(snapshot.notificationRespondedCount) / \(snapshot.notificationScheduledCount)"
+          )
+          LabeledContent(
+            "同步错误",
+            value: snapshot.syncErrorCounts.isEmpty
+              ? "无"
+              : snapshot.syncErrorCounts.map { "\($0.key): \($0.value)" }.sorted()
+                .joined(separator: "、")
+          )
+        }
+        .listRowBackground(InnerBalanceTheme.surface)
+        .listRowSeparatorTint(InnerBalanceTheme.hairline)
+        Section {
+          if let exportText = exportText(snapshot) {
+            ShareLink(item: exportText) {
+              Label("导出诊断信息", systemImage: "square.and.arrow.up")
+            }
+          }
+          Text("导出只含权限状态、数据可用性、计数和用时；不含心率、HRV、睡眠时段、情绪词或罗盘坐标。")
+            .font(.caption)
+            .foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        .listRowBackground(InnerBalanceTheme.surface)
+        .listRowSeparatorTint(InnerBalanceTheme.hairline)
+      } else {
+        ProgressView("正在整理本地状态…")
+          .tint(InnerBalanceTheme.emphasis)
+          .listRowBackground(InnerBalanceTheme.surface)
+      }
+    }
+    .foregroundStyle(InnerBalanceTheme.ink)
+    .tint(InnerBalanceTheme.strongFill)
+    .scrollContentBackground(.hidden)
+    .background(InnerBalanceTheme.canvas)
+    .navigationTitle("诊断")
+    .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
+    .toolbar {
+      Button("刷新") { Task { await refresh() } }
+    }
+    .task { await refresh() }
+  }
+
+  private func refresh() async {
+    let watchCounts =
+      await healthRepository?.watchHeartRateDiagnosticCounts() ?? .zero
+    snapshot = DiagnosticsSnapshotBuilder.build(
+      homeViewModel: homeViewModel,
+      modelContext: modelContext,
+      watchHeartRateCounts: watchCounts
+    )
+  }
+
+  private func exportText(_ snapshot: DiagnosticsSnapshot) -> String? {
+    guard let data = try? DiagnosticsExporter.encode(snapshot) else { return nil }
+    return String(data: data, encoding: .utf8)
+  }
+
+  private func durationText(_ duration: TimeInterval?) -> String {
+    guard let duration else { return "暂无" }
+    return "\(duration.formatted(.number.precision(.fractionLength(1)))) 秒"
+  }
+
+  private var bodyLoadText: String {
+    switch homeViewModel.assessment.level {
+    case .steady: "平稳"
+    case .watch: "留意"
+    case .elevated: "偏高"
+    case .buildingBaseline: "建立基线中"
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/BaselineProgressView.swift =====
+import SwiftUI
+
+struct BaselineProgressView: View {
+  let completedDays: Int
+  private let requiredDays = 5
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+      HStack {
+        Text("个人基线")
+          .font(.subheadline.weight(.medium))
+        Spacer()
+        Text("\(min(completedDays, requiredDays))/\(requiredDays) 天")
+          .font(.subheadline.monospacedDigit().weight(.semibold))
+          .foregroundStyle(InnerBalanceTheme.strongFill)
+      }
+
+      GeometryReader { proxy in
+        ZStack(alignment: .leading) {
+          Capsule().fill(InnerBalanceTheme.subtleFill)
+          Capsule()
+            .fill(InnerBalanceTheme.strongFill)
+            .frame(
+              width: proxy.size.width
+                * CGFloat(min(completedDays, requiredDays)) / CGFloat(requiredDays)
+            )
+        }
+      }
+      .frame(height: FangcunLayout.spacing(2))
+    }
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("个人基线进度")
+    .accessibilityValue("已获得 \(min(completedDays, requiredDays)) 天，共需 \(requiredDays) 天")
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/BodyLoadCard.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+enum BodyLoadCardPresentation {
+  static let emptyTrainingMessage = "近 24 小时未读到训练记录"
+
+  static func trainingHeadline(_ summary: HomeTrainingSummary) -> String {
+    let minutes = max(1, Int(summary.totalDuration / 60))
+    let duration = minutes < 60 ? "\(minutes) 分" : "\(minutes / 60) 小时 \(minutes % 60) 分"
+    return "近 24 小时 · \(summary.count) 次 · \(duration)"
+  }
+
+  static func hasReliableEvidence(_ evidence: [HomeHealthEvidence]) -> Bool {
+    evidence.contains { $0.reliability == .reliable }
+  }
+
+  static func inferredStressSource(
+    evidence: [HomeHealthEvidence],
+    recentWorkoutProtection: Bool
+  ) -> CurrentStressSource? {
+    let elevated = evidence.filter {
+      $0.reliability == .reliable && $0.deviation == .elevated
+    }
+    if elevated.contains(where: { $0.kind == .sleep }) {
+      return .sleep
+    }
+    if recentWorkoutProtection,
+      elevated.contains(where: {
+        $0.kind == .heartRateVariability || $0.kind == .restingHeartRate
+      })
+    {
+      return .training
+    }
+    return elevated.isEmpty ? nil : .bodySignals
+  }
+
+  static func isWorkoutProtected(
+    level: BodyLoadLevel,
+    recentWorkoutProtection: Bool,
+    evidence: [HomeHealthEvidence]
+  ) -> Bool {
+    guard level == .steady, recentWorkoutProtection else { return false }
+    return evidence.contains {
+      $0.reliability == .reliable && $0.deviation == .elevated
+        && ($0.kind == .heartRateVariability || $0.kind == .restingHeartRate)
+    }
+  }
+
+  static func actionTitle(
+    for level: BodyLoadLevel,
+    evidence: [HomeHealthEvidence],
+    recentWorkoutProtection: Bool = false
+  ) -> String {
+    if isWorkoutProtected(
+      level: level,
+      recentWorkoutProtection: recentWorkoutProtection,
+      evidence: evidence
+    ) {
+      return "训练后先恢复"
+    }
+    return switch level {
+    case .buildingBaseline: "照常安排"
+    case .steady: hasReliableEvidence(evidence) ? "可以推进" : "照常安排"
+    case .watch: "今天收着一点"
+    case .elevated: "优先恢复"
+    }
+  }
+
+  static func actionDetail(
+    for level: BodyLoadLevel,
+    evidence: [HomeHealthEvidence],
+    recentWorkoutProtection: Bool
+  ) -> String {
+    if isWorkoutProtected(
+      level: level,
+      recentWorkoutProtection: recentWorkoutProtection,
+      evidence: evidence
+    ) {
+      return "近期训练正在扰动训练敏感指标。今天先恢复，晚些再看。"
+    }
+    return switch level {
+    case .buildingBaseline:
+      evidence.isEmpty ? "目前没有足够证据改变今天的安排。" : "现有读数先用于建立个人参考；今天按原计划进行。"
+    case .steady:
+      hasReliableEvidence(evidence)
+        ? "近期可靠指标在个人参考范围内，今天的安排可以照常推进。"
+        : "目前没有足够证据改变今天的安排。"
+    case .watch: "有一项可靠指标偏离近期参考。降低今天的强度，留出恢复时间。"
+    case .elevated: "至少两项独立可靠指标偏离个人参考。今天先减量，再安排恢复。"
+    }
+  }
+}
+
+struct BodyLoadCard: View {
+  @State private var isShowingEvidence = false
+
+  let viewModel: HomeViewModel
+  let today: TodayViewState
+  let onReviewSleep: () -> Void
+  let onCheckIn: () -> Void
+  let onStartPractice: (PracticeKind) -> Void
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(4)) {
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+        VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+          Text("当前压力")
+            .font(.caption2.weight(.bold))
+            .tracking(1.1)
+            .foregroundStyle(InnerBalanceTheme.emphasis)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+
+          Text(today.stressLevelTitle)
+            .fangcunActionStyle()
+            .foregroundStyle(InnerBalanceTheme.ink)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("home.stressConclusion")
+
+          if today.isStressIdentified {
+            HStack(alignment: .firstTextBaseline, spacing: FangcunLayout.spacing(2)) {
+              Text(today.stressSourceRoleTitle)
+                .foregroundStyle(InnerBalanceTheme.mutedInk)
+              Text(today.stressSourceTitle)
+                .fontWeight(.semibold)
+                .foregroundStyle(InnerBalanceTheme.ink)
+            }
+            .font(.subheadline)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("home.stressSource")
+          }
+
+          if let currentStateTitle = today.currentStateTitle {
+            HStack(spacing: FangcunLayout.spacing(2)) {
+              Text("当前感受")
+                .foregroundStyle(InnerBalanceTheme.mutedInk)
+              Text(currentStateTitle)
+                .fontWeight(.semibold)
+                .accessibilityIdentifier("home.currentState")
+            }
+            .font(.caption)
+          }
+
+          Text(today.explanation)
+            .fangcunBodyStyle()
+            .foregroundStyle(InnerBalanceTheme.mutedInk)
+            .lineSpacing(4)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("home.responseExplanation")
+        }
+
+        Divider().overlay(InnerBalanceTheme.hairline)
+
+        RecoveryRecommendationCard(
+          action: today.recoveryAction,
+          onCheckIn: onCheckIn,
+          onStartPractice: onStartPractice,
+          onStrongSurface: false
+        )
+      }
+      .padding(FangcunLayout.spacing(5.5))
+      .background(
+        InnerBalanceTheme.elevatedSurface,
+        in: RoundedRectangle(
+          cornerRadius: FangcunSurface.editorialResponseCornerRadius,
+          style: .continuous
+        )
+      )
+      .overlay {
+        RoundedRectangle(
+          cornerRadius: FangcunSurface.editorialResponseCornerRadius,
+          style: .continuous
+        )
+        .strokeBorder(InnerBalanceTheme.emphasis.opacity(0.24), lineWidth: 1)
+      }
+      .overlay(alignment: .leading) {
+        Capsule()
+          .fill(InnerBalanceTheme.emphasis)
+          .frame(width: 3)
+          .padding(.vertical, FangcunLayout.spacing(5))
+      }
+
+      if let latestPractice = today.latestPractice {
+        RecentPracticeRow(practice: latestPractice)
+      }
+
+      BodyEvidenceDisclosure(
+        isExpanded: $isShowingEvidence,
+        viewModel: viewModel,
+        onReviewSleep: onReviewSleep
+      )
+    }
+    .accessibilityElement(children: .contain)
+  }
+
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/BodyLoadSectionComponents.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+struct RecoveryRecommendationCard: View {
+  let action: TodayRecoveryAction
+  let onCheckIn: () -> Void
+  let onStartPractice: (PracticeKind) -> Void
+  let onStrongSurface: Bool
+
+  init(
+    action: TodayRecoveryAction,
+    onCheckIn: @escaping () -> Void,
+    onStartPractice: @escaping (PracticeKind) -> Void,
+    onStrongSurface: Bool = false
+  ) {
+    self.action = action
+    self.onCheckIn = onCheckIn
+    self.onStartPractice = onStartPractice
+    self.onStrongSurface = onStrongSurface
+  }
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+      Text(sectionTitle)
+        .font(.caption.weight(.semibold))
+        .tracking(1.1)
+        .foregroundStyle(secondaryInk)
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+
+      switch action {
+      case .practice(let practice):
+        ViewThatFits(in: .horizontal) {
+          HStack(alignment: .center, spacing: FangcunLayout.spacing(3)) {
+            practiceSummary(practice)
+              .layoutPriority(1)
+            Spacer(minLength: FangcunLayout.spacing(2))
+            startButton(practice)
+              .frame(width: 144)
+          }
+
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+            practiceSummary(practice)
+            startButton(practice)
+          }
+        }
+
+        adjustmentButton
+
+      case .continueNormally:
+        Text("照常进行，不需要额外练习。")
+          .font(.subheadline.weight(.semibold))
+          .foregroundStyle(primaryInk)
+          .fixedSize(horizontal: false, vertical: true)
+        adjustmentButton
+
+      case .needsInput:
+        Text("想直接弄清压力和来源，用十秒做一次判断。")
+          .font(.subheadline)
+          .foregroundStyle(secondaryInk)
+          .fixedSize(horizontal: false, vertical: true)
+        Button("判断压力与来源", action: onCheckIn)
+          .buttonStyle(
+            InnerBalancePrimaryButtonStyle(
+              onStrongSurface: onStrongSurface,
+              cornerRadius: FangcunSurface.editorialActionCornerRadius
+            )
+          )
+          .accessibilityIdentifier("home.checkIn")
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var adjustmentButton: some View {
+    Button("调整状态与来源", action: onCheckIn)
+      .font(.subheadline.weight(.semibold))
+      .foregroundStyle(secondaryInk)
+      .frame(minHeight: 44)
+      .buttonStyle(FangcunPressButtonStyle())
+      .accessibilityIdentifier("home.checkIn")
+  }
+
+  private var sectionTitle: String {
+    switch action {
+    case .practice: "现在做这个"
+    case .continueNormally: "现在怎么做"
+    case .needsInput: "下一步"
+    }
+  }
+
+  private func practiceSummary(_ practice: PracticeKind) -> some View {
+    Label {
+      VStack(alignment: .leading, spacing: 4) {
+        Text(practice.title)
+          .font(.headline)
+        Text(recommendationDetail(for: practice))
+          .font(.caption)
+          .foregroundStyle(secondaryInk)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+    } icon: {
+      Image(systemName: practice.systemImage)
+        .font(.title3)
+        .foregroundStyle(primaryInk)
+        .frame(width: 44, height: 44)
+        .background(iconFill, in: Circle())
+    }
+    .foregroundStyle(primaryInk)
+  }
+
+  private func startButton(_ practice: PracticeKind) -> some View {
+    Button(actionTitle(for: practice)) { onStartPractice(practice) }
+      .buttonStyle(
+        InnerBalancePrimaryButtonStyle(
+          onStrongSurface: onStrongSurface,
+          cornerRadius: FangcunSurface.editorialActionCornerRadius
+        )
+      )
+      .accessibilityLabel("开始 · \(practice.title)")
+      .accessibilityIdentifier("home.startRecommendation")
+  }
+
+  private func actionTitle(for practice: PracticeKind) -> String {
+    switch practice {
+    case .physiologicalSigh: "先缓 1 分钟"
+    case .pacedBreathing: "呼吸 3 分钟"
+    case .meditation: "安静 5 分钟"
+    case .nsdr: "躺下休息 10 分钟"
+    case .kegel: "开始 3 分钟"
+    }
+  }
+
+  private var primaryInk: Color {
+    onStrongSurface ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink
+  }
+
+  private var secondaryInk: Color {
+    onStrongSurface
+      ? InnerBalanceTheme.inverseInk.opacity(0.70) : InnerBalanceTheme.mutedInk
+  }
+
+  private var iconFill: Color {
+    onStrongSurface
+      ? InnerBalanceTheme.inverseInk.opacity(0.14) : InnerBalanceTheme.subtleFill
+  }
+
+  private func recommendationDetail(for practice: PracticeKind) -> String {
+    switch practice {
+    case .physiologicalSigh: "1 分钟 · 双重吸气后延长呼气"
+    case .pacedBreathing: "3 或 5 分钟 · 跟随节奏呼吸"
+    case .meditation: "5 或 10 分钟 · 安静地放松注意力"
+    case .nsdr: "10 或 20 分钟 · 躺下完成深度休息"
+    case .kegel: "3 分钟 · 盆底肌收紧与放松"
+    }
+  }
+}
+
+struct RecentPracticeRow: View {
+  let practice: PracticeCompletionRecord
+
+  var body: some View {
+    HStack(alignment: .top, spacing: FangcunLayout.spacing(3)) {
+      Image(systemName: "checkmark")
+        .font(.title3)
+        .foregroundStyle(InnerBalanceTheme.strongFill)
+        .frame(width: 36, height: 44)
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
+        Text("今日完成")
+          .font(.caption.weight(.semibold))
+          .foregroundStyle(InnerBalanceTheme.strongFill)
+        Text(practice.practiceKind.title)
+          .font(.headline)
+        Text(changeText)
+          .font(.subheadline.weight(.medium))
+        Text("练习了 \(PracticeDurationFormatter.clock(practice.actualDuration))")
+          .font(.caption2.monospacedDigit())
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding(.vertical, FangcunLayout.spacing(4))
+    .overlay(alignment: .top) {
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .overlay(alignment: .bottom) {
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("home.latestPractice")
+  }
+
+  private var changeText: String {
+    guard practice.hasSubjectiveComparison else { return "已完成" }
+    let change = practice.subjectiveChange
+    if change == 0 { return "主观感受持平" }
+    return "需要调节程度\(change < 0 ? "下降" : "上升") \(abs(change))"
+  }
+}
+
+struct BodyEvidenceDisclosure: View {
+  @Binding var isExpanded: Bool
+  let viewModel: HomeViewModel
+  let onReviewSleep: () -> Void
+
+  var body: some View {
+    DisclosureGroup(isExpanded: $isExpanded) {
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(5)) {
+        if viewModel.baselineDays < 5 {
+          BaselineProgressView(completedDays: viewModel.baselineDays)
+        }
+        TrainingContextSummary(viewModel: viewModel)
+        ForEach(Array(viewModel.evidence.prefix(3))) { item in
+          HealthEvidenceView(evidence: item)
+        }
+        if viewModel.recentWorkoutProtection {
+          Label("近期较长训练已从 HRV 与静息心率判断中单独处理", systemImage: "figure.run")
+            .font(.caption)
+            .foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        if viewModel.sleepNeedsReview {
+          Button(action: onReviewSleep) {
+            Label("核对睡眠数据", systemImage: "exclamationmark.bubble")
+              .font(.subheadline.weight(.semibold))
+          }
+          .buttonStyle(.plain)
+          .foregroundStyle(InnerBalanceTheme.emphasis)
+          .frame(minHeight: 44, alignment: .leading)
+        }
+        if let lastUpdated = viewModel.lastUpdated {
+          Text(
+            "Apple 健康最近同步：\(lastUpdated.formatted(.relative(presentation: .named)))"
+          )
+          .font(.caption2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        Text("方寸给出的是当下调节建议，不是医疗诊断。")
+          .font(.caption2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
+      .padding(.top, FangcunLayout.spacing(5))
+    } label: {
+      Label("为什么这样判断", systemImage: "waveform.path.ecg")
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(InnerBalanceTheme.strongFill)
+        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+    }
+    .accessibilityHint("展开查看训练、数据来源、时间和可靠性")
+    .accessibilityIdentifier("home.trainingSummary")
+  }
+}
+
+private struct TrainingContextSummary: View {
+  let viewModel: HomeViewModel
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+      Text("训练背景").font(.subheadline.weight(.semibold))
+      if let summary = viewModel.trainingSummary {
+        Text(BodyLoadCardPresentation.trainingHeadline(summary)).font(.subheadline)
+        Text(
+          "最近一次 \(summary.latestActivityName) · "
+            + "\(PracticeDurationFormatter.text(summary.latestDuration)) · "
+            + "\(summary.latestEndDate.formatted(.relative(presentation: .named))) · "
+            + summary.latestSourceName
+        )
+        .font(.caption)
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+      } else {
+        Text(
+          viewModel.unavailableKinds.contains(.workout)
+            ? "训练数据尚未可用" : BodyLoadCardPresentation.emptyTrainingMessage
+        )
+        .font(.caption)
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
+    }
+    .fixedSize(horizontal: false, vertical: true)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/DailyWordField.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+struct DailyWordField: View {
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+
+  let reflection: DailyReflection
+  let contextTitle: String
+
+  var body: some View {
+    VStack(spacing: 0) {
+      HStack(alignment: .top, spacing: FangcunLayout.spacing(3)) {
+        if !dynamicTypeSize.isAccessibilitySize {
+          Text("“")
+            .font(.system(size: 52, weight: .light, design: .default))
+            .foregroundStyle(InnerBalanceTheme.ink)
+            .frame(width: 36, alignment: .leading)
+            .accessibilityHidden(true)
+        }
+
+        VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+          HStack(spacing: FangcunLayout.spacing(2)) {
+            Text(contextTitle)
+          }
+          .font(.caption2.weight(.bold))
+          .tracking(1.2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+          .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+            Text(reflection.text)
+              .fangcunQuoteStyle()
+              .foregroundStyle(InnerBalanceTheme.ink)
+              .fixedSize(horizontal: false, vertical: true)
+              .accessibilityAddTraits(.isHeader)
+              .accessibilityIdentifier("home.dailyReflection")
+
+            if let attribution = reflection.attribution {
+              Text(
+                reflection.work.map { "\(attribution) · \($0)" }
+                  ?? attribution
+              )
+              .font(.footnote.weight(.medium))
+              .foregroundStyle(InnerBalanceTheme.mutedInk)
+              .fixedSize(horizontal: false, vertical: true)
+              .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+            }
+          }
+          .id(reflection.id)
+          .transition(.opacity)
+          .animation(
+            .easeOut(duration: reduceMotion ? 0.12 : 0.28),
+            value: reflection.id
+          )
+        }
+      }
+      .padding(.vertical, FangcunLayout.spacing(6))
+
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .accessibilityElement(children: .contain)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/EchoArcSelector.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+enum FangcunEchoSelectionEvent {
+  case loaded
+  case tapped
+}
+
+enum FangcunEchoGridLayout {
+  static func columnCount(isAccessibilitySize: Bool) -> Int {
+    isAccessibilitySize ? 2 : 3
+  }
+
+  static func isSelected(candidate: DailyEchoState, selection: DailyEchoState?) -> Bool {
+    candidate == selection
+  }
+
+  static func shouldPlayHaptic(for event: FangcunEchoSelectionEvent) -> Bool {
+    event == .tapped
+  }
+}
+
+struct EchoArcSelector: View {
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+  @State private var hapticTrigger = 0
+
+  let selection: DailyEchoState?
+  let historyAvailable: Bool
+  let saveMessage: String?
+  let onSelect: (DailyEchoState) -> Void
+  let onShowHistory: () -> Void
+
+  var body: some View {
+    VStack(spacing: 0) {
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+        heading
+        echoGrid
+
+        Text(saveMessage ?? " ")
+          .font(.caption2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+          .frame(maxWidth: .infinity, minHeight: 16, alignment: .trailing)
+          .opacity(saveMessage == nil ? 0 : 1)
+          .animation(
+            FangcunMotion.stateAnimation(reduceMotion: reduceMotion),
+            value: saveMessage
+          )
+          .accessibilityHidden(saveMessage == nil)
+          .accessibilityAddTraits(.updatesFrequently)
+      }
+      .padding(.vertical, FangcunLayout.spacing(4))
+
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .sensoryFeedback(.impact(weight: .medium), trigger: hapticTrigger)
+  }
+
+  private var heading: some View {
+    ViewThatFits(in: .horizontal) {
+      HStack(alignment: .firstTextBaseline, spacing: FangcunLayout.spacing(3)) {
+        headingTitle
+        Spacer(minLength: FangcunLayout.spacing(2))
+        instruction
+        historyButton
+      }
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
+        HStack {
+          headingTitle
+          Spacer()
+          historyButton
+        }
+        instruction
+      }
+    }
+  }
+
+  private var headingTitle: some View {
+    Text("现在怎样")
+      .font(.title3.weight(.semibold))
+      .foregroundStyle(InnerBalanceTheme.ink)
+  }
+
+  private var instruction: some View {
+    Text("不用解释，选最接近的")
+      .font(.subheadline)
+      .foregroundStyle(InnerBalanceTheme.mutedInk)
+  }
+
+  private var historyButton: some View {
+    Button("过去", action: onShowHistory)
+      .font(.caption.weight(.semibold))
+      .foregroundStyle(InnerBalanceTheme.strongFill)
+      .frame(minWidth: 44, minHeight: 44)
+      .contentShape(Rectangle())
+      .buttonStyle(FangcunPressButtonStyle())
+      // Reserve the same space before the first save so the choices do not move.
+      .opacity(historyAvailable ? 1 : 0)
+      .disabled(!historyAvailable)
+      .accessibilityHidden(!historyAvailable)
+      .accessibilityIdentifier("home.echo.history")
+  }
+
+  private var echoGrid: some View {
+    let columnCount = FangcunEchoGridLayout.columnCount(
+      isAccessibilitySize: dynamicTypeSize.isAccessibilitySize
+    )
+    return LazyVGrid(
+      columns: Array(
+        repeating: GridItem(.flexible(), spacing: FangcunLayout.spacing(2)),
+        count: columnCount
+      ),
+      spacing: FangcunLayout.spacing(2)
+    ) {
+      ForEach(DailyEchoState.allCases, id: \.rawValue) { state in
+        touchpoint(for: state)
+      }
+    }
+  }
+
+  private func touchpoint(for state: DailyEchoState) -> some View {
+    let isSelected = FangcunEchoGridLayout.isSelected(candidate: state, selection: selection)
+    return Button {
+      onSelect(state)
+      if FangcunEchoGridLayout.shouldPlayHaptic(for: .tapped) { hapticTrigger += 1 }
+    } label: {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+            HStack(spacing: FangcunLayout.spacing(2)) {
+              stateIcon(state)
+              Spacer(minLength: 0)
+              selectionMark(isSelected)
+            }
+            stateTitle(state, isSelected: isSelected)
+          }
+        } else {
+          HStack(spacing: FangcunLayout.spacing(2)) {
+            stateIcon(state, isSelected: isSelected)
+            stateTitle(state, isSelected: isSelected)
+            Spacer(minLength: 0)
+          }
+        }
+      }
+      .foregroundStyle(isSelected ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink)
+      .padding(.horizontal, FangcunLayout.spacing(3))
+      .padding(.vertical, FangcunLayout.spacing(2))
+      .frame(
+        maxWidth: .infinity,
+        minHeight: dynamicTypeSize.isAccessibilitySize ? 64 : 52,
+        alignment: .leading
+      )
+      .contentShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+      .background(
+        isSelected ? InnerBalanceTheme.strongFill : Color.clear,
+        in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: 6, style: .continuous)
+          .strokeBorder(
+            isSelected ? InnerBalanceTheme.inverseInk.opacity(0.28) : Color.clear,
+            lineWidth: 1
+          )
+      }
+      .overlay(alignment: .bottom) {
+        Rectangle()
+          .fill(isSelected ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.hairline)
+          .frame(height: isSelected ? 2 : 1)
+      }
+      .animation(
+        FangcunMotion.stateAnimation(reduceMotion: reduceMotion),
+        value: isSelected
+      )
+    }
+    .buttonStyle(FangcunPressButtonStyle())
+    .accessibilityAddTraits(isSelected ? .isSelected : [])
+    .accessibilityHint("点一下即保存当下状态")
+    .accessibilityIdentifier("home.echo.state.\(state.rawValue)")
+  }
+
+  private func stateIcon(_ state: DailyEchoState, isSelected: Bool = false) -> some View {
+    Image(systemName: isSelected ? "checkmark.circle.fill" : state.systemImage)
+      .font(.system(size: 17, weight: .medium))
+      .accessibilityHidden(true)
+  }
+
+  private func stateTitle(_ state: DailyEchoState, isSelected: Bool) -> some View {
+    Text(state.title)
+      .font(.caption.weight(isSelected ? .bold : .semibold))
+      .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+      .minimumScaleFactor(dynamicTypeSize.isAccessibilitySize ? 1 : 0.84)
+  }
+
+  private func selectionMark(_ isSelected: Bool) -> some View {
+    Image(systemName: "checkmark.circle.fill")
+      .font(.caption.weight(.bold))
+      .opacity(isSelected ? 1 : 0)
+      .accessibilityHidden(true)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkSheet.swift =====
+import SwiftUI
+
+struct FangcunDrinkSheet: View {
+  @Environment(FangcunDiary.self) private var diary
+  @Environment(\.dismiss) private var dismiss
+  @AppStorage("fangcun.coffeeMg") private var coffeeMg = 140
+  @State private var sweetCoffee = false
+  @State private var feedback = "轻轻记一下，就好。"
+  @State private var reaction = 0
+  private var kinds: [FangcunDrink] { [.water, sweetCoffee ? .sweetCoffee : .coffee, .beer, .soda] }
+  private var totals: FangcunDrinkTotals { FangcunDrinkTotals(diary.entries()) }
+
+  var body: some View {
+    VStack(spacing: 8) {
+      HStack {
+        VStack(alignment: .leading, spacing: 4) {
+          Text("今天喝了什么？").font(.title3.weight(.semibold))
+          Text(feedback).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+            .accessibilityIdentifier("drinks.feedback")
+        }
+        Spacer()
+        FangcunCompanion(scene: .drink, reaction: reaction).frame(width: 68, height: 68)
+        Button("完成") { dismiss() }.font(.subheadline).frame(minWidth: 44, minHeight: 44)
+      }
+      ScrollView {
+        VStack(spacing: 3) {
+          ForEach(kinds) { kind in
+            HStack(spacing: 10) {
+              Image(systemName: kind.symbol).frame(width: 22).foregroundStyle(InnerBalanceTheme.strongFill)
+              VStack(alignment: .leading, spacing: 3) {
+                Text(kind.title).font(.subheadline.weight(.medium))
+                Text("\(kind.fluid) ml" + (kind.isCoffee ? " · 约 \(coffeeMg) mg 咖啡因" : kind == .beer ? " · 约 10 g 酒精" : ""))
+                  .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk)
+              }
+              Spacer(minLength: 0)
+              Button { change(kind, adding: false) } label: { Image(systemName: "minus").frame(width: 44, height: 44) }
+                .accessibilityLabel("减少\(kind.title)")
+                .disabled(count(kind) == 0)
+              Text("\(count(kind))").font(.subheadline.monospacedDigit()).frame(minWidth: 12)
+                .accessibilityIdentifier("drinks.count.\(kind.rawValue)")
+              Button { change(kind, adding: true) } label: { Image(systemName: "plus").frame(width: 44, height: 44).background(InnerBalanceTheme.subtleFill, in: Circle()) }
+                .accessibilityLabel("增加\(kind.title)")
+            }
+            .opacity(diary.storageMessage == nil ? 1 : 0.5)
+            .disabled(diary.storageMessage != nil)
+          }
+          Toggle("咖啡是甜拿铁（同时记糖饮）", isOn: $sweetCoffee).font(.caption).padding(.vertical, 6)
+          Text("按杯预估，实际含量会因品牌与杯量变化。酒精不折算为补水建议。")
+            .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk).frame(maxWidth: .infinity, alignment: .leading)
+        }
+      }
+      Divider()
+      HStack {
+        VStack(alignment: .leading, spacing: 3) {
+          Text("总液体 \(totals.fluid) ml · 咖啡因 \(totals.caffeine) mg")
+          Text("酒精 \(totals.alcohol) g · 糖饮 \(totals.sugar) 份")
+        }.font(.caption).accessibilityElement(children: .combine).accessibilityIdentifier("drinks.totals")
+        Spacer()
+        Button { diary.undo(); feedback = "已撤销上一笔"; reaction += 1 } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
+          .font(.caption).frame(minHeight: 44).disabled(!diary.canUndo)
+      }
+      if let message = diary.storageMessage { Text(message).font(.caption).foregroundStyle(InnerBalanceTheme.emphasis) }
+    }
+    .padding(.horizontal, 20).padding(.top, 18).padding(.bottom, 8)
+    .foregroundStyle(InnerBalanceTheme.ink).tint(InnerBalanceTheme.strongFill)
+    .background(InnerBalanceTheme.canvas)
+    .presentationDetents([.fraction(0.55), .large])
+    .presentationDragIndicator(.visible)
+    .presentationCornerRadius(28)
+  }
+  private func count(_ kind: FangcunDrink) -> Int { diary.entries().filter { kind.isCoffee ? $0.kind.isCoffee : $0.kind == kind }.count }
+  private func change(_ kind: FangcunDrink, adding: Bool) {
+    if adding { diary.add(kind, caffeine: coffeeMg) }
+    else if kind.isCoffee, let last = diary.entries().last(where: { $0.kind.isCoffee }) { diary.remove(last.kind) }
+    else { diary.remove(kind) }
+    feedback = diary.storageMessage ?? "已\(adding ? "记录" : "减少")一杯\(kind.title)"
+    reaction += 1
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/FangcunHomeHeader.swift =====
+import Foundation
+import SwiftUI
+
+struct FangcunHomeHeader: View {
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @ScaledMetric(relativeTo: .largeTitle) private var displayPointSize =
+    FangcunTypography.display.basePointSize
+
+  let date: Date
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+            titleBlock
+            dateLabel
+          }
+        } else {
+          HStack(alignment: .bottom, spacing: FangcunLayout.spacing(5)) {
+            titleBlock
+            Spacer(minLength: FangcunLayout.spacing(3))
+            dateLabel
+          }
+        }
+      }
+      .padding(.top, FangcunLayout.spacing(2))
+      .padding(.bottom, FangcunLayout.spacing(5))
+
+      FangcunEditorialRule(emphasized: true)
+        .frame(height: 2)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var titleBlock: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      brandPoint
+      Text("此刻")
+        .font(
+          dynamicTypeSize.isAccessibilitySize
+            ? .largeTitle.bold()
+            : .system(size: displayPointSize, weight: .bold, design: .default)
+        )
+        .tracking(FangcunTypography.display.tracking)
+        .foregroundStyle(InnerBalanceTheme.ink)
+        .accessibilityAddTraits(.isHeader)
+    }
+  }
+
+  private var dateLabel: some View {
+    Text(editorialDate)
+      .font(.caption.weight(.medium))
+      .foregroundStyle(InnerBalanceTheme.mutedInk)
+      .multilineTextAlignment(dynamicTypeSize.isAccessibilitySize ? .leading : .trailing)
+      .fixedSize(horizontal: false, vertical: true)
+      .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+      .accessibilityIdentifier("home.date")
+  }
+
+  private var brandPoint: some View {
+    HStack(spacing: FangcunLayout.spacing(2)) {
+      FangcunBrandMark(size: 28)
+      Text("方寸")
+        .font(.subheadline.weight(.semibold))
+        .tracking(1.4)
+        .foregroundStyle(InnerBalanceTheme.ink)
+    }
+    .frame(minHeight: 24)
+    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("方寸")
+    .accessibilityIdentifier("home.brandPoint")
+  }
+
+  private var editorialDate: String {
+    let calendar = Calendar.autoupdatingCurrent
+    let month = calendar.component(.month, from: date)
+    let day = calendar.component(.day, from: date)
+    let weekday = date.formatted(.dateTime.weekday(.wide))
+    return String(format: "%02d / %02d\n%@", month, day, weekday)
+  }
+}
+
+===== END FILE =====

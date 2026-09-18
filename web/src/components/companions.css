@@ -1,0 +1,15 @@
+/* Character movement is local, finite, and subordinate to the current task. */
+.companions { overflow: visible; }
+.companions .pet-eyes { transform-origin: center; transform-box: fill-box; animation: companion-blink 9s linear infinite; }
+.companions .tail-settle { animation: companion-tail 1.2s ease-in-out 1 both; }
+.companions .dog-nod { animation: companion-nod .6s ease-in-out 1 both; }
+.companions .cat-touch, .companions .dog-touch { animation: companion-touch .5s cubic-bezier(.23,1,.32,1) 1 both; transform-origin: 335px 263px; }
+.companions .contact-mark { animation: companion-ack .6s ease-out 1 both; }
+@keyframes companion-blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.15); } }
+@keyframes companion-tail { 0%,100% { transform: rotate(0); } 30% { transform: rotate(-6deg); } 65% { transform: rotate(4deg); } }
+@keyframes companion-nod { 0%,100% { transform: rotate(0); } 50% { transform: rotate(5deg); } }
+@keyframes companion-touch { from { transform: translateY(5px); } to { transform: translateY(0); } }
+@keyframes companion-ack { 0% { opacity: 0; } 40% { opacity: .8; } 100% { opacity: .4; } }
+.companions[data-still="true"] * { animation: none !important; }
+.app-content[inert] .companions * { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .companions * { animation: none !important; } }

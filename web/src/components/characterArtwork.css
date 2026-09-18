@@ -1,0 +1,7 @@
+.character-artwork { position: relative; display: inline-block; overflow: hidden; isolation: isolate; aspect-ratio: 3/2; border-radius: 16px; background: #fff; mix-blend-mode: multiply; }
+.character-artwork .artwork-canvas, .character-artwork .artwork-fallback { width: 100%; height: 100%; position: absolute; inset: 0; display: block; }
+.character-artwork .artwork-fallback { object-fit: contain; }
+[data-theme="dark"] .character-artwork { mix-blend-mode: normal; background: #fff; border: 1px solid #ffffff24; }
+.character-artwork:not([data-character="duo"]) { aspect-ratio: 1; }
+[data-theme="dark"] .breathing-pet .character-artwork { border-radius: 50%; }
+@media (prefers-reduced-motion: reduce) { .character-artwork { transition: none; } }

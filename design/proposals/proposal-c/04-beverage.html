@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - 今日饮品</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #E8EEF5;
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .iphone-frame {
+    width: 393px;
+    height: 852px;
+    background: #FAFBFD;
+    border-radius: 47px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
+    color: #2D3748;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .status-bar {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  .screen-content {
+    height: calc(852px - 54px - 83px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid #D8DCE5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 8px;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    color: #8A95AD;
+    width: 64px;
+  }
+  .tab-item.active { color: #2B5EA7; }
+  .tab-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: #1a1a1a;
+    border-radius: 3px;
+  }
+
+  /* Top navigation bar */
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 10px 20px 14px;
+  }
+  .nav-back {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  .nav-back:hover {
+    background: #F0F2F7;
+  }
+  .nav-center {
+    text-align: center;
+  }
+  .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #2D3748;
+  }
+  .nav-subtitle {
+    font-size: 12px;
+    color: #8A95AD;
+    margin-top: 1px;
+  }
+
+  /* Section cards */
+  .section-card {
+    margin: 10px 20px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .section-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 14px 0 0 14px;
+  }
+  .section-card.border-blue::before { background: #2B5EA7; }
+  .section-card.border-warm::before { background: #E07B4F; }
+  .section-card.border-red::before { background: #C75B2A; }
+  .section-card.border-gray::before { background: #8A9AB5; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-icon.blue { background: #E8EFF8; }
+  .card-icon.warm { background: #FDF0EB; }
+  .card-icon.red { background: #FDEEE8; }
+  .card-icon.neutral { background: #F3F5F8; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2D3748;
+  }
+
+  /* Water section */
+  .water-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cups-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cup {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cup.filled {
+    background: #2B5EA7;
+  }
+  .cup.empty {
+    background: #EDEFF4;
+  }
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid #D8DCE5;
+  }
+  .stepper-btn {
+    width: 36px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FAFBFD;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    color: #2B5EA7;
+    border: none;
+    user-select: none;
+  }
+  .stepper-btn:hover {
+    background: #E8EFF8;
+  }
+  .stepper-btn:active {
+    background: #D4E0F0;
+  }
+  .stepper-val {
+    width: 36px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2B5EA7;
+    background: #fff;
+    border-left: 1px solid #D8DCE5;
+    border-right: 1px solid #D8DCE5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Beverage items */
+  .bev-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #F0F2F7;
+  }
+  .bev-item:last-of-type {
+    border-bottom: none;
+  }
+  .bev-info {
+    flex: 1;
+  }
+  .bev-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2D3748;
+  }
+  .bev-detail {
+    font-size: 12px;
+    color: #8A95AD;
+    margin-top: 2px;
+  }
+  .bev-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 8px;
+  }
+  .bev-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+  }
+  .bev-action-btn:hover {
+    background: #F3F5F8;
+  }
+
+  .btn-add-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2B5EA7;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  .btn-add-item:hover {
+    color: #1E4578;
+  }
+
+  /* Empty beverage section */
+  .bev-empty {
+    font-size: 13px;
+    color: #8A95AD;
+    padding: 6px 0 4px;
+  }
+
+  /* Quick-add section */
+  .quick-add-section {
+    margin: 16px 20px 8px;
+  }
+  .quick-add-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6B7793;
+    margin-bottom: 10px;
+  }
+  .quick-add-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .quick-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: #F0F2F7;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2D3748;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .quick-chip:hover {
+    background: #E8EFF8;
+    color: #2B5EA7;
+  }
+  .quick-chip:active {
+    background: #D4E0F0;
+  }
+
+  /* Bottom note */
+  .bottom-note {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 12px 24px 20px;
+  }
+  .note-text {
+    font-size: 11px;
+    color: #A0A9BC;
+    line-height: 1.4;
+  }
+  .dog-stamp-bottom {
+    opacity: 0.3;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  /* Paper texture */
+  .section-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+</style>
+</head>
+<body>
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#2D3748"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#2D3748"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#2D3748"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#2D3748"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.2 2.6 10.7 1.5 8 1.5S2.8 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#2D3748"/><path d="M8 7.2C9.3 7.2 10.5 7.7 11.3 8.6L8 12L4.7 8.6C5.5 7.7 6.7 7.2 8 7.2Z" fill="#2D3748"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0" y="1" width="22" height="10" rx="2" stroke="#2D3748" stroke-width="1" fill="none"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="#2D3748"/><rect x="1.5" y="2.5" width="18" height="7" rx="1" fill="#2D3748"/></svg>
+    </div>
+  </div>
+
+  <div class="screen-content">
+
+    <!-- Top navigation -->
+    <div class="nav-bar">
+      <div class="nav-back">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M14 4L7 11L14 18" stroke="#2B5EA7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="nav-center">
+        <div class="nav-title">今日饮品</div>
+        <div class="nav-subtitle">9月17日</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Water -->
+    <div class="section-card border-blue">
+      <div class="card-header">
+        <div class="card-icon blue">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2C8 2 3.5 7.5 3.5 10.5C3.5 13 5.5 14.5 8 14.5C10.5 14.5 12.5 13 12.5 10.5C12.5 7.5 8 2 8 2Z" fill="#94B3D7" opacity="0.3" stroke="#2B5EA7" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <span class="card-title">饮水</span>
+      </div>
+      <div class="water-row">
+        <div class="cups-display">
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn">−</button>
+          <div class="stepper-val">4</div>
+          <button class="stepper-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Caffeine -->
+    <div class="section-card border-warm">
+      <div class="card-header">
+        <div class="card-icon warm">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="2.5" y="5" width="9" height="8" rx="1.5" stroke="#E07B4F" stroke-width="1.2" fill="none"/>
+            <path d="M11.5 7H13C13.8 7 14.5 7.7 14.5 8.5C14.5 9.3 13.8 10 13 10H11.5" stroke="#E07B4F" stroke-width="1.2" fill="none"/>
+            <path d="M5.5 3.5C5.5 3.5 5.8 2 7 2C8.2 2 8.5 3.5 8.5 3.5" stroke="#E07B4F" stroke-width="0.8" stroke-linecap="round" fill="none"/>
+            <line x1="7" y1="2.5" x2="7" y2="4.5" stroke="#E07B4F" stroke-width="0.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="card-title">咖啡因</span>
+      </div>
+      <div class="bev-item">
+        <div class="bev-info">
+          <div class="bev-name">美式 ×1</div>
+          <div class="bev-detail">约150mg，预设值可调</div>
+        </div>
+        <div class="bev-actions">
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M11.5 2.5L13.5 4.5M10.2 3.8L3.5 10.5V12.5H5.5L12.2 5.8L10.2 3.8Z" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 4.5H13M6 4.5V3C6 2.4 6.4 2 7 2H9C9.6 2 10 2.4 10 3V4.5M5 4.5V13C5 13.6 5.4 14 6 14H10C10.6 14 11 13.6 11 13V4.5" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-add-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="5.5" stroke="#2B5EA7" stroke-width="1.2" fill="none"/>
+          <path d="M7 4.5V9.5M4.5 7H9.5" stroke="#2B5EA7" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        添加咖啡因饮品
+      </button>
+    </div>
+
+    <!-- Section 3: Alcohol -->
+    <div class="section-card border-red">
+      <div class="card-header">
+        <div class="card-icon red">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M5 2L4 8C4 10.2 5.8 12 8 12C10.2 12 12 10.2 12 8L11 2H5Z" stroke="#C75B2A" stroke-width="1.2" fill="none"/>
+            <line x1="8" y1="12" x2="8" y2="14.5" stroke="#C75B2A" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="5.5" y1="14.5" x2="10.5" y2="14.5" stroke="#C75B2A" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M5.5 6H10.5" stroke="#C75B2A" stroke-width="0.8" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="card-title">酒精</span>
+      </div>
+      <div class="bev-item">
+        <div class="bev-info">
+          <div class="bev-name">啤酒 ×1</div>
+          <div class="bev-detail">约350ml</div>
+        </div>
+        <div class="bev-actions">
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M11.5 2.5L13.5 4.5M10.2 3.8L3.5 10.5V12.5H5.5L12.2 5.8L10.2 3.8Z" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 4.5H13M6 4.5V3C6 2.4 6.4 2 7 2H9C9.6 2 10 2.4 10 3V4.5M5 4.5V13C5 13.6 5.4 14 6 14H10C10.6 14 11 13.6 11 13V4.5" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-add-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="5.5" stroke="#2B5EA7" stroke-width="1.2" fill="none"/>
+          <path d="M7 4.5V9.5M4.5 7H9.5" stroke="#2B5EA7" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        添加酒精饮品
+      </button>
+    </div>
+
+    <!-- Section 4: Sugary drinks -->
+    <div class="section-card border-gray">
+      <div class="card-header">
+        <div class="card-icon neutral">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M5 3H11L10.5 13C10.5 13.3 10.2 13.5 10 13.5H6C5.8 13.5 5.5 13.3 5.5 13L5 3Z" stroke="#8A9AB5" stroke-width="1.2" fill="none"/>
+            <path d="M4 3H12" stroke="#8A9AB5" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="7.5" cy="8" r="0.8" fill="#8A9AB5" opacity="0.4"/>
+            <circle cx="9" cy="10" r="0.6" fill="#8A9AB5" opacity="0.4"/>
+            <circle cx="7" cy="10.5" r="0.5" fill="#8A9AB5" opacity="0.4"/>
+          </svg>
+        </div>
+        <span class="card-title">含糖饮料</span>
+      </div>
+      <div class="bev-empty">今天未记录</div>
+      <button class="btn-add-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="5.5" stroke="#2B5EA7" stroke-width="1.2" fill="none"/>
+          <path d="M7 4.5V9.5M4.5 7H9.5" stroke="#2B5EA7" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        添加
+      </button>
+    </div>
+
+    <!-- Quick-add section -->
+    <div class="quick-add-section">
+      <div class="quick-add-label">快速添加</div>
+      <div class="quick-add-row">
+        <button class="quick-chip">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px;">
+            <path d="M6 1C6 1 2.5 5 2.5 7.5C2.5 9.4 4 11 6 11C8 11 9.5 9.4 9.5 7.5C9.5 5 6 1 6 1Z" fill="#94B3D7" opacity="0.5"/>
+          </svg>
+          水
+        </button>
+        <button class="quick-chip">美式</button>
+        <button class="quick-chip">拿铁</button>
+        <button class="quick-chip">绿茶</button>
+        <button class="quick-chip">啤酒</button>
+        <button class="quick-chip">红酒</button>
+        <button class="quick-chip">可乐</button>
+        <button class="quick-chip">奶茶</button>
+        <button class="quick-chip">果汁</button>
+      </div>
+    </div>
+
+    <!-- Bottom note with dog stamp -->
+    <div class="bottom-note">
+      <div class="note-text">一杯饮品可能同时计入多个类别</div>
+      <div class="dog-stamp-bottom">
+        <img src="data:image/png;base64,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" width="36" height="36" style="object-fit:contain" alt="猫">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 9.5L11 3L19 9.5V18C19 18.6 18.6 19 18 19H4C3.4 19 3 18.6 3 18V9.5Z" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="8" y="13" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+      <span>今天</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M11 7V11.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <span>练习</span>
+    </div>
+    <div class="tab-item active">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 17V8M8 17V5M12 17V10M16 17V7M20 17V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <span>记录</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="5" r="1.5" fill="currentColor"/><circle cx="11" cy="11" r="1.5" fill="currentColor"/><circle cx="11" cy="17" r="1.5" fill="currentColor"/></svg></div>
+      <span>更多</span>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+</body>
+</html>

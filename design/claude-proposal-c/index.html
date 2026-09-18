@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方寸 · 方案 C 设计预览</title>
+<style>
+:root{color-scheme:light;--ink:#1b355a;--muted:#728093;--paper:#f7f8fa;--line:#dce2ea;--orange:#e07b4f}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"PingFang SC",sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}a{color:inherit;text-underline-offset:4px}button:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
+header{padding:22px 32px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:24px;background:#fff} .brand{display:flex;gap:16px;align-items:center}.stamp{font-family:serif;border:2px solid var(--ink);border-radius:9px 7px 11px 6px;font-size:24px;padding:7px;letter-spacing:2px;transform:rotate(-4deg)}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted);margin:0 0 6px}h1{font-size:21px;margin:0;font-weight:650}.head-actions{display:flex;align-items:center;gap:20px;font-size:13px}.mode{display:flex;padding:4px;background:#eef2f6;border-radius:12px}.mode button{border:0;background:transparent;padding:10px 15px;border-radius:9px;color:var(--muted)}.mode button[aria-pressed=true]{background:var(--ink);color:white}
+.workspace{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:calc(100vh - 100px)}aside{border-right:1px solid var(--line);padding:30px 20px;display:flex;flex-direction:column;gap:24px}.section-label{font-size:12px;color:var(--muted);letter-spacing:1px;padding:0 12px}nav{display:grid;gap:7px}nav button{display:flex;align-items:center;gap:12px;padding:14px 12px;border:1px solid transparent;border-radius:12px;text-align:left;background:transparent;color:var(--ink);font-size:14px;min-height:48px}nav button span:first-child{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}nav button[aria-pressed=true]{background:#e7eef7;border-color:#c8d6e7}nav button[aria-pressed=true]:after{content:'';margin-left:auto;background:var(--orange);border-radius:50%;width:6px;height:6px}.note{margin-top:auto;padding:18px 12px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.9;color:var(--muted)}.note strong{color:var(--ink);font-weight:600}.note a{display:inline-block;margin-top:9px}
+main{padding:25px 30px 28px;min-width:0;background:radial-gradient(#1b355a0d .7px,transparent .7px);background-size:8px 8px}.stage-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;max-width:1000px;margin:0 auto 18px}.stage-heading h2{font-size:18px;margin:0 0 7px}.stage-heading p{font-size:13px;margin:0;color:var(--muted);line-height:1.7}.badge{font-size:11px;white-space:nowrap;border:1px solid var(--line);border-radius:20px;padding:7px 10px;color:var(--muted);background:#fff}.screens{display:grid;grid-template-columns:1fr;gap:28px;max-width:1400px;margin:auto}.screen-card{min-width:0;text-align:center}.screen-card[hidden]{display:none}.frame-space{margin:auto;width:calc(417px * var(--scale,1));height:calc(876px * var(--scale,1));position:relative;background:#e8eef5;border-radius:calc(48px * var(--scale,1));box-shadow:0 20px 55px #233b5d0c}.frame-space iframe{display:block;width:417px;height:876px;border:0;transform:scale(var(--scale,1));transform-origin:top left;border-radius:24px}.caption{display:none;margin:14px 0 0;font-size:13px}.caption a{font-size:11px;color:var(--muted);margin-left:12px}.gallery .screens{grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 24px}.gallery .caption{display:block}.gallery aside{padding-top:30px}.gallery main{padding-left:24px;padding-right:24px}.bottom-hint{text-align:center;font-size:11px;color:var(--muted);margin:18px 0 0}.gallery .bottom-hint{display:none}
+@media(min-width:1800px){.gallery .screens{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1100px){.workspace{grid-template-columns:210px 1fr}.gallery .screens{grid-template-columns:repeat(2,minmax(0,1fr))}.head-actions>a{display:none}}
+@media(max-width:700px){header{padding:16px;gap:12px}.stamp{font-size:19px}.brand{gap:10px}h1{font-size:16px}.eyebrow{font-size:9px;letter-spacing:1px}.mode button{font-size:12px;padding:9px 10px}.head-actions{gap:0}.workspace{display:block}aside{padding:13px 12px;border-right:0;border-bottom:1px solid var(--line);gap:0}.section-label,.note{display:none}nav{display:flex;overflow-x:auto;gap:7px}nav button{white-space:nowrap;padding:10px;min-height:44px;gap:7px}nav button[aria-pressed=true]:after{display:none}main,.gallery main{padding:20px 12px}.stage-heading{gap:8px}.stage-heading h2{font-size:16px}.stage-heading p{font-size:12px}.badge{font-size:10px;padding:6px}.gallery .screens{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 12px}.caption{font-size:12px}.caption a{display:block;margin:7px 0 0}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="stamp">方寸</div><div><p class="eyebrow">FANGCUN / DESIGN STUDY C</p><h1>双色生活记录</h1></div></div><div class="head-actions"><a href="http://127.0.0.1:4173/" target="_blank" rel="noopener">打开上一版原型 ↗</a><div class="mode" aria-label="预览方式"><button id="single" aria-pressed="true">单页细看</button><button id="gallery" aria-pressed="false">六屏总览</button></div></div></header>
+<div class="workspace"><aside><div class="section-label">CLAUDE 设计稿 · 06 SCREENS</div><nav aria-label="设计页面"></nav><div class="note"><strong>保留原稿，直接看效果。</strong><br>分栏式信息 · 蓝橙双色<br>猫狗小印章 · 独立饮品记录<br><br>本页是设计稿查看器。页面内的业务按钮、记录和计时均为静态展示，健康数据为示例。<br><a href="设计说明-原稿.md" target="_blank">查看原始设计说明 ↗</a></div></aside>
+<main><div class="stage-heading"><div><h2 id="page-title"></h2><p id="page-desc"></p></div><span class="badge">静态原稿 · 393 × 852</span></div><div class="screens"></div><p class="bottom-hint">在手机画面内滚动，查看完整页面 · 原始配色与布局未改动</p></main></div>
+<script>
+const pages=[
+ ['01-home-calm.html','首页 · 平稳','蓝色结论、身体信号和生活记录，按板块向下展开。'],
+ ['02-home-elevated.html','首页 · 偏高','暖橙边框提示负荷变化，身体数据与行动建议保持同一层次。'],
+ ['03-home-nodata.html','首页 · 数据不足','用中性板块展示资料收集状态，并保留练习入口。'],
+ ['04-beverage.html','饮品记录','独立记录页面：饮水可视化、饮品条目与快捷添加。'],
+ ['05-breathing.html','呼吸练习','深蓝色沉浸画面、呼吸圆环和版画猫咪。'],
+ ['06-trends.html','趋势与历史','日期选择、周状态图与历史记录分区展示。']
+];
+let selected=0, overview=false;
+const nav=document.querySelector('nav'),screens=document.querySelector('.screens');
+pages.forEach(([file,title],i)=>{
+ const button=document.createElement('button');button.innerHTML=`<span>0${i+1}</span><span>${title}</span>`;button.onclick=()=>{selected=i;overview=false;render()};nav.append(button);
+ const card=document.createElement('section');card.className='screen-card';card.innerHTML=`<div class="frame-space"><iframe src="proposal-c/${file}" title="${title}原始设计稿" sandbox="allow-same-origin"></iframe></div><p class="caption">${title}<a href="proposal-c/${file}" target="_blank" rel="noopener">原尺寸打开 ↗</a></p>`;screens.append(card);
+});
+function fit(){document.querySelectorAll('.screen-card:not([hidden])').forEach(card=>{const available=card.clientWidth;const mobile=innerWidth<=700;const height=overview?876:Math.max(480,innerHeight-(mobile?250:205));const scale=Math.min(1,(available-12)/417,height/876);card.style.setProperty('--scale',scale)})}
+function render(){document.body.classList.toggle('gallery',overview);document.querySelector('#single').setAttribute('aria-pressed',!overview);document.querySelector('#gallery').setAttribute('aria-pressed',overview);Array.from(nav.children).forEach((button,i)=>button.setAttribute('aria-pressed',!overview&&i===selected));Array.from(screens.children).forEach((card,i)=>card.hidden=!overview&&i!==selected);document.querySelector('#page-title').textContent=overview?'六个页面，一起看。':pages[selected][1];document.querySelector('#page-desc').textContent=overview?'对照三种首页状态，再看记录、练习与趋势。各画面均可独立滚动。':pages[selected][2];history.replaceState(null,'','#'+(overview?'all':selected+1));fit()}
+document.querySelector('#single').onclick=()=>{overview=false;render()};document.querySelector('#gallery').onclick=()=>{overview=true;render()};window.addEventListener('resize',fit);
+if(location.hash==='#all')overview=true;else if(/^#[1-6]$/.test(location.hash))selected=Number(location.hash.slice(1))-1;
+render();
+</script></body></html>

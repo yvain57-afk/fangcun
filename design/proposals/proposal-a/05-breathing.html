@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - 呼吸练习</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #E8EEF5;
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .iphone-frame {
+    width: 393px;
+    height: 852px;
+    background: #0F1B2D;
+    border-radius: 47px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
+    color: #FFFFFF;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .status-bar {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: rgba(255,255,255,0.7);
+  }
+  .status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.8); }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
+    z-index: 5;
+  }
+
+  /* Full screen breathing layout */
+  .breath-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 40%, #1E3A5F 0%, #0F1B2D 70%);
+    padding-top: 54px;
+    padding-bottom: 40px;
+  }
+
+  /* Top info */
+  .breath-top {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+  .breath-exercise-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+  .breath-remaining {
+    font-size: 14px;
+    color: rgba(255,255,255,0.35);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Central breathing ring */
+  .breath-center {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Outer ring (SVG) */
+  .breath-ring-svg {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Glowing orb effect */
+  .breath-glow {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%, rgba(43,94,167,0.3) 0%, rgba(43,94,167,0.08) 50%, transparent 70%);
+    animation: breathPulse 8s ease-in-out infinite;
+  }
+
+  @keyframes breathPulse {
+    0%, 100% { transform: scale(0.85); opacity: 0.7; }
+    37.5% { transform: scale(1.1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+    87.5% { transform: scale(0.85); opacity: 0.7; }
+  }
+
+  /* Inner content */
+  .breath-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breath-phase {
+    font-size: 28px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 2px;
+  }
+  .breath-countdown {
+    font-size: 56px;
+    font-weight: 200;
+    color: rgba(255,255,255,0.9);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Cat below the ring */
+  .breath-cat {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .breath-progress-text {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Bottom controls */
+  .breath-controls {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .ctrl-pause {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+  }
+  .ctrl-pause:hover {
+    background: rgba(255,255,255,0.18);
+  }
+
+  .ctrl-end {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 100px;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .ctrl-end:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* Subtle particles/dots in background */
+  .bg-dots {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .bg-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(148,179,215,0.15);
+  }
+</style>
+</head>
+<body>
+
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="rgba(255,255,255,0.6)"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="rgba(255,255,255,0.6)"/><rect x="9" y="1" width="3" height="11" rx="1" fill="rgba(255,255,255,0.6)"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="rgba(255,255,255,0.6)"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.2 2.6 10.7 1.5 8 1.5S2.8 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="rgba(255,255,255,0.6)"/><path d="M8 7.2C9.3 7.2 10.5 7.7 11.3 8.6L8 12L4.7 8.6C5.5 7.7 6.7 7.2 8 7.2Z" fill="rgba(255,255,255,0.6)"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0" y="1" width="22" height="10" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="rgba(255,255,255,0.5)"/><rect x="1.5" y="2.5" width="18" height="7" rx="1" fill="rgba(255,255,255,0.5)"/></svg>
+    </div>
+  </div>
+
+  <div class="breath-screen">
+    <!-- Subtle background dots -->
+    <div class="bg-dots">
+      <div class="bg-dot" style="width:3px;height:3px;top:15%;left:20%;opacity:0.4;"></div>
+      <div class="bg-dot" style="width:2px;height:2px;top:25%;left:75%;opacity:0.3;"></div>
+      <div class="bg-dot" style="width:4px;height:4px;top:60%;left:12%;opacity:0.2;"></div>
+      <div class="bg-dot" style="width:2px;height:2px;top:70%;left:82%;opacity:0.35;"></div>
+      <div class="bg-dot" style="width:3px;height:3px;top:40%;left:88%;opacity:0.25;"></div>
+      <div class="bg-dot" style="width:2px;height:2px;top:85%;left:30%;opacity:0.3;"></div>
+    </div>
+
+    <!-- Top info -->
+    <div class="breath-top">
+      <div class="breath-exercise-name">节律呼吸</div>
+      <div class="breath-remaining">剩余 3:24</div>
+    </div>
+
+    <!-- Central ring -->
+    <div class="breath-center">
+      <!-- SVG ring with progress -->
+      <svg class="breath-ring-svg" viewBox="0 0 240 240" fill="none">
+        <!-- Background ring -->
+        <circle cx="120" cy="120" r="110" stroke="rgba(148,179,215,0.1)" stroke-width="3" fill="none"/>
+        <!-- Progress ring (25% = 2/8 sets) -->
+        <circle cx="120" cy="120" r="110" stroke="rgba(43,94,167,0.5)" stroke-width="3" fill="none"
+          stroke-dasharray="691.15" stroke-dashoffset="518.36"
+          stroke-linecap="round" transform="rotate(-90 120 120)"/>
+        <!-- Dot marker at progress point -->
+        <circle cx="120" cy="10" r="5" fill="#2B5EA7" transform="rotate(90 120 120)">
+        </circle>
+      </svg>
+
+      <!-- Glow effect -->
+      <div class="breath-glow"></div>
+
+      <!-- Inner content -->
+      <div class="breath-inner">
+        <div class="breath-phase">吸气</div>
+        <div class="breath-countdown">3</div>
+      </div>
+    </div>
+
+    <!-- Cat with expanding belly -->
+    <div class="breath-cat">
+      <svg width="80" height="65" viewBox="0 0 80 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Cat body (slightly expanded for inhale) -->
+        <ellipse cx="40" cy="42" rx="22" ry="18" fill="rgba(255,255,255,0.08)" stroke="rgba(148,179,215,0.4)" stroke-width="1.5">
+          <animate attributeName="ry" values="16;19;16" dur="8s" repeatCount="indefinite"/>
+          <animate attributeName="rx" values="20;23;20" dur="8s" repeatCount="indefinite"/>
+        </ellipse>
+        <!-- Cat head -->
+        <circle cx="40" cy="18" r="14" fill="rgba(255,255,255,0.06)" stroke="rgba(148,179,215,0.4)" stroke-width="1.5"/>
+        <!-- Left ear -->
+        <path d="M30 8 L26 -4 L36 5Z" fill="rgba(255,255,255,0.04)" stroke="rgba(148,179,215,0.4)" stroke-width="1.2" stroke-linejoin="round"/>
+        <!-- Right ear (orange accent) -->
+        <path d="M50 8 L54 -4 L44 5Z" fill="rgba(224,123,79,0.15)" stroke="rgba(148,179,215,0.4)" stroke-width="1.2" stroke-linejoin="round"/>
+        <!-- Eyes - peaceful closed -->
+        <path d="M34 17 Q37 14.5, 40 17" stroke="rgba(148,179,215,0.5)" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        <path d="M40 17 Q43 14.5, 46 17" stroke="rgba(148,179,215,0.5)" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        <!-- Nose -->
+        <path d="M39 21 L40 22.5 L41 21" stroke="rgba(224,123,79,0.4)" stroke-width="0.8" stroke-linecap="round" fill="none"/>
+        <!-- Whiskers -->
+        <line x1="25" y1="19" x2="33" y2="18.5" stroke="rgba(148,179,215,0.3)" stroke-width="0.7" stroke-linecap="round"/>
+        <line x1="47" y1="18.5" x2="55" y2="19" stroke="rgba(148,179,215,0.3)" stroke-width="0.7" stroke-linecap="round"/>
+        <!-- Tail -->
+        <path d="M60 46 C66 42, 68 34, 62 30" stroke="rgba(148,179,215,0.4)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="breath-progress-text">2 / 8 组</div>
+    </div>
+
+    <!-- Controls -->
+    <div class="breath-controls">
+      <button class="ctrl-end">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="currentColor"/></svg>
+        结束
+      </button>
+      <button class="ctrl-pause">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="7" y="5" width="3.5" height="14" rx="1" fill="white"/>
+          <rect x="13.5" y="5" width="3.5" height="14" rx="1" fill="white"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="home-indicator"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - Proposal B - 回顾</title>
+<style>
+  :root {
+    --fc-blue: #2B5EA7; --fc-blue-dark: #1E4578; --fc-blue-light: #E8EFF8;
+    --fc-blue-muted: #94B3D7; --fc-blue-50: #F0F5FB;
+    --fc-orange: #E07B4F; --fc-orange-light: #FDF0EB; --fc-orange-muted: #F2B89E;
+    --fc-calm: #2B5EA7; --fc-calm-bg: #EDF3FB;
+    --fc-elevated: #C75B2A; --fc-elevated-bg: #FDF0EB;
+    --fc-neutral: #8A9AB5; --fc-neutral-bg: #F3F5F8;
+    --fc-text: #2D3748; --fc-text-secondary: #6B7793; --fc-text-tertiary: #8A95AD;
+    --fc-gray-50: #F5F7FA; --fc-gray-100: #ECEEF3; --fc-gray-200: #D8DCE5;
+    --fc-shadow-sm: 0 1px 3px rgba(43,94,167,0.06);
+    --fc-shadow-md: 0 2px 8px rgba(43,94,167,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#E8EEF5;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,'PingFang SC',sans-serif;-webkit-font-smoothing:antialiased}
+  .iphone-frame{width:393px;height:852px;border-radius:47px;box-shadow:0 0 0 3px #1a1a1a,0 20px 60px rgba(0,0,0,.15);background:#FEFDFB;position:relative;overflow:hidden}
+  .dynamic-island{width:126px;height:37px;background:#000;border-radius:20px;position:absolute;top:11px;left:50%;transform:translateX(-50%);z-index:10}
+  .status-bar{height:54px;padding:14px 28px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:5}
+  .status-time{font-size:16px;font-weight:700;color:var(--fc-text)}
+  .status-icons{display:flex;align-items:center;gap:6px}
+  .content-area{height:calc(852px - 54px - 83px);overflow-y:auto;scrollbar-width:none}
+  .content-area::-webkit-scrollbar{display:none}
+  .tab-bar{height:83px;position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:.5px solid #D8DCE5;display:flex;justify-content:space-around;align-items:flex-start;padding-top:8px;z-index:10}
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+  .tab-label{font-size:10px;color:#8A95AD}
+  .tab-item.active .tab-label{color:#2B5EA7}
+  .home-indicator{width:134px;height:5px;background:#1a1a1a;border-radius:3px;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:11}
+
+  /* Header */
+  .page-header{padding:16px 20px 0}
+  .page-title{font-size:28px;font-weight:700;color:var(--fc-text);letter-spacing:-.5px}
+  .toggle-bar{display:flex;background:var(--fc-gray-100);border-radius:100px;height:36px;margin-top:12px;padding:3px}
+  .toggle-seg{flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--fc-text-secondary);border-radius:100px;cursor:pointer;font-weight:500;transition:all .2s}
+  .toggle-seg.active{background:#fff;color:var(--fc-text);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+  /* Chart card */
+  .chart-card{margin:16px 20px 0;background:#fff;border-radius:16px;padding:16px;box-shadow:var(--fc-shadow-sm);border:1px solid var(--fc-gray-100)}
+  .chart-title{font-size:15px;font-weight:600;color:var(--fc-text);margin-bottom:16px}
+  .bars-container{display:flex;align-items:flex-end;gap:8px;height:100px;padding-bottom:24px;position:relative}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .bar{border-radius:4px 4px 0 0;width:100%;min-height:4px;transition:height .3s}
+  .bar.calm{background:var(--fc-blue-muted)}
+  .bar.elevated{background:var(--fc-orange-muted)}
+  .bar.empty{background:var(--fc-gray-100);border:1px dashed var(--fc-gray-200);border-bottom:none}
+  .bar-label{font-size:11px;color:var(--fc-text-tertiary);text-align:center}
+  .bar-today{width:4px;height:4px;border-radius:50%;background:var(--fc-blue);margin-top:2px}
+  .chart-summary{display:flex;align-items:center;gap:16px;margin-top:12px;font-size:14px;font-weight:500;color:var(--fc-text)}
+  .summary-item{display:flex;align-items:center;gap:6px}
+  .summary-dot{width:8px;height:8px;border-radius:50%}
+  .summary-dot.calm{background:var(--fc-blue-muted)}
+  .summary-dot.elevated{background:var(--fc-orange-muted)}
+
+  /* Daily cards */
+  .daily-section{padding:16px 20px 0}
+  .daily-title{font-size:15px;font-weight:600;color:var(--fc-text);margin-bottom:12px}
+  .day-card{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--fc-shadow-sm);border:1px solid var(--fc-gray-100);display:flex;align-items:center;gap:12px}
+  .day-icon{width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .day-content{flex:1;min-width:0}
+  .day-date{font-size:14px;font-weight:500;color:var(--fc-text)}
+  .day-evidence{font-size:12px;color:var(--fc-text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .day-tag{flex-shrink:0;font-size:12px;font-weight:500;padding:3px 10px;border-radius:100px}
+  .day-tag.calm{background:var(--fc-calm-bg);color:var(--fc-calm)}
+  .day-tag.elevated{background:var(--fc-elevated-bg);color:var(--fc-elevated)}
+  .day-tag.neutral{background:var(--fc-neutral-bg);color:var(--fc-neutral)}
+
+  /* Bottom characters */
+  .bottom-characters{display:flex;justify-content:center;padding:16px 0 24px;opacity:.5}
+</style>
+</head>
+<body>
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="8" width="3" height="4" rx=".5" fill="#2D3748"/><rect x="4.5" y="5" width="3" height="7" rx=".5" fill="#2D3748"/><rect x="9" y="2" width="3" height="10" rx=".5" fill="#2D3748"/><rect x="13.5" y="0" width="3" height="12" rx=".5" fill="#2D3748"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 11.5a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z" fill="#2D3748"/><path d="M4.7 8.1a4.7 4.7 0 016.6 0" stroke="#2D3748" stroke-width="1.3" stroke-linecap="round"/><path d="M2.3 5.5a8 8 0 0111.4 0" stroke="#2D3748" stroke-width="1.3" stroke-linecap="round"/><path d="M0 3a11.2 11.2 0 0116 0" stroke="#2D3748" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <svg width="27" height="12" viewBox="0 0 27 12" fill="none"><rect x=".5" y=".5" width="23" height="11" rx="2.5" stroke="#2D3748" stroke-opacity=".35"/><rect x="2" y="2" width="20" height="8" rx="1.5" fill="#2D3748"/><path d="M25 4v4a2 2 0 000-4z" fill="#2D3748" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <div class="page-header">
+      <div class="page-title">回顾</div>
+      <div class="toggle-bar">
+        <div class="toggle-seg active">本周</div>
+        <div class="toggle-seg">本月</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-card">
+      <div class="chart-title">本周压力趋势</div>
+      <div class="bars-container">
+        <div class="bar-col">
+          <div class="bar calm" style="height:48px"></div>
+          <span class="bar-label">周一</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar elevated" style="height:64px"></div>
+          <span class="bar-label">周二</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar calm" style="height:40px"></div>
+          <span class="bar-label">周三</span>
+          <div class="bar-today"></div>
+        </div>
+        <div class="bar-col">
+          <div class="bar calm" style="height:44px"></div>
+          <span class="bar-label">周四</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar elevated" style="height:72px"></div>
+          <span class="bar-label">周五</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar empty" style="height:24px"></div>
+          <span class="bar-label">周六</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar empty" style="height:24px"></div>
+          <span class="bar-label">周日</span>
+        </div>
+      </div>
+      <div class="chart-summary">
+        <div class="summary-item"><span class="summary-dot calm"></span>4天平稳</div>
+        <div class="summary-item"><span class="summary-dot elevated"></span>1天偏高</div>
+      </div>
+    </div>
+
+    <!-- Daily cards -->
+    <div class="daily-section">
+      <div class="daily-title">每日详情</div>
+
+      <div class="day-card">
+        <div class="day-icon">
+          <!-- Mini relaxed cat -->
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <ellipse cx="14" cy="19" rx="8" ry="7" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+            <circle cx="14" cy="11" r="6" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+            <path d="M9 8L7 3l4 4z" fill="white" stroke="#2B5EA7" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M19 8l2-5-4 4z" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.2" stroke-linejoin="round"/>
+            <circle cx="12" cy="11" r="1" fill="#1a1a1a"/><circle cx="16" cy="11" r="1" fill="#1a1a1a"/>
+          </svg>
+        </div>
+        <div class="day-content">
+          <div class="day-date">9月17日 周三</div>
+          <div class="day-evidence">睡7h20m · 心率58 · 做了呼吸练习</div>
+        </div>
+        <span class="day-tag calm">平稳</span>
+      </div>
+
+      <div class="day-card">
+        <div class="day-icon">
+          <!-- Mini gentle dog -->
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <ellipse cx="16" cy="19" rx="10" ry="6" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+            <ellipse cx="10" cy="13" rx="6" ry="5" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+            <ellipse cx="6" cy="15" rx="3" ry="2.5" fill="white" stroke="#2B5EA7" stroke-width="1.2"/>
+            <ellipse cx="4" cy="14.5" rx="1.2" ry="1" fill="#1a1a1a"/>
+            <path d="M7 9c-2-2-5-2-5 0s1 5 3 5" fill="white" stroke="#2B5EA7" stroke-width="1.2"/>
+            <path d="M14 9c1-3 5-3 6-1s-1 5-3 5" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.2"/>
+            <path d="M8 12.5c1-.5 1.5-.5 2.5 0" stroke="#1a1a1a" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M12.5 12c1-.5 1.5-.5 2.5 0" stroke="#1a1a1a" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="day-content">
+          <div class="day-date">9月16日 周二</div>
+          <div class="day-evidence">睡5h10m · 心率68 · 未练习</div>
+        </div>
+        <span class="day-tag elevated">偏高</span>
+      </div>
+
+      <div class="day-card">
+        <div class="day-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <ellipse cx="14" cy="19" rx="8" ry="7" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+            <circle cx="14" cy="11" r="6" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+            <path d="M9 8L7 3l4 4z" fill="white" stroke="#2B5EA7" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M19 8l2-5-4 4z" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.2" stroke-linejoin="round"/>
+            <circle cx="12" cy="11" r="1" fill="#1a1a1a"/><circle cx="16" cy="11" r="1" fill="#1a1a1a"/>
+          </svg>
+        </div>
+        <div class="day-content">
+          <div class="day-date">9月15日 周一</div>
+          <div class="day-evidence">睡7h45m · 心率56 · 瑜伽30分</div>
+        </div>
+        <span class="day-tag calm">平稳</span>
+      </div>
+
+      <div class="day-card">
+        <div class="day-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="10" stroke="#D8DCE5" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+            <text x="14" y="18" text-anchor="middle" font-size="12" fill="#B8BFD0">?</text>
+          </svg>
+        </div>
+        <div class="day-content">
+          <div class="day-date">9月14日 周日</div>
+          <div class="day-evidence">数据不足</div>
+        </div>
+        <span class="day-tag neutral">--</span>
+      </div>
+
+      <div class="day-card">
+        <div class="day-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="10" stroke="#D8DCE5" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+            <text x="14" y="18" text-anchor="middle" font-size="12" fill="#B8BFD0">?</text>
+          </svg>
+        </div>
+        <div class="day-content">
+          <div class="day-date">9月13日 周六</div>
+          <div class="day-evidence">数据不足</div>
+        </div>
+        <span class="day-tag neutral">--</span>
+      </div>
+    </div>
+
+    <!-- Bottom characters (subtle) -->
+    <div class="bottom-characters">
+      <svg width="160" height="60" viewBox="0 0 160 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Small cat sitting -->
+        <g transform="translate(30,0)">
+          <ellipse cx="20" cy="40" rx="12" ry="16" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+          <circle cx="20" cy="22" r="10" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+          <path d="M13 16L10 6l7 6z" fill="white" stroke="#2B5EA7" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M27 16l3-10-7 6z" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="17" cy="22" r="1.5" fill="#1a1a1a"/>
+          <circle cx="23" cy="22" r="1.5" fill="#1a1a1a"/>
+          <ellipse cx="20" cy="25" rx="1.5" ry="1" fill="#E07B4F"/>
+          <path d="M33 44c4-2 7-5 8-10s-2-6-5-4c-2 1-3 5-2 8" fill="none" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/>
+          <ellipse cx="15" cy="54" rx="5" ry="3" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+          <ellipse cx="25" cy="54" rx="5" ry="3" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+        </g>
+        <!-- Small dog lying -->
+        <g transform="translate(80,16)">
+          <ellipse cx="24" cy="26" rx="18" ry="10" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+          <ellipse cx="28" cy="24" rx="6" ry="4" fill="#E07B4F" opacity=".25"/>
+          <ellipse cx="12" cy="18" rx="9" ry="8" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+          <ellipse cx="6" cy="21" rx="5" ry="4" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+          <ellipse cx="3" cy="20" rx="1.8" ry="1.3" fill="#1a1a1a"/>
+          <path d="M7 13c-3-2-6-1-6 2s1 5 3 5" fill="white" stroke="#2B5EA7" stroke-width="1.3"/>
+          <path d="M18 12c2-3 6-3 7-1s-1 6-3 6" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.3"/>
+          <circle cx="10" cy="17" r="1.3" fill="#1a1a1a"/>
+          <circle cx="15" cy="16" r="1.3" fill="#1a1a1a"/>
+          <ellipse cx="14" cy="36" rx="5" ry="3" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+          <ellipse cx="26" cy="36" rx="5" ry="3" fill="white" stroke="#2B5EA7" stroke-width="1.5"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#8A95AD" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="#8A95AD"/></svg>
+      <span class="tab-label">此刻</span>
+    </div>
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12c3-4 5-7 8-7s5 3 8 7" stroke="#8A95AD" stroke-width="1.8" stroke-linecap="round"/><path d="M4 12c3 4 5 7 8 7s5-3 8-7" stroke="#8A95AD" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="tab-label">练习</span>
+    </div>
+    <div class="tab-item active">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#2B5EA7" stroke-width="1.8"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="tab-label" style="color:#2B5EA7">我的</span>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - 今日(数据不足)</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #E8EEF5;
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .iphone-frame {
+    width: 393px;
+    height: 852px;
+    background: #FFFFFF;
+    border-radius: 47px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
+    color: #2D3748;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .status-bar {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  .screen-content {
+    height: calc(852px - 54px - 83px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid #D8DCE5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 8px;
+    padding-bottom: 34px;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    color: #8A95AD;
+    width: 64px;
+    cursor: pointer;
+  }
+  .tab-item.active { color: #2B5EA7; }
+  .tab-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: #1a1a1a;
+    border-radius: 3px;
+  }
+
+  .greeting {
+    padding: 8px 20px 0;
+    font-size: 13px;
+    color: #6B7793;
+    letter-spacing: 0.2px;
+  }
+
+  .conclusion-card {
+    margin: 12px 20px 0;
+    background: linear-gradient(135deg, #F3F5F8 0%, #F5F7FA 50%, #F3F5F8 100%);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(138,149,173,0.12);
+  }
+
+  .conclusion-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(138,149,173,0.12);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8A95AD;
+    margin-bottom: 10px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #B8BFD0;
+  }
+
+  .conclusion-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4A5568;
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .conclusion-subtitle {
+    font-size: 14px;
+    color: #6B7793;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .conclusion-body {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .mascot-area {
+    width: 90px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* Progress tracker */
+  .progress-section {
+    flex: 1;
+  }
+  .progress-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4A5568;
+    margin-bottom: 10px;
+  }
+  .progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #E5E8EE;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #94B3D7, #2B5EA7);
+    border-radius: 4px;
+    transition: width 0.5s;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: #8A95AD;
+  }
+
+  .data-status-list {
+    margin: 16px 20px 0;
+  }
+  .data-status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid #ECEEF3;
+    margin-bottom: 8px;
+  }
+  .data-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .data-check.done {
+    background: #EDF3FB;
+  }
+  .data-check.pending {
+    background: #F5F7FA;
+    border: 1.5px dashed #B8BFD0;
+  }
+  .data-info {
+    flex: 1;
+  }
+  .data-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2D3748;
+  }
+  .data-desc {
+    font-size: 12px;
+    color: #8A95AD;
+    margin-top: 1px;
+  }
+
+  .action-section {
+    padding: 16px 20px 0;
+  }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 48px;
+    background: #2B5EA7;
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .section-card {
+    margin: 16px 20px 0;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(43,94,167,0.06);
+    border: 1px solid #ECEEF3;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2D3748;
+  }
+  .section-add {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #F0F5FB;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .empty-bev {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0;
+    font-size: 14px;
+    color: #8A95AD;
+  }
+  .empty-bev-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #F0F5FB;
+    color: #2B5EA7;
+    border: none;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .bottom-pad { height: 20px; }
+</style>
+</head>
+<body>
+
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#2D3748"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#2D3748"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#2D3748"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#2D3748"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.2 2.6 10.7 1.5 8 1.5S2.8 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#2D3748"/><path d="M8 7.2C9.3 7.2 10.5 7.7 11.3 8.6L8 12L4.7 8.6C5.5 7.7 6.7 7.2 8 7.2Z" fill="#2D3748"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0" y="1" width="22" height="10" rx="2" stroke="#2D3748" stroke-width="1" fill="none"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="#2D3748"/><rect x="1.5" y="2.5" width="18" height="7" rx="1" fill="#2D3748"/></svg>
+    </div>
+  </div>
+
+  <div class="screen-content">
+    <!-- Greeting -->
+    <div class="greeting">9月17日 周三 · 早上好</div>
+
+    <!-- Conclusion Card - No Data -->
+    <div class="conclusion-card">
+      <div class="conclusion-status">
+        <span class="status-dot"></span>
+        数据不足
+      </div>
+      <div class="conclusion-title">暂时无法判断</div>
+      <div class="conclusion-subtitle">正在建立你的个人基线，至少需要3天连续佩戴数据</div>
+      <div class="conclusion-body">
+        <div class="progress-section">
+          <div class="progress-header">基线建立进度</div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 33%;"></div>
+          </div>
+          <div class="progress-label">第1天 / 共需3天</div>
+        </div>
+        <div class="mascot-area">
+          <!-- Cat and dog sitting naturally -->
+          <svg width="85" height="75" viewBox="0 0 85 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cat sitting upright, natural pose -->
+            <g transform="translate(0, 5)">
+              <!-- Cat body -->
+              <ellipse cx="22" cy="48" rx="13" ry="17" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Cat head -->
+              <circle cx="22" cy="25" r="11" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Left ear -->
+              <path d="M14 17 L11 5 L20 13Z" fill="white" stroke="#2B5EA7" stroke-width="1.5" stroke-linejoin="round"/>
+              <!-- Right ear (orange) -->
+              <path d="M30 17 L33 5 L24 13Z" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.5" stroke-linejoin="round"/>
+              <!-- Eyes (normal, open, curious) -->
+              <circle cx="18" cy="24" r="1.5" fill="#2B5EA7"/>
+              <circle cx="26" cy="24" r="1.5" fill="#2B5EA7"/>
+              <!-- Small blink highlight -->
+              <circle cx="17.3" cy="23.3" r="0.5" fill="white"/>
+              <circle cx="25.3" cy="23.3" r="0.5" fill="white"/>
+              <!-- Nose -->
+              <path d="M21 27.5 L22 29 L23 27.5" stroke="#E07B4F" stroke-width="1" stroke-linecap="round" fill="none"/>
+              <!-- Whiskers -->
+              <line x1="8" y1="26" x2="15" y2="25.5" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="8" y1="29" x2="15" y2="28" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="29" y1="25.5" x2="36" y2="26" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="29" y1="28" x2="36" y2="29" stroke="#2B5EA7" stroke-width="0.8" stroke-linecap="round"/>
+              <!-- Tail -->
+              <path d="M35 52 C40 48, 42 40, 37 36" stroke="#2B5EA7" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            </g>
+            <!-- Dog lying down -->
+            <g transform="translate(42, 30)">
+              <!-- Dog body -->
+              <ellipse cx="20" cy="32" rx="17" ry="9" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Body patch -->
+              <ellipse cx="23" cy="30" rx="7" ry="4.5" fill="#E07B4F" opacity="0.15"/>
+              <!-- Dog head -->
+              <circle cx="8" cy="23" r="9.5" fill="white" stroke="#2B5EA7" stroke-width="1.8"/>
+              <!-- Floppy left ear -->
+              <path d="M1 16 C-3 12, -5 20, -1 24" fill="white" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Floppy right ear (orange) -->
+              <path d="M15 16 C19 12, 21 20, 17 24" fill="#E07B4F" stroke="#2B5EA7" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Eyes (curious) -->
+              <circle cx="5" cy="22" r="1.3" fill="#2B5EA7"/>
+              <circle cx="11" cy="22" r="1.3" fill="#2B5EA7"/>
+              <!-- Eye highlights -->
+              <circle cx="4.5" cy="21.5" r="0.4" fill="white"/>
+              <circle cx="10.5" cy="21.5" r="0.4" fill="white"/>
+              <!-- Nose -->
+              <ellipse cx="8" cy="26" rx="2" ry="1.3" fill="#2B5EA7"/>
+              <!-- Tail -->
+              <path d="M37 29 C40 26, 42 30, 39 32" stroke="#2B5EA7" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+              <!-- Front paws -->
+              <ellipse cx="5" cy="40" rx="4" ry="2.5" fill="white" stroke="#2B5EA7" stroke-width="1.2"/>
+              <ellipse cx="14" cy="40" rx="4" ry="2.5" fill="white" stroke="#2B5EA7" stroke-width="1.2"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data collection status -->
+    <div class="data-status-list">
+      <div class="data-status-item">
+        <div class="data-check done">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7L6 10L11 4" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="data-info">
+          <div class="data-label">Apple Watch 已连接</div>
+          <div class="data-desc">昨日连接，正在收集数据</div>
+        </div>
+      </div>
+      <div class="data-status-item">
+        <div class="data-check done">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7L6 10L11 4" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="data-info">
+          <div class="data-label">部分睡眠数据</div>
+          <div class="data-desc">已收到1晚数据</div>
+        </div>
+      </div>
+      <div class="data-status-item">
+        <div class="data-check pending"></div>
+        <div class="data-info">
+          <div class="data-label" style="color:#8A95AD;">个人基线</div>
+          <div class="data-desc">还需2天数据</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action -->
+    <div class="action-section">
+      <button class="action-btn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="white" stroke-width="1.5"/><path d="M10 5V10L13 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        先试一次呼吸练习
+      </button>
+    </div>
+
+    <!-- Beverage - empty state -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">今日饮品</span>
+      </div>
+      <div class="empty-bev" style="flex-direction:column;gap:10px;">
+        <span>还没有记录今日饮品</span>
+        <button class="empty-bev-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="7" y1="2" x2="7" y2="12" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/><line x1="2" y1="7" x2="12" y2="7" stroke="#2B5EA7" stroke-width="1.8" stroke-linecap="round"/></svg>
+          开始记录
+        </button>
+      </div>
+    </div>
+
+    <div class="bottom-pad"></div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 9.5L11 3L19 9.5V18C19 18.6 18.6 19 18 19H4C3.4 19 3 18.6 3 18V9.5Z" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="8" y="13" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <span>今日</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M11 7V11.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <span>练习</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 17V8M8 17V5M12 17V10M16 17V7M20 17V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <span>记录</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M4 19C4 15.7 7.1 13 11 13C14.9 13 18 15.7 18 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <span>设置</span>
+    </div>
+  </div>
+
+  <div class="home-indicator"></div>
+</div>
+
+</body>
+</html>

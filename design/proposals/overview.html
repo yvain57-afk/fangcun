@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 Fangcun — 三套 UI 方案对比</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'PingFang SC', sans-serif;
+    background: #F0F2F5;
+    color: #2D3748;
+    padding: 40px 24px;
+  }
+  h1 {
+    font-size: 32px; font-weight: 700; text-align: center;
+    margin-bottom: 8px; letter-spacing: -0.5px;
+  }
+  .subtitle {
+    text-align: center; color: #6B7793; font-size: 15px;
+    margin-bottom: 40px;
+  }
+  .screen-group {
+    margin-bottom: 56px;
+  }
+  .screen-group h2 {
+    font-size: 20px; font-weight: 600; margin-bottom: 4px;
+    padding-left: 4px; letter-spacing: -0.3px;
+  }
+  .screen-group .desc {
+    font-size: 13px; color: #8A95AD; margin-bottom: 16px;
+    padding-left: 4px;
+  }
+  .comparison-row {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .comparison-row::-webkit-scrollbar { height: 4px; }
+  .comparison-row::-webkit-scrollbar-thumb { background: #D8DCE5; border-radius: 2px; }
+  .proposal-col {
+    flex: 0 0 auto;
+    width: 420px;
+    text-align: center;
+  }
+  .proposal-label {
+    font-size: 12px; font-weight: 600; color: #2B5EA7;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .proposal-col iframe {
+    width: 393px;
+    height: 852px;
+    border: 3px solid #1a1a1a;
+    border-radius: 47px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    pointer-events: none;
+  }
+  .nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .nav-tab {
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid #D8DCE5;
+    background: white;
+    color: #4A5568;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { border-color: #2B5EA7; color: #2B5EA7; }
+  .nav-tab.active {
+    background: #2B5EA7; color: white; border-color: #2B5EA7;
+  }
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #6B7793;
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .legend-dot.a { background: #2B5EA7; }
+  .legend-dot.b { background: #E07B4F; }
+  .legend-dot.c { background: #6B7793; }
+  @media (max-width: 1400px) {
+    .proposal-col { width: 360px; }
+    .proposal-col iframe { transform: scale(0.85); transform-origin: top center; }
+  }
+</style>
+</head>
+<body>
+
+<h1>方寸 Fangcun — UI 设计方案对比</h1>
+<p class="subtitle">三套方案 × 六张核心界面 · iPhone 15 Pro (393×852)</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot a"></div>方案 A · 轻版画日常</div>
+  <div class="legend-item"><div class="legend-dot b"></div>方案 B · 猫狗陪伴日常</div>
+  <div class="legend-item"><div class="legend-dot c"></div>方案 C · 双色生活记录</div>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="showScreen('01-home-calm')">首页·平稳</div>
+  <div class="nav-tab" onclick="showScreen('02-home-elevated')">首页·偏高</div>
+  <div class="nav-tab" onclick="showScreen('03-home-nodata')">首页·无数据</div>
+  <div class="nav-tab" onclick="showScreen('04-beverage')">饮品记录</div>
+  <div class="nav-tab" onclick="showScreen('05-breathing')">呼吸练习</div>
+  <div class="nav-tab" onclick="showScreen('06-trends')">趋势历史</div>
+</div>
+
+<div class="screen-group" id="screen-display">
+  <div class="comparison-row">
+    <div class="proposal-col">
+      <div class="proposal-label">方案 A · 轻版画日常</div>
+      <iframe id="frame-a" src="proposal-a/01-home-calm.html" scrolling="no"></iframe>
+    </div>
+    <div class="proposal-col">
+      <div class="proposal-label">方案 B · 猫狗陪伴日常</div>
+      <iframe id="frame-b" src="proposal-b/01-home-calm.html" scrolling="no"></iframe>
+    </div>
+    <div class="proposal-col">
+      <div class="proposal-label">方案 C · 双色生活记录</div>
+      <iframe id="frame-c" src="proposal-c/01-home-calm.html" scrolling="no"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(name) {
+  document.getElementById('frame-a').src = 'proposal-a/' + name + '.html';
+  document.getElementById('frame-b').src = 'proposal-b/' + name + '.html';
+  document.getElementById('frame-c').src = 'proposal-c/' + name + '.html';
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>

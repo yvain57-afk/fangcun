@@ -1,0 +1,47 @@
+{
+  "method": "Built-in image_gen",
+  "revision": "v4 dog redesign and solo scenes",
+  "assets": [
+    {
+      "key": "dog-greeting",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-25943416-e1e9-494d-ac7c-c14686dc8d7d.png",
+      "file": "public/characters/v4/dog-greeting.png",
+      "sha256": "4fe758c0f08c4d8ed552bf6c3e84e44d0f9bff22111a1c8de92eebb4c3c79645"
+    },
+    {
+      "key": "dog-rest",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-6743ecf6-e8e6-45c7-b744-856a678b26c8.png",
+      "file": "public/characters/v4/dog-rest.png",
+      "sha256": "d45bcb478996dc84c70b3b771b9b230ba8729ed21220a544837dba2f63a30c08"
+    },
+    {
+      "key": "dog-drink",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-3824ccc6-dfc7-4486-8585-78dbd8c5c08f.png",
+      "file": "public/characters/v4/dog-drink.png",
+      "sha256": "6417d94ac837b24ac31bb96f0df94cf26bbb347dac87752171abdbb126465eab"
+    },
+    {
+      "key": "cat-curious",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-62ff18b1-4fa2-4764-93ce-620bed9929e5.png",
+      "file": "public/characters/v4/cat-curious.png",
+      "sha256": "80eaf2980ce86f3f971c31b60a44ab46d788fed87b483878d8cc1ffe7dcaded2"
+    },
+    {
+      "key": "duo-calm",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-32575d72-74d8-4c90-a6a9-3527d0cac9a0.png",
+      "file": "public/characters/v4/duo-calm.png",
+      "sha256": "269a775e9a81fa3c70bce678179e9da5e5b4a1d18e5211e94b5e00f4da2b5080"
+    },
+    {
+      "key": "duo-complete",
+      "source": "<LOCAL_HOME>/.codex/generated_images/01a07eef-3f5c-7870-a755-d6de7be5a0cc/exec-67626500-91d2-458d-b369-85a80800b1ca.png",
+      "file": "public/characters/v4/duo-complete.png",
+      "sha256": "45027409d771b04e8caf135b096bf429c47ba0a289d30ccf87e7003e7ac46a72"
+    }
+  ],
+  "preservedCat": {
+    "file": "public/characters/v3/breathing.png",
+    "sha256": "8bb2ea4c22b460cf3f5d0a13918513d33af3a56c18ffe2b209a7e890a83b41f4",
+    "reusedUnmodified": true
+  }
+}

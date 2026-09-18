@@ -1,0 +1,47 @@
+{
+  "reference": "public/reference.png",
+  "assets": [
+    {
+      "key": "calm",
+      "file": "public/characters/v3/calm.png",
+      "sha256": "1fcdc6af459ba91054a2d104ce92d3af2fe82b6932d0d4a542aff5c843c626e5",
+      "bytes": 1152972,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "rest",
+      "file": "public/characters/v3/rest.png",
+      "sha256": "306356690e9841953f35fbccb66caa2d8f240108b5d8b65949e3d4241d6d96b2",
+      "bytes": 1143789,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "curious",
+      "file": "public/characters/v3/curious.png",
+      "sha256": "af74caf0cd1260ee7360840c905204b0abaef72ff92a7e59d0ff90437df13eea",
+      "bytes": 1310669,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "drink",
+      "file": "public/characters/v3/drink.png",
+      "sha256": "6c8087863680f2adfc4258c103df248651b44eef7a861c1fe20dbcb8b8032685",
+      "bytes": 1612597,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "complete",
+      "file": "public/characters/v3/complete.png",
+      "sha256": "82bed2e9d35794c7af256297ae7b07e9191e3860dc44a80e70de3d83ea0fb71a",
+      "bytes": 1173052,
+      "matchesGeneratedOriginal": true
+    },
+    {
+      "key": "breathing",
+      "file": "public/characters/v3/breathing.png",
+      "sha256": "8bb2ea4c22b460cf3f5d0a13918513d33af3a56c18ffe2b209a7e890a83b41f4",
+      "bytes": 1354108,
+      "matchesGeneratedOriginal": true
+    }
+  ]
+}
