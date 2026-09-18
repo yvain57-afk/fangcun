@@ -1,8 +1,8 @@
-# M0–M1 验收 — 2026-09-18
+# M0–M2 核验与交付 — 2026-09-18
 
 ## 已交付
 
-M0 基线提交 `cf5c87d`；M1 在 `codex/fangcun-v1-m0-m1` 分支提交。保持 `main` 不变，未自动推送新开发分支、未上架或上传 TestFlight。
+M0 基线提交 `cf5c87d`；M1 在 `codex/fangcun-v1-m0-m1` 分支提交。初次 M1 交付时未推送；本轮按用户授权推送同一独立开发分支，保持 `main` 不变。未上架或上传 TestFlight。
 
 - 当前证据资格门控：历史充分但近期为空、读取失败、全部过期不能显示 steady；一项体征/只有睡眠/不够可靠显示 limited。
 - watch / elevated 分开；运动保护不伪装正常；主卡用测量日期，详情区分查询/计算/测量；睡眠标“最近主睡眠”与结束日期。
@@ -104,3 +104,83 @@ Command: `swift test --package-path InnerBalanceCore`. 86 tests / 16 suites pass
 Other tests: `independentBaselineBoundariesAndCurrentCoverage` (6/7/8/13/14/28 days, 1/2/3 samples, independent 8/20-day eligibility); `enoughHistoryCannotInventCurrentAndPartialDataStayLimited`; `nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual`; `noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory`; `queryFailureCacheInvalidationAndFreshnessBoundaries` (18/24 hours, original cached timestamps); `trainingAndBackgroundEventsDoNotSuppressOrReward`; `arrivalBufferAndRealDSTRepeatedHour` (New York repeated 01:00 hour on 2026-11-01).
 
 The first run matched every golden level but failed ten coverage-count assertions: the fourth synthetic timestamp was in the wrong hour bucket. The fixture was corrected, without relaxing production rules. [Initial log retained](evidence/m2-03-core.txt).
+
+## M2 最终交付核验 — 2026-09-18
+
+### 结果与边界
+
+| 检查 | 真实结果 | 证据 |
+|---|---|---|
+| Core 最终版本 | 93 tests / 17 suites 全通过 | [m2-core-delivery](evidence/m2-core-delivery.txt) |
+| App 全量单元测试 | 163 项，160 通过，3 失败（23 个断言）；不能称全绿 | [m2-app-acceptance](evidence/m2-app-acceptance.txt) |
+| M2 前基线独立复验 | 在 `0062d4a` 隔离 worktree 运行涉及的两个 suite：54 项，51 通过，同样 3 失败、23 个断言 | [pre-m2-regression](evidence/pre-m2-regression.txt) |
+| 首页及界面回归 | 8 UI tests / 0 failures；包含原始 provider → ViewModel → 当前真实首页、复合饮品/撤销、趋势、练习、显示偏好跨重启 | [m2-ui-acceptance](evidence/m2-ui-acceptance.txt) |
+| iOS SDK / App | 全量 App 测试已编译并运行新 adapter、service 工厂以及 Core | 同 App log；无签名模拟器 |
+| Watch scheme | Debug watchOS Simulator build succeeded | [m2-watch](evidence/m2-watch.txt) |
+| 真机 / 平台后台 | 本轮未验证，不计入通过 | CAPABILITIES.md |
+
+M2 增量只涉及 Readiness 领域、新 adapter/service、测试和文档。既有 App Features、DesignSystem、Persistence、资源/权限均无差异。原始任务书及 golden 文件未修改。
+
+### 基线失败，未掩盖或修改断言
+
+- `FangcunDesignSystemTests.approvedPaperPalette`：旧版棕色 palette 预期与既有新版蓝色资产不符（20 个色值断言）；另有浅色次级文字对比度 4.4631，低于该测试 4.5 门槛。这一项是真实既有可访问性不足，不只是测试过期。
+- `FangcunDesignSystemTests.paperAppearanceDoesNotInvertAtNight`：测试仍要求源码固定 `.preferredColorScheme(.light)`，与既有可切换深色模式不符。
+- `PracticePresentationTests.finishDialogCopyMatchesTheNextStep`：固定旧字符串预期与既有提前结束文案不符。
+
+以上在本轮 M2 开发前提交上同样失败；相关源码及测试与本轮无差异。保留这些失败，不为追求绿灯放宽测试，也不在“保留现有 UI”的 M2 任务中重写配色/文案。M0–M1 和 M2 的定向功能核验已通过，**并不表示仓库全量 App 测试通过**。后续 UI 维护应明确修复对比度并统一已确认设计与测试契约。
+
+开发中曾出现 Swift 6 actor 初始化的 `&&` autoclosure 隔离编译错误，已将隔离属性先读为局部值修复。保留 [Core 首次编译失败](evidence/m2-04-core-final.txt) 与 [App 首次编译失败](evidence/m2-app-final.txt)，修复后 Core、iOS 和 Watch 均完成编译；未放宽 Swift 并发检查。
+
+### 任务书用例映射
+
+| 样例 | 实际覆盖 |
+|---|---|
+| G01–G10 | `ReadinessEngineTests.originalGoldenFileThroughRawSamples`，读取原 JSON，经规范化样本、选源、睡眠、逐源基线与 Engine 全链路 |
+| D01–D05 | `enoughHistoryCannotInventCurrentAndPartialDataStayLimited`、`independentBaselineBoundariesAndCurrentCoverage`，包括独立 8/20、20/3 日、7/13/14 日、2/3 样本 |
+| D06–D08 | `ReadinessSourceTests.sourceDefinitionsAndRevisions`、`noSilentSwitchAndManualRebaseline`、`uuidSyncVersionAndExplicitMirrors`；手动切源加 `noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory` |
+| D09–D10 | `ReadinessFeatureTests.sleepUnionDoesNotMixSourcesOrCountAwake` |
+| D11 | `shiftWorkNapManualChoiceAndArrival`，非夜间候选、两个长段歧义、人工短睡与缓冲 |
+| D12 | `lateSleepKeepsCycleAndAmbiguousMatchesRequireReview`、`InsightsStoreTests.providerToStorePaginationRevisionsAndDeletion`；同周期 revision 2 / supersedes；M2 没有通知发送代码 |
+| D13 | `excessiveFutureAndConflictingSleep` |
+| D14 | `sparseCoverageInterventionAndRestingReuse`；Pipeline 对前周期已用 UUID 传递排除集合 |
+| D15–D16 | `baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors`、`nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual` |
+| D17 | G10 及 `nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual` |
+| D18–D19 | `trainingAndBackgroundEventsDoNotSuppressOrReward`；45 分钟训练不移除观测；评估没有饮品或完成次数加减分参数 |
+| D20 | `deletionWinsAndCacheIsBounded`、`deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary`、`providerToStorePaginationRevisionsAndDeletion` |
+| D21 | `daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent`、`arrivalBufferAndRealDSTRepeatedHour`（真实重复本地小时，绝对时长 3 小时） |
+| D22 | `failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial`、`queryFailureCacheInvalidationAndFreshnessBoundaries`；保护状态是合成错误重放，非实际锁屏验证 |
+| D23 | `sourceChangeAndClearRejectLateRequests`、`concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence` |
+| D24 | `queryFailureCacheInvalidationAndFreshnessBoundaries`、`providerToStorePaginationRevisionsAndDeletion`；重刷不延长 validUntil，不重复增加 revision |
+
+其他存储测试：`transactionFaultsKeepCursorsAndAssessmentTogether`、`corruptedJournalAndUnknownSchemaFailClosedWithoutWiping`。故障恢复实际操作临时文件，数据全合成。没有断电硬件实验、真实授权撤销或 HealthKit 后台到达验证。
+
+### 最终实际命令
+
+以下仅把本机路径和模拟器标识替换为变量；使用 Xcode 27 beta、已有 schemes。`EVIDENCE` 和 `DERIVED_DATA` 都在 Code scratch，未入库。App 全量及基线复验预期结果如上，不能把命令可运行当作测试全通过。
+
+```sh
+swift test --package-path InnerBalanceCore
+xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/m2-app-acceptance.xcresult" \
+  -parallel-testing-enabled NO -only-testing:InnerBalanceTests CODE_SIGNING_ALLOWED=NO
+xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/m2-ui-acceptance.xcresult" \
+  -parallel-testing-enabled NO -only-testing:InnerBalanceUITests/HomeEvidencePipelineUITests \
+  -only-testing:InnerBalanceUITests/FangcunRedesignUITests CODE_SIGNING_ALLOWED=NO
+xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' \
+  -destination 'generic/platform=watchOS Simulator' -derivedDataPath "$DERIVED_DATA" CODE_SIGNING_ALLOWED=NO
+# In the detached 0062d4a worktree, with a separate BASELINE_DERIVED_DATA:
+xcodebuild build-for-testing -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" -derivedDataPath "$BASELINE_DERIVED_DATA" \
+  -only-testing:InnerBalanceTests/FangcunDesignSystemTests \
+  -only-testing:InnerBalanceTests/PracticePresentationTests CODE_SIGNING_ALLOWED=NO
+xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" -derivedDataPath "$BASELINE_DERIVED_DATA" \
+  -resultBundlePath "$EVIDENCE/pre-m2-regression.xcresult" -parallel-testing-enabled NO \
+  -only-testing:InnerBalanceTests/FangcunDesignSystemTests \
+  -only-testing:InnerBalanceTests/PracticePresentationTests CODE_SIGNING_ALLOWED=NO
+```
+
+分阶段提交：M1 补证 `0062d4a`，M2-01 `9157b8d`，M2-02 `058a3e8`，M2-03 `1906270`；M2-04 提交见同分支历史。最终 HEAD 在交付回复提供。main 基准保持 `905626c6e08dc7a36ddd4e219abf6945795ac62f`。

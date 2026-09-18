@@ -39,3 +39,16 @@ SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`�
 | iPhone M1 安装/启动 | verified | device-receipt.json；仅证明安装、启动和版本回读，不推导 Watch 行为 |
 
 上述未验证项不阻塞纯数据与本机持久化的 M2。
+
+## M2 能力与验证层级
+
+| 能力 | 当前状态 | 已核验 / 未核验 |
+|---|---|---|
+| 领域标准化、稳定选源、主睡眠、基线、ReadinessEngine | verified | 合成原始样本、原 G01–G10 和边界重放；不代表医学效度 |
+| HealthKit anchored / observer adapter | implemented_unverified | 真正 HK 对象换算、SDK 编译通过；真实授权后的增量、删除、锁屏回读和 observer 到达时机尚待真机 |
+| 本机 Insights store / pipeline | verified（本机文件与合成提供层） | 原子发布、删除屏障、修订、损坏恢复、并发旧请求保护；实际断电及锁屏文件保护未真机验证 |
+| 手机首页消费新准备度 | not_started | 按本轮停止点保留 M1 页面；M3 才接入生命周期与 UI |
+| Watch 后台 / 触感 / 跨设备 ACK | blocked | 缺少可用于配对实验的物理 Watch；既有 API 实验只算 implemented_unverified |
+| Widget / 系统通知运行 | implemented_unverified | 保留 M0 探针状态；M5 尚未开始 |
+
+工程默认阈值未校准；不宣称医学标准或产品健康判断效度。本轮不新增授权类型、后台模式、遥测或后端。

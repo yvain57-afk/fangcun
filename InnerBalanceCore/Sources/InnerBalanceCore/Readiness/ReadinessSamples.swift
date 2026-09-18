@@ -194,6 +194,7 @@ public struct ReadinessSampleLedger: Codable, Sendable {
   public mutating func apply(_ batch: ReadinessChangeBatch, now: Date) {
     tombstones.formUnion(batch.deletedIDs.map(\.uuidString))
     for sample in batch.samples where sample.metric == batch.metric && !tombstones.contains(sample.id.uuidString) {
+      if let previous = samples[sample.id.uuidString], previous.syncVersion > sample.syncVersion { continue }
       samples[sample.id.uuidString] = sample
     }
     samples = samples.filter { !tombstones.contains($0.key) && $0.value.end >= now.addingTimeInterval(-35 * 86_400) }

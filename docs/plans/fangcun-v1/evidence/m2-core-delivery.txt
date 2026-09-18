@@ -1,0 +1,291 @@
+Building for debugging...
+[1 / 1]
+[2 / 12] InnerBalanceCore
+[4 / 14] InnerBalanceCore
+[7 / 17] InnerBalanceCore
+[9 / 17] InnerBalanceCore
+[11 / 12] InnerBalanceCoreTests-product
+Build complete! (1.40秒)
+Test Suite 'All tests' started at 2026-09-18 20:34:28.445.
+Test Suite 'All tests' passed at 2026-09-18 20:34:28.447.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Heart-rate evidence windows" started.
+◇ Suite "Practice catalog" started.
+◇ Suite "Sleep episode analysis" started.
+◇ Suite "Watch practice completion recovery" started.
+◇ Suite "Current moment stress decision" started.
+◇ Suite "Emotion catalog" started.
+◇ Suite "M2 sleep and baselines" started.
+◇ Suite "Echo personalization" started.
+◇ Suite "Body load baseline" started.
+◇ Suite "Watch compass grid" started.
+◇ Suite "Daily reflection" started.
+◇ Suite "Practice recommendation" started.
+◇ Suite "M2 normalized sources" started.
+◇ Suite "M2 readiness rules and replay" started.
+◇ Suite "Practice haptic cadence" started.
+◇ Suite "Pending write retry policy" started.
+◇ Suite "M2 atomic Insights store and provider pipeline" started.
+◇ Test "Uses valid samples from the first and last minute" started.
+◇ Test "Overlapping windows and implausible samples never create evidence" started.
+◇ Test "An implausibly long episode is excluded from body load" started.
+◇ Test "Detailed state context defaults preserve existing call sites" started.
+◇ Test "A newer quick state replaces the detailed check-in" started.
+◇ Test "Detailed quadrants map to a clear stress level and fallback source" started.
+◇ Test "A daytime nap is not added to the primary sleep" started.
+◇ Test "Build 1 contains the five approved practices and Kegel is never automatic" started.
+◇ Test "All six quick states produce a definite targeted response" started.
+◇ Test "All 38 Apple labels are mapped exactly once" started.
+◇ Test "Compass coordinates resolve to a stable quadrant" started.
+◇ Test "Overlapping sleep samples are counted once" started.
+◇ Test "同一天的不同回声会得到不同的一句" started.
+◇ Test "A current expression owns the level even when body load is higher" started.
+◇ Test "High-pressure and vulnerable emotions set a minimum stress level" started.
+◇ Test "A legacy mindful payload decodes without the request field" started.
+◇ Test "尚未选择状态时也先给一句有作者和作品的名家句" started.
+◇ Test "每种状态至少一个月不重复金句" started.
+◇ Test "Recent summary prefers valid Apple Watch samples" started.
+◇ Test "回声句只回应主观状态，不替身体数据下结论" started.
+◇ Test "每种状态都有一周不重复且有明确出处的名家句" started.
+◇ Test "A newer detailed check-in replaces the quick state" started.
+◇ Test "A detailed check-in wins when timestamps are equal" started.
+◇ Test "Expressions from a previous local day expire before body-only assessment" started.
+◇ Test "Baseline ignores samples older than 14 days" started.
+◇ Test baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors() started.
+◇ Test "Unknown Apple label is left unclassified" started.
+◇ Test "Old payloads infer an evidence request only when evidence exists" started.
+◇ Test "Recent workout keeps non-workout-sensitive evidence" started.
+◇ Test "History alone never permits a steady conclusion" started.
+◇ Test "A delayed retry reuses the first frozen completion window" started.
+◇ Test "身体负荷偏高时会调整没有明确恢复指向的回声推荐" started.
+◇ Test "Watch 情绪罗盘固定提供九个不重复区域" started.
+◇ Test "照顾情绪的金句不出现死亡深渊或怪物意象" started.
+◇ Test "回声会直接得到一个对应的恢复动作" started.
+◇ Test daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent() started.
+◇ Test "开场句和六种状态在一年内每天都各不相同" started.
+◇ Test "Baseline requires five distinct valid days" started.
+◇ Test shiftWorkNapManualChoiceAndArrival() started.
+◇ Test "Two distinct reliable kinds including cardiovascular evidence are required" started.
+◇ Test lateSleepKeepsCycleAndAmbiguousMatchesRequireReview() started.
+◇ Test "Every source routes low, moderate, and high pressure to a targeted practice" started.
+◇ Test "Neutral compass coordinates do not trigger a negative-state practice" started.
+◇ Test "Recent workout suppresses an elevated conclusion" started.
+◇ Test "The last day of a 31-day month does not collide with the next month" started.
+◇ Test "Observation is separate from elevated when enough independent evidence exists" started.
+◇ Test "Elevated body load uses a recovery reflection theme" started.
+◇ Test "每条金句都有可审核的公版来源与方寸自译声明" started.
+◇ Test "No current expression asks for input until body evidence can support a result" started.
+◇ Test "High-activation negative state recommends a physiological sigh" started.
+◇ Test "Pressure reflections stay inside the source and level pool" started.
+◇ Test "Explicit context, sensations, and body signals use a stable source priority" started.
+◇ Test "Latest reading is the newest valid Watch sample, not the recent median" started.
+◇ Test "A drained low-activation state recommends NSDR" started.
+◇ Test "The same pressure profile remains stable throughout one local day" started.
+◇ Test sparseCoverageInterventionAndRestingReuse() started.
+◇ Test "Elevated load requires two independent reliable signals" started.
+◇ Test "Daily copy avoids abstract coaching language" started.
+◇ Test "Consecutive local days reveal different reflections" started.
+◇ Test enoughHistoryCannotInventCurrentAndPartialDataStayLimited() started.
+◇ Test "Pressure level changes the eligible quotation" started.
+◇ Test "Kegel is never returned by automatic recommendations" started.
+◇ Test sleepUnionDoesNotMixSourcesOrCountAwake() started.
+◇ Test "Every body theme offers a week of varied words" started.
+◇ Test "金句库只收录有明确作品的哲学与心理学名家句" started.
+◇ Test excessiveFutureAndConflictingSleep() started.
+◇ Test "Median is resistant to an extreme sample" started.
+◇ Test "Daily selections always carry an author and a work" started.
+◇ Test uuidSyncVersionAndExplicitMirrors() started.
+◇ Test "The reflection remains stable throughout one local day" started.
+◇ Test nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual() started.
+◇ Test arrivalBufferAndRealDSTRepeatedHour() started.
+◇ Test sourceDefinitionsAndRevisions() started.
+◇ Test deletionWinsAndCacheIsBounded() started.
+◇ Test trainingAndBackgroundEventsDoNotSuppressOrReward() started.
+◇ Test "A body-load refresh cannot replace today's quotation" started.
+◇ Test noSilentSwitchAndManualRebaseline() started.
+◇ Test queryFailureCacheInvalidationAndFreshnessBoundaries() started.
+◇ Test "Paced breathing exposes the breath phase instead of a session countdown" started.
+◇ Test "手表仅在启用且运行中的相位边界播放一次触觉" started.
+◇ Test independentBaselineBoundariesAndCurrentCoverage() started.
+◇ Test "Retry delay backs off and is capped at one day" started.
+◇ Test "Slow practices use calm sparse cues" started.
+◇ Test originalGoldenFileThroughRawSamples() started.
+◇ Test "Cue identifiers change only at protocol boundaries" started.
+◇ Test noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory() started.
+◇ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() started.
+◇ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() started.
+◇ Test transactionFaultsKeepCursorsAndAssessmentTogether() started.
+◇ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() started.
+◇ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() started.
+◇ Test sourceChangeAndClearRejectLateRequests() started.
+◇ Test providerToStorePaginationRevisionsAndDeletion() started.
+◇ Test case passing 1 argument days → 0 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 1 argument days → 4 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 1 argument days → 5 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 1 argument days → 14 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 2 arguments source → .none, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .none, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .work, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .none, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .work, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .work, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .tasks, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .tasks, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .tasks, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .health, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .health, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .health, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .family, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .family, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .family, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .relationship, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .none to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .relationship, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .work to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .money, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .relationship, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .money, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .tasks to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 1 argument source → .health to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .money, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .training, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .family to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .training, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .relationship to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .training, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .money to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .sleep, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .training to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .sleep, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .sleep to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .sleep, level → .high to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "Overlapping windows and implausible samples never create evidence" passed after 0.017 seconds.
+◇ Test case passing 2 arguments source → .physicalTension, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .physicalTension to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .physicalTension, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .mentalLoad to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 1 argument source → .lowEnergy to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .physicalTension, level → .high to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "Uses valid samples from the first and last minute" passed after 0.019 seconds.
+◇ Test case passing 1 argument source → .bodySignals to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .mentalLoad, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .mentalLoad, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .mentalLoad, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .lowEnergy, level → .low to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "Compass coordinates resolve to a stable quadrant" passed after 0.020 seconds.
+◇ Test case passing 2 arguments source → .lowEnergy, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .lowEnergy, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .bodySignals, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .bodySignals, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .bodySignals, level → .high to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "All 38 Apple labels are mapped exactly once" passed after 0.022 seconds.
+✔ Test "Build 1 contains the five approved practices and Kegel is never automatic" passed after 0.113 seconds.
+✔ Test "Detailed state context defaults preserve existing call sites" passed after 0.114 seconds.
+✔ Test "An implausibly long episode is excluded from body load" passed after 0.115 seconds.
+✔ Test "A daytime nap is not added to the primary sleep" passed after 0.115 seconds.
+✔ Test "Overlapping sleep samples are counted once" passed after 0.115 seconds.
+✔ Test "A current expression owns the level even when body load is higher" passed after 0.201 seconds.
+✔ Test "A newer quick state replaces the detailed check-in" passed after 0.201 seconds.
+✔ Test "Detailed quadrants map to a clear stress level and fallback source" passed after 0.203 seconds.
+✔ Test "A detailed check-in wins when timestamps are equal" passed after 0.203 seconds.
+✔ Test "High-pressure and vulnerable emotions set a minimum stress level" passed after 0.203 seconds.
+✔ Test "Expressions from a previous local day expire before body-only assessment" passed after 0.203 seconds.
+✔ Test "All six quick states produce a definite targeted response" passed after 0.225 seconds.
+✔ Test "A newer detailed check-in replaces the quick state" passed after 0.225 seconds.
+✔ Test "Recent summary prefers valid Apple Watch samples" passed after 0.225 seconds.
+✔ Test "Old payloads infer an evidence request only when evidence exists" passed after 0.225 seconds.
+✔ Test "Unknown Apple label is left unclassified" passed after 0.226 seconds.
+✔ Test "A delayed retry reuses the first frozen completion window" passed after 0.226 seconds.
+✔ Test "身体负荷偏高时会调整没有明确恢复指向的回声推荐" passed after 0.226 seconds.
+✔ Test "A legacy mindful payload decodes without the request field" passed after 0.226 seconds.
+✔ Test "Recent workout keeps non-workout-sensitive evidence" passed after 0.226 seconds.
+✔ Test "Watch 情绪罗盘固定提供九个不重复区域" passed after 0.226 seconds.
+✔ Test "回声会直接得到一个对应的恢复动作" passed after 0.227 seconds.
+✔ Test "History alone never permits a steady conclusion" with 4 test cases passed after 0.227 seconds.
+✔ Test "Baseline ignores samples older than 14 days" passed after 0.227 seconds.
+✔ Test "Baseline requires five distinct valid days" passed after 0.226 seconds.
+✔ Test shiftWorkNapManualChoiceAndArrival() passed after 0.227 seconds.
+✔ Test "Two distinct reliable kinds including cardiovascular evidence are required" passed after 0.226 seconds.
+✔ Test "每种状态至少一个月不重复金句" passed after 0.227 seconds.
+✔ Test "Every source routes low, moderate, and high pressure to a targeted practice" passed after 0.227 seconds.
+✔ Test "Neutral compass coordinates do not trigger a negative-state practice" passed after 0.226 seconds.
+✔ Test "Recent workout suppresses an elevated conclusion" passed after 0.227 seconds.
+✔ Test lateSleepKeepsCycleAndAmbiguousMatchesRequireReview() passed after 0.227 seconds.
+✔ Test "The last day of a 31-day month does not collide with the next month" passed after 0.227 seconds.
+✔ Test "Elevated body load uses a recovery reflection theme" passed after 0.226 seconds.
+✔ Test "Observation is separate from elevated when enough independent evidence exists" passed after 0.227 seconds.
+✔ Test "High-activation negative state recommends a physiological sigh" passed after 0.227 seconds.
+✔ Test "No current expression asks for input until body evidence can support a result" passed after 0.227 seconds.
+✔ Test "Explicit context, sensations, and body signals use a stable source priority" passed after 0.227 seconds.
+✔ Test "每条金句都有可审核的公版来源与方寸自译声明" passed after 0.227 seconds.
+✔ Test "同一天的不同回声会得到不同的一句" passed after 0.227 seconds.
+✔ Test "尚未选择状态时也先给一句有作者和作品的名家句" passed after 0.227 seconds.
+✔ Test "Latest reading is the newest valid Watch sample, not the recent median" passed after 0.227 seconds.
+✔ Test "回声句只回应主观状态，不替身体数据下结论" passed after 0.227 seconds.
+✔ Test "每种状态都有一周不重复且有明确出处的名家句" passed after 0.227 seconds.
+✔ Test "A drained low-activation state recommends NSDR" passed after 0.227 seconds.
+✔ Test "Elevated load requires two independent reliable signals" passed after 0.227 seconds.
+✔ Test "Pressure reflections stay inside the source and level pool" with 39 test cases passed after 0.227 seconds.
+✔ Test "The same pressure profile remains stable throughout one local day" passed after 0.227 seconds.
+✔ Test "Consecutive local days reveal different reflections" passed after 0.227 seconds.
+✔ Test "Kegel is never returned by automatic recommendations" passed after 0.227 seconds.
+✔ Test sleepUnionDoesNotMixSourcesOrCountAwake() passed after 0.227 seconds.
+✔ Test "Median is resistant to an extreme sample" passed after 0.227 seconds.
+✔ Test "金句库只收录有明确作品的哲学与心理学名家句" passed after 0.227 seconds.
+✔ Test "Daily copy avoids abstract coaching language" passed after 0.227 seconds.
+✔ Test "Pressure level changes the eligible quotation" with 13 test cases passed after 0.227 seconds.
+✔ Test excessiveFutureAndConflictingSleep() passed after 0.227 seconds.
+✔ Test "Daily selections always carry an author and a work" passed after 0.227 seconds.
+✔ Test "The reflection remains stable throughout one local day" passed after 0.227 seconds.
+✔ Test "Every body theme offers a week of varied words" passed after 0.227 seconds.
+✔ Test deletionWinsAndCacheIsBounded() passed after 0.227 seconds.
+✔ Test uuidSyncVersionAndExplicitMirrors() passed after 0.227 seconds.
+✔ Test sourceDefinitionsAndRevisions() passed after 0.227 seconds.
+✔ Test "A body-load refresh cannot replace today's quotation" passed after 0.227 seconds.
+✔ Test noSilentSwitchAndManualRebaseline() passed after 0.227 seconds.
+✔ Test "Paced breathing exposes the breath phase instead of a session countdown" passed after 0.227 seconds.
+✔ Test "手表仅在启用且运行中的相位边界播放一次触觉" passed after 0.227 seconds.
+✔ Test daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent() passed after 0.227 seconds.
+✔ Test "照顾情绪的金句不出现死亡深渊或怪物意象" passed after 0.227 seconds.
+✔ Test "开场句和六种状态在一年内每天都各不相同" passed after 0.227 seconds.
+✔ Test "Retry delay backs off and is capped at one day" passed after 0.227 seconds.
+✔ Test "Slow practices use calm sparse cues" passed after 0.227 seconds.
+✔ Test "Cue identifiers change only at protocol boundaries" passed after 0.227 seconds.
+✔ Test sparseCoverageInterventionAndRestingReuse() passed after 0.227 seconds.
+✔ Test baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors() passed after 0.228 seconds.
+✔ Test arrivalBufferAndRealDSTRepeatedHour() passed after 0.227 seconds.
+✔ Test queryFailureCacheInvalidationAndFreshnessBoundaries() passed after 0.227 seconds.
+✔ Test enoughHistoryCannotInventCurrentAndPartialDataStayLimited() passed after 0.228 seconds.
+✔ Suite "Heart-rate evidence windows" passed after 0.433 seconds.
+✔ Suite "Emotion catalog" passed after 0.433 seconds.
+✔ Suite "Practice catalog" passed after 0.433 seconds.
+✔ Suite "Current moment stress decision" passed after 0.433 seconds.
+✔ Suite "Sleep episode analysis" passed after 0.433 seconds.
+✔ Suite "Body load baseline" passed after 0.433 seconds.
+✔ Suite "Watch practice completion recovery" passed after 0.433 seconds.
+✔ Suite "Echo personalization" passed after 0.433 seconds.
+✔ Suite "Watch compass grid" passed after 0.433 seconds.
+✔ Test trainingAndBackgroundEventsDoNotSuppressOrReward() passed after 0.432 seconds.
+✔ Suite "M2 sleep and baselines" passed after 0.433 seconds.
+✔ Suite "Practice recommendation" passed after 0.433 seconds.
+✔ Suite "Daily reflection" passed after 0.433 seconds.
+✔ Suite "M2 normalized sources" passed after 0.433 seconds.
+✔ Suite "Practice haptic cadence" passed after 0.433 seconds.
+✔ Suite "Pending write retry policy" passed after 0.433 seconds.
+✔ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() passed after 0.457 seconds.
+✔ Test noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory() passed after 0.546 seconds.
+✔ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() passed after 0.618 seconds.
+✔ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() passed after 0.644 seconds.
+✔ Test sourceChangeAndClearRejectLateRequests() passed after 0.726 seconds.
+✔ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() passed after 0.743 seconds.
+✔ Test transactionFaultsKeepCursorsAndAssessmentTogether() passed after 0.828 seconds.
+✔ Test providerToStorePaginationRevisionsAndDeletion() passed after 0.897 seconds.
+✔ Suite "M2 atomic Insights store and provider pipeline" passed after 0.898 seconds.
+✔ Test independentBaselineBoundariesAndCurrentCoverage() passed after 1.126 seconds.
+✔ Test nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual() passed after 1.146 seconds.
+✔ Test originalGoldenFileThroughRawSamples() passed after 1.231 seconds.
+✔ Suite "M2 readiness rules and replay" passed after 1.231 seconds.
+✔ Test run with 93 tests in 17 suites passed after 1.232 seconds.

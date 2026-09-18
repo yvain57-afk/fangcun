@@ -20,6 +20,15 @@ public struct ReadinessConfiguration: Codable, Equatable, Sendable {
   public var rhrScaleFloor = 3.0
   public var currentHours = 18.0
   public var historicalHours = 24.0
+  public var mildDeviation = 1.0
+  public var severeDeviation = 2.0
+  public var highHRVDeviation = 2.0
+  public var mildSleepDeficitMinutes = 60.0
+  public var severeSleepDeficitMinutes = 120.0
+  public var ambiguousSleepHours = 4.0
+  public var ambiguousEndGapHours = 6.0
+  public var revisionOverlapFraction = 0.5
+  public var revisionEndGapHours = 3.0
   public var maximumHRVMS = 10_000.0
   public var maximumRestingBPM = 1_000.0
   public init(sleepTargetHours: Double = 8) { self.sleepTargetHours = sleepTargetHours }
@@ -27,11 +36,17 @@ public struct ReadinessConfiguration: Codable, Equatable, Sendable {
   public var isValid: Bool {
     (7...10).contains(sleepTargetHours) && episodeGapMinutes > 0 && minimumSleepHours > 0
       && reviewSleepHours > minimumSleepHours && arrivalBufferMinutes >= 0 && interventionBufferMinutes >= 0
+      && mildDeviation > 0 && severeDeviation > mildDeviation && highHRVDeviation > 0
+      && mildSleepDeficitMinutes > 0 && severeSleepDeficitMinutes > mildSleepDeficitMinutes
+      && ambiguousSleepHours > 0 && ambiguousEndGapHours > 0 && (0..<1).contains(revisionOverlapFraction)
+      && revisionEndGapHours > 0 && maximumHRVMS > 0 && maximumRestingBPM > 0
       && minimumHRVSamples >= 3 && minimumHRVHours >= 2 && baselineDays == 28
       && provisionalDays == 7 && matureDays == 14 && madMultiplier > 0
       && hrvScaleFloor > 0 && rhrScaleFloor > 0 && currentHours == 18 && historicalHours == 24
       && [sleepTargetHours,episodeGapMinutes,minimumSleepHours,reviewSleepHours,arrivalBufferMinutes,
-          interventionBufferMinutes,madMultiplier,hrvScaleFloor,rhrScaleFloor,maximumHRVMS,maximumRestingBPM].allSatisfy { $0.isFinite }
+          interventionBufferMinutes,madMultiplier,hrvScaleFloor,rhrScaleFloor,maximumHRVMS,maximumRestingBPM,mildDeviation,severeDeviation,highHRVDeviation,
+          mildSleepDeficitMinutes,severeSleepDeficitMinutes,ambiguousSleepHours,ambiguousEndGapHours,
+          revisionOverlapFraction,revisionEndGapHours].allSatisfy { $0.isFinite }
   }
 }
 

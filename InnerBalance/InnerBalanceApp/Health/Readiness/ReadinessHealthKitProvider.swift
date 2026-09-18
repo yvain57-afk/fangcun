@@ -2,10 +2,7 @@ import Foundation
 import HealthKit
 import InnerBalanceCore
 
-@MainActor
-protocol ReadinessHealthDataProviding {
-  func changes(for metric: ReadinessMetric, cursor: HealthReadCursor?, now: Date) async throws -> ReadinessChangeBatch
-}
+typealias ReadinessHealthDataProviding = ReadinessDataProviding
 
 /// Separate from the legacy Home provider. M3 will connect the evaluated result to the UI.
 /// No authorization requests, background delivery entitlement changes, or new read types here.

@@ -1,6 +1,6 @@
 # 执行状态
 
-本轮按 START_CODEX 完成 M0–M1；M2–M6 后续分阶段执行，M7 暂缓。
+M0–M1 已补核验；按用户本轮边界仅推进 M2-01 至 M2-04。M2 数据链路完成后停止，M3–M6 不展开，M7 暂缓。
 
 | 任务 | 状态 | 证据/下一步 |
 |---|---|---|
@@ -10,12 +10,14 @@
 | M1-01 | verified | 67 Core + 31 App；12 个原始数据输入情景 |
 | M1-02 | verified | 时间分离、观察状态、legacy 保留及备份回归 |
 | M1-03 | verified | 7 UI tests；原始 provider 输入至首页，真机已安装启动 |
-| M2-01 | implemented_unverified | 标准化、选源、去重、HK anchored adapter 单测/编译通过；事务锚点联测在 M2-04 |
+| M2-01 | verified（合成数据链路） | 标准化、选源、去重、增量/删除与事务锚点联测通过；真实 HK 增量/后台仍 implemented_unverified |
 | M2-02 | verified | ReadinessFeatureTests；78 Core 测试通过，原始合成输入 |
 | M2-03 | verified | 86 Core；原文件 G01–G10 从原始样本重放 |
-| M2-04 | in_progress | 独立存储与事务恢复 |
+| M2-04 | verified（本机重放） | 独立存储、版本修订、事务恢复与并发保护；见 ADR-002 / VERIFICATION |
 | M3 | not_started | 版本化存储及手机完整闭环 |
 | M4 | not_started | 腕上会话、反馈及幂等同步 |
 | M5 | not_started | 活动提醒及 Widgets |
 | M6 | not_started | 端到端验收、独立 Live Activity 验收 |
 | M7 | not_started | 按规格明确暂缓 |
+
+注意：verified 表示所列范围的定向验证，不表示全仓库无失败。最终 Core 93、UI 8 通过；App 全量 163 中 3 个既有测试失败，在 M2 前提交独立复现，见 VERIFICATION。Watch/HealthKit 真机未验证能力不计入已通过。

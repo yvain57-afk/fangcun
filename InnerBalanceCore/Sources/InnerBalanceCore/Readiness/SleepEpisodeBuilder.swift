@@ -71,8 +71,8 @@ public enum SleepEpisodeBuilder {
     let matches = episodes.map { episode in previous.filter { old in
       let overlap = min(old.end, episode.end).timeIntervalSince(max(old.start, episode.start))
       let span = max(old.end.timeIntervalSince(old.start), episode.end.timeIntervalSince(episode.start))
-      return old.sourceKey == episode.sourceKey && span > 0 && overlap / span > 0.5
-        && abs(old.end.timeIntervalSince(episode.end)) <= 3 * 3600
+      return old.sourceKey == episode.sourceKey && span > 0 && overlap / span > configuration.revisionOverlapFraction
+        && abs(old.end.timeIntervalSince(episode.end)) <= configuration.revisionEndGapHours * 3600
     } }
     for index in episodes.indices {
       if matches[index].count == 1, let match = matches[index].first,
@@ -96,8 +96,8 @@ public enum SleepEpisodeBuilder {
     }
     if manual != nil { flags.append(.manualSleepSelection) }
     if manual == nil {
-      let long = candidates.filter { $0.asleepDuration >= 4 * 3600 }
-      if long.contains(where: { a in long.contains { b in a.id != b.id && abs(a.end.timeIntervalSince(b.end)) > 6 * 3600 } }) {
+      let long = candidates.filter { $0.asleepDuration >= configuration.ambiguousSleepHours * 3600 }
+      if long.contains(where: { a in long.contains { b in a.id != b.id && abs(a.end.timeIntervalSince(b.end)) > configuration.ambiguousEndGapHours * 3600 } }) {
         flags.append(.ambiguousSleep)
       }
     }

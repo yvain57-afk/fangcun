@@ -10,6 +10,7 @@ public struct ReadinessInput: Codable, Sendable {
   public var hrv: ReadinessMetricFeature?
   public var rhr: ReadinessMetricFeature?
   public var baselines: ReadinessBaselines?
+  public var sourceDetails: [String: ReadinessSource]
   public var sources: [String: SelectedReadinessSource]
   public var configuration: ReadinessConfiguration
   public var now: Date
@@ -48,7 +49,9 @@ public enum ReadinessInputBuilder {
       hrvSource: hSource, rhrSource: rSource, currentSampleIDs: Set((h?.sampleIDs ?? [])+(r?.sampleIDs ?? [])),
       calendar: calendar, interventions: exclusions, configuration: configuration) }
     return ReadinessPreparedInput(input: ReadinessInput(sleep: sleep, hrv: h, rhr: r, baselines: baseline,
-      sources: sources, configuration: configuration, now: now, queriedAt: rows.map(\.queriedAt).max(),
+      sourceDetails: Dictionary(uniqueKeysWithValues: sources.compactMap { key, selected in
+        rows.filter { $0.sourceKey == selected.sourceKey }.max { $0.end < $1.end }.map { (key, $0.source) }
+      }), sources: sources, configuration: configuration, now: now, queriedAt: rows.map(\.queriedAt).max(),
       timeZoneID: calendar.timeZone.identifier, readFailure: readFailure, cacheInvalidated: cacheInvalidated), episodes: built.episodes)
   }
 }
@@ -88,6 +91,7 @@ public struct ReadinessAssessment: Codable, Sendable {
   public var evidence: [ReadinessMetricEvidence]
   public var missingReasons: [ReadinessReason]
   public var qualityFlags: [ReadinessReason]
+  public var sourceDetails: [String: ReadinessSource]
   public var sources: [String: SelectedReadinessSource]
   public var manuallySelectedSleep: Bool
   public var autonomicSeverity: Int?
@@ -123,7 +127,7 @@ public enum EvidenceQualityEvaluator {
 public enum ReadinessEngine {
   public static func evaluate(_ input: ReadinessInput, cached: ReadinessAssessment? = nil) -> ReadinessAssessment {
     if input.readFailure != nil, !input.cacheInvalidated, let cached, cached.level != nil,
-      cached.sources == input.sources,
+      cached.sources == input.sources, cached.configuration == input.configuration,
       AssessmentFreshness.resolve(cached, now: input.now, newerSleepEnd: input.sleep.episode?.end) != .stale,
       !(input.sleep.episode.map { $0.end > (cached.sleepEndAt ?? .distantPast) } ?? false) {
       var retained = cached
@@ -135,7 +139,7 @@ public enum ReadinessEngine {
     let h = deviation(input.hrv?.value, baseline: input.baselines?.hrv, inverse: true)
     let r = deviation(input.rhr?.value, baseline: input.baselines?.rhr, inverse: false)
     // Tolerance only compensates floating point round trips at exact fixture boundaries.
-    let high = h.map { $0 < -2 - 1e-12 } ?? false
+    let high = h.map { $0 < -c.highHRVDeviation - 1e-12 } ?? false
     let availability = EvidenceQualityEvaluator.evaluate(input, highHRV: high)
     var reasons = Set(input.sleep.flags + (input.hrv?.reasons ?? [.hrvMissing]) + (input.rhr?.reasons ?? [.rhrMissing]))
     if !c.isValid { reasons.insert(.invalidConfiguration) }
@@ -146,10 +150,10 @@ public enum ReadinessEngine {
     var a: Int?, s: Int?, level: ReadinessLevel?
     let sleep = input.sleep.episode
     if (availability == .assessable || availability == .provisional), let h, let r, let sleep {
-      let hs = severity(h), rs = severity(r)
+      let hs = severity(h, configuration: c), rs = severity(r, configuration: c)
       a = hs == 2 || rs == 2 || (hs == 1 && rs == 1) ? 2 : max(hs, rs)
       let deficit = max(0, c.sleepTargetHours*60-sleep.asleepDuration/60)
-      s = deficit + 1e-12 >= 120 ? 2 : deficit + 1e-12 >= 60 ? 1 : 0
+      s = deficit + 1e-12 >= c.severeSleepDeficitMinutes ? 2 : deficit + 1e-12 >= c.mildSleepDeficitMinutes ? 1 : 0
       level = a == 0 && s == 0 ? .usual : (a == 2 && s! >= 1) || (s == 2 && a! >= 1) ? .low : .reduced
       if hs > 0 { reasons.insert(.hrvBelowBaseline) }
       if rs > 0 { reasons.insert(.rhrAboveBaseline) }
@@ -173,7 +177,7 @@ public enum ReadinessEngine {
       currentUntil: sleep?.end.addingTimeInterval(c.currentHours*3600), validUntil: sleep?.end.addingTimeInterval(c.historicalHours*3600),
       timeZoneID: input.timeZoneID, availability: availability, level: level, freshness: .stale, evidence: evidence,
       missingReasons: reasons.intersection(missing).sorted { $0.rawValue < $1.rawValue },
-      qualityFlags: reasons.subtracting(missing).sorted { $0.rawValue < $1.rawValue }, sources: input.sources,
+      qualityFlags: reasons.subtracting(missing).sorted { $0.rawValue < $1.rawValue }, sourceDetails: input.sourceDetails, sources: input.sources,
       manuallySelectedSleep: input.sleep.manuallySelected, autonomicSeverity: a, sleepSeverity: s,
       refreshFailure: input.readFailure, contributingSampleIDs: Array(Set(allIDs)).sorted { $0.uuidString < $1.uuidString })
     result.freshness = AssessmentFreshness.resolve(result, now: input.now)
@@ -186,5 +190,7 @@ public enum ReadinessEngine {
     let result = (inverse ? center-current : current-center)/scale
     return result.isFinite ? result : nil
   }
-  private static func severity(_ deviation: Double) -> Int { deviation + 1e-12 >= 2 ? 2 : deviation + 1e-12 >= 1 ? 1 : 0 }
+  private static func severity(_ deviation: Double, configuration: ReadinessConfiguration) -> Int {
+    deviation + 1e-12 >= configuration.severeDeviation ? 2 : deviation + 1e-12 >= configuration.mildDeviation ? 1 : 0
+  }
 }

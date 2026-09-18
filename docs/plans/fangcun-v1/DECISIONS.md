@@ -32,3 +32,9 @@
 - A 1e-12 numerical tolerance handles log/exp round trips at exact severity boundaries; no model threshold changes.
 - Availability, level, freshness, and sync state are orthogonal. Partial evidence remains visible without a level. A failed refresh preserves valid cached timestamps; invalidation and a newer sleep take precedence.
 - Current sleep uses 48 hours; historical episodes use the bounded 35-day cache. Old malformed nights do not invalidate a separate current night. Training never hides observed deviations; drinks and completion counts are not scoring inputs.
+
+## M2-04：存储与数据链路
+
+采用 [ADR-002](ADR-002-insights-store.md) 的独立 Insights store。`ReadinessServices.make()` 提供 HealthKit adapter → ReadinessPipeline → 独立 store 入口，创建不申请权限或启动 observer。原首页、用户记录、练习及显示偏好继续使用原入口。
+
+修订、输入摘要、配置版本、来源摘要、时间范围、资料质量和新鲜度随结果保存。规则参数进一步集中到 ReadinessConfiguration。删除优先于缓存，损坏恢复撤销当前资格；失效锚点重读时清理该项旧缓存。全部实现停在 M2，不接入 M3 页面、不做 M4 同步或 M5 通知。
