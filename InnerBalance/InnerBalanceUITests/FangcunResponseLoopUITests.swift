@@ -46,7 +46,7 @@ final class FangcunResponseLoopUITests: XCTestCase {
     start.tap()
     XCTAssertTrue(app.buttons["结束"].waitForExistence(timeout: 5))
     app.buttons["结束"].tap()
-    app.buttons["结束练习"].tap()
+    app.buttons["practice.finish.confirm"].firstMatch.tap()
 
     let peaceful = app.buttons["平和"]
     XCTAssertTrue(peaceful.waitForExistence(timeout: 5))
@@ -139,7 +139,7 @@ final class FangcunResponseLoopUITests: XCTestCase {
     let end = app.buttons["结束"]
     XCTAssertTrue(end.waitForExistence(timeout: 3))
     end.tap()
-    let confirmEnd = app.buttons["结束练习"]
+    let confirmEnd = app.buttons["practice.finish.confirm"].firstMatch
     XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
     confirmEnd.tap()
 

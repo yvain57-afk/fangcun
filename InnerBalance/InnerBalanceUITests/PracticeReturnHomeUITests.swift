@@ -4,11 +4,11 @@ final class PracticeReturnHomeUITests: XCTestCase {
   @MainActor
   func testCompletedLibraryPracticeReturnsToNowTab() {
     let app = launchPracticeFromLibrary()
-    app.buttons["开始 1 分钟练习"].tap()
+    app.buttons["practice.prepare.start"].tap()
     let end = app.buttons["结束"]
     XCTAssertTrue(end.waitForExistence(timeout: 5))
     end.tap()
-    let confirmEnd = app.buttons["结束练习"]
+    let confirmEnd = app.buttons["practice.finish.confirm"].firstMatch
     XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
     confirmEnd.tap()
 
@@ -23,21 +23,40 @@ final class PracticeReturnHomeUITests: XCTestCase {
     XCTAssertTrue(done.waitForExistence(timeout: 5))
     done.tap()
 
-    let now = app.tabBars.buttons["此刻"]
+    let now = app.tabBars.buttons["今日"]
     XCTAssertTrue(now.waitForExistence(timeout: 5))
     XCTAssertTrue(now.isSelected)
-    XCTAssertTrue(app.descendants(matching: .any)["home.latestPractice"].exists)
+    let saved = app.descendants(matching: .any)["today.latestPractice"].firstMatch
+    reveal(saved, app)
+    XCTAssertTrue(saved.exists)
+    XCTAssertFalse((saved.value as? String ?? "").isEmpty)
+    let shot = XCTAttachment(screenshot: app.screenshot())
+    shot.name = "m3-pre-practice-return"; shot.lifetime = .keepAlways; add(shot)
   }
 
   @MainActor
   func testClosingBeforeStartingKeepsThePracticeTabSelected() {
     let app = launchPracticeFromLibrary()
-    app.buttons["关闭练习"].tap()
+    app.buttons["practice.close"].tap()
 
     let practice = app.tabBars.buttons["练习"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))
     XCTAssertTrue(practice.isSelected)
-    XCTAssertTrue(app.staticTexts["按压力状态选择"].exists)
+    XCTAssertTrue(app.buttons["practice.sigh.300"].exists)
+    XCTAssertFalse(app.buttons["暂停练习"].exists)
+    app.tabBars.buttons["今日"].tap()
+    XCTAssertFalse(app.descendants(matching: .any)["today.latestPractice"].exists)
+    app.tabBars.buttons["练习"].tap()
+    let launch = app.buttons["practice.physiologicalSigh.60"]
+    reveal(launch, app)
+    launch.tap()
+    XCTAssertTrue(app.buttons["practice.prepare.start"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.buttons["暂停练习"].exists)
+  }
+
+  @MainActor private func reveal(_ item: XCUIElement, _ app: XCUIApplication) {
+    for _ in 0..<5 where !item.isHittable { app.scrollViews.firstMatch.swipeUp() }
+    XCTAssertTrue(item.isHittable)
   }
 
   @MainActor
@@ -49,10 +68,11 @@ final class PracticeReturnHomeUITests: XCTestCase {
     let practice = app.tabBars.buttons["练习"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))
     practice.tap()
-    let launch = app.buttons["开始生理性叹息，1 分钟"]
+    let launch = app.buttons["practice.physiologicalSigh.60"]
     XCTAssertTrue(launch.waitForExistence(timeout: 5))
+    reveal(launch, app)
     launch.tap()
-    XCTAssertTrue(app.buttons["开始 1 分钟练习"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["practice.prepare.start"].waitForExistence(timeout: 5))
     return app
   }
 }

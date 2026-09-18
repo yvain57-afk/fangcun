@@ -28,14 +28,15 @@ struct PracticePreparationScreen: View {
       .padding(.vertical, FangcunLayout.spacing(3))
       .padding(.bottom, FangcunLayout.spacing(24))
     }
+    .accessibilityIdentifier("practice.preparation")
     .safeAreaInset(edge: .bottom) {
       Button("开始 · \(PracticeDurationFormatter.text(viewModel.duration))", action: onStart)
         .buttonStyle(InnerBalancePrimaryButtonStyle())
         .accessibilityLabel("开始 \(PracticeDurationFormatter.text(viewModel.duration))练习")
+        .accessibilityIdentifier("practice.prepare.start")
         .padding(.vertical, FangcunLayout.spacing(3))
         .background(InnerBalanceTheme.canvas)
     }
-    .accessibilityIdentifier("practice.preparation")
   }
 
   @ViewBuilder private var preparationInput: some View {

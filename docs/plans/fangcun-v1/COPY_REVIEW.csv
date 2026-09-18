@@ -40,3 +40,5 @@ body.source.detail,M1 身体线索,source,%@ · 测量于 %@%@%@ · %@,依次：
 body.query.unavailable,M1 身体线索,query,部分身体线索未能读取。本次判断只使用成功读取的资料，无法据此判断是否已授权。,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
 body.history.legacy,M1 身体线索,history,旧版记录 · 保留当时的判断口径，不作为新准备度样本,,3,是,是,稳定 key 不随中文修改；工程默认，非医学结论
 body.history.unknownLegend,M1 历史,图例,浅色短线：线索有限 / 数据不足 / 未记录,,2,否,是,M3 将取消不同柱高的量值暗示
+practice.finish.action,M3-PRE,提前结束确认,结束练习,,1,否,是,标识 practice.finish.confirm；只结束，保存另行确认
+practice.finish.message,M3-PRE,提前结束说明,今天到这里，也很好。结束后可保留已完成的时长。,,3,是,是,不声称已经保存，不要求主观评价

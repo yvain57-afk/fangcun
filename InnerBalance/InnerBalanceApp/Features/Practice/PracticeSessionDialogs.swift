@@ -12,6 +12,7 @@ struct PracticeCloseToolbar: ToolbarContent {
       }
       .frame(minWidth: 44, minHeight: 44)
       .accessibilityLabel("关闭练习")
+      .accessibilityIdentifier("practice.close")
     }
   }
 }
@@ -22,8 +23,10 @@ enum PracticeSessionDialogAction {
 }
 
 enum PracticeSessionDialogCopy {
-  static let finishActionTitle = "结束练习"
-  static let finishMessage = "今天到这里，也很好。结束后可保留已完成的时长。"
+  static let finishActionID = "practice.finish.confirm"
+  static let finishMessageKey = "practice.finish.message"
+  static var finishActionTitle: String { FangcunCopy.text("practice.finish.action") }
+  static var finishMessage: String { FangcunCopy.text(finishMessageKey) }
 }
 
 enum PracticeSessionDialogPolicy {
@@ -48,12 +51,14 @@ private struct PracticeSessionDialogs: ViewModifier {
       .tint(InnerBalanceTheme.strongFill)
       .confirmationDialog("要提前结束吗？", isPresented: $showFinish) {
         Button(PracticeSessionDialogCopy.finishActionTitle, action: onFinish)
+          .accessibilityIdentifier(PracticeSessionDialogCopy.finishActionID)
         Button("继续练习", role: .cancel) {}
       } message: {
         Text(PracticeSessionDialogCopy.finishMessage)
       }
       .confirmationDialog("正在进行练习", isPresented: $showExit) {
         Button(PracticeSessionDialogCopy.finishActionTitle, action: onFinish)
+          .accessibilityIdentifier(PracticeSessionDialogCopy.finishActionID)
         Button("直接离开，不记录", action: onDiscard)
         Button("继续练习", role: .cancel) {}
       } message: {

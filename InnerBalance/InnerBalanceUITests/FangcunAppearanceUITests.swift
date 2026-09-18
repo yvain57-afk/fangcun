@@ -56,7 +56,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     capture("practice-active", from: app)
 
     app.buttons["结束"].tap()
-    let finish = app.buttons["结束练习"]
+    let finish = app.buttons["practice.finish.confirm"].firstMatch
     XCTAssertTrue(finish.waitForExistence(timeout: 3))
     finish.tap()
     XCTAssertTrue(

@@ -175,7 +175,10 @@ struct PracticePresentationTests {
   @Test("提前结束文案不承诺尚未发生的保存，也不要求凯格尔评价感受")
   func finishDialogCopyMatchesTheNextStep() {
     #expect(PracticeSessionDialogCopy.finishActionTitle == "结束练习")
-    #expect(PracticeSessionDialogCopy.finishMessage == "结束后可保留已完成的时长。")
+    #expect(PracticeSessionDialogCopy.finishActionID == "practice.finish.confirm")
+    #expect(PracticeSessionDialogCopy.finishMessage != PracticeSessionDialogCopy.finishMessageKey)
+    #expect(!PracticeSessionDialogCopy.finishMessage.isEmpty)
+    #expect(!PracticeSessionDialogCopy.finishMessage.contains("已保存"))
     #expect(!PracticeSessionDialogCopy.finishMessage.contains("主观变化"))
   }
 
@@ -543,6 +546,20 @@ struct PracticePresentationTests {
     await task.value
     #expect(!controller.canContinueInBackground)
     #expect(coordinator.playCount == 0)
+  }
+
+  @Test("未开始的准备页不创建会话或启动音频，关闭后保持停止")
+  @MainActor func closingReadyPreparationHasNoSessionOrAudio() async {
+    let coordinator = CountingPracticeAudioCoordinator()
+    let audio = PracticeAudioController(coordinator: coordinator)
+    let model = PracticeSessionViewModel(plan: PracticeCatalog.protocol(for: .physiologicalSigh)!, duration: 60)
+    await audio.run(model, mode: .guided, ambienceEnabled: true)
+    audio.stop()
+    #expect(model.phase == .ready && model.startedAt == nil)
+    #expect(model.makeCompletion(sessionID: "synthetic-ready") == nil)
+    #expect(coordinator.prepareCount == 0 && !audio.canContinueInBackground)
+    model.finish()
+    #expect(model.phase == .ready)
   }
 
   @Test("每条语音提示都有稳定的本地资源名")

@@ -348,7 +348,7 @@ final class CheckInFlowUITests: XCTestCase {
     let end = app.buttons["结束"]
     XCTAssertTrue(end.waitForExistence(timeout: 3))
     end.tap()
-    let confirmEnd = app.buttons["结束练习"]
+    let confirmEnd = app.buttons["practice.finish.confirm"].firstMatch
     XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
     confirmEnd.tap()
 
@@ -393,7 +393,7 @@ final class CheckInFlowUITests: XCTestCase {
     let end = app.buttons["结束"]
     XCTAssertTrue(end.waitForExistence(timeout: 3))
     end.tap()
-    let confirmEnd = app.buttons["结束练习"]
+    let confirmEnd = app.buttons["practice.finish.confirm"].firstMatch
     XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
     confirmEnd.tap()
 

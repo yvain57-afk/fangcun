@@ -1,5 +1,6 @@
 import Testing
 import UIKit
+import SwiftUI
 
 @testable import InnerBalance
 
@@ -78,17 +79,18 @@ struct FangcunDesignSystemTests {
   @Test("The warm paper palette is accessible in both appearances")
   @MainActor
   func approvedPaperPalette() throws {
+    // Native mapping of the approved blue/paper contract; see M3-PRE-CONTRACT.md.
     let expected: [String: (light: UInt32, dark: UInt32)] = [
-      "AccentColor": (0x403A34, 0x51463D),
-      "FangcunAccent": (0x403A34, 0x51463D),
-      "FangcunAccentWash": (0xE8E0D5, 0xC9BCAF),
-      "FangcunBackground": (0xF2EDE5, 0xD9D0C4),
-      "FangcunButtonText": (0xFFF9F0, 0xF9F1E7),
-      "FangcunCard": (0xF8F4ED, 0xE3DBCF),
-      "FangcunPrimaryText": (0x292521, 0x2D2823),
-      "FangcunRaisedCard": (0xFFF9F1, 0xEEE6DB),
-      "FangcunSecondaryText": (0x6B625A, 0x605850),
-      "FangcunWarmHighlight": (0x9A6D4B, 0x8C6246),
+      "AccentColor": (0x1B355A, 0x9BB9DE),
+      "FangcunAccent": (0x1B355A, 0x9BB9DE),
+      "FangcunAccentWash": (0xEEF2F5, 0x283748),
+      "FangcunBackground": (0xFAF9F5, 0x141A22),
+      "FangcunButtonText": (0xFFFFFF, 0x142239),
+      "FangcunCard": (0xFFFFFF, 0x1E2631),
+      "FangcunPrimaryText": (0x253244, 0xEDF2F6),
+      "FangcunRaisedCard": (0xFFFFFF, 0x232E3C),
+      "FangcunSecondaryText": (0x677483, 0xACB9C8),
+      "FangcunWarmHighlight": (0xC26D54, 0xE49A82),
     ]
 
     for (name, pair) in expected {
@@ -117,16 +119,17 @@ struct FangcunDesignSystemTests {
     #expect(contrast(darkButtonText, darkButton) >= 4.5)
   }
 
-  @Test("The paper appearance stays ink-on-paper when the system turns dark")
-  func paperAppearanceDoesNotInvertAtNight() throws {
-    let appEntry = URL(fileURLWithPath: #filePath)
-      .deletingLastPathComponent()
-      .deletingLastPathComponent()
-      .deletingLastPathComponent()
-      .appending(path: "InnerBalanceApp/App/InnerBalanceApp.swift")
-    let source = try String(contentsOf: appEntry, encoding: .utf8)
-
-    #expect(source.contains(".preferredColorScheme(.light)"))
+  @Test("Explicit appearance and accessibility preferences preserve system accessibility")
+  @MainActor func paperAppearanceDoesNotInvertAtNight() {
+    #expect(FangcunDisplayPolicy.colorScheme(dark: false) == .light)
+    #expect(FangcunDisplayPolicy.colorScheme(dark: true) == .dark)
+    #expect(FangcunDisplayPolicy.typeSize(large: false, system: .accessibility3) == .accessibility3)
+    #expect(FangcunDisplayPolicy.typeSize(large: true, system: .small) == .xxxLarge)
+    #expect(FangcunDisplayPolicy.typeSize(large: true, system: .accessibility3) == .accessibility3)
+    #expect(FangcunDisplayPolicy.reduceMotion(app: false, system: true))
+    #expect(FangcunDisplayPolicy.reduceMotion(app: true, system: false))
+    #expect(!FangcunDisplayPolicy.reduceMotion(app: false, system: false))
+    // Persistence and real rendering are covered by testDisplayPreferencesSurviveRelaunch.
   }
 
   @Test("Breathing-field tokens keep the approved base measurements")

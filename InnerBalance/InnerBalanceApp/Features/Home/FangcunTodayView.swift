@@ -89,6 +89,8 @@ struct FangcunTodayView: View {
           if !diary.entries().isEmpty { drinkContext }
           if let latestPractice, Calendar.current.isDateInToday(latestPractice.endedAt) {
             Label("今天，已经为自己留了片刻。", systemImage: "checkmark.circle")
+              .accessibilityIdentifier("today.latestPractice")
+              .accessibilityValue(latestPractice.sessionID)
               .font(.subheadline).foregroundStyle(InnerBalanceTheme.strongFill)
           }
           NavigationLink { FangcunTrendsView() } label: {

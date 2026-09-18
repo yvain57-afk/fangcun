@@ -67,7 +67,7 @@ final class FangcunRedesignUITests: XCTestCase {
     app.buttons["继续练习"].tap()
     XCTAssertTrue(pause.waitForExistence(timeout: 4))
     app.buttons["结束"].tap()
-    app.buttons["结束练习"].tap()
+    app.buttons["practice.finish.confirm"].firstMatch.tap()
     let finish = app.buttons["先完成"]
     XCTAssertTrue(finish.waitForExistence(timeout: 6))
     reveal(finish, app)
@@ -99,7 +99,7 @@ final class FangcunRedesignUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["已暂停"].waitForExistence(timeout: 5))
     capture("redesign-breathing-paused", app)
     app.buttons["结束"].tap()
-    app.buttons["结束练习"].tap()
+    app.buttons["practice.finish.confirm"].firstMatch.tap()
     XCTAssertTrue(app.buttons["先完成"].waitForExistence(timeout: 5))
   }
 
