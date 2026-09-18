@@ -19,6 +19,7 @@ public struct ReadinessInput: Codable, Sendable {
   public var readFailure: ReadinessReadFailure?
   public var cacheInvalidated: Bool
   public var dependencySampleIDs: [UUID]?
+  public var evidenceContextVersion: String?
 }
 
 public struct ReadinessPreparedInput: Sendable {
@@ -27,6 +28,10 @@ public struct ReadinessPreparedInput: Sendable {
 }
 
 public enum ReadinessInputBuilder {
+  private struct EvidenceContext: Encodable {
+    var calendar: Calendar
+    var interventions: [ReadinessInterval]
+  }
   public static func build(samples: [ReadinessSample], sources: [String: SelectedReadinessSource],
     previousEpisodes: [ReadinessSleepEpisode] = [], now: Date, calendar: Calendar,
     configuration: ReadinessConfiguration = .init(), interventions: [ReadinessInterval] = [],
@@ -55,7 +60,10 @@ public enum ReadinessInputBuilder {
       }), sources: sources, configuration: configuration, now: now, queriedAt: rows.map(\.queriedAt).max(),
       timeZoneID: calendar.timeZone.identifier, readFailure: readFailure, cacheInvalidated: cacheInvalidated,
       dependencySampleIDs: samples.filter { [.sleep,.hrvSDNN,.restingHeartRate,.mindfulSession].contains($0.metric) }
-        .map(\.id).sorted { $0.uuidString < $1.uuidString }), episodes: built.episodes)
+        .map(\.id).sorted { $0.uuidString < $1.uuidString },
+      evidenceContextVersion: try? StableDigest.encoded(EvidenceContext(calendar: calendar,
+        interventions: exclusions.sorted { $0.start == $1.start ? $0.end < $1.end : $0.start < $1.start }))),
+      episodes: built.episodes)
   }
 }
 
@@ -102,6 +110,7 @@ public struct ReadinessAssessment: Codable, Sendable {
   public var refreshFailure: ReadinessReadFailure?
   public var contributingSampleIDs: [UUID]
   public var dependencyVersion: Int?
+  public var evidenceContextVersion: String?
 }
 
 public enum AssessmentFreshness {
@@ -132,6 +141,7 @@ public enum ReadinessEngine {
   public static func evaluate(_ input: ReadinessInput, cached: ReadinessAssessment? = nil) -> ReadinessAssessment {
     if input.readFailure != nil, !input.cacheInvalidated, let cached, cached.level != nil,
       cached.sources == input.sources, cached.configuration == input.configuration,
+      input.evidenceContextVersion != nil, cached.evidenceContextVersion == input.evidenceContextVersion,
       AssessmentFreshness.resolve(cached, now: input.now, newerSleepEnd: input.sleep.episode?.end) != .stale,
       !(input.sleep.episode.map { $0.end > (cached.sleepEndAt ?? .distantPast) } ?? false) {
       var retained = cached
@@ -189,7 +199,8 @@ public enum ReadinessEngine {
       qualityFlags: reasons.subtracting(missing).sorted { $0.rawValue < $1.rawValue }, sourceDetails: input.sourceDetails, sources: input.sources,
       manuallySelectedSleep: input.sleep.manuallySelected, autonomicSeverity: a, sleepSeverity: s,
       refreshFailure: input.readFailure, contributingSampleIDs: Array(Set(allIDs)).sorted { $0.uuidString < $1.uuidString },
-      dependencyVersion: input.dependencySampleIDs == nil ? nil : 1)
+      dependencyVersion: input.dependencySampleIDs == nil ? nil : 1,
+      evidenceContextVersion: input.evidenceContextVersion)
     result.freshness = AssessmentFreshness.resolve(result, now: input.now)
     return result
   }

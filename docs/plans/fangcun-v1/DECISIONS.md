@@ -66,3 +66,8 @@
 公开的 startObserving 接受 pipeline 和实时 context，事件强制走 healthDataChanged 的 pending 补刷新入口。保留最近 observer outcome；失败时 observerNeedsRefresh 为真。读取失败由 pipeline 存入评估，未提交的 cursor 不推进；存储失败不能伪称已经持久化。注册仍是显式调用，未接到 App 生命周期，未启用后台投递权限，未承诺系统唤醒。
 
 2026-09-18 核对本机 HKObserverQuery.h 及 Apple [completion handler](https://developer.apple.com/documentation/healthkit/hkobserverquerycompletionhandler) / [observer queries](https://developer.apple.com/documentation/healthkit/executing-observer-queries)；确认是在处理资料完成后确认。官网普通页面依赖 JS，读取其官方 Markdown 版本核验正文。
+
+
+### M2-R03 补充：失败缓存也需同一上下文
+
+最终检查复现：练习排除区间改变后的睡眠查询失败仍返回旧 usual 缓存。新增可选 evidenceContextVersion（完整 Calendar 与排序的实际排除区间摘要），失败缓存仅在摘要已知且相同时复用。配置、来源、删除和新睡眠边界校验继续保留；不改模型参数。旧 schema 1 缺摘要仍可读取，不清库；遇读取失败时不将未知上下文缓存作为新请求结果。旧存储回归同时移除所有本轮可选新字段，核验兼容。

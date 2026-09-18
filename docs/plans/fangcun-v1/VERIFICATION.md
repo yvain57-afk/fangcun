@@ -210,3 +210,8 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
 最终 [green](evidence/m2-r05-green-final.txt)：6 tests 全通过。包括收到→处理→落盘→ACK；错误、实际 Task.cancel 后的协作清理；20 个并发调用一次性确认；两个合并 observer 回调在睡眠已查完后追加事件，经过真实 pipeline/store 的补读取到新样本、落盘重启可读，然后分别一次 ACK。未申请真实健康授权。
 
 中间测试的并发计数 closure 被默认推断为 MainActor，测试把它用于后台 task group 后触发 executor 断言；崩溃栈定位到测试 closure。将该合成计数 closure 明确为 @Sendable 后通过，未禁用隔离检查。[中间失败](evidence/m2-r05-green.txt) 保留，Xcode 在重启测试后未退出，停止了本次卡住的测试进程，随后干净重跑成功；不计作真机问题。
+
+
+### M2-R03 失败缓存补验
+
+`swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests.changedContext'`：[red](evidence/m2-r03-cache-red.txt)，1 test / 2 issues；区间变更加查询失败返回了旧等级和计算时间。修复后 `swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests|ReadinessEngineTests'`：[green](evidence/m2-r03-cache-green.txt)，12 tests 通过，包含原 golden 重放和同上下文失败缓存回归。

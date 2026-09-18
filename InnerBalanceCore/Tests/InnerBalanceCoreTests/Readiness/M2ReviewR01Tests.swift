@@ -55,7 +55,13 @@ struct M2ReviewR01Tests {
     let payload = try #require(Data(base64Encoded: encoded))
     var value = try #require(JSONSerialization.jsonObject(with: payload) as? [String: Any])
     var assessments = try #require(value["assessments"] as? [[String: Any]])
-    for i in assessments.indices { assessments[i].removeValue(forKey: "dependencyVersion") }
+    for i in assessments.indices {
+      assessments[i].removeValue(forKey: "dependencyVersion")
+      assessments[i].removeValue(forKey: "evidenceContextVersion")
+    }
+    for key in ["initialization", "lastRefreshAttemptAt", "lastSuccessfulRefreshAt"] {
+      value.removeValue(forKey: key)
+    }
     value["assessments"] = assessments
     let changed = try JSONSerialization.data(withJSONObject: value)
     envelope["payload"] = changed.base64EncodedString(); envelope["checksum"] = StableDigest.data(changed)

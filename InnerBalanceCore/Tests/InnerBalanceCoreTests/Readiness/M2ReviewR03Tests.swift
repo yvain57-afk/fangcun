@@ -55,4 +55,17 @@ struct M2ReviewR03Tests {
     #expect(result.current?.sleepEndAt == f.date(3.5))
     #expect(await provider.calls == 8)
   }
+  @Test func changedContextCannotReturnCachedOldSemanticsOnFailure() async throws {
+    let dir = try InsightsStoreTests().directory(); defer { try? FileManager.default.removeItem(at: dir) }
+    let store = try InsightsStore(directory: dir), provider = M2ReviewProvider(f.records(),now: f.now)
+    let pipeline = ReadinessPipeline(provider: provider,store: store)
+    let first = try await pipeline.refresh(now: f.now,calendar: f.calendar)
+    #expect(first.current?.level == .usual)
+    await provider.failOnce(metric: .sleep,page: 1)
+    let changed = try await pipeline.refresh(now: f.now+60,calendar: f.calendar,
+      interventions: [.init(start: f.date(9),end: f.date(4))])
+    #expect(changed.current?.level == nil && changed.current?.availability == .failed)
+    #expect(changed.current?.computedAt != first.current?.computedAt)
+  }
+
 }

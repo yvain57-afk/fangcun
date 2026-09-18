@@ -1,0 +1,28 @@
+Building for debugging...
+[1 / 12] InnerBalanceCore
+[2 / 7] InnerBalanceCoreTests-product
+[4 / 9] InnerBalanceCoreTests-product
+[10 / 14] InnerBalanceCoreTests-product
+Build complete! (1.77秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Test changedContextCannotReturnCachedOldSemanticsOnFailure() started.
+✘ Test changedContextCannotReturnCachedOldSemanticsOnFailure() recorded an issue at M2ReviewR03Tests.swift:67:5: Expectation failed: changed.current?.level == nil && changed.current?.availability == .failed
+↳ changed.current?.level == nil && changed.current?.availability == .failed → false
+↳   changed.current?.level == nil → false
+↳   changed.current?.availability == .failed → <not evaluated>
+✘ Test changedContextCannotReturnCachedOldSemanticsOnFailure() recorded an issue at M2ReviewR03Tests.swift:68:5: Expectation failed: changed.current?.computedAt != first.current?.computedAt
+↳ changed.current?.computedAt != first.current?.computedAt → false
+↳   changed.current?.computedAt → 2026-09-18 04:00:00 +0000
+↳     some → 2026-09-18 04:00:00 +0000
+↳       timeIntervalSinceReferenceDate → 811396800.0
+↳   first.current?.computedAt → 2026-09-18 04:00:00 +0000
+↳     some → 2026-09-18 04:00:00 +0000
+↳       timeIntervalSinceReferenceDate → 811396800.0
+✘ Test changedContextCannotReturnCachedOldSemanticsOnFailure() failed after 0.166 seconds with 2 issues.
+✘ Suite "M2-R03 semantic single flight" failed after 0.166 seconds with 2 issues.
+✘ Test run with 1 test in 1 suite failed after 0.166 seconds with 2 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
