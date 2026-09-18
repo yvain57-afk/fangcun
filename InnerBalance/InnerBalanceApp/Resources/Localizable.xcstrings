@@ -501,6 +501,166 @@
           }
         }
       }
+    },
+    "diary.storage.readFailure": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本机记录暂时无法读取，原始数据已保留。"
+          }
+        }
+      }
+    },
+    "diary.storage.writeFailure": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录未能保存，未确认的修改没有写入。请重试。"
+          }
+        }
+      }
+    },
+    "diary.manage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "补记或编辑"
+          }
+        }
+      }
+    },
+    "diary.time": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "饮用时间"
+          }
+        }
+      }
+    },
+    "diary.volume": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "容量（ml）"
+          }
+        }
+      }
+    },
+    "diary.add": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "补记一杯"
+          }
+        }
+      }
+    },
+    "diary.save": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存修改"
+          }
+        }
+      }
+    },
+    "diary.records": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "饮品记录"
+          }
+        }
+      }
+    },
+    "diary.estimate": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按杯估算；未知糖量保持未知。调整杯量不会改动其他历史。"
+          }
+        }
+      }
+    },
+    "diary.range": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可补记今天及前 6 天；饮用时间与录入时间分开保存。"
+          }
+        }
+      }
+    },
+    "diary.retry": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新读取并重试"
+          }
+        }
+      }
+    },
+    "diary.unknownAlcohol": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分酒精量未知"
+          }
+        }
+      }
+    },
+    "diary.done": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
+        }
+      }
+    },
+    "diary.kind": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "饮品种类"
+          }
+        }
+      }
+    },
+    "diary.undo": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撤销上一笔"
+          }
+        }
+      }
+    },
+    "diary.entry": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 约 %d ml"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -7,6 +7,7 @@ struct FangcunDrinkSheet: View {
   @State private var sweetCoffee = false
   @State private var feedback = "轻轻记一下，就好。"
   @State private var reaction = 0
+  @State private var editing = false
   private var kinds: [FangcunDrink] { [.water, sweetCoffee ? .sweetCoffee : .coffee, .beer, .soda] }
   private var totals: FangcunDrinkTotals { FangcunDrinkTotals(diary.entries()) }
 
@@ -45,6 +46,7 @@ struct FangcunDrinkSheet: View {
             .disabled(diary.storageMessage != nil)
           }
           Toggle("咖啡是甜拿铁（同时记糖饮）", isOn: $sweetCoffee).font(.caption).padding(.vertical, 6)
+          Button(FangcunCopy.text("diary.manage")) { editing = true }.accessibilityIdentifier("drinks.manage")
           Text("按杯预估，实际含量会因品牌与杯量变化。酒精不折算为补水建议。")
             .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk).frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -59,11 +61,16 @@ struct FangcunDrinkSheet: View {
         Button { diary.undo(); feedback = "已撤销上一笔"; reaction += 1 } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
           .font(.caption).frame(minHeight: 44).disabled(!diary.canUndo)
       }
-      if let message = diary.storageMessage { Text(message).font(.caption).foregroundStyle(InnerBalanceTheme.emphasis) }
+      if totals.hasUnknownAlcohol { Text(FangcunCopy.text("diary.unknownAlcohol")).font(.caption) }
+      if let message = diary.storageMessage {
+        Text(message).font(.caption).foregroundStyle(InnerBalanceTheme.emphasis)
+        Button(FangcunCopy.text("diary.retry")) { diary.retry() }
+      }
     }
     .padding(.horizontal, 20).padding(.top, 18).padding(.bottom, 8)
     .foregroundStyle(InnerBalanceTheme.ink).tint(InnerBalanceTheme.strongFill)
     .background(InnerBalanceTheme.canvas)
+    .sheet(isPresented: $editing) { FangcunDrinkEditor() }
     .presentationDetents([.fraction(0.55), .large])
     .presentationDragIndicator(.visible)
     .presentationCornerRadius(28)

@@ -274,3 +274,8 @@ DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test
 ## M3-PRE
 
 本轮结果、完整命令与失败修正见 [M3-PRE-VERIFICATION](M3-PRE-VERIFICATION.md)。App 170/170，UI 6/6，均退出 0 且结果包可读取。
+
+
+## M3-01
+
+迁移、编辑和故障恢复已核验：9 App + 1 UI，正常退出及可读结果包，见 [M3-01-VERIFICATION](M3-01-VERIFICATION.md)。

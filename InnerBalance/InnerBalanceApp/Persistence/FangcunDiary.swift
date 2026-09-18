@@ -40,10 +40,55 @@ enum FangcunDrink: String, Codable, CaseIterable, Identifiable {
 }
 
 struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
-  var id = UUID()
-  let date: Date
-  let kind: FangcunDrink
-  let caffeine: Int
+  var id: UUID
+  var consumedAt: Date
+  var recordedAt: Date?
+  var kind: FangcunDrink
+  var volumeML: Int
+  var caffeine: Int
+  var alcoholGrams: Double?
+  var sugarServings: Double
+  var sugarGrams: Double?
+  var estimateMethod: String
+  var estimateVersion: Int
+  var revision: Int
+  var date: Date { consumedAt }
+  init(id: UUID = UUID(), date: Date, kind: FangcunDrink, caffeine: Int, recordedAt: Date? = .now) {
+    self.id = id; consumedAt = date; self.recordedAt = recordedAt; self.kind = kind
+    volumeML = kind.fluid; self.caffeine = caffeine; alcoholGrams = Double(kind.alcohol)
+    sugarServings = Double(kind.sugar); sugarGrams = nil
+    estimateMethod = "fixedCupEstimate"; estimateVersion = 1; revision = 1
+  }
+  enum CodingKeys: String, CodingKey {
+    case id, consumedAt, recordedAt, date, kind, volumeML, caffeine, alcoholGrams, sugarServings, sugarGrams, estimateMethod, estimateVersion, revision
+  }
+  init(from decoder: Decoder) throws {
+    let c = try decoder.container(keyedBy: CodingKeys.self)
+    id = try c.decode(UUID.self, forKey: .id); kind = try c.decode(FangcunDrink.self, forKey: .kind)
+    consumedAt = try c.decodeIfPresent(Date.self, forKey: .consumedAt) ?? c.decode(Date.self, forKey: .date)
+    recordedAt = try c.decodeIfPresent(Date.self, forKey: .recordedAt)
+    volumeML = try c.decodeIfPresent(Int.self, forKey: .volumeML) ?? kind.fluid
+    caffeine = try c.decode(Int.self, forKey: .caffeine)
+    let legacy = !c.contains(.consumedAt)
+    alcoholGrams = legacy ? Double(kind.alcohol) : try c.decodeIfPresent(Double.self, forKey: .alcoholGrams)
+    sugarServings = try c.decodeIfPresent(Double.self, forKey: .sugarServings) ?? Double(kind.sugar)
+    sugarGrams = try c.decodeIfPresent(Double.self, forKey: .sugarGrams)
+    estimateMethod = try c.decodeIfPresent(String.self, forKey: .estimateMethod) ?? "legacyFixedCupEstimate"
+    estimateVersion = try c.decodeIfPresent(Int.self, forKey: .estimateVersion) ?? 1
+    revision = try c.decodeIfPresent(Int.self, forKey: .revision) ?? 1
+  }
+  func encode(to encoder: Encoder) throws {
+    var c = encoder.container(keyedBy: CodingKeys.self)
+    try c.encode(id, forKey: .id); try c.encode(kind, forKey: .kind)
+    try c.encode(consumedAt, forKey: .consumedAt); try c.encodeIfPresent(recordedAt, forKey: .recordedAt)
+    try c.encode(volumeML, forKey: .volumeML); try c.encode(caffeine, forKey: .caffeine)
+    try c.encodeIfPresent(alcoholGrams, forKey: .alcoholGrams); try c.encode(sugarServings, forKey: .sugarServings)
+    try c.encodeIfPresent(sugarGrams, forKey: .sugarGrams); try c.encode(estimateMethod, forKey: .estimateMethod)
+    try c.encode(estimateVersion, forKey: .estimateVersion); try c.encode(revision, forKey: .revision)
+  }
+  func migrated() -> Self {
+    var result = self; result.recordedAt = nil; result.estimateMethod = "legacyFixedCupEstimate"; return result
+  }
 }
 
 struct FangcunDaySnapshot: Codable, Identifiable {
@@ -54,10 +99,11 @@ struct FangcunDaySnapshot: Codable, Identifiable {
   let training: String
   /// Missing in original archives. Those snapshots retain their original interpretation.
   let semanticsVersion: Int?
+  var migrationOrigin: String? = nil
   var id: Date { date }
-  var isLegacy: Bool { semanticsVersion == nil }
+  var isLegacy: Bool { semanticsVersion == nil || migrationOrigin != nil }
   var displayStateTitle: String {
-    guard isLegacy else { return state.shortTitle }
+    guard semanticsVersion == nil else { return state.shortTitle }
     return switch state {
     case .steady: "平稳"
     case .elevated: "偏高"
@@ -75,23 +121,24 @@ struct FangcunDaySnapshot: Codable, Identifiable {
 
 @MainActor @Observable
 final class FangcunDiary {
-  private struct Archive: Codable {
-    var entries: [FangcunDrinkEntry] = []
-    var snapshots: [FangcunDaySnapshot] = []
-  }
-  private var archive = Archive()
+  private var archive = FangcunDiaryArchive()
   private var undoStack: [[FangcunDrinkEntry]] = []
+  private var storage: FangcunDiaryStorage?
   private let defaults: UserDefaults
-  private let key = "fangcun.native.diary.v1"
   private(set) var storageMessage: String?
-
-  init(defaults: UserDefaults = .standard) {
+  private(set) var migrationDigests: [String: String] = [:]
+  var allEntries: [FangcunDrinkEntry] { archive.entries }
+  var allSnapshots: [FangcunDaySnapshot] { archive.snapshots }
+  init(defaults: UserDefaults = .standard, storage: FangcunDiaryStorage? = nil) {
     self.defaults = defaults
-    if let data = defaults.data(forKey: key) {
-      do { archive = try JSONDecoder().decode(Archive.self, from: data) }
-      catch { storageMessage = "本机记录暂时无法读取，原始数据已保留。" }
-    }
+    do {
+      let file = try storage ?? FangcunDiaryStorage(directory: FangcunDiaryStorage.directory(defaults: defaults))
+      self.storage = file
+      archive = try file.load(defaults: defaults)
+      migrationDigests = archive.migrationDigests
+    } catch { storageMessage = FangcunCopy.text("diary.storage.readFailure") }
   }
+
   func entries(on date: Date = .now) -> [FangcunDrinkEntry] {
     archive.entries.filter { Calendar.current.isDate($0.date, inSameDayAs: date) }
   }
@@ -101,46 +148,76 @@ final class FangcunDiary {
   func legacySnapshots(on date: Date) -> [FangcunDaySnapshot] {
     archive.snapshots.filter { $0.isLegacy && Calendar.current.isDate($0.date, inSameDayAs: date) }
   }
-  func add(_ kind: FangcunDrink, caffeine: Int = 140, at date: Date = .now) {
-    guard storageMessage == nil, entries(on: date).count < 1000 else { return }
-    remember()
-    archive.entries.append(FangcunDrinkEntry(date: date, kind: kind, caffeine: kind.isCoffee ? min(500, max(0, caffeine)) : 0))
-    save()
+  func add(_ kind: FangcunDrink, caffeine: Int = 140, at date: Date = .now, now: Date = .now, volumeML: Int? = nil) {
+    guard editable(date, now: now), entries(on: date).count < 1000 else { return }
+    var next = archive
+    var entry = FangcunDrinkEntry(date: date, kind: kind, caffeine: kind.isCoffee ? min(500, max(0, caffeine)) : 0, recordedAt: now)
+    if let volumeML {
+      guard (10...3000).contains(volumeML) else { return }
+      let ratio = Double(volumeML) / Double(entry.volumeML)
+      entry.volumeML = volumeML; entry.caffeine = Int((Double(entry.caffeine)*ratio).rounded())
+      entry.alcoholGrams = entry.alcoholGrams.map { $0*ratio }; entry.sugarServings *= ratio
+      entry.estimateMethod = "scaledCupEstimate"
+    }
+    next.entries.append(entry)
+    commit(next, remember: true)
+  }
+  func edit(_ id: UUID, consumedAt: Date, volumeML: Int, now: Date = .now) {
+    guard editable(consumedAt, now: now), (10...3000).contains(volumeML),
+      let index = archive.entries.firstIndex(where: { $0.id == id }) else { return }
+    var next = archive; var entry = next.entries[index]
+    let ratio = Double(volumeML) / Double(max(1, entry.volumeML))
+    entry.consumedAt = consumedAt; entry.volumeML = volumeML
+    entry.caffeine = Int((Double(entry.caffeine)*ratio).rounded())
+    entry.alcoholGrams = entry.alcoholGrams.map { $0*ratio }
+    entry.sugarServings *= ratio; entry.sugarGrams = entry.sugarGrams.map { $0*ratio }
+    entry.revision += 1; entry.estimateMethod = "scaledCupEstimate"
+    next.entries[index] = entry; commit(next, remember: true)
   }
   func remove(_ kind: FangcunDrink, on date: Date = .now) {
-    guard storageMessage == nil, let index = archive.entries.lastIndex(where: { $0.kind == kind && Calendar.current.isDate($0.date, inSameDayAs: date) }) else { return }
-    remember(); archive.entries.remove(at: index); save()
+    guard let index = archive.entries.lastIndex(where: { $0.kind == kind && Calendar.current.isDate($0.date, inSameDayAs: date) }) else { return }
+    var next = archive; next.entries.remove(at: index); commit(next, remember: true)
   }
   var canUndo: Bool { !undoStack.isEmpty && storageMessage == nil }
   func undo() {
-    guard storageMessage == nil, let previous = undoStack.popLast() else { return }
-    archive.entries = previous; save()
+    guard let previous = undoStack.last else { return }
+    var next = archive; next.entries = previous
+    if commit(next, remember: false) { undoStack.removeLast() }
   }
   func record(_ snapshot: FangcunDaySnapshot) {
-    guard storageMessage == nil else { return }
-    archive.snapshots.removeAll { !$0.isLegacy && Calendar.current.isDate($0.date, inSameDayAs: snapshot.date) }
-    archive.snapshots.append(snapshot); save()
+    var next = archive
+    next.snapshots.removeAll { !$0.isLegacy && Calendar.current.isDate($0.date, inSameDayAs: snapshot.date) }
+    next.snapshots.append(snapshot); commit(next, remember: false)
   }
-  private func remember() { undoStack.append(archive.entries); if undoStack.count > 50 { undoStack.removeFirst() } }
-  private func save() {
+  private func editable(_ date: Date, now: Date) -> Bool {
+    let earliest = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: now))!
+    return date >= earliest && date <= now
+  }
+  @discardableResult private func commit(_ next: FangcunDiaryArchive, remember: Bool) -> Bool {
+    guard storageMessage == nil, let storage else { return false }
     do {
-      let data = try JSONEncoder().encode(archive)
-      if defaults.data(forKey: "fangcun.native.diary.preM1") == nil,
-        let original = defaults.data(forKey: key) {
-        defaults.set(original, forKey: "fangcun.native.diary.preM1")
-      }
-      defaults.set(data, forKey: key)
-    }
-    catch { storageMessage = "记录暂时未能保存，请稍后再试。" }
+      try storage.save(next)
+      if remember { undoStack.append(archive.entries); if undoStack.count > 50 { undoStack.removeFirst() } }
+      archive = next; return true
+    } catch { storageMessage = FangcunCopy.text("diary.storage.writeFailure"); return false }
   }
+  func retry(defaults: UserDefaults? = nil) {
+    guard let storage else { return }
+    do { archive = try storage.load(defaults: defaults ?? self.defaults); storageMessage = nil }
+    catch { storageMessage = FangcunCopy.text("diary.storage.readFailure") }
+  }
+
 }
 
 struct FangcunDrinkTotals {
-  let fluid: Int, caffeine: Int, alcohol: Int, sugar: Int
+  let fluid: Int, caffeine: Int
+  let alcohol: Double, sugar: Double
+  let hasUnknownAlcohol: Bool
   init(_ entries: [FangcunDrinkEntry]) {
-    fluid = entries.reduce(0) { $0 + $1.kind.fluid }
+    fluid = entries.reduce(0) { $0 + $1.volumeML }
     caffeine = entries.reduce(0) { $0 + $1.caffeine }
-    alcohol = entries.reduce(0) { $0 + $1.kind.alcohol }
-    sugar = entries.reduce(0) { $0 + $1.kind.sugar }
+    alcohol = entries.reduce(0) { $0 + ($1.alcoholGrams ?? 0) }
+    hasUnknownAlcohol = entries.contains { $0.alcoholGrams == nil }
+    sugar = entries.reduce(0) { $0 + $1.sugarServings }
   }
 }
