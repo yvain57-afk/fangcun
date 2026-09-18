@@ -38,3 +38,9 @@
 采用 [ADR-002](ADR-002-insights-store.md) 的独立 Insights store。`ReadinessServices.make()` 提供 HealthKit adapter → ReadinessPipeline → 独立 store 入口，创建不申请权限或启动 observer。原首页、用户记录、练习及显示偏好继续使用原入口。
 
 修订、输入摘要、配置版本、来源摘要、时间范围、资料质量和新鲜度随结果保存。规则参数进一步集中到 ReadinessConfiguration。删除优先于缓存，损坏恢复撤销当前资格；失效锚点重读时清理该项旧缓存。全部实现停在 M2，不接入 M3 页面、不做 M4 同步或 M5 通知。
+
+## M2-R01：完整删除依赖
+
+审阅成立。记录有界评估输入中 sleep/SDNN/RHR/mindful UUID 的保守依赖超集，包括基线睡眠、冲突、去重候选和被质量过滤的记录。它只用于失效，不参与指纹或模型参数。可能对未最终采用的候选多做一次失效/重算，避免漏撤销；不保存额外健康值。
+
+新增可选 dependencyVersion；旧 schema 1 文件可读，缺少该字段的旧评估遇到删除一律保守撤销。新评估依赖已排除 tombstone，重算可以重新合格。删除、失败缓存和恢复都经过同一 redact 路径，不清库。

@@ -184,3 +184,7 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
 ```
 
 分阶段提交：M1 补证 `0062d4a`，M2-01 `9157b8d`，M2-02 `058a3e8`，M2-03 `1906270`；M2-04 `4a0916e`；随后仅整理脱敏日志空白。最终 HEAD 在交付回复提供。main 基准保持 `905626c6e08dc7a36ddd4e219abf6945795ac62f`。
+
+## M2-R01
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR01Tests`。修复前 3 tests / 8 issues（一个参数化测试含两种数据）：[red](evidence/m2-r01-red.txt)；修复后见 [green](evidence/m2-r01-green.txt)。测试覆盖历史睡眠删除立即撤销、20→19 日重算仍 usual 且正确 supersedes、重启/损坏恢复/失败读取、睡眠冲突与被过滤 NaN 的间接依赖，以及缺少新字段的旧文件兼容。首份测试的嵌套 #require 宏编译错误单独留存 [测试编写修正](evidence/m2-r01-before.txt)，不计为生产问题重现。

@@ -5,6 +5,10 @@ public enum InsightsStoreError: Error, Equatable {
 }
 public enum InsightsStoreFault: Sendable { case none, beforePublish, afterPrivacy, afterPublish }
 
+extension ReadinessAssessment {
+  var hasCompleteDependencies: Bool { dependencyVersion == 1 }
+}
+
 public struct DeletedAssessmentAudit: Codable, Sendable {
   public var assessmentID: String
   public var recoveryCycleID: String?
@@ -46,7 +50,11 @@ public struct InsightsSnapshot: Codable, Sendable {
     ledger.tombstones.formUnion(tombstones)
     ledger.samples = ledger.samples.filter { !tombstones.contains($0.key) }
     episodes.removeAll { $0.sampleIDs.contains { tombstones.contains($0.uuidString) } }
-    let affected = assessments.filter { $0.contributingSampleIDs.contains { tombstones.contains($0.uuidString) } }
+    let affected = assessments.filter {
+      // Pre-R01 files have incomplete dependency coverage. Any deletion invalidates them conservatively.
+      (!$0.hasCompleteDependencies && !tombstones.isEmpty)
+        || $0.contributingSampleIDs.contains { tombstones.contains($0.uuidString) }
+    }
     for old in affected where !deletionAudit.contains(where: { $0.assessmentID == old.assessmentID }) {
       deletionAudit.append(DeletedAssessmentAudit(assessmentID: old.assessmentID, recoveryCycleID: old.recoveryCycleID, revision: old.revision))
     }

@@ -1,0 +1,23 @@
+Building for debugging...
+[2 / 11] InnerBalanceCore
+[5 / 14] InnerBalanceCore
+[10 / 19] InnerBalanceCore
+[14 / 19] InnerBalanceCoreTests-product
+[25 / 30] InnerBalanceCoreTests-product
+[27 / 30] InnerBalanceCoreTests-product
+[29 / 33] InnerBalanceCoreTests-product
+Build complete! (2.22秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R01 dependency invalidation" started.
+◇ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() started.
+◇ Test legacyAssessmentWithoutDependencyMetadataLoadsButDeletionFailsClosed() started.
+◇ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+◇ Test case passing 1 argument conflict → true to rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+◇ Test case passing 1 argument conflict → false to rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+✔ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) with 2 test cases passed after 0.340 seconds.
+✔ Test legacyAssessmentWithoutDependencyMetadataLoadsButDeletionFailsClosed() passed after 0.342 seconds.
+✔ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() passed after 0.343 seconds.
+✔ Suite "M2-R01 dependency invalidation" passed after 0.343 seconds.
+✔ Test run with 3 tests in 1 suite passed after 0.343 seconds.

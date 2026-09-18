@@ -18,6 +18,7 @@ public struct ReadinessInput: Codable, Sendable {
   public var timeZoneID: String
   public var readFailure: ReadinessReadFailure?
   public var cacheInvalidated: Bool
+  public var dependencySampleIDs: [UUID]?
 }
 
 public struct ReadinessPreparedInput: Sendable {
@@ -52,7 +53,9 @@ public enum ReadinessInputBuilder {
       sourceDetails: Dictionary(uniqueKeysWithValues: sources.compactMap { key, selected in
         rows.filter { $0.sourceKey == selected.sourceKey }.max { $0.end < $1.end }.map { (key, $0.source) }
       }), sources: sources, configuration: configuration, now: now, queriedAt: rows.map(\.queriedAt).max(),
-      timeZoneID: calendar.timeZone.identifier, readFailure: readFailure, cacheInvalidated: cacheInvalidated), episodes: built.episodes)
+      timeZoneID: calendar.timeZone.identifier, readFailure: readFailure, cacheInvalidated: cacheInvalidated,
+      dependencySampleIDs: samples.filter { [.sleep,.hrvSDNN,.restingHeartRate,.mindfulSession].contains($0.metric) }
+        .map(\.id).sorted { $0.uuidString < $1.uuidString }), episodes: built.episodes)
   }
 }
 
@@ -98,6 +101,7 @@ public struct ReadinessAssessment: Codable, Sendable {
   public var sleepSeverity: Int?
   public var refreshFailure: ReadinessReadFailure?
   public var contributingSampleIDs: [UUID]
+  public var dependencyVersion: Int?
 }
 
 public enum AssessmentFreshness {
@@ -165,9 +169,12 @@ public enum ReadinessEngine {
     // Re-reading identical evidence does not create a new revision or extend its anchor.
     identity.now = Date(timeIntervalSince1970: 0); identity.queriedAt = nil
     identity.cacheInvalidated = false
+    // Conservative invalidation dependencies are not themselves displayed evidence.
+    identity.dependencySampleIDs = nil
     let fingerprint = (try? StableDigest.encoded(identity)) ?? "invalid-input"
     let id = StableDigest.text((sleep?.recoveryCycleID ?? "no-cycle") + fingerprint)
-    let allIDs = (sleep?.sampleIDs ?? []) + evidence.flatMap { $0.feature.sampleIDs + ($0.baseline?.sampleIDs ?? []) }
+    let allIDs = (input.dependencySampleIDs ?? []) + (sleep?.sampleIDs ?? [])
+      + evidence.flatMap { $0.feature.sampleIDs + ($0.baseline?.sampleIDs ?? []) }
     let missing: Set<ReadinessReason> = [.currentDataMissing,.sleepMissing,.hrvMissing,.rhrMissing,.baselineBuilding,.sparseHRV,.narrowHRVCoverage]
     var result = ReadinessAssessment(assessmentID: id, recoveryCycleID: sleep?.recoveryCycleID, revision: 1, supersedesID: nil,
       configuration: c, inputFingerprint: fingerprint, sleepEpisodeID: sleep?.id, sleepStartAt: sleep?.start, sleepEndAt: sleep?.end,
@@ -179,7 +186,8 @@ public enum ReadinessEngine {
       missingReasons: reasons.intersection(missing).sorted { $0.rawValue < $1.rawValue },
       qualityFlags: reasons.subtracting(missing).sorted { $0.rawValue < $1.rawValue }, sourceDetails: input.sourceDetails, sources: input.sources,
       manuallySelectedSleep: input.sleep.manuallySelected, autonomicSeverity: a, sleepSeverity: s,
-      refreshFailure: input.readFailure, contributingSampleIDs: Array(Set(allIDs)).sorted { $0.uuidString < $1.uuidString })
+      refreshFailure: input.readFailure, contributingSampleIDs: Array(Set(allIDs)).sorted { $0.uuidString < $1.uuidString },
+      dependencyVersion: input.dependencySampleIDs == nil ? nil : 1)
     result.freshness = AssessmentFreshness.resolve(result, now: input.now)
     return result
   }
