@@ -1,6 +1,6 @@
 # 方寸：给 GPT / AI 的项目入口
 
-> 开发分支 `codex/fangcun-v1-m0-m1` 已接收用户的 v1.0 开发交付包。本轮范围与真实进展见 [任务状态](docs/plans/fangcun-v1/TASKS.md)、[决策记录](docs/plans/fangcun-v1/DECISIONS.md) 和 [验收](docs/plans/fangcun-v1/VERIFICATION.md)。M2-01 至 M2-04 数据链路已实施，阶段证据见 [M2 审阅入口](docs/plans/fangcun-v1/M2-REVIEW.md)；M3–M6 未开始。新准备度尚未接入首页，保留 M1 UI。本分支应优先阅读实际源文件；`ai/` 分卷和下方 `main` raw 链接仍是先前公开基线，不能据此推断 M1/M2 代码。
+> 开发分支 `codex/fangcun-v1-m0-m1` 已接收用户的 v1.0 开发交付包。本轮范围与真实进展见 [任务状态](docs/plans/fangcun-v1/TASKS.md)、[决策记录](docs/plans/fangcun-v1/DECISIONS.md) 和 [验收](docs/plans/fangcun-v1/VERIFICATION.md)。M2-01 至 M2-04 数据链路及 M2-R01～R05 补修已实施；最新入口为 [M2-R1 补修报告](docs/plans/fangcun-v1/M2-R1-RESULTS.md)。原阶段证据见 [M2 审阅入口](docs/plans/fangcun-v1/M2-REVIEW.md)；M3–M6 未开始。新准备度尚未接入首页，保留 M1 UI。本分支应优先阅读实际源文件；`ai/` 分卷和下方 `main` raw 链接仍是先前公开基线，不能据此推断 M1/M2 代码。
 
 仓库：<https://github.com/yvain57-afk/fangcun>
 

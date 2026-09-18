@@ -58,3 +58,4 @@ SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`�
 - 新增删除依赖、分页状态、语义单飞、稳定修订：合成提供层与本机文件回归通过，不代表健康模型已经校准。
 - Observer 顺序：共用实际 callback owner 的 6 项模拟器测试通过，含取消/错误/合并事件和存储；SDK 编译层面可用。
 - Observer 真实 HealthKit 后台送达、系统终止、锁屏/低电量时机仍 `implemented_unverified`，没有新增 background delivery 授权。物理 Watch 后台/同步仍 `blocked`，缺少可用配对验证条件。
+- 最终 Core 103、App 新增 observer 6、原首页/交互 UI 8 项通过；Watch 模拟器再次 BUILD SUCCEEDED。App 全量保留 3 项既有失败；额外两项旧练习 UI 定位失败已在审阅基准重现。具体结果与运行器诊断收集限制见 [M2-R1-RESULTS](M2-R1-RESULTS.md)，不扩大上述能力层级。

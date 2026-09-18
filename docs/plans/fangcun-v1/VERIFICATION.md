@@ -215,3 +215,57 @@ xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -s
 ### M2-R03 失败缓存补验
 
 `swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests.changedContext'`：[red](evidence/m2-r03-cache-red.txt)，1 test / 2 issues；区间变更加查询失败返回了旧等级和计算时间。修复后 `swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests|ReadinessEngineTests'`：[green](evidence/m2-r03-cache-green.txt)，12 tests 通过，包含原 golden 重放和同上下文失败缓存回归。
+
+## M2-R1 最终验证命令
+
+以下是最后代码提交 `a01860a` 上实际执行的命令，路径及模拟器标识使用变量脱敏。Xcode 为 27 beta；`DERIVED_DATA` 使用已有本机模拟器目录，`WATCH_DERIVED_DATA` 是独立 scratch 目录。Core 和 App 测试目标分开执行，UI 测试使用既有合成数据启动入口。
+
+```sh
+swift test --package-path InnerBalanceCore
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/app-final.xcresult" \
+  -parallel-testing-enabled NO -test-timeouts-enabled YES \
+  -maximum-test-execution-time-allowance 90 \
+  -only-testing:InnerBalanceTests CODE_SIGNING_ALLOWED=NO
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/ui-final.xcresult" \
+  -parallel-testing-enabled NO -test-timeouts-enabled YES \
+  -maximum-test-execution-time-allowance 90 \
+  -only-testing:InnerBalanceUITests/HomeEvidencePipelineUITests \
+  -only-testing:InnerBalanceUITests/FangcunRedesignUITests \
+  -only-testing:InnerBalanceUITests/PracticeReturnHomeUITests CODE_SIGNING_ALLOWED=NO
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild build \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' \
+  -destination 'generic/platform=watchOS Simulator' \
+  -derivedDataPath "$WATCH_DERIVED_DATA" CODE_SIGNING_ALLOWED=NO
+```
+
+Core：[103 tests / 21 suites 通过](evidence/m2-r1-core-final.txt)，含本轮 10 个 Core 回归和原 golden 文件重放。App：[169 tests / 23 suites，166 通过、3 失败 / 23 issues](evidence/m2-r1-app-final.txt)，包含 R05 六项全部通过。三项失败与此前独立基线复验相同：`approvedPaperPalette`（20 个旧色值断言及次级文字对比度 4.4631 < 4.5）、`paperAppearanceDoesNotInvertAtNight`、`finishDialogCopyMatchesTheNextStep`。没有放宽断言、删测试或回退 UI；本轮新增回归最终无失败。Watch：[BUILD SUCCEEDED](evidence/m2-r1-watch-final.txt)，只证明 SDK 编译，不代表真机后台或同步验收。
+
+
+UI 最终扩大到 10 项：[运行输出](evidence/m2-r1-ui-final.txt)。原验收使用的 `HomeEvidencePipelineUITests` 4 项与 `FangcunRedesignUITests` 4 项全通过，覆盖真实首页提供层、时间标签、运动保护、饮品/趋势、呼吸暂停退出、显示偏好。额外的 `PracticeReturnHomeUITests` 2 项均在公共 launch helper 第 53 行找不到旧按钮“开始生理性叹息，1 分钟”而失败，尚未执行其返回首页断言。
+
+该运行全部 10 项已执行结束并输出汇总后，Xcode 卡在 `XCTHRunDestinationAllocator.collectSimulatorDiagnostics`；进程采样确认等待诊断信号量。仅停止本次 xcodebuild（SIGINT 无效后 SIGTERM，退出 143）。因此上面报告的是完整测试控制台结果，不冒充有效的最终 xcresult；未完成的 result bundle 留在本机。基线复跑使用官方 `-collect-test-diagnostics never` 跳过 sysdiagnose 收集，不跳过测试、不改变断言。
+
+在独立 detached worktree `b69b4cc26520bc42e9c742ba67ed26e81714a84d` 和独立 DerivedData 中复跑同一 `PracticeReturnHomeUITests`，2 项同样在第 53 行旧按钮定位失败：[基线编译](evidence/m2-r1-baseline-ui-build.txt)、[基线测试](evidence/m2-r1-baseline-ui.txt)。退出 65，xcresult 正常生成。结论：这两项是本轮扩大 UI 核验后新发现的既有失败，非本轮引入；不能称所有 UI 已通过，也不能据这两项声称返回首页行为已被验证。保持旧测试原样，列入独立维护。
+
+基线真实命令（工作目录为上述 detached worktree）：
+
+```sh
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild build-for-testing \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$BASELINE_DERIVED_DATA" \
+  -only-testing:InnerBalanceUITests/PracticeReturnHomeUITests CODE_SIGNING_ALLOWED=NO
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test-without-building \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$BASELINE_DERIVED_DATA" -resultBundlePath "$EVIDENCE/baseline-ui.xcresult" \
+  -parallel-testing-enabled NO -test-timeouts-enabled YES \
+  -maximum-test-execution-time-allowance 90 -collect-test-diagnostics never \
+  -only-testing:InnerBalanceUITests/PracticeReturnHomeUITests CODE_SIGNING_ALLOWED=NO
+```

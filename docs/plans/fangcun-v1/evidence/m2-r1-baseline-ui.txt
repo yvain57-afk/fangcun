@@ -1,0 +1,123 @@
+Command line invocation:
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination "platform=iOS Simulator,id=<UUID>" -derivedDataPath <EVIDENCE>/BaselineDerivedData -resultBundlePath <EVIDENCE>/baseline-ui.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 -collect-test-diagnostics never "-only-testing:InnerBalanceUITests/PracticeReturnHomeUITests" CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  InnerBalanceCore: <EVIDENCE>/review-baseline/InnerBalanceCore @ local
+
+2026-09-18 23:29:38.153 xcodebuild[51063:8732973] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+Writing result bundle at path:
+	<EVIDENCE>/baseline-ui.xcresult
+
+2026-09-18 23:29:41.765046+0800 InnerBalanceUITests-Runner[51080:8733307] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-09-18 23:29:45.017.
+Test Suite 'InnerBalanceUITests.xctest' started at 2026-09-18 23:29:45.018.
+Test Suite 'PracticeReturnHomeUITests' started at 2026-09-18 23:29:45.018.
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testClosingBeforeStartingKeepsThePracticeTabSelected]' started.
+    t =     0.00s Start Test at 2026-09-18 23:29:45.021
+    t =     0.03s Set Up
+    t =     0.04s Open com.yvainair.InnerBalance
+    t =     0.04s     Launch com.yvainair.InnerBalance
+2026-09-18 23:29:45.217 xcodebuild[51063:8732973] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 23:29:45.217 xcodebuild[51063:8732973] [MT] IDELaunchParametersSnapshot: no debugger version
+objc[51080]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.6KbZG7/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x10a79c398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.6KbZG7/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10ace4310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     0.82s         Setting up automation session
+    t =     2.67s         Wait for com.yvainair.InnerBalance to idle
+    t =     5.60s Waiting 5.0s for "练习" Button to exist
+    t =     6.63s     Checking `Expect predicate `existsNoRetry == 1` for object "练习" Button`
+    t =     6.63s         Checking existence of `"练习" Button`
+    t =     6.81s Tap "练习" Button
+    t =     6.81s     Wait for com.yvainair.InnerBalance to idle
+    t =     6.81s     Find the "练习" Button
+    t =     6.83s     Check for interrupting elements affecting "wind" Button
+    t =     6.85s     Synthesize event
+    t =     7.19s     Wait for com.yvainair.InnerBalance to idle
+    t =     9.01s Waiting 5.0s for "开始生理性叹息，1 分钟" Button to exist
+    t =    10.05s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    10.05s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    10.11s         Capturing element debug description
+    t =    11.04s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    11.04s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    11.09s         Capturing element debug description
+    t =    12.02s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    12.02s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    12.06s         Capturing element debug description
+    t =    13.10s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    13.10s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    13.12s         Capturing element debug description
+    t =    14.02s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    14.02s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    14.06s         Capturing element debug description
+    t =    14.06s     Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    14.09s Collecting debug information to assist test failure triage
+    t =    14.09s     Requesting snapshot of accessibility hierarchy for app with pid 51104
+<EVIDENCE>/review-baseline/InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift:53: error: -[InnerBalanceUITests.PracticeReturnHomeUITests testClosingBeforeStartingKeepsThePracticeTabSelected] : XCTAssertTrue failed
+    t =    14.16s Tear Down
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testClosingBeforeStartingKeepsThePracticeTabSelected]' failed (14.376 seconds).
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testCompletedLibraryPracticeReturnsToNowTab]' started.
+    t =     0.00s Start Test at 2026-09-18 23:29:59.398
+    t =     0.02s Set Up
+    t =     0.03s Open com.yvainair.InnerBalance
+    t =     0.03s     Launch com.yvainair.InnerBalance
+    t =     0.03s         Terminate com.yvainair.InnerBalance:51104
+2026-09-18 23:30:00.501 xcodebuild[51063:8732973] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 23:30:00.501 xcodebuild[51063:8732973] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.31s         Setting up automation session
+    t =     2.92s         Wait for com.yvainair.InnerBalance to idle
+    t =     4.51s Waiting 5.0s for "练习" Button to exist
+    t =     5.55s     Checking `Expect predicate `existsNoRetry == 1` for object "练习" Button`
+    t =     5.55s         Checking existence of `"练习" Button`
+    t =     5.68s Tap "练习" Button
+    t =     5.68s     Wait for com.yvainair.InnerBalance to idle
+    t =     5.68s     Find the "练习" Button
+    t =     5.71s     Check for interrupting elements affecting "练习" Button
+    t =     5.75s     Synthesize event
+    t =     6.06s     Wait for com.yvainair.InnerBalance to idle
+    t =     7.87s Waiting 5.0s for "开始生理性叹息，1 分钟" Button to exist
+    t =     8.91s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =     8.91s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =     8.95s         Capturing element debug description
+    t =     9.88s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =     9.88s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =     9.91s         Capturing element debug description
+    t =    10.95s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    10.95s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    10.97s         Capturing element debug description
+    t =    11.90s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    11.90s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    11.94s         Capturing element debug description
+    t =    12.87s     Checking `Expect predicate `existsNoRetry == 1` for object "开始生理性叹息，1 分钟" Button`
+    t =    12.87s         Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    12.91s         Capturing element debug description
+    t =    12.91s     Checking existence of `"开始生理性叹息，1 分钟" Button`
+    t =    12.93s Collecting debug information to assist test failure triage
+    t =    12.93s     Requesting snapshot of accessibility hierarchy for app with pid 51195
+<EVIDENCE>/review-baseline/InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift:53: error: -[InnerBalanceUITests.PracticeReturnHomeUITests testCompletedLibraryPracticeReturnsToNowTab] : XCTAssertTrue failed
+    t =    12.97s Tear Down
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testCompletedLibraryPracticeReturnsToNowTab]' failed (13.189 seconds).
+Test Suite 'PracticeReturnHomeUITests' failed at 2026-09-18 23:30:12.587.
+	 Executed 2 tests, with 2 failures (0 unexpected) in 27.565 (27.569) seconds
+Test Suite 'InnerBalanceUITests.xctest' failed at 2026-09-18 23:30:12.594.
+	 Executed 2 tests, with 2 failures (0 unexpected) in 27.565 (27.575) seconds
+Test Suite 'Selected tests' failed at 2026-09-18 23:30:12.595.
+	 Executed 2 tests, with 2 failures (0 unexpected) in 27.565 (27.579) seconds
+2026-09-18 23:30:12.937 xcodebuild[51063:8732973] [MT] IDETestOperationsObserverDebug: 34.730 elapsed -- Testing started completed.
+2026-09-18 23:30:12.937 xcodebuild[51063:8732973] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-18 23:30:12.937 xcodebuild[51063:8732973] [MT] IDETestOperationsObserverDebug: 34.730 sec, +34.730 sec -- end
+
+Test session results, code coverage, and logs:
+	<EVIDENCE>/baseline-ui.xcresult
+
+Failing tests:
+	PracticeReturnHomeUITests.testClosingBeforeStartingKeepsThePracticeTabSelected()
+	PracticeReturnHomeUITests.testCompletedLibraryPracticeReturnsToNowTab()
+
+** TEST EXECUTE FAILED **
+
+Testing started
