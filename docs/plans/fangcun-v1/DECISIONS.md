@@ -10,3 +10,11 @@
 8. **旧快照**：缺失 `semanticsVersion` 的快照标为 legacy，原文字及旧短标题保留；新 M1 快照为 version 1。相同日期刷新不删除 legacy，旧记录不送入准备度。首次覆盖已有本机 archive 前保留 preM1 原始字节，坏数据保持不覆盖。完整 versioned storage 仍属 M3。
 9. **测试边界**：12 组 DEBUG-only 原始 fixture 通过 provider→HomeViewModel→Core→FangcunDayState→SwiftUI；单元测试和 UI 测试的预期不放在 provider。原三状态视觉预览保留但限制 DEBUG，仅作视觉检查。Release 禁用 UI 测试入口。
 10. **文案**：新增中文集中为稳定 key + String Catalog + COPY_REVIEW.csv。新增 UI 选择器使用稳定 accessibilityIdentifier，改文案不需要改算法、协议或选择器。
+
+## M2-01
+
+- 独立 Readiness 数据域，不修改 M1 provider 或首页。HealthKit adapter 仅查已在原授权范围内的 SDNN、系统 RHR、睡眠与 workout；不新增正念读取授权。已知本机练习时段作为计算输入传入。
+- Source key 包含指标、bundle、product/model、可得设备 identity 的本地摘要、采样口径与兼容段。应用版本仅保留，不默认破坏基线；同源 identityIncomplete 不自动认定不可用，实际 ambiguity 单独处理。
+- 明确手动切源优先于保持原源；日常保持已选源，即使临时缺失。镜像去重仅在显式来源对策略下执行，数值相同本身不构成重复。
+- anchored predicate 的起点随锚点一起持久化，避免每次改变 predicate 破坏增量语义；本机样本缓存滚动裁剪到 35 天。一次最多 500 项，分页由事务协调器接续；锚点和样本必须一起提交。
+- observer 注册幂等、及时确认，不开启后台交付新权限，不承诺后台唤醒；生命周期接线保留至 M3。M2 公开独立 service 入口并测试完整数据链路。

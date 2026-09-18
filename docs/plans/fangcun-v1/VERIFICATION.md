@@ -80,3 +80,9 @@ xcrun devicectl device info apps --device "$IPHONE_ID" --bundle-id com.yvainair.
 补测命令使用相同 InnerBalance scheme、Debug、专用 iPhone 模拟器及 CODE_SIGNING_ALLOWED=NO，仅选择上述两个 HomeEvidencePipelineUITests test 和新偏好 test（完整参数见日志）。第一次偏好测试点到 SwiftUI Switch 行中央，未实际切换；修正为控件右侧，并增加即时值断言后单独重跑通过。保留首次失败日志，不把整次失败的 test run 标成通过。未修改 App 行为。
 
 原 M0–M1 的代码验收成立；平台能力验收仅按 CAPABILITIES 的具体层级登记，不包含 Watch 后台或跨端送达的真机成功。
+
+## M2-01 初步证据
+
+`ReadinessSourceTests.sourceDefinitionsAndRevisions / noSilentSwitchAndManualRebaseline / uuidSyncVersionAndExplicitMirrors / deletionWinsAndCacheIsBounded` 通过，Core 共 71 项。`ReadinessHealthKitProviderTests.actualHKObjectsNormalizeWithoutWritingHealthStore` 通过，覆盖实际 HKQuantitySample 单位换算、原 UUID/时间/同步元数据及 inBed 类别保留，不写 HealthKit。SDK 适配器和观察器编译通过。
+
+首次 adapter 测试错误假定“未保存的 HKSample 已有来源 bundle”，SDK 实际为空。改为断言原样保留来源并且不能被选择为合格主源，重跑通过；没有给未保存对象编造来源。失败与复验日志均保留在 evidence/m2-01-*.txt。真机 HealthKit 增量、后台回调尚未验证，事务/锚点提交验收在 M2-04 完成。
