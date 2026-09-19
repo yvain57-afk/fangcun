@@ -3,10 +3,12 @@
   "signatureVerification": "passed",
   "version": "1.0.0",
   "build": "2026091903",
-  "releaseMockFlags": "absent",
   "installation": "not_run_physical_device_unavailable",
   "physicalHealthKit": "unverified",
   "physicalWatch": "unavailable",
   "sharedAppGroup": "not_configured",
-  "identifiersAndSigningDetails": "kept_local_only"
+  "identifiersAndSigningDetails": "kept_local_only",
+  "releaseReadinessAndHealthFixtureEntrypoints": "absent",
+  "legacySaveFailureLiteral": "present_but_execution_compiled_under_DEBUG_only",
+  "testedCodeHEAD": "70deab454e21194ee4c8a1a545d417eb300c9fd0"
 }

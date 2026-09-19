@@ -288,3 +288,7 @@ DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test
 
 ## M3-04 与阶段全量
 见 [M3-04-VERIFICATION](M3-04-VERIFICATION.md)。Core112、App185通过；Watch模拟器编译通过。扩展UI 26/45，19项旧约定失败保留，固定基准与接线复验单独登记。Release签名构建通过不等于真机安装/HealthKit验收。
+
+## M3 统一交付入口
+
+见 [M3-REVIEW.md](M3-REVIEW.md)：M3-PRE、01～04的提交、文件、实际命令、I01～I16证据和真机边界。Core112/112、App185/185、Watch模拟器编译通过；20项现行UI/感受入口完整复验通过。扩大UI26/45，19项在固定b80复现；修复4项定位后仍有15项旧契约失败，未删除断言、不称全仓全绿。新增详情展示的最后复验在统一报告登记。所有测试结果包可读取、正常退出；真实HealthKit/Watch/AppGroup与签名分别登记。
