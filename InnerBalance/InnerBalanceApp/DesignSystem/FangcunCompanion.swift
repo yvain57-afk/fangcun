@@ -40,6 +40,7 @@ struct FangcunCompanion: View {
       let time = stopped ? frozenTime : context.date.timeIntervalSince(start)
       Image("Companion-\(scene.rawValue)")
         .resizable().aspectRatio(contentMode: .fit)
+        .colorEffect(ShaderLibrary.fangcunPaperAlpha())
         .visualEffect { content, geometry in
           content.distortionEffect(
             ShaderLibrary.fangcunCompanionWarp(.float2(geometry.size), .float(mode),
@@ -48,9 +49,8 @@ struct FangcunCompanion: View {
         }
     }
     .aspectRatio(scene.ratio, contentMode: .fit)
-    .background(.white)
     .clipShape(RoundedRectangle(cornerRadius: 20))
-    .accessibilityLabel(scene.label)
+    .accessibilityHidden(true)
     .onAppear { start = .now; visible = true }
     .onDisappear { visible = false }
     .onScrollVisibilityChange { isVisible in visible = isVisible }
@@ -60,11 +60,11 @@ struct FangcunCompanion: View {
     }
     .onChange(of: reaction) { _, _ in start = .now; frozenTime = 0 }
     .task(id: reaction) {
-      guard scene == .drink || scene == .complete else { return }
+      guard scene != .breathe else { return }
       gestureFinished = false
-      do { try await Task.sleep(for: .milliseconds(1500)) }
+      do { try await Task.sleep(for: .milliseconds(scene == .calm ? 1800 : scene == .drink ? 1100 : scene == .complete ? 1300 : 1600)) }
       catch { return }
-      gestureFinished = true
+      frozenTime = 0; gestureFinished = true
     }
   }
   // Breathing receives its expansion from the session clock; it needs no second clock.

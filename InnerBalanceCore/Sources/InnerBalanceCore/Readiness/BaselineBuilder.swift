@@ -71,6 +71,9 @@ public enum CurrentMetricExtractor {
     if valid.isEmpty { reasons.insert(isHRV ? .hrvMissing : .rhrMissing) }
     if isHRV && valid.count < configuration.minimumHRVSamples { reasons.insert(.sparseHRV) }
     if isHRV && hours < configuration.minimumHRVHours { reasons.insert(.narrowHRVCoverage) }
+    if isHRV && !episode.asleepIntervalsUsableForHRV {
+      reasons.formUnion(episode.quality?.userBlockingReasons ?? episode.flags)
+    }
     let blockers: Set<ReadinessReason> = [.unitMismatch,.invalidValue,.extremeValue,.manuallyEntered,
       .sourceUnknown,.sourceAmbiguous,.restingSampleReused,.hrvMissing,.rhrMissing,.sparseHRV,.narrowHRVCoverage]
     let values = valid.compactMap(\.value)
@@ -78,7 +81,7 @@ public enum CurrentMetricExtractor {
       value: BodyLoadEngine.median(isHRV ? values.map(log) : values),
       displayValue: BodyLoadEngine.median(values), unit: expectedUnit, window: window,
       latestMeasuredAt: valid.map(\.end).max(), sampleIDs: valid.map(\.id).sorted { $0.uuidString < $1.uuidString },
-      coveredHours: hours, reliable: reasons.isDisjoint(with: blockers), reasons: reasons.sorted { $0.rawValue < $1.rawValue })
+      coveredHours: hours, reliable: reasons.isDisjoint(with: blockers) && (!isHRV || episode.asleepIntervalsUsableForHRV), reasons: reasons.sorted { $0.rawValue < $1.rawValue })
   }
 }
 
@@ -87,19 +90,10 @@ public enum BaselineBuilder {
     beforeEpisode current: ReadinessSleepEpisode, hrvSource: String?, rhrSource: String?,
     currentSampleIDs: Set<UUID>, calendar: Calendar, interventions: [ReadinessInterval] = [],
     configuration: ReadinessConfiguration = .init()) -> ReadinessBaselines {
-    let currentDay = calendar.startOfDay(for: current.end)
-    let cutoff = calendar.date(byAdding: .day, value: -configuration.baselineDays, to: currentDay) ?? currentDay
-    let candidates = episodes.filter {
-      $0.id != current.id && $0.sourceKey == current.sourceKey && $0.end < current.start
-        && calendar.startOfDay(for: $0.end) >= cutoff && calendar.startOfDay(for: $0.end) < currentDay
-    }
-    let days = Dictionary(grouping: candidates) { calendar.startOfDay(for: $0.end) }
-    let selected = days.values.compactMap { $0.max {
-      $0.asleepDuration == $1.asleepDuration ? $0.end < $1.end : $0.asleepDuration < $1.asleepDuration
-    }}.sorted { $0.end < $1.end }
+    let selected = selectedEpisodes(episodes, before: current, calendar: calendar, configuration: configuration)
     var hrv: [ReadinessMetricFeature] = [], rhr: [ReadinessMetricFeature] = []
     var usedRHR: Set<UUID> = []
-    for episode in selected where episode.flags.isEmpty {
+    for episode in selected where episode.sleepDurationUsable {
       let h = CurrentMetricExtractor.extract(metric: .hrvSDNN, samples: samples, sourceKey: hrvSource,
         episode: episode, now: current.start, interventions: interventions, excludingIDs: currentSampleIDs, configuration: configuration)
       let r = CurrentMetricExtractor.extract(metric: .restingHeartRate, samples: samples, sourceKey: rhrSource,
@@ -109,6 +103,20 @@ public enum BaselineBuilder {
     }
     return ReadinessBaselines(hrv: summarize(hrv, metric: .hrvSDNN, source: hrvSource, floor: configuration.hrvScaleFloor, configuration: configuration),
       rhr: summarize(rhr, metric: .restingHeartRate, source: rhrSource, floor: configuration.rhrScaleFloor, configuration: configuration))
+  }
+
+  static func selectedEpisodes(_ episodes: [ReadinessSleepEpisode], before current: ReadinessSleepEpisode,
+    calendar: Calendar, configuration: ReadinessConfiguration) -> [ReadinessSleepEpisode] {
+    let currentDay = calendar.startOfDay(for: current.end)
+    let cutoff = calendar.date(byAdding: .day, value: -configuration.baselineDays, to: currentDay) ?? currentDay
+    let candidates = episodes.filter {
+      $0.id != current.id && $0.sourceKey == current.sourceKey && $0.end < current.start
+        && calendar.startOfDay(for: $0.end) >= cutoff && calendar.startOfDay(for: $0.end) < currentDay
+    }
+    let days = Dictionary(grouping: candidates) { calendar.startOfDay(for: $0.end) }
+    return days.values.compactMap { $0.max {
+      $0.asleepDuration == $1.asleepDuration ? $0.end < $1.end : $0.asleepDuration < $1.asleepDuration
+    }}.sorted { $0.end < $1.end }
   }
 
   private static func summarize(_ features: [ReadinessMetricFeature], metric: ReadinessMetric,

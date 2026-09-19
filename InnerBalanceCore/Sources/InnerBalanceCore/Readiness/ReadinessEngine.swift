@@ -82,6 +82,11 @@ public struct ReadinessAssessment: Codable, Sendable {
   public var algorithmVersion: String { configuration.algorithmVersion }
   public var configurationVersion: String { configuration.version }
   public var featureSchemaVersion: Int { configuration.featureSchemaVersion }
+  public var qualityPolicyVersion: String? { configuration.qualityPolicyVersion }
+  public var sleepQuality: ReadinessSleepQuality?
+  public var sleepDurationUsable: Bool { sleepQuality?.sleepDurationUsable ?? (actualSleepSeconds != nil && !qualityFlags.contains(.conflictingSleep)) }
+  public var asleepIntervalsUsableForHRV: Bool { sleepQuality?.asleepIntervalsUsableForHRV ?? sleepDurationUsable }
+  public var sleepStageBreakdownUsable: Bool { sleepQuality?.sleepStageBreakdownUsable ?? false }
   public var inputFingerprint: String
   public var sleepEpisodeID: String?
   public var sleepStartAt: Date?
@@ -128,8 +133,8 @@ public enum EvidenceQualityEvaluator {
     if input.readFailure != nil { return .failed }
     if input.sleep.awaitingData { return .awaitingData }
     guard input.sleep.episode != nil, input.hrv?.value != nil || input.rhr?.value != nil else { return .insufficient }
-    let sleepBlockers = Set(input.sleep.flags).subtracting([.manualSleepSelection])
-    guard input.configuration.isValid, sleepBlockers.isEmpty, input.hrv?.reliable == true,
+    let sleepBlockers = Set(input.sleep.flags).subtracting([.manualSleepSelection, .sleepStageOverlap, .sourceIdentityIncomplete])
+    guard input.configuration.isValid, sleepBlockers.isEmpty, input.sleep.episode?.sleepDurationUsable == true, input.hrv?.reliable == true,
       input.rhr?.reliable == true, !highHRV, let baselines = input.baselines,
       baselines.hrv.validDays >= input.configuration.provisionalDays,
       baselines.rhr.validDays >= input.configuration.provisionalDays else { return .limited }
@@ -189,8 +194,8 @@ public enum ReadinessEngine {
       + evidence.flatMap { $0.feature.sampleIDs + ($0.baseline?.sampleIDs ?? []) }
     let missing: Set<ReadinessReason> = [.currentDataMissing,.sleepMissing,.hrvMissing,.rhrMissing,.baselineBuilding,.sparseHRV,.narrowHRVCoverage]
     var result = ReadinessAssessment(assessmentID: id, recoveryCycleID: sleep?.recoveryCycleID, revision: 1, supersedesID: nil,
-      configuration: c, inputFingerprint: fingerprint, sleepEpisodeID: sleep?.id, sleepStartAt: sleep?.start, sleepEndAt: sleep?.end,
-      actualSleepSeconds: sleep?.asleepDuration, evidenceWindowStart: evidence.map(\.feature.window.start).min() ?? sleep?.start,
+      configuration: c, sleepQuality: sleep?.quality, inputFingerprint: fingerprint, sleepEpisodeID: sleep?.id, sleepStartAt: sleep?.start, sleepEndAt: sleep?.end,
+      actualSleepSeconds: sleep?.sleepDurationUsable == true ? sleep?.asleepDuration : nil, evidenceWindowStart: evidence.map(\.feature.window.start).min() ?? sleep?.start,
       evidenceWindowEnd: evidence.map(\.feature.window.end).max() ?? sleep?.end, computedAt: input.now, queriedAt: input.queriedAt,
       latestMeasuredAt: (evidence.compactMap(\.feature.latestMeasuredAt) + [sleep?.end].compactMap { $0 }).max(),
       currentUntil: sleep?.end.addingTimeInterval(c.currentHours*3600), validUntil: sleep?.end.addingTimeInterval(c.historicalHours*3600),

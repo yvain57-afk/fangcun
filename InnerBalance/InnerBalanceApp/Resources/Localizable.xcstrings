@@ -2331,6 +2331,346 @@
           }
         }
       }
+    },
+    "guidance.usual": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复接近平常"
+          }
+        }
+      }
+    },
+    "guidance.reduced": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天建议放缓一点"
+          }
+        }
+      }
+    },
+    "guidance.low": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天优先安排恢复"
+          }
+        }
+      }
+    },
+    "guidance.sleepAdvice": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "基于睡眠的今日建议"
+          }
+        }
+      }
+    },
+    "guidance.facts": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先看看已知的身体线索"
+          }
+        }
+      }
+    },
+    "guidance.notYet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天的判断还没形成"
+          }
+        }
+      }
+    },
+    "guidance.paused": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "健康读取已暂停"
+          }
+        }
+      }
+    },
+    "guidance.service": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这次没能更新身体线索"
+          }
+        }
+      }
+    },
+    "guidance.reason.sleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这次主睡眠，实际睡了约 %.1f 小时。"
+          }
+        }
+      }
+    },
+    "guidance.reason.bodyLower": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "与自己的近期记录相比，身体恢复线索有所下降。"
+          }
+        }
+      }
+    },
+    "guidance.reason.bodyUsual": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前可比较的身体线索接近自己的近期水平。"
+          }
+        }
+      }
+    },
+    "guidance.reason.sleepShort": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "比你设置的睡眠目标短，今天可以给休息多留一点空间。"
+          }
+        }
+      }
+    },
+    "guidance.reason.sleepOnly": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠时长已经有线索，其他数据还不足以形成整体判断。"
+          }
+        }
+      }
+    },
+    "guidance.reason.facts": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有了部分测量记录，但还不足以和自己的日常节奏可靠比较。"
+          }
+        }
+      }
+    },
+    "guidance.reason.notYet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有足够的当前数据。也可以先留五分钟，轻轻缓一缓。"
+          }
+        }
+      }
+    },
+    "guidance.reason.paused": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你仍然可以练习、记录饮品，或在设置中恢复读取。"
+          }
+        }
+      }
+    },
+    "guidance.reason.service": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稍后再试一次；这不代表身体状态变差。"
+          }
+        }
+      }
+    },
+    "guidance.action.pause": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "留五分钟，缓一缓"
+          }
+        }
+      }
+    },
+    "guidance.action.rhythm": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "照自己的节奏安排今天"
+          }
+        }
+      }
+    },
+    "guidance.action.ease": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "给休息多留一点空间"
+          }
+        }
+      }
+    },
+    "guidance.action.retry": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稍后回到今日刷新"
+          }
+        }
+      }
+    },
+    "guidance.scoped": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这条建议只基于已有线索，不是整体恢复结论。"
+          }
+        }
+      }
+    },
+    "guidance.provisional": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "初步比较"
+          }
+        }
+      }
+    },
+    "guidance.cached": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本次更新未成功，保留上次仍有效的判断。"
+          }
+        }
+      }
+    },
+    "guidance.kind.recoveryAssessment": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日恢复"
+          }
+        }
+      }
+    },
+    "guidance.kind.scopedAdvice": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有限线索"
+          }
+        }
+      }
+    },
+    "guidance.kind.onboarding": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "慢慢认识自己"
+          }
+        }
+      }
+    },
+    "guidance.kind.serviceIssue": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等待更新"
+          }
+        }
+      }
+    },
+    "guidance.method": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据来源与判断方法"
+          }
+        }
+      }
+    },
+    "guidance.method.explanation": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睡眠按实际入睡片段合计，身体指标与同一来源的个人记录比较。记录不足时保留未知；这些是工程默认规则，仍待校准。"
+          }
+        }
+      }
+    },
+    "guidance.baselineLearning": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "个人参照还在积累，暂不显示个人范围。"
+          }
+        }
+      }
+    },
+    "guidance.metric.sleep": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实际睡眠"
+          }
+        }
+      }
+    },
+    "guidance.hours": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "约 %.1f 小时"
+          }
+        }
+      }
+    },
+    "guidance.diagnostics": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据诊断（高级）"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

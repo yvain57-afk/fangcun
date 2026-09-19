@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "care-v2.0-engineering-20260919",
+  "status": "proposed_for_implementation_not_validated_medical_thresholds",
+  "sourceOfTruth": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+  "referenceCommit": "99ebe69f30a2a502225e913a9dfd35f54101dabd",
+  "defaults": {
+    "inAppCareEnabled": true,
+    "pushEnabled": false,
+    "requestPermissionOnlyAfterExplicitUserEnable": true,
+    "newHealthKitDietaryPermissions": false,
+    "notificationOwner": "iPhone",
+    "lockScreenPrivacy": "generic",
+    "sound": false,
+    "badge": false,
+    "criticalAlert": false,
+    "timeSensitive": false
+  },
+  "water": {
+    "referenceML": 1500,
+    "referenceActiveUntilUserAccepts": false,
+    "referenceMeaning": "recorded_non_alcohol_beverage_volume_not_total_body_water_or_additional_plain_water",
+    "referenceRangeML": {
+      "min": 500,
+      "max": 3500,
+      "step": 250,
+      "isMedicalSafeRange": false
+    },
+    "cupML": 250,
+    "cupOptionsML": [
+      150,
+      250,
+      350,
+      500
+    ],
+    "waterCounts": true,
+    "teaCoffeeMilkCounts": true,
+    "knownAlcoholExcluded": true,
+    "unknownAlcoholExcludedUntilClarified": true,
+    "fluidRestrictionDisablesVolumePrompts": true,
+    "fluidRestrictionAppliesToAllCareCategories": true,
+    "targetMetCancelsRemainingWaterPushForLocalDay": true,
+    "noRecordWindow": {
+      "startLocal": "11:00",
+      "endLocal": "19:30"
+    },
+    "recordGapHours": 3,
+    "acknowledgeWithoutLoggingSuppressHours": 3,
+    "snoozeMinutes": 60,
+    "newNonAlcoholLogCancelUpcomingWaterMinutes": 120,
+    "noRecordDoesNotMeanNoIntake": true,
+    "fatigueCauseMayNotBeInferred": true
+  },
+  "caffeine": {
+    "lateWindowHoursBeforePlannedSleep": 8,
+    "lateWindowUserRangeHours": {
+      "min": 6,
+      "max": 12
+    },
+    "requiresConfirmedSleepPlanOrExplicitCutoff": true,
+    "duringPlannedSleepCountsAsLateForOngoingCycle": true,
+    "lateKnownAmountMinimumMG": 50,
+    "knownCaffeineUnknownDoseCanTriggerLateCare": true,
+    "rollingAmountHours": 24,
+    "rollingAmountReferenceMG": 400,
+    "userLowerReferenceAllowed": true,
+    "lateCandidateMaxAgeHours": 12,
+    "lateCandidateExpiresAtSleepEnd": true,
+    "manualCutoffOnlyExpiresAtLocalDayEnd": true,
+    "manualCutoffDoesNotInferSleepTime": true,
+    "consumeTimeAuthority": "consumedAt",
+    "mergeLateAndAmount": true,
+    "unknownDoseIsZero": false,
+    "preemptiveReminderMinutesBeforeCutoff": 15,
+    "preemptiveReminderOptIn": true,
+    "perServingDoseDoesNotScaleWithDilution": true,
+    "labelMGPer100MLScalesWithVolume": true,
+    "calculateExactBodyCaffeineOrSleepPrediction": false
+  },
+  "alcohol": {
+    "densityApproximateGramsPerML": 0.789,
+    "calculation": "volumeML * ABVPercent / 100 * 0.789",
+    "preserveLegacyEstimateGrams": true,
+    "rollingCareHours": 6,
+    "careTriggerKnownGrams": 30,
+    "careTriggerIsSafeAllowance": false,
+    "explicitDrankTooMuchAlsoTriggers": true,
+    "nearSleepHours": 3,
+    "nextMorningMaximumAgeHours": 18,
+    "nextMorningRequiresConfirmedCycle": true,
+    "unknownDoseIsZero": false,
+    "scheduledCareDefault": false,
+    "userRequestedLaterMinutes": 30,
+    "noBACOrDrivingClearanceCalculation": true,
+    "waterCoffeeBreathingDoNotUndoAlcohol": true,
+    "explicitSevereSymptomsUseStaticSafetyExit": true,
+    "autoCallEmergency": false
+  },
+  "attention": {
+    "maxVisibleOrdinaryCareCards": 1,
+    "priority": [
+      "explicitDanger",
+      "alcohol",
+      "combinedLateOrHighCaffeine",
+      "water"
+    ],
+    "replayOnRemoteOrHistoricalChange": false,
+    "dismissDoesNotImmediatelyRevealNextCandidate": true,
+    "ordinaryDismissCooldownHours": 4,
+    "sameEventForegroundBanner": false,
+    "maxScheduledPushPerLocalDay": 2,
+    "maxScheduledPushPerRolling24Hours": 2,
+    "crossCategoryPushCooldownHours": 4,
+    "quietStartLocal": "21:30",
+    "quietEndLocal": "09:00",
+    "alsoHonorConfirmedSleepAndStricterGlobalQuiet": true,
+    "proposedWaterTimesLocal": [
+      "11:30",
+      "16:00"
+    ],
+    "oneShotPlanningHorizonLocalDays": 3,
+    "scheduleBudgetBeforeRegisteringRequests": true,
+    "genericScheduledWaterCopyMustNotAssertCurrentRecords": true,
+    "deferIntoQuietHours": false,
+    "muteEndStoredAsAbsoluteDate": true,
+    "timezoneChangeMayNotShortenMute": true,
+    "receiptStates": [
+      "scheduled",
+      "responseReceived",
+      "systemConfirmedDelivered"
+    ],
+    "scheduleDoesNotProveDeliveredOrRead": true
+  },
+  "safety": {
+    "generalAdultReferenceOnly": true,
+    "noUniversalMedicalPrescription": true,
+    "noReadinessRewardsOrDeductions": true,
+    "preserveSymptomsAndScopeNotFalseReassurance": true
+  },
+  "ruleIds": [
+    "W01",
+    "W02",
+    "W03",
+    "W04",
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05"
+  ]
+}

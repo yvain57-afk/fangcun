@@ -3,20 +3,69 @@ import InnerBalanceCore
 
 struct ReadinessEvidenceLink: View {
   let owner: ReadinessCoordinator
+  var onStart: (() -> Void)? = nil
   var body: some View {
-    NavigationLink { ReadinessDetailView(assessment: owner.current, snapshot: owner.snapshot) } label: {
-      VStack(alignment: .leading, spacing: 12) {
-        Text(FangcunCopy.text("readiness.evidence")).font(.headline)
-        if let a = owner.current {
-          ForEach(a.evidence, id: \.feature.metric) { evidence in
-            Text(ReadinessDisplay.metric(evidence)).font(.subheadline)
-          }
-          Text(FangcunCopy.text("readiness.sleepEnd", FangcunCopy.timestamp(a.sleepEndAt)))
-            .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
-        } else { Text(FangcunCopy.text(owner.errorKey ?? "readiness.summary.insufficient")) }
-        HStack { Text(FangcunCopy.text("readiness.why")); Spacer(); Image(systemName: "chevron.right") }.font(.caption)
-      }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
+    NavigationLink { ReadinessDetailView(assessment: owner.current, snapshot: owner.snapshot, onStart: onStart) } label: {
+      HStack {
+        VStack(alignment: .leading, spacing: 8) {
+          Text(FangcunCopy.text("readiness.why")).font(.headline)
+          Text(owner.guidance.reasons.first?.text ?? FangcunCopy.text("guidance.reason.notYet"))
+            .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        Spacer(); Image(systemName: "chevron.right")
+      }.fangcunPaperCard()
     }.buttonStyle(.plain).accessibilityIdentifier("today.evidence")
+  }
+}
+
+struct ReadinessDetailView: View {
+  let assessment: ReadinessAssessment?
+  let snapshot: InsightsSnapshot
+  var onStart: (() -> Void)? = nil
+  private var guidance: DayGuidancePresentation { .resolve(assessment) }
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 20) {
+        Text(guidance.title).font(.title2.weight(.semibold)).accessibilityIdentifier("readiness.detail.conclusion")
+        ForEach(Array(guidance.reasons.enumerated()), id: \.offset) { _, reason in
+          Text(reason.text).font(.body)
+        }
+        if let note = guidance.noteKey { Text(FangcunCopy.text(note)).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk) }
+        VStack(alignment: .leading, spacing: 12) {
+          if let a = assessment, a.sleepDurationUsable, let seconds = a.actualSleepSeconds {
+            LabeledContent(FangcunCopy.text("guidance.metric.sleep"), value: FangcunCopy.text("guidance.hours", seconds / 3600))
+              .accessibilityIdentifier("readiness.sleep.actual")
+          }
+          ForEach(Array((assessment?.evidence ?? []).filter { $0.feature.reliable && $0.feature.displayValue != nil }.prefix(2)), id: \.feature.metric) { e in
+            LabeledContent(FangcunCopy.text("readiness.metric." + e.feature.metric.rawValue),
+              value: String(format: "%.1f %@", e.feature.displayValue!, e.feature.metric == .hrvSDNN ? "ms" : "bpm"))
+          }
+        }.font(.subheadline).fangcunPaperCard()
+        if let date = guidance.asOf {
+          Text(FangcunCopy.text("body.time.measured", FangcunCopy.timestamp(date)))
+            .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        if let onStart {
+          Button(FangcunCopy.text("guidance.action.pause"), action: onStart)
+            .buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("readiness.detail.action")
+        } else { Text(FangcunCopy.text(guidance.actionKey)).font(.headline) }
+        DisclosureGroup(FangcunCopy.text("guidance.method")) {
+          VStack(alignment: .leading, spacing: 12) {
+            Text(FangcunCopy.text("guidance.method.explanation"))
+            if let a = assessment {
+              ForEach(a.evidence, id: \.feature.metric) { e in
+                Text(a.sourceDetails[e.feature.metric.rawValue]?.name ?? FangcunCopy.text("readiness.unknown"))
+                if let days = e.baseline?.validDays, days >= 14, let values = ReadinessDisplay.baselineValues(e) {
+                  Text(FangcunCopy.text("readiness.baseline.reference", values[0], values[1], values[2], e.feature.metric == .hrvSDNN ? "ms" : "bpm"))
+                    .accessibilityIdentifier("readiness.baseline.reference")
+                } else if (e.baseline?.validDays ?? 0) >= 7 { Text(FangcunCopy.text("guidance.provisional")) }
+                else { Text(FangcunCopy.text("guidance.baselineLearning")) }
+              }
+            }
+          }.font(.caption).padding(.top, 10)
+        }.accessibilityIdentifier("readiness.method")
+      }.padding(20)
+    }.background(InnerBalanceTheme.canvas).navigationTitle(FangcunCopy.text("readiness.why"))
   }
 }
 
@@ -34,7 +83,7 @@ enum ReadinessDisplay {
   }
 }
 
-struct ReadinessDetailView: View {
+struct ReadinessDiagnosticsView: View {
   let assessment: ReadinessAssessment?
   let snapshot: InsightsSnapshot
   var body: some View {
@@ -208,6 +257,9 @@ struct ReadinessSettingsView: View {
   @State private var clearConfirmation = false
   var body: some View {
     List {
+      NavigationLink(FangcunCopy.text("guidance.diagnostics")) {
+        ReadinessDiagnosticsView(assessment: owner.current, snapshot: owner.snapshot)
+      }.accessibilityIdentifier("readiness.diagnostics")
       Toggle(FangcunCopy.text("readiness.enabled"), isOn: Binding(get: { owner.enabled }, set: { value in Task { await owner.setEnabled(value) } }))
       if owner.enabled {
         Stepper(value: Binding(get: { owner.configuration.sleepTargetHours }, set: { value in Task { await owner.setTarget(value) } }), in: 7...10, step: 0.5) {

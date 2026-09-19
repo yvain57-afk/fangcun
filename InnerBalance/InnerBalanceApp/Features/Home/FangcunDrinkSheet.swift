@@ -54,7 +54,7 @@ struct FangcunDrinkSheet: View {
       Divider()
       HStack {
         VStack(alignment: .leading, spacing: 3) {
-          Text("总液体 \(totals.fluid) ml · 咖啡因 \(totals.caffeine) mg")
+          Text("已记录饮品 \(totals.fluid) ml · 咖啡因 \(totals.caffeine) mg")
           Text("酒精 \(totals.alcohol) g · 糖饮 \(totals.sugar) 份")
         }.font(.caption).accessibilityElement(children: .combine).accessibilityIdentifier("drinks.totals")
         Spacer()
@@ -81,6 +81,6 @@ struct FangcunDrinkSheet: View {
     else if kind.isCoffee, let last = diary.entries().last(where: { $0.kind.isCoffee }) { diary.remove(last.kind) }
     else { diary.remove(kind) }
     feedback = diary.storageMessage ?? "已\(adding ? "记录" : "减少")一杯\(kind.title)"
-    reaction += 1
+    if diary.storageMessage == nil { reaction += 1 }
   }
 }

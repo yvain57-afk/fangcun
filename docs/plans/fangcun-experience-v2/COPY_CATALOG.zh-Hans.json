@@ -1,0 +1,387 @@
+{
+  "schemaVersion": 1,
+  "locale": "zh-Hans",
+  "status": "draft_human_editorial_and_safety_review_required",
+  "tokensAreTemplateParametersNotFinalLocalizationFormat": true,
+  "entries": [
+    {
+      "key": "guidance.usual.title",
+      "text": "今天恢复接近平常",
+      "condition": "仅合格当前评估usual",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.reduced.title",
+      "text": "今天建议放缓一点",
+      "condition": "仅合格当前评估reduced",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.low.title",
+      "text": "今天优先安排恢复",
+      "condition": "仅合格当前评估low",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.sleepScoped.title",
+      "text": "昨夜睡眠少于你的目标",
+      "condition": "可靠实际睡眠且最近一夜；否则替换日期",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.sleepScoped.note",
+      "text": "这是基于睡眠记录的今日建议。",
+      "condition": "局部事实；不能伪装综合评估",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.notReady.note",
+      "text": "今天的恢复评估还未形成。你仍然可以先休息片刻。",
+      "condition": "确实没有当前合格评估",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.noRecord",
+      "text": "今天还没记饮品。喝过了可以顺手补一下。",
+      "condition": "W01；前台记录空",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.gap",
+      "text": "忙了一阵，给水杯续一点？",
+      "condition": "W03",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.invitation",
+      "text": "歇一口气，也喝几口水。",
+      "condition": "通用邀请；无当前摄入断言",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.nextCup",
+      "text": "下一杯，换成水也不错。",
+      "condition": "W02被动",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.saved",
+      "text": "这杯记下了。",
+      "condition": "本地实际保存成功",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.ackNoLog",
+      "text": "喝过了，先不记",
+      "condition": "不创建摄入事件，只暂停提示",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.reference",
+      "text": "分散喝，今天参考{referenceML}ml。",
+      "condition": "用户接受的普通成人记录参考",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": [
+        "referenceML"
+      ]
+    },
+    {
+      "key": "water.referenceDetail",
+      "text": "水、茶、咖啡和奶等无酒精饮品都计入这里。参考量可按自己的安排调整。",
+      "condition": "记录范围非体内水分",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.referenceMet",
+      "text": "今天已记录到你的参考量。",
+      "condition": "W04",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.fatigueInfo",
+      "text": "缺水时，人可能更容易觉得疲倦。忙了一阵，可以先喝几口水。",
+      "condition": "知识展开；不能诊断疲劳原因",
+      "reviewCategory": "education",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.medicalRestriction",
+      "text": "饮水按医嘱",
+      "condition": "停止各类催喝水和定量目标，保留记录",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "caffeine.late",
+      "text": "这杯离休息有些近了，下一杯可以换成无咖啡因的。",
+      "condition": "C01已确认睡眠计划",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "caffeine.cutoffOnly",
+      "text": "已经过了你设定的咖啡时间，下一杯可以换个选择。",
+      "condition": "仅手动截止，不能推断睡眠",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "caffeine.amount",
+      "text": "近24小时记录的咖啡因已有约{knownMG}mg，接下来换个不含咖啡因的选择。",
+      "condition": "C02",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": [
+        "knownMG"
+      ]
+    },
+    {
+      "key": "caffeine.combined",
+      "text": "这杯离休息较近，近24小时也记录了约{knownMG}mg咖啡因。下一杯可以换成无咖啡因的。",
+      "condition": "C03合并一条",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": [
+        "knownMG"
+      ]
+    },
+    {
+      "key": "caffeine.unknown",
+      "text": "已知约{knownMG}mg，另有{unknownCount}杯未估量。",
+      "condition": "C04确有已知项",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": [
+        "knownMG",
+        "unknownCount"
+      ]
+    },
+    {
+      "key": "caffeine.cutoffSoon",
+      "text": "咖啡可以慢慢收尾了，给晚些时候的休息留点余地。",
+      "condition": "用户订阅的预先截止通知",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.nearSleep",
+      "text": "今晚喝过酒，后面的酒先停在这里，给休息留点时间。",
+      "condition": "A01当晚，其他周期用中性时间",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.care",
+      "text": "酒先到这里。安排好回程，今晚别开车。",
+      "condition": "A02；不是可驾驶判定",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.careAnyTime",
+      "text": "后面的酒先停一下，安排好安全回程。不要自己开车。",
+      "condition": "跨日或轮班，避免错误今晚",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.unknown",
+      "text": "这杯已记下。需要时可以补充杯量和度数。",
+      "condition": "A03不显示已超量",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.nextDay",
+      "text": "上次休息前有饮酒记录。今天给休息多留一点时间。",
+      "condition": "A04确认关联",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.waterOptional",
+      "text": "口渴时小口喝水，给自己留时间休息。",
+      "condition": "仅清醒可吞咽，无限液；不是解酒承诺",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.notDetox",
+      "text": "喝水、咖啡或练习都不能保证解酒，也不能用来判断何时可以开车。",
+      "condition": "按需知识/安全说明",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "safety.severe",
+      "text": "难以唤醒、意识混乱或呼吸异常时，请立即联系当地急救，让清醒的人留在身边。",
+      "condition": "用户明确报告严重信号；静态，不自动拨号",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.mute",
+      "text": "好，今天安静陪你。",
+      "condition": "保存今日静音成功",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.enable",
+      "text": "轻轻提醒我",
+      "condition": "主动请求通知权限",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.generic.title",
+      "text": "方寸",
+      "condition": "默认隐私标题",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.generic.body",
+      "text": "给自己留一点缓冲。",
+      "condition": "默认锁屏，无喝酒/具体摄入信息",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.water.body",
+      "text": "喝几口水，歇一会儿。",
+      "condition": "仅具体建议隐私开启；无实时条件断言",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.alcohol.body",
+      "text": "给休息留一点时间，也安排好安全回程。",
+      "condition": "用户明确要求稍后，仍过频控",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.logCup",
+      "text": "记一杯{volumeML}ml",
+      "condition": "用户明确确认饮用事实",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": [
+        "volumeML"
+      ]
+    },
+    {
+      "key": "action.getWater",
+      "text": "去倒杯水",
+      "condition": "只导航、不入账",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.openLog",
+      "text": "去记录",
+      "condition": "打开弹层，尚未入账",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.openAdvice",
+      "text": "看看建议",
+      "condition": "进入相关建议，不是角色观看",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.snooze",
+      "text": "稍后",
+      "condition": "延后仍受预算/静音/有效期约束",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.muteToday",
+      "text": "今天不提醒",
+      "condition": "类别静音持久化",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.startRest",
+      "text": "开始休息",
+      "condition": "进入已有实际休息流程",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.undo",
+      "text": "撤销",
+      "condition": "真实反向事务，失败不假成功",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "save.failed",
+      "text": "这次没能保存，再试一次。",
+      "condition": "持久化失败，无成功动效",
+      "reviewCategory": "error",
+      "reviewed": false,
+      "parameters": []
+    }
+  ]
+}

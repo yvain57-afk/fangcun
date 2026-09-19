@@ -1,0 +1,35 @@
+key,screen,text,status
+guidance.usual,V2-01,恢复接近平常,implemented; human review pending
+guidance.reduced,V2-01,今天建议放缓一点,implemented; human review pending
+guidance.low,V2-01,今天优先安排恢复,implemented; human review pending
+guidance.sleepAdvice,V2-01,基于睡眠的今日建议,implemented; human review pending
+guidance.facts,V2-01,先看看已知的身体线索,implemented; human review pending
+guidance.notYet,V2-01,今天的判断还没形成,implemented; human review pending
+guidance.paused,V2-01,健康读取已暂停,implemented; human review pending
+guidance.service,V2-01,这次没能更新身体线索,implemented; human review pending
+guidance.reason.sleep,V2-01,这次主睡眠，实际睡了约 %.1f 小时。,implemented; human review pending
+guidance.reason.bodyLower,V2-01,与自己的近期记录相比，身体恢复线索有所下降。,implemented; human review pending
+guidance.reason.bodyUsual,V2-01,目前可比较的身体线索接近自己的近期水平。,implemented; human review pending
+guidance.reason.sleepShort,V2-01,比你设置的睡眠目标短，今天可以给休息多留一点空间。,implemented; human review pending
+guidance.reason.sleepOnly,V2-01,睡眠时长已经有线索，其他数据还不足以形成整体判断。,implemented; human review pending
+guidance.reason.facts,V2-01,有了部分测量记录，但还不足以和自己的日常节奏可靠比较。,implemented; human review pending
+guidance.reason.notYet,V2-01,还没有足够的当前数据。也可以先留五分钟，轻轻缓一缓。,implemented; human review pending
+guidance.reason.paused,V2-01,你仍然可以练习、记录饮品，或在设置中恢复读取。,implemented; human review pending
+guidance.reason.service,V2-01,稍后再试一次；这不代表身体状态变差。,implemented; human review pending
+guidance.action.pause,V2-01,留五分钟，缓一缓,implemented; human review pending
+guidance.action.rhythm,V2-01,照自己的节奏安排今天,implemented; human review pending
+guidance.action.ease,V2-01,给休息多留一点空间,implemented; human review pending
+guidance.action.retry,V2-01,稍后回到今日刷新,implemented; human review pending
+guidance.scoped,V2-01,这条建议只基于已有线索，不是整体恢复结论。,implemented; human review pending
+guidance.provisional,V2-01,初步比较,implemented; human review pending
+guidance.cached,V2-01,本次更新未成功，保留上次仍有效的判断。,implemented; human review pending
+guidance.kind.recoveryAssessment,V2-01,今日恢复,implemented; human review pending
+guidance.kind.scopedAdvice,V2-01,有限线索,implemented; human review pending
+guidance.kind.onboarding,V2-01,慢慢认识自己,implemented; human review pending
+guidance.kind.serviceIssue,V2-01,等待更新,implemented; human review pending
+guidance.method,V2-01,数据来源与判断方法,implemented; human review pending
+guidance.method.explanation,V2-01,睡眠按实际入睡片段合计，身体指标与同一来源的个人记录比较。记录不足时保留未知；这些是工程默认规则，仍待校准。,implemented; human review pending
+guidance.baselineLearning,V2-01,个人参照还在积累，暂不显示个人范围。,implemented; human review pending
+guidance.metric.sleep,V2-01,实际睡眠,implemented; human review pending
+guidance.hours,V2-01,约 %.1f 小时,implemented; human review pending
+guidance.diagnostics,V2-01,数据诊断（高级）,implemented; human review pending

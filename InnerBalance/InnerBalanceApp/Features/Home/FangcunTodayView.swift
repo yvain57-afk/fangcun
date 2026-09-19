@@ -17,8 +17,6 @@ struct FangcunTodayView: View {
   @AppStorage("fangcun.dark") private var dark = false
   @AppStorage("fangcun.largeType") private var largeType = false
   @State private var drinks = false
-  @State private var companion = false
-  @State private var replay = 0
   @State private var askingHealth = false
 
   private var state: FangcunDayState {
@@ -30,7 +28,7 @@ struct FangcunTodayView: View {
     return FangcunDayState.resolve(model)
   }
   private var summary: String {
-    if let readiness, readiness.enabled { return FangcunCopy.text("readiness.summary." + readiness.presentationKey) }
+    if let readiness, readiness.enabled { return readiness.guidance.summary }
     if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
       return FangcunCopy.text("body.workout.summary")
     }
@@ -81,20 +79,19 @@ struct FangcunTodayView: View {
           }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
             .disabled(recovery?.canStart == false)
           if let recovery { RecoverySuggestionView(owner: recovery, assessment: readiness?.current, onPractice: onSuggestedPractice) }
-          if let readiness, readiness.enabled { ReadinessEvidenceLink(owner: readiness) } else { evidenceCard }
+          if let readiness, readiness.enabled { ReadinessEvidenceLink(owner: readiness, onStart: onStart) } else { evidenceCard }
           Button { drinks = true } label: {
             HStack(spacing: 14) {
               Image(systemName: "drop").font(.title2).foregroundStyle(InnerBalanceTheme.strongFill)
               VStack(alignment: .leading, spacing: 5) {
                 Text("今天喝了什么？").font(.headline)
-                Text(diary.entries().isEmpty ? "水、咖啡，或是别的什么" : "已记 \(diary.entries().count) 杯 · 总液体 \(FangcunDrinkTotals(diary.entries()).fluid) ml")
+                Text(diary.entries().isEmpty ? "水、咖啡，或是别的什么" : "已记 \(diary.entries().count) 杯 · 已记录饮品 \(FangcunDrinkTotals(diary.entries()).fluid) ml")
                   .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
               }
               Spacer(minLength: 0)
               Image(systemName: "plus").frame(width: 34, height: 34).background(InnerBalanceTheme.subtleFill, in: Circle())
             }.fangcunPaperCard()
           }.buttonStyle(.plain).accessibilityIdentifier("today.drinks")
-          if !diary.entries().isEmpty { drinkContext }
           if let latestPractice, Calendar.current.isDateInToday(latestPractice.endedAt) {
             Label("今天，已经为自己留了片刻。", systemImage: "checkmark.circle")
               .accessibilityIdentifier("today.latestPractice")
@@ -116,16 +113,7 @@ struct FangcunTodayView: View {
       .toolbar(.hidden, for: .navigationBar)
       .refreshable { await refresh() }
       .sheet(isPresented: $drinks) { FangcunDrinkSheet() }
-      .sheet(isPresented: $companion) {
-        VStack(spacing: 22) {
-          FangcunCompanion(scene: state.scene, reaction: replay).frame(maxWidth: 300)
-          Text(state == .elevated ? "先靠一会儿。" : state == .insufficient ? "慢慢认识你的节奏。" : "就这样，待一会儿。")
-            .font(.title2.weight(.semibold))
-          Button("再看一次动作") { replay += 1 }.frame(minHeight: 44)
-          Button("回到今日") { companion = false }.frame(minHeight: 44)
-        }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
-          .background(InnerBalanceTheme.canvas).presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
-      }
+
     }
     .task {
       if readiness?.enabled != true { await refresh() }
@@ -155,12 +143,12 @@ struct FangcunTodayView: View {
   private var hero: some View {
     VStack(alignment: .leading, spacing: 16) {
       HStack {
-        Label(readiness?.enabled == true ? FangcunCopy.text("readiness.state." + (readiness?.presentationKey ?? "insufficient")) : state.shortTitle, systemImage: "circle.fill").font(.caption).labelStyle(.titleAndIcon)
+        Label(readiness?.enabled == true ? FangcunCopy.text("guidance.kind." + (readiness?.guidance.kind.rawValue ?? "onboarding")) : state.shortTitle, systemImage: "circle.fill").font(.caption).labelStyle(.titleAndIcon)
           .foregroundStyle(state == .elevated ? InnerBalanceTheme.emphasis : InnerBalanceTheme.strongFill)
           .padding(.horizontal, 10).padding(.vertical, 6).background(InnerBalanceTheme.subtleFill, in: Capsule())
         Spacer()
       }
-      Text(readiness?.enabled == true ? readiness!.title : state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+      Text(readiness?.enabled == true ? readiness!.guidance.title : state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
         .accessibilityIdentifier("today.conclusion").accessibilityValue(readiness?.enabled == true ? readiness!.presentationKey : state.rawValue)
       Text((readiness?.enabled == true ? readiness?.current?.latestMeasuredAt : model.latestMeasuredAt).map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0)) }
         ?? FangcunCopy.text("body.time.noMeasurement"))
@@ -171,19 +159,16 @@ struct FangcunTodayView: View {
         HStack(spacing: 10) { Text(summary).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true); character.frame(width: 142) }
         VStack(alignment: .leading, spacing: 10) { Text(summary).font(.subheadline); character.frame(maxWidth: 180).frame(maxWidth: .infinity) }
       }
-      Divider()
-      Text(evidenceLine).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true)
-        .accessibilityIdentifier("today.evidenceSummary")
+      if let note = readiness?.guidance.noteKey {
+        Text(FangcunCopy.text(note)).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
     }.fangcunPaperCard()
   }
   private var character: some View {
-    Button { companion = true } label: {
-      VStack(spacing: 2) {
-        FangcunCompanion(scene: state.scene, paused: drinks || companion)
-        Text(state == .steady ? "看看它们 ↗" : "看看它 ↗").font(.system(size: 10)).foregroundStyle(InnerBalanceTheme.mutedInk)
-      }
-    }.buttonStyle(.plain).accessibilityLabel(state.scene.label)
+    FangcunCompanion(scene: readiness?.enabled == true ? readiness!.guidance.scene : state.scene, paused: drinks)
+      .accessibilityHidden(true)
   }
+
   private var evidenceCard: some View {
     VStack(alignment: .leading, spacing: 12) {
       HStack { Text("身体给的线索").font(.headline); Spacer(); Text("真实数据").font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk) }

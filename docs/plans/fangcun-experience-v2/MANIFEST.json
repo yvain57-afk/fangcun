@@ -1,0 +1,52 @@
+{
+  "packageVersion": "2.0",
+  "date": "2026-09-19",
+  "primarySpecification": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+  "start": "START_CODEX.md",
+  "docxPages": 18,
+  "acceptanceCases": 45,
+  "draftCopyEntries": 46,
+  "implementationStatus": "specification_only",
+  "files": [
+    {
+      "name": "ACCEPTANCE_CASES.json",
+      "bytes": 17329,
+      "sha256": "19aa843d58a4bd1bcdac0e1a4cfca819f55cf2af09e49cb41081d2d82f478ac6"
+    },
+    {
+      "name": "CARE_POLICY_DEFAULTS.json",
+      "bytes": 4837,
+      "sha256": "44ac6995691a0e369601d28187a705283ca10525e9c92b24ee241bf2e38f2924"
+    },
+    {
+      "name": "COMPANION_MOTION_SPEC.json",
+      "bytes": 4125,
+      "sha256": "3c0233bfa93a48def52f04a78a91987dcc5a1ea9304ea1c1f69c22e7cbf38605"
+    },
+    {
+      "name": "COPY_CATALOG.zh-Hans.json",
+      "bytes": 11582,
+      "sha256": "05ce21497b9212dfd85b6a13dc750f5b71d5cd544e7cb7b446ff636428aae924"
+    },
+    {
+      "name": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+      "bytes": 45922,
+      "sha256": "38eda518056b7d1ff96934a68d81547f2d016cd422721c002842d6b428257b29"
+    },
+    {
+      "name": "README.md",
+      "bytes": 888,
+      "sha256": "2720227d43dcb2bdaa995a8f58d0ce315eb604529f3ef079b138580ef7119a22"
+    },
+    {
+      "name": "START_CODEX.md",
+      "bytes": 2689,
+      "sha256": "f93d5261506183d417190bb080c6959e86ccf30d9453c21394009c7b38dc8821"
+    },
+    {
+      "name": "方寸_体验与饮品关怀_Codex任务书_v2.0.docx",
+      "bytes": 68184,
+      "sha256": "f2b31866292489d8245044a64e7aadce5ca597ae0ddff20b665ee7df6f24066a"
+    }
+  ]
+}

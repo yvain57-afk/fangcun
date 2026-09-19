@@ -1,0 +1,588 @@
+{
+  "schemaVersion": 1,
+  "status": "acceptance_catalog_not_executed_tests",
+  "sourceOfTruth": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+  "syntheticOnly": true,
+  "referenceCommit": "99ebe69f30a2a502225e913a9dfd35f54101dabd",
+  "cases": [
+    {
+      "id": "T01",
+      "scenario": "无记录且前台过11点",
+      "expected": "可见轻邀请，不能说没喝水/脱水",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "now": "2026-09-19T11:30:00+08:00",
+        "events": [],
+        "foreground": true
+      }
+    },
+    {
+      "id": "T02",
+      "scenario": "仅有咖啡300ml",
+      "expected": "非酒精记录300ml；不说今日饮水为0",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "events": [
+          {
+            "category": "coffee",
+            "volumeML": 300,
+            "caffeineMG": 140,
+            "alcoholPresence": "no"
+          }
+        ]
+      }
+    },
+    {
+      "id": "T03",
+      "scenario": "点“喝过，先不记”",
+      "expected": "总量不变；关怀暂停3小时",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "action": "acknowledgeDrankWithoutLogging",
+        "suppressionHours": 3,
+        "expectedNewEntries": 0
+      }
+    },
+    {
+      "id": "T04",
+      "scenario": "1500ml参考已达到",
+      "expected": "停止当天目标推动；不禁用继续记录",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "referenceML": 1500,
+        "referenceAccepted": true,
+        "nonAlcoholBeverageML": 1500
+      }
+    },
+    {
+      "id": "T05",
+      "scenario": "限液开关",
+      "expected": "无定量/喝水push；酒精卡也不催喝水",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "fluidRestriction": true,
+        "alcoholCareAlsoActive": true
+      }
+    },
+    {
+      "id": "T06",
+      "scenario": "300ml咖啡140mg改500ml，按每杯剂量",
+      "expected": "咖啡因仍140mg",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "before": {
+          "volumeML": 300,
+          "caffeineMG": 140,
+          "doseBasis": "perServing"
+        },
+        "afterVolumeML": 500,
+        "expectedCaffeineMG": 140
+      }
+    },
+    {
+      "id": "T07",
+      "scenario": "标签每100ml含32mg，250ml改500ml",
+      "expected": "80mg变160mg，估值方法保留",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "caffeineMGPer100ML": 32,
+        "beforeVolumeML": 250,
+        "afterVolumeML": 500,
+        "expectedBeforeMG": 80,
+        "expectedAfterMG": 160
+      }
+    },
+    {
+      "id": "T08",
+      "scenario": "上午咖啡晚上补记",
+      "expected": "不产生“刚刚喝晚了”，不补发过期通知",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedAt": "2026-09-19T09:00:00+08:00",
+        "recordedAt": "2026-09-19T22:00:00+08:00",
+        "sleepTimeLocal": "23:30"
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "23:30睡眠、16:00消费140mg",
+      "expected": "进入晚咖啡范围，一条应用内建议",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedAt": "2026-09-19T16:00:00+08:00",
+        "sleepStart": "2026-09-19T23:30:00+08:00",
+        "sleepEnd": "2026-09-20T07:30:00+08:00",
+        "caffeineMG": 140
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "23:30睡眠、00:30消费",
+      "expected": "关联正在进行的睡眠区间，不能归次日白天",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedAt": "2026-09-20T00:30:00+08:00",
+        "sleepStart": "2026-09-19T23:30:00+08:00",
+        "sleepEnd": "2026-09-20T07:30:00+08:00",
+        "caffeineMG": 140
+      }
+    },
+    {
+      "id": "T11",
+      "scenario": "20:00低因10mg且其他晚窗0mg",
+      "expected": "不触发50mg晚咖啡策略，不称绝对无影响",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedLocal": "20:00",
+        "sleepTimeLocal": "23:30",
+        "lateWindowTotalMG": 10,
+        "unknownCaffeinatedDrinks": 0
+      }
+    },
+    {
+      "id": "T12",
+      "scenario": "咖啡因未知",
+      "expected": "不填0，不伪造累计精确值",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "caffeineMG": null,
+        "caffeinePresence": "yes"
+      }
+    },
+    {
+      "id": "T13",
+      "scenario": "咖啡晚且滚动24h达到400mg",
+      "expected": "合并一条，未激活push不通知",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "late": true,
+        "rolling24hKnownMG": 400,
+        "pushEnabled": false,
+        "expectedMaxVisibleCards": 1
+      }
+    },
+    {
+      "id": "T14",
+      "scenario": "酒330ml/5%",
+      "expected": "新估算约13.0g；旧历史10g不重算",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "newRecord": {
+          "volumeML": 330,
+          "ABVPercent": 5
+        },
+        "approxNewGrams": 13.0185,
+        "oldLegacyGramsPreserved": 10
+      }
+    },
+    {
+      "id": "T15",
+      "scenario": "两条15g酒记录跨午夜且相距2h",
+      "expected": "6h累计30g，不因换日漏掉关怀",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "events": [
+          {
+            "at": "2026-09-19T23:00:00+08:00",
+            "alcoholGrams": 15
+          },
+          {
+            "at": "2026-09-20T01:00:00+08:00",
+            "alcoholGrams": 15
+          }
+        ]
+      }
+    },
+    {
+      "id": "T16",
+      "scenario": "酒精未知",
+      "expected": "一般建议，无“已超量”数字结论",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "category": "alcoholCustom",
+        "alcoholPresence": "yes",
+        "alcoholGrams": null,
+        "ABVPercent": null
+      }
+    },
+    {
+      "id": "T17",
+      "scenario": "酒后又记一杯水",
+      "expected": "不移除酒精事实、不奖励恢复、不显示解酒成功",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "alcoholGramsRecent": 30,
+        "newWaterML": 250,
+        "readinessMayChangeFromThisEvent": false
+      }
+    },
+    {
+      "id": "T18",
+      "scenario": "酒后明确严重症状",
+      "expected": "静态安全出口，不推荐呼吸/走动/睡一觉",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "explicitUserSignal": "difficult_to_wake",
+        "expectedMotion": "static",
+        "ordinaryRecoveryActionAllowed": false
+      }
+    },
+    {
+      "id": "T19",
+      "scenario": "本机饮品保存失败/重试",
+      "expected": "失败不演成功；成功一次事件、一次动效",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "commandID": "synthetic-command-19",
+        "attempts": [
+          "diskFailure",
+          "success",
+          "duplicateRetry"
+        ],
+        "expectedSuccessfulEvents": 1
+      }
+    },
+    {
+      "id": "T20",
+      "scenario": "Watch重复/乱序/删除后旧事件",
+      "expected": "事实幂等、不复活、不重播不重发",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T21",
+      "scenario": "水/咖啡/酒候选同时出现",
+      "expected": "应用内最高优先一条，关闭不立即换下一条",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "candidateTypes": [
+          "water",
+          "caffeine",
+          "alcohol"
+        ],
+        "expectedSelected": "alcohol"
+      }
+    },
+    {
+      "id": "T22",
+      "scenario": "无数据授权但饮品功能可用",
+      "expected": "记录/建议继续，准备度不被编造",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "healthDataAvailable": false,
+        "drinkStorageAvailable": true
+      }
+    },
+    {
+      "id": "T23",
+      "scenario": "拒绝通知权限",
+      "expected": "无排程、无循环索权；应用内正常",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "notificationPermission": "denied",
+        "requestPermissionLoopAllowed": false
+      }
+    },
+    {
+      "id": "T24",
+      "scenario": "前台记录同时到通知时间",
+      "expected": "原页一条，无第二横幅声音",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "foreground": true,
+        "sameCandidateInApp": true,
+        "expectedSystemBanner": false,
+        "expectedSound": false
+      }
+    },
+    {
+      "id": "T25",
+      "scenario": "队列2条已占预算，再有酒后请求",
+      "expected": "不超过预算；不悄悄深夜延后",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "reservedLocalDayPushCount": 2,
+        "requestedAlcoholReminder": true,
+        "expectedAdditionalRequests": 0
+      }
+    },
+    {
+      "id": "T26",
+      "scenario": "饮水记录后取消近2h排程",
+      "expected": "不相关通知保留，不能removeAll误删其他模块",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "newWaterRecordAt": "2026-09-19T11:00:00+08:00",
+        "waterReminderAt": "2026-09-19T12:00:00+08:00",
+        "cancelWater": true,
+        "cancelOtherModules": false
+      }
+    },
+    {
+      "id": "T27",
+      "scenario": "旧计划到点但应用被终止",
+      "expected": "通知只能是通用邀请，无实时无记录断言",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T28",
+      "scenario": "默认锁屏隐私",
+      "expected": "看不出饮酒/剂量/身体状态；点开才读",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "lockScreenPrivacy": "generic",
+        "expectedTitleKey": "care.push.generic.title",
+        "expectedBodyKey": "care.push.generic.body"
+      }
+    },
+    {
+      "id": "T29",
+      "scenario": "暂停今天提醒、重启、改时区",
+      "expected": "指定类别仍受抑制；新日预算不翻倍",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T30",
+      "scenario": "修改/撤销触发条件、已送达提醒",
+      "expected": "撤销待发；能移除的旧通知移除；不能撤回已看内容需如实记录",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T31",
+      "scenario": "首页点击/朗读猫狗",
+      "expected": "无观看sheet、无重播按钮；不抢业务点击",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T32",
+      "scenario": "主状态刷新10次/切tab返回",
+      "expected": "入场不连播，无10份动画队列",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "refreshCount": 10,
+        "expectedNewPlaybackQueueCount": 0
+      }
+    },
+    {
+      "id": "T33",
+      "scenario": "白水、咖啡、酒、撤销各一次",
+      "expected": "水有可爱确认；咖啡酒中性；撤销不演喝水",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T34",
+      "scenario": "呼吸暂停/继续/提前结束",
+      "expected": "共用相位、暂停冻结、不补发迟到节拍",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T35",
+      "scenario": "系统Reduce Motion、轻柔、静态、低电量",
+      "expected": "优先级正确，无常驻装饰时钟",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T36",
+      "scenario": "原画合成、暗色、大字",
+      "expected": "无换脸、撕裂、白底硬框、裁耳尾或压正文",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "human_visual"
+    },
+    {
+      "id": "T37",
+      "scenario": "当前资料合格usual/reduced/low",
+      "expected": "明确不同结论与真实原因，无技术枚举标题",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T38",
+      "scenario": "一日基线",
+      "expected": "不展示个人区间；仍有明确限定范围建议",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "baselineValidDays": 1,
+        "expectedPersonalRangeVisible": false
+      }
+    },
+    {
+      "id": "T39",
+      "scenario": "阶段重叠与awake/asleep冲突",
+      "expected": "两类分开；前者不重复累计，后者不捏造时长",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T40",
+      "scenario": "当前与历史质量处理",
+      "expected": "相同规则；基线审计与纳入样本一致",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T41",
+      "scenario": "sourceIdentityIncomplete但来源可比",
+      "expected": "不产生普通故障警告",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "sourceIdentityIncomplete": true,
+        "comparisonValid": true,
+        "expectedUserWarningVisible": false
+      }
+    },
+    {
+      "id": "T42",
+      "scenario": "删除、修订、并发与旧缓存",
+      "expected": "M2-R01～R05回归继续通过",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T43",
+      "scenario": "最大字号、VoiceOver解释页",
+      "expected": "正确顺序，按钮可达，无技术内容堆叠",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T44",
+      "scenario": "三段真实录屏",
+      "expected": "明确看到相关动作差异；“可爱/自然”由用户人工确认",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "human_visual"
+    },
+    {
+      "id": "T45",
+      "scenario": "普通人看合成页面",
+      "expected": "说得出结论、理由、动作，不把一般建议当完整评估",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "human_visual"
+    }
+  ]
+}

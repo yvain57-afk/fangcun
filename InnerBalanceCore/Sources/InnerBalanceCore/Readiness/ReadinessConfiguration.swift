@@ -3,7 +3,8 @@ import Foundation
 /// Engineering defaults awaiting calibration. Not medical thresholds.
 public struct ReadinessConfiguration: Codable, Equatable, Sendable {
   public var algorithmVersion = "readiness-v1-engineering"
-  public var featureSchemaVersion = 1
+  public var featureSchemaVersion = 2
+  public var qualityPolicyVersion: String? = "sleep-quality-v2"
   public var sleepTargetHours = 8.0
   public var episodeGapMinutes = 90.0
   public var minimumSleepHours = 2.0
@@ -54,7 +55,7 @@ public enum ReadinessReason: String, Codable, Hashable, Sendable {
   case currentDataMissing, sleepMissing, hrvMissing, rhrMissing, baselineBuilding, sparseHRV, narrowHRVCoverage
   case invalidValue, extremeValue, unitMismatch, sourceUnknown, sourceAmbiguous, sourceIdentityIncomplete
   case manuallyEntered, interventionExcluded, restingSampleReused, shortSleep, excessiveSleep, futureSleep
-  case conflictingSleep, ambiguousSleep, ambiguousRevision, awaitingArrival, manualSleepSelection
+  case sleepStageOverlap, conflictingSleep, ambiguousSleep, ambiguousRevision, awaitingArrival, manualSleepSelection
   case hrvAtypicallyHigh, hrvBelowBaseline, rhrAboveBaseline, sleepBelowTarget, dataStale
   case invalidConfiguration, refreshFailed, sourceChanged, sourceDeleted
 }

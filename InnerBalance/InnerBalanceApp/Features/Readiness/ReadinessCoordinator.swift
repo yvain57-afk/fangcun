@@ -78,6 +78,7 @@ extension EnvironmentValues {
     if current.freshness == .historical && current.level != nil { return "historical" }
     return current.availability.rawValue
   }
+  var guidance: DayGuidancePresentation { .resolve(current, reading: reading, serviceError: errorKey != nil) }
   var title: String {
     guard let current, current.freshness == .current, let level = current.level else {
       return FangcunCopy.text("readiness.state." + presentationKey)
