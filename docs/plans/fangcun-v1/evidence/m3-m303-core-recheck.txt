@@ -1,0 +1,25 @@
+Building for debugging...
+[2 / 26] InnerBalanceCore
+[5 / 29] InnerBalanceCore
+[11 / 28] InnerBalanceCore
+[12 / 26] InnerBalanceCore
+[15 / 26] InnerBalanceCoreTests-product
+[26 / 37] InnerBalanceCoreTests-product
+[30 / 36] InnerBalanceCoreTests-product
+[32 / 36] InnerBalanceCoreTests-product
+Build complete! (3.80秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite RecoveryActionTests started.
+◇ Test optionalFeedbackRevisionsAndDenominator() started.
+◇ Test pauseEndRetryAndRestart(_:) started.
+◇ Test recommendationsRespectExplicitSafetyAndDiscomfortFirst() started.
+◇ Test case passing 1 argument action → .seatedReset to pauseEndRetryAndRestart(_:) started.
+◇ Test case passing 1 argument action → .movementBreak to pauseEndRetryAndRestart(_:) started.
+◇ Test case passing 1 argument action → .quietRest to pauseEndRetryAndRestart(_:) started.
+✔ Test recommendationsRespectExplicitSafetyAndDiscomfortFirst() passed after 0.001 seconds.
+✔ Test pauseEndRetryAndRestart(_:) with 3 test cases passed after 0.003 seconds.
+✔ Test optionalFeedbackRevisionsAndDenominator() passed after 0.005 seconds.
+✔ Suite RecoveryActionTests passed after 0.005 seconds.
+✔ Test run with 3 tests in 1 suite passed after 0.006 seconds.

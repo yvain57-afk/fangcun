@@ -282,3 +282,6 @@ DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test
 
 ## M3-02
 见 [M3-02-VERIFICATION](M3-02-VERIFICATION.md)。Core 生命周期1项、App owner5项（含6场景）、首页详情UI6项与28天历史大字UI1项最终通过。两次首次 UI 定位/日期选择失败及正常重跑分别保留于 evidence。
+
+## M3-03
+见 [M3-03-VERIFICATION](M3-03-VERIFICATION.md)：Core3、App2、UI1项通过；音频套件一次RPC超时与后续失败另存，最终全量结果尚待汇总。

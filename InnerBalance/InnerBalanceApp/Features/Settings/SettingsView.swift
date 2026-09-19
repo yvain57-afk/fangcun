@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+  @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
   @AppStorage("fangcun.dark") private var dark = false
   @AppStorage("fangcun.largeType") private var large = false
@@ -15,6 +16,7 @@ struct SettingsView: View {
   var body: some View {
     NavigationStack {
       List {
+        if let recovery { NavigationLink(FangcunCopy.text("recovery.history")) { RecoveryHistoryView(owner: recovery) } }
         if let readiness {
           NavigationLink(FangcunCopy.text("readiness.settings")) { ReadinessSettingsView(owner: readiness) }
         }

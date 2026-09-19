@@ -72,6 +72,7 @@ struct ReadinessDetailView: View {
 }
 
 struct ReadinessHistoryView: View {
+  @Environment(\.recoveryOwner) private var recovery
   let owner: ReadinessCoordinator
   @Environment(FangcunDiary.self) private var diary
   @State private var span = 7
@@ -114,6 +115,7 @@ struct ReadinessHistoryView: View {
               .accessibilityLabel(date.formatted(date: .abbreviated, time: .omitted) + " · " + (records(date).first.map { FangcunCopy.text("readiness.state." + $0.availability.rawValue) } ?? FangcunCopy.text("readiness.history.blank")))
           }
         }
+        if let recovery { NavigationLink(FangcunCopy.text("recovery.history")) { RecoveryHistoryView(owner: recovery) } }
         Text(selected, format: .dateTime.year().month().day()).font(.headline)
         if records(selected).isEmpty { Text(FangcunCopy.text("readiness.history.blank")) }
         ForEach(records(selected), id: \.assessmentID) { a in

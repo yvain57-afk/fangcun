@@ -3,6 +3,7 @@ import SwiftUI
 
 @main
 struct InnerBalanceApp: App {
+  @State private var recovery = RecoveryCoordinator.make()
   @State private var readiness = ReadinessCoordinator.make()
   private let modelContainer: ModelContainer
 
@@ -35,6 +36,7 @@ struct InnerBalanceApp: App {
     WindowGroup {
       RootView()
         .environment(\.readinessOwner, readiness)
+        .environment(\.recoveryOwner, recovery)
         .modifier(FangcunDisplayPreferences())
     }
     .modelContainer(modelContainer)

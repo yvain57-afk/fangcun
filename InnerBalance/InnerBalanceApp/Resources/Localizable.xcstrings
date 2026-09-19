@@ -1591,6 +1591,556 @@
           }
         }
       }
+    },
+    "recovery.title.movementBreak": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 分钟轻活动"
+          }
+        }
+      }
+    },
+    "recovery.title.seatedReset": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 分钟座位舒展"
+          }
+        }
+      }
+    },
+    "recovery.title.quietRest": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 分钟安静休息"
+          }
+        }
+      }
+    },
+    "recovery.title.practice.physiologicalSigh": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "双吸一呼"
+          }
+        }
+      }
+    },
+    "recovery.title.practice.pacedBreathing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "节律呼吸"
+          }
+        }
+      }
+    },
+    "recovery.title.practice.meditation": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静心练习"
+          }
+        }
+      }
+    },
+    "recovery.title.practice.nsdr": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "深度休息"
+          }
+        }
+      }
+    },
+    "recovery.title.practice.kegel": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "盆底肌练习"
+          }
+        }
+      }
+    },
+    "recovery.movementBreak.prepare": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先确认周围安全。可以轻松走动，也可按能力改变姿势；不方便站立时请选择座位舒展。"
+          }
+        }
+      }
+    },
+    "recovery.movementBreak.stage1": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轻松改变姿势，或慢慢走一小段。不需要盯屏或数步。"
+          }
+        }
+      }
+    },
+    "recovery.movementBreak.stage2": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保持自然呼吸，按自己的节奏慢下来。"
+          }
+        }
+      }
+    },
+    "recovery.seatedReset.prepare": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "坐稳，在舒适范围内轻轻调整肩部和手腕。无需转颈或拉伸到疼痛。"
+          }
+        }
+      }
+    },
+    "recovery.seatedReset.stage1": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "松开肩膀，轻轻调整坐姿。"
+          }
+        }
+      }
+    },
+    "recovery.seatedReset.stage2": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手腕轻柔活动，找到舒服的位置。"
+          }
+        }
+      }
+    },
+    "recovery.quietRest.prepare": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找一个安全坐姿。可以睁眼，不需要跟随呼吸节拍。"
+          }
+        }
+      }
+    },
+    "recovery.quietRest.stage1": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把注意力留在这里，保持自然呼吸。"
+          }
+        }
+      }
+    },
+    "recovery.quietRest.stage2": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "什么也不用完成，安静停留一会儿。"
+          }
+        }
+      }
+    },
+    "recovery.breath.prepare": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "舒适静坐，保持轻松，不憋气或强迫加深呼吸。"
+          }
+        }
+      }
+    },
+    "recovery.safety": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先确认环境适合。保持舒适，不适即停。驾驶或不方便时请稍后；严重或持续不适时停止练习并寻求适当帮助。"
+          }
+        }
+      }
+    },
+    "recovery.unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "现在可以先不练习，等方便时再开始。"
+          }
+        }
+      }
+    },
+    "recovery.change": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "换一个适合此刻的行动"
+          }
+        }
+      }
+    },
+    "recovery.goal": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "想留怎样的片刻"
+          }
+        }
+      }
+    },
+    "recovery.goal.rest": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "休息片刻"
+          }
+        }
+      }
+    },
+    "recovery.goal.calm": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平静一下"
+          }
+        }
+      }
+    },
+    "recovery.goal.tired": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有点疲倦"
+          }
+        }
+      }
+    },
+    "recovery.goal.workBreak": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作间歇"
+          }
+        }
+      }
+    },
+    "recovery.environment": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前环境（由你选择）"
+          }
+        }
+      }
+    },
+    "recovery.environment.seated": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "适合坐着"
+          }
+        }
+      }
+    },
+    "recovery.environment.canMove": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可以安全走动"
+          }
+        }
+      }
+    },
+    "recovery.environment.driving": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在驾驶"
+          }
+        }
+      }
+    },
+    "recovery.environment.unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "现在不方便"
+          }
+        }
+      }
+    },
+    "recovery.seconds": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可用时间 %d 秒"
+          }
+        }
+      }
+    },
+    "recovery.start": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "准备好了，开始"
+          }
+        }
+      }
+    },
+    "recovery.remaining": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还剩 %d 秒"
+          }
+        }
+      }
+    },
+    "recovery.pause": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂停"
+          }
+        }
+      }
+    },
+    "recovery.resume": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续"
+          }
+        }
+      }
+    },
+    "recovery.finish": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "到这里就好"
+          }
+        }
+      }
+    },
+    "recovery.retry": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试保存"
+          }
+        }
+      }
+    },
+    "recovery.saved": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已记录这段片刻"
+          }
+        }
+      }
+    },
+    "recovery.storageError": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本地保存未完成，原记录保留。请重试。"
+          }
+        }
+      }
+    },
+    "recovery.feedback.helpful": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有帮助"
+          }
+        }
+      }
+    },
+    "recovery.feedback.unchanged": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没明显变化"
+          }
+        }
+      }
+    },
+    "recovery.feedback.uncomfortable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不舒服"
+          }
+        }
+      }
+    },
+    "recovery.feedback.skipped": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未回答"
+          }
+        }
+      }
+    },
+    "recovery.feedback.current": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这次反馈：%@"
+          }
+        }
+      }
+    },
+    "recovery.skip": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先不回答"
+          }
+        }
+      }
+    },
+    "recovery.done": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回到今日"
+          }
+        }
+      }
+    },
+    "recovery.close": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭"
+          }
+        }
+      }
+    },
+    "recovery.history": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "行动与反馈记录"
+          }
+        }
+      }
+    },
+    "recovery.duration": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实际有效时长 %d 秒"
+          }
+        }
+      }
+    },
+    "recovery.reason.completed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按计划结束"
+          }
+        }
+      }
+    },
+    "recovery.reason.endedEarly": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提前结束，也已经留了片刻"
+          }
+        }
+      }
+    },
+    "recovery.reason.interrupted": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中断后保留已知时长，离线间隔未计入"
+          }
+        }
+      }
+    },
+    "recovery.reason.legacyUnknown": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原练习记录，结束原因未单独记录"
+          }
+        }
+      }
+    },
+    "recovery.counts": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同类明确回答：有帮助 %d 次，没明显变化 %d 次，不舒服 %d 次。仅描述记录，不代表疗效。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

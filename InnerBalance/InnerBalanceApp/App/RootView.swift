@@ -20,6 +20,7 @@ struct RootView: View {
     case settings
   }
 
+  @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
   @Environment(\.modelContext) private var modelContext
   @Environment(\.scenePhase) private var scenePhase
@@ -79,15 +80,21 @@ struct RootView: View {
         latestPractice: latestPractice,
         isUITesting: isUITesting,
         onStart: {
+          guard recovery?.canStart != false else { return }
           selectedPracticeWasRecommended = true
           selectedPractice = PracticeLaunch(kind: .physiologicalSigh, duration: 300, startsImmediately: true)
         },
-        onCheckIn: { isShowingCheckIn = true }
+        onCheckIn: { isShowingCheckIn = true },
+        onSuggestedPractice: { kind, duration in
+          guard recovery?.canStart != false else { return }
+          selectedPractice = PracticeLaunch(kind: kind, duration: duration)
+        }
       )
       .tabItem { Label("今日", systemImage: "house") }
       .tag(Tab.now)
 
       PracticeLibraryView(onStart: {
+        guard recovery?.canStart != false else { return }
         selectedPracticeWasRecommended = false
         selectedPractice = $0
       })
@@ -139,6 +146,7 @@ struct RootView: View {
         onReturnToHome: { selectedTab = .now }
       ) { record, postCheckIn in
         latestPractice = record
+        Task { await recovery?.importPractice(record) }
         readiness?.interventions.append(.init(start: record.startedAt, end: record.endedAt))
         if let postCheckIn {
           latestCheckIn = LatestCheckInViewState(record: postCheckIn)
@@ -155,6 +163,7 @@ struct RootView: View {
   }
 
   private func refreshLocalState() async {
+    await recovery?.load()
     let cacheStore = CheckInCacheStore(modelContext: modelContext)
     latestCheckIn = LatestCheckInViewState(record: try? cacheStore.latestRecord())
     latestStressContext = try? cacheStore.latestContextRecord()
@@ -162,6 +171,7 @@ struct RootView: View {
     latestPractice = try? PracticeCompletionStore(modelContext: modelContext).latestRecord()
     if let records = try? modelContext.fetch(FetchDescriptor<StoredPracticeCompletion>()) {
       readiness?.interventions = records.map { .init(start: $0.startedAt, end: $0.endedAt) }
+      for record in records { if let value = record.record { await recovery?.importPractice(value) } }
     }
     await readiness?.refresh()
 

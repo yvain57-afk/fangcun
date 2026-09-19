@@ -8,6 +8,8 @@ struct FangcunTodayView: View {
   let isUITesting: Bool
   let onStart: () -> Void
   let onCheckIn: () -> Void
+  var onSuggestedPractice: (PracticeKind, TimeInterval) -> Void = { _, _ in }
+  @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
   @Environment(FangcunDiary.self) private var diary
   @Environment(\.scenePhase) private var phase
@@ -77,6 +79,8 @@ struct FangcunTodayView: View {
               Image(systemName: "arrow.up.right")
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 18)
           }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
+            .disabled(recovery?.canStart == false)
+          if let recovery { RecoverySuggestionView(owner: recovery, assessment: readiness?.current, onPractice: onSuggestedPractice) }
           if let readiness, readiness.enabled { ReadinessEvidenceLink(owner: readiness) } else { evidenceCard }
           Button { drinks = true } label: {
             HStack(spacing: 14) {

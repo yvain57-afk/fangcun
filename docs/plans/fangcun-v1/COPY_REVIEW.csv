@@ -151,3 +151,58 @@ readiness.reason.refreshFailed,M3,readiness,刷新未成功,格式化参数见�
 readiness.reason.sourceChanged,M3,readiness,来源已变更,格式化参数见字符串,3,否,是,初稿待人工确认
 readiness.reason.sourceDeleted,M3,readiness,相关来源或数据已删除,格式化参数见字符串,3,否,是,初稿待人工确认
 diary.alcoholUnknown,M3,diary,部分酒精量未知；汇总只包含已知估算量。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.movementBreak,M3,recovery,2 分钟轻活动,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.seatedReset,M3,recovery,1 分钟座位舒展,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.quietRest,M3,recovery,2 分钟安静休息,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.practice.physiologicalSigh,M3,recovery,双吸一呼,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.practice.pacedBreathing,M3,recovery,节律呼吸,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.practice.meditation,M3,recovery,静心练习,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.practice.nsdr,M3,recovery,深度休息,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.title.practice.kegel,M3,recovery,盆底肌练习,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.movementBreak.prepare,M3,recovery,先确认周围安全。可以轻松走动，也可按能力改变姿势；不方便站立时请选择座位舒展。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.movementBreak.stage1,M3,recovery,轻松改变姿势，或慢慢走一小段。不需要盯屏或数步。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.movementBreak.stage2,M3,recovery,保持自然呼吸，按自己的节奏慢下来。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.seatedReset.prepare,M3,recovery,坐稳，在舒适范围内轻轻调整肩部和手腕。无需转颈或拉伸到疼痛。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.seatedReset.stage1,M3,recovery,松开肩膀，轻轻调整坐姿。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.seatedReset.stage2,M3,recovery,手腕轻柔活动，找到舒服的位置。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.quietRest.prepare,M3,recovery,找一个安全坐姿。可以睁眼，不需要跟随呼吸节拍。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.quietRest.stage1,M3,recovery,把注意力留在这里，保持自然呼吸。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.quietRest.stage2,M3,recovery,什么也不用完成，安静停留一会儿。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.breath.prepare,M3,recovery,舒适静坐，保持轻松，不憋气或强迫加深呼吸。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.safety,M3,recovery,先确认环境适合。保持舒适，不适即停。驾驶或不方便时请稍后；严重或持续不适时停止练习并寻求适当帮助。,格式化参数见字符串,3,是,是,初稿待人工确认
+recovery.unavailable,M3,recovery,现在可以先不练习，等方便时再开始。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.change,M3,recovery,换一个适合此刻的行动,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.goal,M3,recovery,想留怎样的片刻,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.goal.rest,M3,recovery,休息片刻,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.goal.calm,M3,recovery,平静一下,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.goal.tired,M3,recovery,有点疲倦,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.goal.workBreak,M3,recovery,工作间歇,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.environment,M3,recovery,当前环境（由你选择）,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.environment.seated,M3,recovery,适合坐着,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.environment.canMove,M3,recovery,可以安全走动,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.environment.driving,M3,recovery,正在驾驶,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.environment.unavailable,M3,recovery,现在不方便,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.seconds,M3,recovery,可用时间 %d 秒,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.start,M3,recovery,准备好了，开始,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.remaining,M3,recovery,还剩 %d 秒,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.pause,M3,recovery,暂停,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.resume,M3,recovery,继续,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.finish,M3,recovery,到这里就好,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.retry,M3,recovery,重试保存,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.saved,M3,recovery,已记录这段片刻,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.storageError,M3,recovery,本地保存未完成，原记录保留。请重试。,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.feedback.helpful,M3,recovery,有帮助,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.feedback.unchanged,M3,recovery,没明显变化,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.feedback.uncomfortable,M3,recovery,不舒服,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.feedback.skipped,M3,recovery,未回答,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.feedback.current,M3,recovery,这次反馈：%@,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.skip,M3,recovery,先不回答,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.done,M3,recovery,回到今日,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.close,M3,recovery,关闭,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.history,M3,recovery,行动与反馈记录,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.duration,M3,recovery,实际有效时长 %d 秒,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.reason.completed,M3,recovery,按计划结束,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.reason.endedEarly,M3,recovery,提前结束，也已经留了片刻,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.reason.interrupted,M3,recovery,中断后保留已知时长，离线间隔未计入,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.reason.legacyUnknown,M3,recovery,原练习记录，结束原因未单独记录,格式化参数见字符串,3,否,是,初稿待人工确认
+recovery.counts,M3,recovery,同类明确回答：有帮助 %d 次，没明显变化 %d 次，不舒服 %d 次。仅描述记录，不代表疗效。,格式化参数见字符串,3,否,是,初稿待人工确认
