@@ -8,3 +8,7 @@
 - Drinking remains one authoritative diary, atomic writes and legacy estimates preserved. Coffee is a serving dose unless explicitly entered as concentration. No new HealthKit permissions.
 - Local care thresholds are engineering defaults, not validated medical boundaries. External reference material informs wording only; no product network calls.
 - A capture demonstrates rendered behavior, not user approval of aesthetics or comprehension. Physical notification delivery is distinct from scheduling.
+- V2-01 and V2-02 share the first development commit because the presentation depends directly on the new explicit sleep-quality API. That commit includes real SwiftUI screenshots and three recordings; it is a buildable state. Later motion, dose, policy and notification commits remain separated by responsibility.
+- Optional beverage details extend the existing diary envelope. Unknown caffeine is omitted in storage and sent as optional in v2 sync; legacy integer access is a compatibility bridge only. New categories are never downcast. Incoming sync retains the wire payload's origin; a separate local origin mark suppresses replay without an echo revision.
+- Care thresholds and notification reservation logic are deterministic pure policies. The system adapter is injected for denial, retry, cancellation and cold-start tests. A mock receipt is never described as physical delivery.
+- Explicit severe-symptom safety stays until the user says help has been obtained; no timer silently declares the situation resolved.

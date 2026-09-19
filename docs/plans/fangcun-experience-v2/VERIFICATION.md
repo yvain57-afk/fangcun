@@ -29,3 +29,9 @@ App full suite, revised UI contracts, final six-scene motion captures, care sche
 - Existing migration assertions were explicitly updated for V2 behavior: fixed per-serving caffeine/sugar no longer scales with dilution; undo restores values but advances revision; legacy unknown estimate remains unknown. Original golden/model tests unchanged. The previous first integration run failed six old assumptions in this one migration test; all corrected expectations subsequently passed.
 - Data storage remains the checksummed, atomic `diary-v2.json` authority. Optional details, command receipts and local revision tombstones decode with defaults from older archives. Existing IDs, old beer 10 g estimates and backups retained. No clear/reimport.
 - New beverage DTOs remain unacknowledged in the outbox until peer advertises `beverage-v2`; no fallback to water/zero. Legacy payloads without new details remain supported.
+
+## V2-05 pure policy
+
+`DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer swift test --package-path InnerBalanceCore` (`core-v2-final2.log`): normal exit 0, **141 tests / 28 suites passed**. Includes 17 beverage/care policy tests, 3 motion tests, new old-peer gating regression, original golden and M2-R suites.
+
+Coverage includes no-record wording keys, coffee fluid contribution, unknown doses, accepted reference and no catch-up debt, fluid restrictions across care types, consumption vs recording time, late/midnight/shift caffeine, manual cutoff, combined candidates, partial known totals, alcohol unknown/excess/safety, next-cycle passive care, priority/dismissal, non-material name edits, persistent timezone-safe mute, 3-day one-shot reservation, both budgets/cooldown, new-fluid/target cancellations, and no late alcohol request deferral into quiet hours.
