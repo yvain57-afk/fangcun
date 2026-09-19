@@ -26,6 +26,7 @@ struct FangcunCompanion: View {
   var paused = false
   var reaction = 0
   var event: CompanionMotionEvent = .entered
+  var committedEvent: CompanionEvent? = nil
   @Environment(\.accessibilityReduceMotion) private var systemReduced
   @Environment(\.scenePhase) private var phase
   @AppStorage("fangcun.reduceMotion") private var reduced = false
@@ -35,7 +36,7 @@ struct FangcunCompanion: View {
   @State private var visible = true
   @State private var gesture: CompanionPresentation?
   @State private var coordinator = CompanionMotionCoordinator()
-  private var key: String { scene.rawValue + ":" + String(reaction) }
+  private var key: String { committedEvent?.id ?? (scene.rawValue + ":" + String(reaction)) }
   private var staticMode: Bool { systemReduced || reduced || mode == "static" || lowPower }
   private var active: Bool { !staticMode && !paused && visible && phase == .active }
   private var eventValue: Float { event == .waterCommitted ? 1 : event == .drinkUndone ? 2 : event == .drinkCommitted ? 3 : 0 }
@@ -62,7 +63,7 @@ struct FangcunCompanion: View {
     .task(id: key) {
       guard scene != .breathe else { return }
       let now = Date.now
-      let motion = CompanionEvent(id: key, kind: event, committedAt: now)
+      let motion = committedEvent ?? CompanionEvent(id: key, kind: coordinator.seen.isEmpty ? event : event == .entered ? .guidanceChanged : event, committedAt: now)
       gesture = coordinator.accept(motion, scene: scene.rawValue, context: "native", now: now,
         mode: CompanionMotionMode(rawValue: mode) ?? .standard, reduceMotion: systemReduced || reduced,
         lowPower: lowPower, visible: visible, active: phase == .active, covered: paused)

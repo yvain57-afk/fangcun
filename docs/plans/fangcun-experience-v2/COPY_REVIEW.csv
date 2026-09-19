@@ -141,3 +141,11 @@ care.notification.generic,V2-03..06,给自己留一点缓冲。,implemented; hum
 care.notification.water,V2-03..06,忙了一阵，给水杯续一点？按自己的需要来。,implemented; human review pending
 care.notification.caffeine,V2-03..06,快到你设定的咖啡收尾时间了。,implemented; human review pending
 care.notification.alcohol,V2-03..06,到了你预约关照自己的时间。先休息，并安排安全返程。,implemented; human review pending
+drink.logCup,V2-integration,"记一杯
+%d ml",implemented; human review pending
+care.progress,V2-integration,已记录非酒精饮品 %d / %d ml,implemented; human review pending
+care.acceptDraft,V2-integration,采用 %d ml 的每日记录参考,implemented; human review pending
+care.safetyResolved,V2-integration,我已得到帮助，收起安全提示,implemented; human review pending
+guidance.revisions,V2-integration,查看此前 %d 次修订,implemented; human review pending
+guidance.expanded,V2-a11y,已展开,implemented; human review pending
+guidance.collapsed,V2-a11y,已收起,implemented; human review pending

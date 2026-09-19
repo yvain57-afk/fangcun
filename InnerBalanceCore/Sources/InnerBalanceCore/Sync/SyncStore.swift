@@ -115,7 +115,7 @@ public actor SyncStore {
       guard value.sessionID == event.entityID, value.activeDuration.isFinite, value.activeDuration >= 0 else { throw Failure.invalid }
     case .drink:
       let value = try JSONDecoder().decode(SyncedDrink.self, from: event.payload)
-      guard value.id == event.entityID, value.volumeML >= 0, value.caffeineMG >= 0, [1, 2].contains(value.estimateVersion),
+      guard value.id == event.entityID, value.volumeML >= 0, value.caffeineMG.map({ $0 >= 0 }) ?? (value.beverageDetails != nil), [1, 2].contains(value.estimateVersion),
         ["water", "coffee", "sweetCoffee", "beer", "soda", "tea", "milk", "alcohol", "other"].contains(value.kind),
         value.sugarServings.isFinite, value.sugarServings >= 0,
         value.alcoholGrams.map({ $0.isFinite && $0 >= 0 }) ?? true,

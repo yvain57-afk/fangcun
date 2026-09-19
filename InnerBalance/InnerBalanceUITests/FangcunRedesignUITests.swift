@@ -43,7 +43,7 @@ final class FangcunRedesignUITests: XCTestCase {
     capture("redesign-home", app)
     reveal(app.buttons["today.drinks"], app)
     app.buttons["today.drinks"].tap()
-    let addWater = app.buttons["增加白水"]
+    let addWater = app.buttons["drinks.add.water"]
     XCTAssertTrue(addWater.waitForExistence(timeout: 5))
     addWater.tap()
     app.buttons["增加美式"].tap()

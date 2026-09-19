@@ -8,7 +8,7 @@ final class DrinkEditorUITests: XCTestCase {
     let drinks = app.buttons["today.drinks"]
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
     reveal(drinks, app); drinks.tap()
-    XCTAssertTrue(app.buttons["增加白水"].waitForExistence(timeout: 5)); app.buttons["增加白水"].tap()
+    XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5)); app.buttons["drinks.add.water"].tap()
     let manage = app.buttons["drinks.manage"]; reveal(manage, app); manage.tap()
     let volume = app.textFields["drinks.edit.volume"]
     XCTAssertTrue(volume.waitForExistence(timeout: 5))

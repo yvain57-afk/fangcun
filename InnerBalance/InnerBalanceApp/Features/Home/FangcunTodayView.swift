@@ -9,6 +9,7 @@ struct FangcunTodayView: View {
   let onStart: () -> Void
   let onCheckIn: () -> Void
   var onSuggestedPractice: (PracticeKind, TimeInterval) -> Void = { _, _ in }
+  @Environment(\.careOwner) private var care
   @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
   @Environment(FangcunDiary.self) private var diary
@@ -77,9 +78,10 @@ struct FangcunTodayView: View {
               Image(systemName: "arrow.up.right")
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 18)
           }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
-            .disabled(recovery?.canStart == false)
-          if let recovery { RecoverySuggestionView(owner: recovery, assessment: readiness?.current, onPractice: onSuggestedPractice) }
+            .disabled(recovery?.canStart == false || care?.selection?.candidate.category == .danger)
+          if let recovery, care?.selection?.candidate.category != .danger { RecoverySuggestionView(owner: recovery, assessment: readiness?.current, onPractice: onSuggestedPractice) }
           if let readiness, readiness.enabled { ReadinessEvidenceLink(owner: readiness, onStart: onStart) } else { evidenceCard }
+          VStack(alignment: .leading, spacing: 12) {
           Button { drinks = true } label: {
             HStack(spacing: 14) {
               Image(systemName: "drop").font(.title2).foregroundStyle(InnerBalanceTheme.strongFill)
@@ -92,6 +94,8 @@ struct FangcunTodayView: View {
               Image(systemName: "plus").frame(width: 34, height: 34).background(InnerBalanceTheme.subtleFill, in: Circle())
             }.fangcunPaperCard()
           }.buttonStyle(.plain).accessibilityIdentifier("today.drinks")
+          if let care { BeverageCareCard(owner: care).padding(.horizontal, 12) }
+          }
           if let latestPractice, Calendar.current.isDateInToday(latestPractice.endedAt) {
             Label("今天，已经为自己留了片刻。", systemImage: "checkmark.circle")
               .accessibilityIdentifier("today.latestPractice")
@@ -112,6 +116,9 @@ struct FangcunTodayView: View {
       .foregroundStyle(InnerBalanceTheme.ink)
       .toolbar(.hidden, for: .navigationBar)
       .refreshable { await refresh() }
+      .onChange(of: care?.pendingRoute, initial: true) { _, route in
+        if route == "record" { drinks = true; care?.pendingRoute = nil }
+      }
       .sheet(isPresented: $drinks) { FangcunDrinkSheet() }
 
     }
@@ -158,6 +165,10 @@ struct FangcunTodayView: View {
       ViewThatFits(in: .horizontal) {
         HStack(spacing: 10) { Text(summary).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true); character.frame(width: 142) }
         VStack(alignment: .leading, spacing: 10) { Text(summary).font(.subheadline); character.frame(maxWidth: 180).frame(maxWidth: .infinity) }
+      }
+      if readiness?.enabled != true && !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
+        Text(evidenceLine).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+          .accessibilityIdentifier("today.evidenceSummary")
       }
       if let note = readiness?.guidance.noteKey {
         Text(FangcunCopy.text(note)).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)

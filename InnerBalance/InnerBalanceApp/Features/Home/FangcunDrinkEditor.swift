@@ -24,11 +24,12 @@ struct FangcunDrinkEditor: View {
   private var earliest: Date { Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: .now))! }
   var body: some View {
     NavigationStack {
+      ScrollViewReader { proxy in
       Form {
         Section {
           Picker(FangcunCopy.text("diary.kind"), selection: $kind) {
             ForEach(FangcunDrink.allCases) { Text($0.title).tag($0) }
-          }.disabled(selectedID != nil)
+          }.disabled(selectedID != nil).id("drink.editor.top")
           DatePicker(FangcunCopy.text("diary.time"), selection: $consumedAt, in: earliest...Date.now)
             .accessibilityIdentifier("drinks.edit.time")
           TextField(FangcunCopy.text("diary.volume"), value: $volume, format: .number)
@@ -78,6 +79,7 @@ struct FangcunDrinkEditor: View {
             Button {
               selectedID = entry.id; kind = entry.kind; consumedAt = entry.date; volume = entry.volumeML
               name = entry.displayName; editingLegacy = entry.details == nil
+              withAnimation { proxy.scrollTo("drink.editor.top", anchor: .top) }
               if let d = entry.details {
                 caffeinePresence = d.caffeinePresence; doseMethod = d.caffeineMethod; dose = d.caffeineDose ?? 0
                 alcoholPresence = d.alcoholPresence; abvKnown = d.abvPercent != nil; abv = d.abvPercent ?? 5
@@ -95,6 +97,7 @@ struct FangcunDrinkEditor: View {
         .navigationTitle(FangcunCopy.text("diary.manage"))
         .toolbar { Button(FangcunCopy.text("diary.done")) { dismiss() } }
         .onChange(of: kind) { _, value in if selectedID == nil { volume = value.fluid; resetDefaults() } }
+      }
     }
   }
   private func resetDefaults() {

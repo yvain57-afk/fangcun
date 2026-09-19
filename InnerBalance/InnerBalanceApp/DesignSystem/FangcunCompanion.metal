@@ -11,12 +11,12 @@ float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F
   float hello=fcGesture(time,1.8), wag=hello*sin(time*5);
   float tail=fcArea(p,float2(.80,.74),float2(.10,.12));
   float head=fcHead(p,float2(.67,.43),float2(.22,.28))*grounded;
-  delta=float2(.015,-.010)*wag*tail+float2(-(p.y-.43),p.x-.67)*.025*hello*head;
+  delta=float2(.015,-.010)*wag*tail+float2(-(p.y-.43),p.x-.67)*.040*hello*head;
  } else if(mode<1.5) {
   delta.y=-.0045*fcGesture(time,1.6)*fcArea(p,float2(.72,.53),float2(.18,.20))*grounded;
  } else if(mode<2.5) {
   float look=fcGesture(time,1.6)*fcHead(p,float2(.54,.43),float2(.31,.32))*grounded;
-  delta=float2(.008-(p.y-.43)*.024,.004+(p.x-.54)*.024)*look;
+  delta=float2(.008-(p.y-.43)*.040,.004+(p.x-.54)*.040)*look;
  } else if(mode<3.5) {
   float duration=event>2.5?.6:event>.5?1.1:.8;
   if(event<1.5 || event>2.5) delta.y=.010*fcGesture(time,duration)*fcHead(p,float2(.51,.43),float2(.30,.30))*clamp((.69-p.y)/.10,0.0,1.0);

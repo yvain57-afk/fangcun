@@ -1,12 +1,15 @@
 import SwiftUI
+import InnerBalanceCore
 
 struct SettingsView: View {
+  @Environment(\.careOwner) private var care
   @Environment(\.phoneSync) private var sync
   @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
   @AppStorage("fangcun.dark") private var dark = false
   @AppStorage("fangcun.largeType") private var large = false
   @AppStorage("fangcun.reduceMotion") private var reduced = false
+  @AppStorage("fangcun.motionMode") private var motionMode = "standard"
   @AppStorage("fangcun.coffeeMg") private var coffeeMg = 140
   let authorizationCoordinator: HealthAuthorizationCoordinator
   let homeViewModel: HomeViewModel
@@ -17,6 +20,7 @@ struct SettingsView: View {
   var body: some View {
     NavigationStack {
       List {
+        if let care { NavigationLink(FangcunCopy.text("care.settings")) { BeverageCareSettings(owner: care) } }
         if let sync { NavigationLink(FangcunCopy.text("sync.title")) { PhoneSyncStatusView(owner: sync) } }
         if let recovery { NavigationLink(FangcunCopy.text("recovery.history")) { RecoveryHistoryView(owner: recovery) } }
         if let readiness {
@@ -25,6 +29,9 @@ struct SettingsView: View {
         Section {
           Toggle(isOn: $dark) { Label("深色模式", systemImage: "moon") }
           Toggle(isOn: $large) { Label("较大字号", systemImage: "textformat.size") }
+          Picker(FangcunCopy.text("motion.mode"), selection: $motionMode) {
+            ForEach(["standard", "gentle", "static"], id: \.self) { Text(FangcunCopy.text("motion." + $0)).tag($0) }
+          }
           Toggle(isOn: $reduced) { Label("减少动态效果", systemImage: "leaf") }
         } header: { Text("舒服的方式，由你决定") }
         .listRowBackground(InnerBalanceTheme.surface)

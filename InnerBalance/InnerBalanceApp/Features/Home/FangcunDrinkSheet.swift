@@ -1,15 +1,21 @@
 import SwiftUI
+import InnerBalanceCore
 
 struct FangcunDrinkSheet: View {
   @Environment(FangcunDiary.self) private var diary
+  @Environment(\.dynamicTypeSize) private var typeSize
+  @Environment(\.careOwner) private var care
   @Environment(\.dismiss) private var dismiss
   @AppStorage("fangcun.coffeeMg") private var coffeeMg = 140
   @State private var sweetCoffee = false
   @State private var feedback = "轻轻记一下，就好。"
   @State private var reaction = 0
+  @State private var motionEvent = CompanionMotionEvent.entered
+  @State private var committedEvent: CompanionEvent?
   @State private var editing = false
   private var kinds: [FangcunDrink] { [.water, sweetCoffee ? .sweetCoffee : .coffee, .beer, .soda] }
-  private var totals: FangcunDrinkTotals { FangcunDrinkTotals(diary.entries()) }
+  private var totals: BeverageTotals { BeverageTotals(diary.entries().map(\.beverage)) }
+  private var cupML: Int { care?.preferences.cupML ?? 250 }
 
   var body: some View {
     VStack(spacing: 8) {
@@ -20,7 +26,7 @@ struct FangcunDrinkSheet: View {
             .accessibilityIdentifier("drinks.feedback")
         }
         Spacer()
-        FangcunCompanion(scene: .drink, reaction: reaction).frame(width: 68, height: 68)
+        FangcunCompanion(scene: .drink, paused: editing, reaction: reaction, event: motionEvent, committedEvent: committedEvent).frame(width: 68, height: 68)
         Button("完成") { dismiss() }.font(.subheadline).frame(minWidth: 44, minHeight: 44)
       }
       ScrollView {
@@ -30,7 +36,7 @@ struct FangcunDrinkSheet: View {
               Image(systemName: kind.symbol).frame(width: 22).foregroundStyle(InnerBalanceTheme.strongFill)
               VStack(alignment: .leading, spacing: 3) {
                 Text(kind.title).font(.subheadline.weight(.medium))
-                Text("\(kind.fluid) ml" + (kind.isCoffee ? " · 约 \(coffeeMg) mg 咖啡因" : kind == .beer ? " · 约 10 g 酒精" : ""))
+                Text("\(kind == .water ? cupML : kind.fluid) ml" + (kind.isCoffee ? " · 每杯约 \(coffeeMg) mg 咖啡因" : kind == .beer ? " · 5% · 约 13 g 酒精" : ""))
                   .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk)
               }
               Spacer(minLength: 0)
@@ -39,8 +45,12 @@ struct FangcunDrinkSheet: View {
                 .disabled(count(kind) == 0)
               Text("\(count(kind))").font(.subheadline.monospacedDigit()).frame(minWidth: 12)
                 .accessibilityIdentifier("drinks.count.\(kind.rawValue)")
-              Button { change(kind, adding: true) } label: { Image(systemName: "plus").frame(width: 44, height: 44).background(InnerBalanceTheme.subtleFill, in: Circle()) }
-                .accessibilityLabel("增加\(kind.title)")
+              Button { change(kind, adding: true) } label: {
+                if kind == .water { Text(FangcunCopy.text("drink.logCup", cupML)).font(.caption2).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true).frame(minWidth: 72, minHeight: 44).background(InnerBalanceTheme.subtleFill, in: Capsule()) }
+                else { Image(systemName: "plus").frame(width: 44, height: 44).background(InnerBalanceTheme.subtleFill, in: Circle()) }
+              }
+                .accessibilityLabel(kind == .water ? FangcunCopy.text("drink.logCup", cupML) : "增加\(kind.title)")
+                .accessibilityIdentifier("drinks.add." + kind.rawValue)
             }
             .opacity(diary.storageMessage == nil ? 1 : 0.5)
             .disabled(diary.storageMessage != nil)
@@ -51,16 +61,27 @@ struct FangcunDrinkSheet: View {
             .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk).frame(maxWidth: .infinity, alignment: .leading)
         }
       }
+      if let care, care.preferences.volumePromptsAllowed {
+        if care.preferences.referenceAccepted {
+          Text(FangcunCopy.text("care.progress", totals.nonAlcoholBeverageML, care.preferences.referenceML)).font(.caption)
+          ProgressView(value: Double(min(totals.nonAlcoholBeverageML, care.preferences.referenceML)), total: Double(care.preferences.referenceML))
+        } else {
+          Button(FangcunCopy.text("care.acceptDraft", care.preferences.referenceML)) {
+            var p = care.preferences; p.referenceAccepted = true; care.update(p)
+          }.font(.caption).frame(minHeight: 44)
+        }
+      }
       Divider()
       HStack {
         VStack(alignment: .leading, spacing: 3) {
-          Text("已记录饮品 \(totals.fluid) ml · 咖啡因 \(totals.caffeine) mg")
-          Text("酒精 \(totals.alcohol) g · 糖饮 \(totals.sugar) 份")
+          Text(FangcunCopy.text("drink.recordedFluid", totals.allBeverageML, totals.nonAlcoholBeverageML))
+          Text(FangcunCopy.text("drink.recordedDose", totals.knownCaffeineMG, totals.knownAlcoholGrams))
         }.font(.caption).accessibilityElement(children: .combine).accessibilityIdentifier("drinks.totals")
         Spacer()
-        Button { diary.undo(); feedback = "已撤销上一笔"; reaction += 1 } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
+        Button { report(diary.undo(), key: "drink.undone", event: .drinkUndone) } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
           .font(.caption).frame(minHeight: 44).disabled(!diary.canUndo)
       }
+      if totals.hasUnknownCaffeine { Text(FangcunCopy.text("drink.unknownCaffeine")).font(.caption) }
       if totals.hasUnknownAlcohol { Text(FangcunCopy.text("diary.unknownAlcohol")).font(.caption) }
       if let message = diary.storageMessage {
         Text(message).font(.caption).foregroundStyle(InnerBalanceTheme.emphasis)
@@ -71,16 +92,27 @@ struct FangcunDrinkSheet: View {
     .foregroundStyle(InnerBalanceTheme.ink).tint(InnerBalanceTheme.strongFill)
     .background(InnerBalanceTheme.canvas)
     .sheet(isPresented: $editing) { FangcunDrinkEditor() }
-    .presentationDetents([.fraction(0.55), .large])
+    .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.fraction(0.55), .large])
     .presentationDragIndicator(.visible)
     .presentationCornerRadius(28)
   }
   private func count(_ kind: FangcunDrink) -> Int { diary.entries().filter { kind.isCoffee ? $0.kind.isCoffee : $0.kind == kind }.count }
   private func change(_ kind: FangcunDrink, adding: Bool) {
-    if adding { diary.add(kind, caffeine: coffeeMg) }
-    else if kind.isCoffee, let last = diary.entries().last(where: { $0.kind.isCoffee }) { diary.remove(last.kind) }
-    else { diary.remove(kind) }
-    feedback = diary.storageMessage ?? "已\(adding ? "记录" : "减少")一杯\(kind.title)"
-    if diary.storageMessage == nil { reaction += 1 }
+    let result: DrinkCommandResult
+    if adding { result = diary.add(kind, caffeine: coffeeMg, volumeML: kind == .water ? cupML : nil) }
+    else if kind.isCoffee, let last = diary.entries().last(where: { $0.kind.isCoffee }) { result = diary.remove(last.kind) }
+    else { result = diary.remove(kind) }
+    report(result, key: adding ? "drink.saved" : "drink.removed", event: !adding ? .drinkUndone : kind == .water ? .waterCommitted : .drinkCommitted)
+  }
+  private func report(_ result: DrinkCommandResult, key: String, event: CompanionMotionEvent) {
+    switch result {
+    case let .committed(receipt):
+      feedback = FangcunCopy.text(key); motionEvent = event
+      committedEvent = .init(id: receipt.eventID, kind: event, entityID: receipt.entityID.uuidString,
+        revision: receipt.revision, committedAt: receipt.committedAt)
+      reaction += 1
+    case .rejected: feedback = FangcunCopy.text("drink.rejected")
+    case .failed: feedback = diary.storageMessage ?? FangcunCopy.text("drink.failed")
+    }
   }
 }

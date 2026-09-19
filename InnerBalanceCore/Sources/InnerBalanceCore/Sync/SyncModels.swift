@@ -7,7 +7,7 @@ public struct SyncedDrink: Codable, Equatable, Sendable {
   public var consumedAt: Date
   public var recordedAt: Date?
   public var volumeML: Int
-  public var caffeineMG: Int
+  public var caffeineMG: Int?
   public var alcoholGrams: Double?
   public var sugarServings: Double
   public var sugarGrams: Double?
@@ -15,7 +15,7 @@ public struct SyncedDrink: Codable, Equatable, Sendable {
   public var beverageDetails: BeverageDetails? = nil
   public var estimateVersion: Int
   public init(id: String, kind: String, consumedAt: Date, recordedAt: Date?, volumeML: Int,
-    caffeineMG: Int, alcoholGrams: Double?, sugarServings: Double, sugarGrams: Double?, estimateMethod: String, estimateVersion: Int, beverageDetails: BeverageDetails? = nil) {
+    caffeineMG: Int?, alcoholGrams: Double?, sugarServings: Double, sugarGrams: Double?, estimateMethod: String, estimateVersion: Int, beverageDetails: BeverageDetails? = nil) {
     self.beverageDetails = beverageDetails
     self.id = id; self.kind = kind; self.consumedAt = consumedAt; self.recordedAt = recordedAt
     self.volumeML = volumeML; self.caffeineMG = caffeineMG; self.alcoholGrams = alcoholGrams

@@ -3751,6 +3751,76 @@
           }
         }
       }
+    },
+    "drink.logCup": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记一杯\n%d ml"
+          }
+        }
+      }
+    },
+    "care.progress": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已记录非酒精饮品 %d / %d ml"
+          }
+        }
+      }
+    },
+    "care.acceptDraft": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "采用 %d ml 的每日记录参考"
+          }
+        }
+      }
+    },
+    "care.safetyResolved": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我已得到帮助，收起安全提示"
+          }
+        }
+      }
+    },
+    "guidance.revisions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看此前 %d 次修订"
+          }
+        }
+      }
+    },
+    "guidance.expanded": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已展开"
+          }
+        }
+      }
+    },
+    "guidance.collapsed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已收起"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -24,9 +24,9 @@ final class ExperienceV2UITests: XCTestCase {
     app.navigationBars.buttons.firstMatch.tap()
     for _ in 0..<5 where !app.buttons["today.drinks"].isHittable { app.swipeUp() }
     app.buttons["today.drinks"].tap()
-    XCTAssertTrue(app.buttons["增加白水"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5))
     print("V2_CLIP_WATER")
-    app.buttons["增加白水"].tap()
+    app.buttons["drinks.add.water"].tap()
     Thread.sleep(forTimeInterval: 2)
     capture("v2-drinks", app)
     app.buttons["完成"].tap()

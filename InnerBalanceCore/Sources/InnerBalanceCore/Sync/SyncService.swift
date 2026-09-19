@@ -104,6 +104,7 @@ import Foundation
       let before = await store.snapshot()
       if packet.hello || before.peerInstallationID == nil {
         try await store.acceptPeer(packet.originInstallationID)
+        if before.peerInstallationID != packet.originInstallationID { peerCapabilities = [] }
         if role == "watch", before.peerInstallationID != packet.originInstallationID {
           try localCache.revoke(); try sharedCache.revoke()
         }

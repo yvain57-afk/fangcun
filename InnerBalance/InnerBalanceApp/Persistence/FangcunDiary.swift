@@ -53,6 +53,7 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
   var estimateVersion: Int
   var revision: Int
   var details: BeverageDetails? = nil
+  var lastChangeOrigin: String? = nil
   var date: Date { consumedAt }
   var displayName: String { details?.displayName ?? kind.title }
   init(id: UUID = UUID(), date: Date, kind: FangcunDrink, caffeine: Int, recordedAt: Date? = .now) {
@@ -62,7 +63,7 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
     estimateMethod = "fixedCupEstimate"; estimateVersion = 1; revision = 1
   }
   enum CodingKeys: String, CodingKey {
-    case id, consumedAt, recordedAt, date, kind, volumeML, caffeine, alcoholGrams, sugarServings, sugarGrams, estimateMethod, estimateVersion, revision, details
+    case id, consumedAt, recordedAt, date, kind, volumeML, caffeine, alcoholGrams, sugarServings, sugarGrams, estimateMethod, estimateVersion, revision, details, lastChangeOrigin
   }
   init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -70,7 +71,7 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
     consumedAt = try c.decodeIfPresent(Date.self, forKey: .consumedAt) ?? c.decode(Date.self, forKey: .date)
     recordedAt = try c.decodeIfPresent(Date.self, forKey: .recordedAt)
     volumeML = try c.decodeIfPresent(Int.self, forKey: .volumeML) ?? kind.fluid
-    caffeine = try c.decode(Int.self, forKey: .caffeine)
+    caffeine = try c.decodeIfPresent(Int.self, forKey: .caffeine) ?? 0
     let legacy = !c.contains(.consumedAt)
     alcoholGrams = legacy ? Double(kind.alcohol) : try c.decodeIfPresent(Double.self, forKey: .alcoholGrams)
     sugarServings = try c.decodeIfPresent(Double.self, forKey: .sugarServings) ?? Double(kind.sugar)
@@ -79,16 +80,19 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
     estimateVersion = try c.decodeIfPresent(Int.self, forKey: .estimateVersion) ?? 1
     revision = try c.decodeIfPresent(Int.self, forKey: .revision) ?? 1
     details = try c.decodeIfPresent(BeverageDetails.self, forKey: .details)
+    lastChangeOrigin = try c.decodeIfPresent(String.self, forKey: .lastChangeOrigin)
   }
   func encode(to encoder: Encoder) throws {
     var c = encoder.container(keyedBy: CodingKeys.self)
     try c.encode(id, forKey: .id); try c.encode(kind, forKey: .kind)
     try c.encode(consumedAt, forKey: .consumedAt); try c.encodeIfPresent(recordedAt, forKey: .recordedAt)
-    try c.encode(volumeML, forKey: .volumeML); try c.encode(caffeine, forKey: .caffeine)
+    try c.encode(volumeML, forKey: .volumeML)
+    if beverage.caffeineMG != nil { try c.encode(caffeine, forKey: .caffeine) }
     try c.encodeIfPresent(alcoholGrams, forKey: .alcoholGrams); try c.encode(sugarServings, forKey: .sugarServings)
     try c.encodeIfPresent(sugarGrams, forKey: .sugarGrams); try c.encode(estimateMethod, forKey: .estimateMethod)
     try c.encode(estimateVersion, forKey: .estimateVersion); try c.encode(revision, forKey: .revision)
     try c.encodeIfPresent(details, forKey: .details)
+    try c.encodeIfPresent(lastChangeOrigin, forKey: .lastChangeOrigin)
   }
   func migrated() -> Self {
     var result = self; result.recordedAt = nil; result.estimateMethod = "legacyFixedCupEstimate"; return result
@@ -176,7 +180,7 @@ final class FangcunDiary {
     guard editable(consumedAt, now: now), (10...3000).contains(volumeML),
       let index = archive.entries.firstIndex(where: { $0.id == id }) else { return .rejected }
     var next = archive; var entry = next.entries[index]
-    entry.consumedAt = consumedAt; entry.volumeML = volumeML
+    entry.consumedAt = consumedAt; entry.volumeML = volumeML; entry.lastChangeOrigin = "local"
     if let details { guard Self.valid(details) else { return .rejected }; entry.details = details }
     if let detail = entry.details {
       entry.caffeine = Int((detail.caffeineMG(volumeML: volumeML) ?? 0).rounded())
@@ -272,12 +276,12 @@ final class FangcunDiary {
       if !event.deleted {
         let value = try JSONDecoder().decode(SyncedDrink.self, from: event.payload)
         guard let kind = FangcunDrink(rawValue: value.kind) else { throw SyncStore.Failure.unknownProtocol }
-        var entry = FangcunDrinkEntry(id: id, date: value.consumedAt, kind: kind, caffeine: value.caffeineMG, recordedAt: value.recordedAt)
+        var entry = FangcunDrinkEntry(id: id, date: value.consumedAt, kind: kind, caffeine: value.caffeineMG ?? 0, recordedAt: value.recordedAt)
         entry.volumeML = value.volumeML; entry.alcoholGrams = value.alcoholGrams
         entry.sugarServings = value.sugarServings; entry.sugarGrams = value.sugarGrams
         entry.estimateMethod = value.estimateMethod; entry.estimateVersion = value.estimateVersion; entry.revision = event.revision
         entry.details = value.beverageDetails
-        if entry.details != nil { entry.details?.origin = "remote" }
+        entry.lastChangeOrigin = "remote"
         next.entries.append(entry)
       }
       next.syncRevisions[event.entityID] = event.revision
@@ -312,7 +316,7 @@ struct FangcunDrinkTotals {
 extension FangcunDrinkEntry {
   var syncValue: SyncedDrink {
     .init(id: id.uuidString, kind: kind.rawValue, consumedAt: consumedAt, recordedAt: recordedAt,
-      volumeML: volumeML, caffeineMG: caffeine, alcoholGrams: alcoholGrams, sugarServings: sugarServings,
+      volumeML: volumeML, caffeineMG: beverage.caffeineMG.map { Int($0.rounded()) }, alcoholGrams: alcoholGrams, sugarServings: sugarServings,
       sugarGrams: sugarGrams, estimateMethod: estimateMethod, estimateVersion: estimateVersion, beverageDetails: details)
   }
 }
@@ -335,6 +339,6 @@ extension FangcunDrinkEntry {
       caffeinePresence: details?.caffeinePresence ?? (caffeine > 0 ? .yes : .no),
       alcoholGrams: alcoholGrams, alcoholPresence: details?.alcoholPresence ?? (alcoholGrams == nil ? .unknown : (alcoholGrams! > 0 ? .yes : .no)),
       abvPercent: details?.abvPercent, sugarServings: sugarServings, sugarGrams: sugarGrams,
-      estimateMethod: estimateMethod, estimateVersion: estimateVersion, origin: details?.origin ?? "legacy")
+      estimateMethod: estimateMethod, estimateVersion: estimateVersion, origin: lastChangeOrigin ?? details?.origin ?? "legacy")
   }
 }

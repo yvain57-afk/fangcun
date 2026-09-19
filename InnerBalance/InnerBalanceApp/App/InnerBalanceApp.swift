@@ -3,6 +3,7 @@ import SwiftUI
 
 @main
 struct InnerBalanceApp: App {
+  @State private var care = BeverageCareCoordinator.make()
   @State private var sync = PhoneSyncCoordinator.make()
   @State private var recovery = RecoveryCoordinator.make()
   @State private var readiness = ReadinessCoordinator.make()
@@ -36,6 +37,7 @@ struct InnerBalanceApp: App {
   var body: some Scene {
     WindowGroup {
       RootView()
+        .environment(\.careOwner, care)
         .environment(\.readinessOwner, readiness)
         .environment(\.recoveryOwner, recovery)
         .environment(\.phoneSync, sync)

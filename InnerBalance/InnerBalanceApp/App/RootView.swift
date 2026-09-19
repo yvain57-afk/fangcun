@@ -20,6 +20,7 @@ struct RootView: View {
     case settings
   }
 
+  @Environment(\.careOwner) private var care
   @Environment(\.phoneSync) private var sync
   @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
@@ -157,7 +158,10 @@ struct RootView: View {
     .task {
       await refreshLocalState()
     }
+    .task { care?.refresh(events: diary.allEntries.map(\.beverage)) }
+    .onChange(of: care?.pendingRoute) { _, route in if route != nil { selectedTab = .now } }
     .onChange(of: diary.allEntries) { _, _ in
+      care?.refresh(events: diary.allEntries.map(\.beverage))
       if let recovery { Task { await sync?.publishRecords(diary: diary, recovery: recovery) } }
     }
     .onChange(of: recovery?.records) { _, _ in
@@ -165,6 +169,7 @@ struct RootView: View {
       if let recovery { Task { await sync?.publishRecords(diary: diary, recovery: recovery) } }
     }
     .onChange(of: scenePhase) { _, phase in
+      if phase == .active { care?.foreground() }
       guard phase == .active else { return }
       Task { await refreshLocalState() }
     }
