@@ -32,4 +32,4 @@ Core `SyncModels / SyncStore / SyncService / WatchConnectivityTransport / Summar
 - 工程未配置真实 App Group；factory只读取已有 `FangcunAppGroupIdentifier` 并解析系统容器，不使用假组名。不配置时共享缓存 unavailable，本机缓存可用；正式共享/签名与 Widget验收留待实际条件和M5。
 - M0/M2未验证的能力保持原级别，未因本阶段编译成功升级。
 
-阶段全量：Core `m3-core-delivery` 112/112；App `m3-app-final` 185/185；Watch `m3-watch-final` BUILD SUCCEEDED。初次扩大UI为26/45，19项旧约定失败保留，固定基准复现与当前可达入口复验结果见最终 M3-REVIEW。Release签名构建/校验已通过；物理iPhone不可达，不能宣称安装或健康读取通过。
+阶段全量：Core `m3-core-delivery` 112/112；App `m3-app-final` 185/185；Watch `m3-watch-final` BUILD SUCCEEDED。初次扩大UI为26/45，19项旧约定失败保留，固定基准复现与当前可达入口复验结果见最终 M3-REVIEW。Release签名构建/校验已通过；阶段初期物理iPhone不可达，交付末尾恢复可达后，覆盖安装、启动、版本回读及真实首次前台查询/评估持久化通过。其余授权交互、锁屏/后台与实际增删仍未验证，见M3-REVIEW。

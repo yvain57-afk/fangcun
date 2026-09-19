@@ -18,7 +18,7 @@ M0–M1 已补核验；按用户本轮边界仅推进 M2-01 至 M2-04。M2 数�
 | M2-02 | verified | ReadinessFeatureTests；78 Core 测试通过，原始合成输入 |
 | M2-03 | verified | 86 Core；原文件 G01–G10 从原始样本重放 |
 | M2-04 | verified（本机重放） | 独立存储、版本修订、事务恢复与并发保护；见 ADR-002 / VERIFICATION |
-| M3 | implemented；分层验证见 M3-REVIEW | M3-PRE与01～04完成；真机/共享容器未验收，15项旧UI契约失败保留 |
+| M3 | implemented；分层验证见 M3-REVIEW | M3-PRE与01～04完成；真机安装/初始读取通过，其余设备条件及共享容器未验收；15项旧UI契约失败保留 |
 | M4 | not_started | 腕上会话、反馈及幂等同步 |
 | M5 | not_started | 活动提醒及 Widgets |
 | M6 | not_started | 端到端验收、独立 Live Activity 验收 |

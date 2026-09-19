@@ -112,14 +112,28 @@ xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBala
 | 能力 | 本轮状态 |
 |---|---|
 | Release签名/本机构建 | passed；沿用本机已有签名资源，团队/证书不入Git |
-| 物理iPhone覆盖安装/启动/版本回读 | blocked，设备当前不可达；可达iPhone条目实际为simulated，已按reality字段纠正 |
-| 真实HealthKit授权、只读查询、来源/时间与前台刷新 | implemented_unverified；不能由模拟原始样本推导真机通过 |
+| 物理iPhone覆盖安装/启动/版本回读 | passed；交付末尾经本地网络恢复可达，确认reality=physical；1.0.0 / 2026091903 |
+| 真实HealthKit首次前台读取与评估落盘 | passed（本次实机）；本地核验查询成功、有实际样本、评估及独立刷新记录落盘；原始内容不入Git |
+| 授权弹窗重走、来源/主睡眠/目标操作、手动刷新与回前台全流程 | implemented_unverified；首次冷启动成功不能替代这些人工交互 |
 | 真实增量/删除、锁屏读取、后台事件 | implemented_unverified；保留M0/M2能力边界 |
 | 物理Watch送达/锁屏/后台/旧SwiftData升级 | implemented_unverified / blocked，缺少可用配对Watch |
 | 真实App Group共享与签名 | blocked，工程没有真实组配置；未配置中性回退已测 |
 | 模拟ACK/事务重放 | verified，仅Core/App可控transport层 |
 
-接入可用物理iPhone后，用已生成签名Release覆盖安装（不卸载），逐项检查真实授权、实际可读类型/来源/睡眠与测量时间、反复刷新/回前台/改来源和目标；只记录脱敏通过与否。真实增删只操作合成自有测试数据，不删用户或其他App健康记录。配对Watch送达另行验收，不能以签名成功替代。
+交付末尾物理iPhone从不可达变为已配对本地网络可达；详情探测成功后先备份本App存档，再覆盖安装并启动Release（不卸载）。回读版本1.0.0 / 2026091903。只在本机比较：原v1/preM1字节未改，迁移checksum和源digest正确、记录ID保留；旧SwiftData练习/感受/每日记录行保留、显示偏好未改。真实Insights文件checksum正确、查询尝试和成功时间存在、有实际样本、评估已保存且无refreshFailure。未输出或上传健康值、记录ID、来源设备信息或数据库。首次launch命令选项位置错误退出64，按devicectl帮助修正后正常退出0，不是App运行失败。后续仍需逐项人工检查授权弹窗、来源/主睡眠/测量时间显示、反复刷新/回前台/改来源和目标。真实增删只操作合成自有测试数据，不删用户或其他App健康记录。配对Watch送达另行验收。
+
+真机命令（设备标识与签名资源仅在本机变量中）：
+
+```sh
+xcrun devicectl device copy from --device "$IPHONE_ID" --domain-type appDataContainer \
+  --domain-identifier com.yvainair.InnerBalance --source 'Library/Application Support' \
+  --destination "$PRIVATE_BACKUP"
+xcrun devicectl device install app --device "$IPHONE_ID" "$SIGNED_APP"
+xcrun devicectl device process launch --device "$IPHONE_ID" --terminate-existing com.yvainair.InnerBalance
+xcrun devicectl device info apps --device "$IPHONE_ID" --filter "bundleIdentifier == 'com.yvainair.InnerBalance'"
+```
+
+各命令使用 `--json-output` 写本机私有结果；以上成功命令退出0。偏好plist单独备份/回读，SQLite只读比较原行、Diary/Insights解码校验只在本机完成。Git收据只含布尔核验、版本与状态，无真实记录计数、健康值、标识或存档。
 
 ## 回退和停止点
 

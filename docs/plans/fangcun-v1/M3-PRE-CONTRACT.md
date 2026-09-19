@@ -1,6 +1,6 @@
 # M3-PRE 契约依据
 
-基线 b80f81c，工作区干净；Xcode 27 beta / Swift 6，既有 iOS 18 与 watchOS 11 targets 不变。工程运行于 Code/fangcun；测试/构建/结果包位于 Code scratch。设备初查中的可达 iPhone 后经 hardwareProperties.reality 复核为 simulated；物理 iPhone 不可达，Watch 连接不可用。以 M3-REVIEW 的分层验证为准。
+基线 b80f81c，工作区干净；Xcode 27 beta / Swift 6，既有 iOS 18 与 watchOS 11 targets 不变。工程运行于 Code/fangcun；测试/构建/结果包位于 Code scratch。设备初查中的可达 iPhone 后经 hardwareProperties.reality 复核为 simulated；当时物理 iPhone 不可达，Watch 连接不可用。交付末尾物理iPhone恢复可达后的分层实测见 M3-REVIEW。
 
 品牌依据：`docs/CURRENT_DESIGN.md`、`web/docs/用户提供的完整设计规格.md` 1.1 和深色章节、`web/docs/方寸品牌使用规范-v1.md`。这些材料确认版画蓝 1B355A、暖纸白 FAF9F5、独立深色和局部柔橙，不支持原测试棕色契约。当前已接受原生深色/文字/橙色语义映射与网页版精确值不同，本轮保留原生选择，不整套重刷回网页颜色。
 

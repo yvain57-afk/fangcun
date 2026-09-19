@@ -68,4 +68,4 @@ SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`�
 - 本地轻行动、可选反馈、迁移与核心同步协议：合成Core/App/模拟器UI已验证，不代表内容安全已完成人工发布审查。
 - WatchConnectivity生产适配：iOS/watchOS编译通过，持久化与可控transport通过；真实跨设备送达 implemented_unverified，物理Watch不可用。
 - App Group共享：blocked（工程无可用组配置）；未配置/损坏/过期中性回退已测。正式Widget未开始。
-- 签名Release构建通过；本轮物理iPhone不可达（可达条目为simulated），尚未覆盖安装/启动/真实HealthKit查询。设备检查不得仅按deviceType推断真机。
+- 签名Release构建通过；早期可达条目为simulated。交付末尾物理iPhone经本地网络恢复可达，reality=physical复核、覆盖安装/启动/版本回读、真实首次前台查询与评估落盘通过；旧记录/偏好保留在本机核验。授权弹窗重走、来源/目标UI、锁屏/后台/真实增删仍未验收。设备检查不得仅按deviceType推断真机。
