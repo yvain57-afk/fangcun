@@ -21,6 +21,10 @@ import InnerBalanceCore
     if scenario == "assessable" {
       #expect(owner.current?.evidence.first?.feature.displayValue == 50)
       #expect(owner.current?.evidence.first?.feature.value != 50)
+      let evidence = try #require(owner.current?.evidence.first)
+      let reference = try #require(ReadinessDisplay.baselineValues(evidence))
+      #expect(abs(reference[0] - exp(try #require(evidence.baseline?.center))) < 0.0001)
+      #expect(reference[1] < reference[0] && reference[2] > reference[0])
     }
   }
   @Test func failedRefreshKeepsAnchorAndIndependentCheckTimes() async throws {

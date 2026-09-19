@@ -947,7 +947,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "HRV SDNN 夜间中位数"
+            "value": "HRV SDNN 主睡眠内中位数"
           }
         }
       }
@@ -2218,6 +2218,116 @@
           "stringUnit": {
             "state": "translated",
             "value": "重新尝试传输"
+          }
+        }
+      }
+    },
+    "readiness.sleepActual": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实际睡眠 %.1f 小时 · 本次目标 %.1f 小时"
+          }
+        }
+      }
+    },
+    "readiness.stat.hrv": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主睡眠内 SDNN 中位数 · %d 个样本，覆盖 %d 个小时区间"
+          }
+        }
+      }
+    },
+    "readiness.stat.rhr": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "窗口内最近一条静息心率 · %d 个样本（覆盖 %d 个小时区间）"
+          }
+        }
+      }
+    },
+    "readiness.baseline.reference": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "个人中心 %.1f · 波动参考 %.1f–%.1f %@（中心上下一个稳健尺度；不是医学正常范围）"
+          }
+        }
+      }
+    },
+    "readiness.window": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取样窗口 %@ — %@"
+          }
+        }
+      }
+    },
+    "readiness.context": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当天背景记录"
+          }
+        }
+      }
+    },
+    "readiness.contextBoundary": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这些是目前已读取的背景记录；未读到不代表没有活动。饮品与完成行动不会直接增加准备度。"
+          }
+        }
+      }
+    },
+    "readiness.context.workouts": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已读取训练记录 %d 条"
+          }
+        }
+      }
+    },
+    "readiness.context.workout": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 训练 %d 分钟 · %@"
+          }
+        }
+      }
+    },
+    "readiness.context.drink": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ · 估算 %d ml"
+          }
+        }
+      }
+    },
+    "readiness.recordedLevel": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "该次评估参考：%@"
           }
         }
       }

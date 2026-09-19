@@ -69,7 +69,12 @@ final class ReadinessHomeUITests: XCTestCase {
       let detail = app.buttons["today.evidence"]
       XCTAssertTrue(detail.waitForExistence(timeout: 5)); detail.tap()
       XCTAssertTrue(app.staticTexts["readiness.identity"].waitForExistence(timeout: 5))
-      for _ in 0..<4 where !app.staticTexts["readiness.time.attempt"].exists { app.swipeUp() }
+      if scenario == "assessable" {
+        XCTAssertTrue(app.staticTexts["readiness.sleep.actual"].exists)
+        for _ in 0..<4 where !app.staticTexts["readiness.baseline.reference"].firstMatch.exists { app.swipeUp() }
+        XCTAssertTrue(app.staticTexts["readiness.baseline.reference"].firstMatch.exists)
+      }
+      for _ in 0..<8 where !app.staticTexts["readiness.time.attempt"].exists { app.swipeUp() }
       XCTAssertTrue(app.staticTexts["readiness.time.attempt"].exists)
       let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "m302-" + scenario; shot.lifetime = .keepAlways; add(shot)
       app.terminate()

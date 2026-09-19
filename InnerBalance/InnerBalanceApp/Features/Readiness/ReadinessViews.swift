@@ -21,6 +21,11 @@ struct ReadinessEvidenceLink: View {
 }
 
 enum ReadinessDisplay {
+  static func baselineValues(_ evidence: ReadinessMetricEvidence) -> [Double]? {
+    guard let center = evidence.baseline?.center, let scale = evidence.baseline?.scale else { return nil }
+    let values = [center, center - scale, center + scale]
+    return evidence.feature.metric == .hrvSDNN ? values.map { exp($0) } : values
+  }
   static func metric(_ evidence: ReadinessMetricEvidence) -> String {
     let f = evidence.feature
     let value = f.displayValue.map { String(format: "%.1f", $0) } ?? FangcunCopy.text("readiness.unknown")
@@ -40,11 +45,23 @@ struct ReadinessDetailView: View {
           LabeledContent(FangcunCopy.text("readiness.identity"), value: String(a.assessmentID.prefix(12)) + " / v\(a.revision)")
             .accessibilityIdentifier("readiness.identity").accessibilityValue(a.assessmentID)
           Text(FangcunCopy.text("readiness.state." + a.availability.rawValue))
+          if let level = a.level { Text(FangcunCopy.text("readiness.recordedLevel", FangcunCopy.text("readiness.level." + level.rawValue))) }
           Text(FangcunCopy.text("readiness.freshness." + a.freshness.rawValue))
           if a.refreshFailure != nil { Text(FangcunCopy.text("readiness.refreshError")) }
+          if let duration = a.actualSleepSeconds {
+            Text(FangcunCopy.text("readiness.sleepActual", duration / 3600, a.configuration.sleepTargetHours))
+              .accessibilityIdentifier("readiness.sleep.actual")
+          } else { Text(FangcunCopy.text("readiness.reason.sleepMissing")) }
+          Text(a.sourceDetails[ReadinessMetric.sleep.rawValue]?.name ?? FangcunCopy.text("readiness.unknown"))
           ForEach(a.evidence, id: \.feature.metric) { e in
             VStack(alignment: .leading, spacing: 6) {
               Text(ReadinessDisplay.metric(e))
+              Text(FangcunCopy.text(e.feature.metric == .hrvSDNN ? "readiness.stat.hrv" : "readiness.stat.rhr", e.feature.sampleCount, e.feature.coveredHours))
+              if let values = ReadinessDisplay.baselineValues(e) {
+                Text(FangcunCopy.text("readiness.baseline.reference", values[0], values[1], values[2], e.feature.metric == .hrvSDNN ? "ms" : "bpm"))
+                  .accessibilityIdentifier("readiness.baseline.reference")
+              }
+              Text(FangcunCopy.text("readiness.window", FangcunCopy.timestamp(e.feature.window.start), FangcunCopy.timestamp(e.feature.window.end)))
               Text(FangcunCopy.text("readiness.measured", FangcunCopy.timestamp(e.feature.latestMeasuredAt)))
               Text(a.sourceDetails[e.feature.metric.rawValue]?.name ?? FangcunCopy.text("readiness.unknown"))
                 .fixedSize(horizontal: false, vertical: true)
@@ -61,6 +78,12 @@ struct ReadinessDetailView: View {
         } else { Text(FangcunCopy.text("readiness.summary.insufficient")) }
         time("attempt", snapshot.lastRefreshAttemptAt)
         time("success", snapshot.lastSuccessfulRefreshAt)
+      }
+      if let a = assessment {
+        Section(FangcunCopy.text("readiness.context")) {
+          ReadinessDayContext(date: a.sleepEndAt ?? a.computedAt, snapshot: snapshot)
+          Text(FangcunCopy.text("readiness.contextBoundary"))
+        }
       }
     }.navigationTitle(FangcunCopy.text("readiness.why"))
       .scrollContentBackground(.hidden).background(InnerBalanceTheme.canvas)
@@ -87,7 +110,13 @@ struct ReadinessHistoryView: View {
       return diary.allSnapshots.contains { Calendar.current.isDate($0.date, inSameDayAs: date) } ? "square.dashed" : "circle"
     }
     switch a.availability {
-    case .assessable: return "circle.fill"
+    case .assessable:
+      switch a.level {
+      case .usual: return "equal.circle"
+      case .reduced: return "arrow.down.right.circle"
+      case .low: return "arrow.down.circle"
+      case nil: return "minus.circle"
+      }
     case .provisional: return "circle.lefthalf.filled"
     case .limited: return "circle.dotted"
     case .awaitingData: return "clock"
@@ -112,7 +141,7 @@ struct ReadinessHistoryView: View {
               }.frame(minHeight: 50).frame(maxWidth: .infinity)
                 .background(Calendar.current.isDate(date, inSameDayAs: selected) ? InnerBalanceTheme.subtleFill : .clear, in: RoundedRectangle(cornerRadius: 10))
             }.accessibilityIdentifier(records(date).isEmpty ? "readiness.history.day.empty" : "readiness.history.day.recorded")
-              .accessibilityLabel(date.formatted(date: .abbreviated, time: .omitted) + " · " + (records(date).first.map { FangcunCopy.text("readiness.state." + $0.availability.rawValue) } ?? FangcunCopy.text("readiness.history.blank")))
+              .accessibilityLabel(date.formatted(date: .abbreviated, time: .omitted) + " · " + (records(date).first.map { a in FangcunCopy.text("readiness.state." + a.availability.rawValue) + (a.level.map { " · " + FangcunCopy.text("readiness.level." + $0.rawValue) } ?? "") } ?? FangcunCopy.text(diary.allSnapshots.contains { Calendar.current.isDate($0.date, inSameDayAs: date) } ? "readiness.history.legacy" : "readiness.history.blank")))
           }
         }
         if let recovery { NavigationLink(FangcunCopy.text("recovery.history")) { RecoveryHistoryView(owner: recovery) } }
@@ -122,6 +151,7 @@ struct ReadinessHistoryView: View {
           NavigationLink { ReadinessDetailView(assessment: a, snapshot: owner.snapshot) } label: {
             VStack(alignment: .leading) {
               Text(FangcunCopy.text("readiness.state." + a.availability.rawValue))
+              if let level = a.level { Text(FangcunCopy.text("readiness.recordedLevel", FangcunCopy.text("readiness.level." + level.rawValue))) }
               Text(FangcunCopy.text("readiness.sleepEnd", FangcunCopy.timestamp(a.sleepEndAt)))
               Text("v\(a.revision) · \(a.assessmentID.prefix(8))").font(.caption)
             }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
@@ -137,9 +167,39 @@ struct ReadinessHistoryView: View {
         let totals = FangcunDrinkTotals(diary.entries(on: selected))
         Text(FangcunCopy.text("readiness.history.drinks", totals.fluid, totals.caffeine))
         if totals.hasUnknownAlcohol { Text(FangcunCopy.text("diary.alcoholUnknown")) }
+        ReadinessDayContext(date: selected, snapshot: owner.snapshot)
         Button(FangcunCopy.text("readiness.refresh")) { Task { await owner.refresh() } }
       }.padding(20)
     }.background(InnerBalanceTheme.canvas).navigationTitle(FangcunCopy.text("readiness.history"))
+  }
+}
+
+/// Context is a dated record, never an input that rewards or rewrites an assessment.
+struct ReadinessDayContext: View {
+  let date: Date
+  let snapshot: InsightsSnapshot
+  @Environment(FangcunDiary.self) private var diary
+  @Environment(\.recoveryOwner) private var recovery
+  var body: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      let workouts = snapshot.ledger.normalizedSamples.filter { $0.metric == .workout && Calendar.current.isDate($0.end, inSameDayAs: date) }
+      Text(FangcunCopy.text("readiness.context.workouts", workouts.count))
+      ForEach(workouts, id: \.id) { row in
+        Text(FangcunCopy.text("readiness.context.workout", FangcunCopy.timestamp(row.start), Int(row.end.timeIntervalSince(row.start) / 60), row.source.name))
+      }
+      ForEach(diary.entries(on: date), id: \.id) { drink in
+        Text(FangcunCopy.text("readiness.context.drink", FangcunCopy.timestamp(drink.consumedAt), drink.kind.title, drink.volumeML))
+      }
+      if let recovery {
+        ForEach(recovery.records.filter { $0.endedAt != nil && Calendar.current.isDate($0.startedAt, inSameDayAs: date) }, id: \.sessionID) { record in
+          VStack(alignment: .leading) {
+            Text(FangcunCopy.text("recovery.title." + record.action.id))
+            Text(FangcunCopy.text("recovery.duration", Int(record.activeDuration)))
+            Text(FangcunCopy.text("recovery.feedback.current", FangcunCopy.text("recovery.feedback." + (record.feedback?.helpfulness?.rawValue ?? "skipped"))))
+          }
+        }
+      }
+    }.accessibilityIdentifier("readiness.day.context")
   }
 }
 

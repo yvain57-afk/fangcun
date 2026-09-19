@@ -86,7 +86,7 @@ readiness.evidence,M3,readiness,身体给的线索,格式化参数见字符串,3
 readiness.why,M3,readiness,为什么这样判断,格式化参数见字符串,3,否,是,初稿待人工确认
 readiness.unknown,M3,readiness,未知,格式化参数见字符串,3,否,是,初稿待人工确认
 readiness.metric,M3,readiness,%@：%@ %@ · 有效基线 %d 天,格式化参数见字符串,3,否,是,初稿待人工确认
-readiness.metric.hrvSDNN,M3,readiness,HRV SDNN 夜间中位数,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.metric.hrvSDNN,M3,readiness,HRV SDNN 主睡眠内中位数,格式化参数见字符串,3,否,是,初稿待人工确认
 readiness.metric.restingHeartRate,M3,readiness,静息心率,格式化参数见字符串,3,否,是,初稿待人工确认
 readiness.metric.sleep,M3,readiness,睡眠来源,格式化参数见字符串,3,否,是,初稿待人工确认
 readiness.sleepEnd,M3,readiness,主睡眠结束：%@,格式化参数见字符串,3,否,是,初稿待人工确认
@@ -214,3 +214,14 @@ sync.queueError,M3,sync,加入同步队列未完成，可重新尝试。,格式�
 sync.pending,M3,sync,尚未收到确认；连接恢复后可以重试。,格式化参数见字符串,3,否,是,初稿待人工确认
 sync.groupUnavailable,M3,sync,共享容器尚未配置，不提供 Widget 共享缓存。,格式化参数见字符串,3,否,是,初稿待人工确认
 sync.retry,M3,sync,重新尝试传输,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.sleepActual,M3,readiness,实际睡眠 %.1f 小时 · 本次目标 %.1f 小时,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.stat.hrv,M3,readiness,主睡眠内 SDNN 中位数 · %d 个样本，覆盖 %d 个小时区间,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.stat.rhr,M3,readiness,窗口内最近一条静息心率 · %d 个样本（覆盖 %d 个小时区间）,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.baseline.reference,M3,readiness,个人中心 %.1f · 波动参考 %.1f–%.1f %@（中心上下一个稳健尺度；不是医学正常范围）,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.window,M3,readiness,取样窗口 %@ — %@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.context,M3,readiness,当天背景记录,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.contextBoundary,M3,readiness,这些是目前已读取的背景记录；未读到不代表没有活动。饮品与完成行动不会直接增加准备度。,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.context.workouts,M3,readiness,已读取训练记录 %d 条,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.context.workout,M3,readiness,%@ · 训练 %d 分钟 · %@,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.context.drink,M3,readiness,%@ · %@ · 估算 %d ml,格式化参数见字符串,3,否,是,初稿待人工确认
+readiness.recordedLevel,M3,readiness,该次评估参考：%@,格式化参数见字符串,3,否,是,初稿待人工确认
