@@ -1,0 +1,72 @@
+{
+  "modelVersion": "fangcun-status-3.0",
+  "scoreName": "今日状态",
+  "range": [
+    0,
+    100
+  ],
+  "rounding": "floor(clamp(raw,0,100)+0.5), tolerance 1e-10 for round trips",
+  "bands": [
+    {
+      "min": 85,
+      "max": 100,
+      "name": "良好"
+    },
+    {
+      "min": 70,
+      "max": 84,
+      "name": "尚可"
+    },
+    {
+      "min": 50,
+      "max": 69,
+      "name": "偏低"
+    },
+    {
+      "min": 0,
+      "max": 49,
+      "name": "优先休息"
+    }
+  ],
+  "sleep": {
+    "defaultGoalMinutes": 480,
+    "allowedGoalMinutes": [
+      420,
+      600
+    ],
+    "subweights": {
+      "duration": 0.7,
+      "continuity": 0.2,
+      "regularity": 0.1
+    },
+    "renormalizeAvailableOnly": true,
+    "regularityMinimumHistory": 3,
+    "regularityHistoryCycles": 14,
+    "regularityZeroScoreDeviationMinutes": 120
+  },
+  "overallWeights": {
+    "sleep": 0.6,
+    "hrv": 0.25,
+    "rhr": 0.15
+  },
+  "cardio": {
+    "minimumHistoryDays": 3,
+    "fullWeightHistoryDays": 14,
+    "baselineDays": 28,
+    "madMultiplier": 1.4826,
+    "hrvLogScaleFloor": 0.1,
+    "rhrScaleFloor": 3,
+    "nominalScore": 85,
+    "adverseZMultiplier": 15,
+    "beneficialZMultiplier": 5,
+    "maximumBenefitZ": 1,
+    "maximumScore": 95,
+    "hrvHighSideExclusionZ": -2,
+    "hrvFullSamples": 3,
+    "hrvFullAbsoluteHourBuckets": 2
+  },
+  "missing": "omit dimension from numerator and denominator; no zero or normal imputation",
+  "noAvailableDimensions": "null score and actionable service state",
+  "personalization": "weights ramp; 7/14 days do not gate the total score",
+  "time": "score linked to recovery cycle; actions vary by daypart; no score reward"
+}

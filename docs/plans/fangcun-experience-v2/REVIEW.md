@@ -1,5 +1,7 @@
 # 方寸体验与饮品关怀 V2 交付审阅
 
+> Superseded for current score/homepage rules by [V3](../fangcun-score-v3/CONTRACT_CHANGES.md). This is a historical V2 delivery receipt. Beverage, motion, privacy and data preservation requirements remain active.
+
 本轮已将 v2.0 任务书接入原生 iPhone App，按 V2-00～V2-07 分阶段实现并保留原有记录、画风与模型。工程交付已形成；**全仓旧 UI 尚有 15 项遗留失败，真实通知与人工体验验收尚未通过**。
 
 基准 `99ebe69f30a2a502225e913a9dfd35f54101dabd`；开发分支 [`codex/fangcun-v1-m0-m1`](https://github.com/yvain57-afk/fangcun/tree/codex/fangcun-v1-m0-m1)。没有强推、合并 main、上架或上传健康资料。分阶段提交见 [TASKS](TASKS.md)，最终 HEAD 由该文档所在提交及交付回复确定，避免自引用 SHA。

@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 1,
+  "modelVersion": "fangcun-status-3.0",
+  "syntheticOnly": true,
+  "scope": "已提取特征的数学规则；不含用户健康数据或任何App实机结论",
+  "cases": [
+    {
+      "id": "F01",
+      "title": "首夜仅睡眠",
+      "input": {
+        "sleep_minutes": 375
+      },
+      "expected": {
+        "score": 78,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F02",
+      "title": "只有一天HRV历史不挡睡眠",
+      "input": {
+        "sleep_minutes": 375,
+        "hrv_deviation": 0,
+        "hrv_days": 1,
+        "hrv_samples": 3,
+        "hrv_hours": 2
+      },
+      "expected": {
+        "score": 78,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F03",
+      "title": "睡眠达到个人目标",
+      "input": {
+        "sleep_minutes": 480
+      },
+      "expected": {
+        "score": 100,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F04",
+      "title": "四小时睡眠且心率接近基线",
+      "input": {
+        "sleep_minutes": 240,
+        "hrv_deviation": 0,
+        "hrv_days": 14,
+        "hrv_samples": 3,
+        "hrv_hours": 2,
+        "rhr_deviation": 0,
+        "rhr_days": 14
+      },
+      "expected": {
+        "score": 64,
+        "band": "偏低"
+      }
+    },
+    {
+      "id": "F05",
+      "title": "七小时睡眠且心率接近基线",
+      "input": {
+        "sleep_minutes": 420,
+        "hrv_deviation": 0,
+        "hrv_days": 14,
+        "hrv_samples": 3,
+        "hrv_hours": 2,
+        "rhr_deviation": 0,
+        "rhr_days": 14
+      },
+      "expected": {
+        "score": 87,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F06",
+      "title": "七小时睡眠和心率偏离",
+      "input": {
+        "sleep_minutes": 420,
+        "hrv_deviation": 2,
+        "hrv_days": 14,
+        "hrv_samples": 3,
+        "hrv_hours": 2,
+        "rhr_deviation": 1,
+        "rhr_days": 14
+      },
+      "expected": {
+        "score": 77,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F07",
+      "title": "多维偏低",
+      "input": {
+        "sleep_minutes": 240,
+        "hrv_deviation": 3,
+        "hrv_days": 14,
+        "hrv_samples": 3,
+        "hrv_hours": 2,
+        "rhr_deviation": 3,
+        "rhr_days": 14
+      },
+      "expected": {
+        "score": 46,
+        "band": "优先休息"
+      }
+    },
+    {
+      "id": "F08",
+      "title": "HRV高侧异常仅移除HRV",
+      "input": {
+        "sleep_minutes": 480,
+        "hrv_deviation": -2.1,
+        "hrv_days": 14,
+        "hrv_samples": 3,
+        "hrv_hours": 2,
+        "rhr_deviation": 0,
+        "rhr_days": 14
+      },
+      "expected": {
+        "score": 97,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F09",
+      "title": "只有可比较的系统RHR",
+      "input": {
+        "rhr_deviation": 0,
+        "rhr_days": 14
+      },
+      "expected": {
+        "score": 85,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F10",
+      "title": "没有可计算输入",
+      "input": {},
+      "expected": {
+        "score": null,
+        "band": null
+      }
+    },
+    {
+      "id": "F11",
+      "title": "仅HRV读数无个人比较",
+      "input": {
+        "hrv_deviation": 0,
+        "hrv_days": 2,
+        "hrv_samples": 1,
+        "hrv_hours": 1
+      },
+      "expected": {
+        "score": null,
+        "band": null
+      }
+    },
+    {
+      "id": "F12",
+      "title": "加入可靠连续性",
+      "input": {
+        "sleep_minutes": 375,
+        "awake_minutes": 30,
+        "awake_coverage_complete": true
+      },
+      "expected": {
+        "score": 81,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F13",
+      "title": "醒时覆盖不全不插入连续性",
+      "input": {
+        "sleep_minutes": 375,
+        "awake_minutes": 30,
+        "awake_coverage_complete": false
+      },
+      "expected": {
+        "score": 78,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F14",
+      "title": "规律偏移一小时",
+      "input": {
+        "sleep_minutes": 375,
+        "regularity_delta_minutes": 60,
+        "regularity_history_days": 14
+      },
+      "expected": {
+        "score": 75,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F15",
+      "title": "仅时长和规律",
+      "input": {
+        "sleep_minutes": 480,
+        "regularity_delta_minutes": 120,
+        "regularity_history_days": 14
+      },
+      "expected": {
+        "score": 88,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F16",
+      "title": "稀疏HRV渐进权重",
+      "input": {
+        "sleep_minutes": 375,
+        "hrv_deviation": 0,
+        "hrv_days": 7,
+        "hrv_samples": 1,
+        "hrv_hours": 1
+      },
+      "expected": {
+        "score": 78,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F17",
+      "title": "睡眠与心率共同偏离",
+      "input": {
+        "sleep_minutes": 375,
+        "hrv_deviation": 3,
+        "hrv_days": 14,
+        "hrv_samples": 3,
+        "hrv_hours": 2,
+        "rhr_deviation": 3,
+        "rhr_days": 14
+      },
+      "expected": {
+        "score": 63,
+        "band": "偏低"
+      }
+    },
+    {
+      "id": "F18",
+      "title": "确认短睡不被两小时门槛挡住",
+      "input": {
+        "sleep_minutes": 60
+      },
+      "expected": {
+        "score": 13,
+        "band": "优先休息"
+      }
+    },
+    {
+      "id": "F19",
+      "title": "超目标不额外奖励",
+      "input": {
+        "sleep_minutes": 720
+      },
+      "expected": {
+        "score": 100,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F20",
+      "title": "可配置个人目标",
+      "input": {
+        "sleep_minutes": 360,
+        "sleep_goal_minutes": 600
+      },
+      "expected": {
+        "score": 60,
+        "band": "偏低"
+      }
+    },
+    {
+      "id": "F21",
+      "title": "三睡眠子项完整",
+      "input": {
+        "sleep_minutes": 420,
+        "awake_minutes": 0,
+        "awake_coverage_complete": true,
+        "regularity_delta_minutes": 0,
+        "regularity_history_days": 3
+      },
+      "expected": {
+        "score": 91,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F22",
+      "title": "不存在的子项不补满分",
+      "input": {
+        "sleep_minutes": 420,
+        "awake_minutes": 0,
+        "awake_coverage_complete": false,
+        "regularity_delta_minutes": 0,
+        "regularity_history_days": 2
+      },
+      "expected": {
+        "score": 88,
+        "band": "良好"
+      }
+    },
+    {
+      "id": "F23",
+      "title": "一个不利HRV样本小权重",
+      "input": {
+        "sleep_minutes": 375,
+        "hrv_deviation": 2,
+        "hrv_days": 14,
+        "hrv_samples": 1,
+        "hrv_hours": 1
+      },
+      "expected": {
+        "score": 77,
+        "band": "尚可"
+      }
+    },
+    {
+      "id": "F24",
+      "title": "3日RHR基线可形成单维比较",
+      "input": {
+        "rhr_deviation": 2,
+        "rhr_days": 3
+      },
+      "expected": {
+        "score": 55,
+        "band": "偏低"
+      }
+    }
+  ]
+}
