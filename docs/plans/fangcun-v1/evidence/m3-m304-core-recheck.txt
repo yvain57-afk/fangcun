@@ -1,0 +1,20 @@
+Building for debugging...
+[2 / 22] InnerBalanceCore
+[4 / 24] InnerBalanceCore
+[12 / 23] InnerBalanceCoreTests-product
+[23 / 34] InnerBalanceCoreTests-product
+[27 / 33] InnerBalanceCoreTests-product
+[29 / 33] InnerBalanceCoreTests-product
+Build complete! (2.47秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite SyncReliabilityTests started.
+◇ Test durableACKLostOfflineRestartDuplicatesAndProjectionRetry() started.
+◇ Test failedReceiverCannotACKAndDeletePrecedesStaleReplay() started.
+◇ Test epochUnknownProtocolSummaryAndCorruptionRemainNeutral() started.
+✔ Test epochUnknownProtocolSummaryAndCorruptionRemainNeutral() passed after 0.006 seconds.
+✔ Test failedReceiverCannotACKAndDeletePrecedesStaleReplay() passed after 0.006 seconds.
+✔ Test durableACKLostOfflineRestartDuplicatesAndProjectionRetry() passed after 0.008 seconds.
+✔ Suite SyncReliabilityTests passed after 0.008 seconds.
+✔ Test run with 3 tests in 1 suite passed after 0.008 seconds.

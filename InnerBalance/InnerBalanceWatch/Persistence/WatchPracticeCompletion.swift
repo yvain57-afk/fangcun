@@ -6,6 +6,8 @@ import SwiftData
 final class WatchPracticeCompletion {
   @Attribute(.unique) var sessionID: String
   var practiceKindRawValue: String
+  var startedAt: Date?
+  var plannedDuration: TimeInterval?
   var activeDuration: TimeInterval
   var endedAt: Date
   var healthWriteStatus: String

@@ -285,3 +285,6 @@ DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test
 
 ## M3-03
 见 [M3-03-VERIFICATION](M3-03-VERIFICATION.md)：Core3、App2、UI1项通过；音频套件一次RPC超时与后续失败另存，最终全量结果尚待汇总。
+
+## M3-04 与阶段全量
+见 [M3-04-VERIFICATION](M3-04-VERIFICATION.md)。Core112、App185通过；Watch模拟器编译通过。扩展UI 26/45，19项旧约定失败保留，固定基准与接线复验单独登记。Release签名构建通过不等于真机安装/HealthKit验收。

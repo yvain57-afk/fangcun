@@ -201,6 +201,30 @@ final class FangcunDiary {
       archive = next; return true
     } catch { storageMessage = FangcunCopy.text("diary.storage.writeFailure"); return false }
   }
+  func applySync(_ events: [SyncEvent]) throws {
+    guard storageMessage == nil else { throw SyncStore.Failure.corrupt }
+    var next = archive
+    var changed = false
+    for event in events where event.kind == .drink && event.revision > (next.syncRevisions[event.entityID] ?? 0) {
+      changed = true
+      guard let id = UUID(uuidString: event.entityID) else { throw SyncStore.Failure.invalid }
+      next.entries.removeAll { $0.id == id }
+      if !event.deleted {
+        let value = try JSONDecoder().decode(SyncedDrink.self, from: event.payload)
+        guard let kind = FangcunDrink(rawValue: value.kind) else { throw SyncStore.Failure.unknownProtocol }
+        var entry = FangcunDrinkEntry(id: id, date: value.consumedAt, kind: kind, caffeine: value.caffeineMG, recordedAt: value.recordedAt)
+        entry.volumeML = value.volumeML; entry.alcoholGrams = value.alcoholGrams
+        entry.sugarServings = value.sugarServings; entry.sugarGrams = value.sugarGrams
+        entry.estimateMethod = value.estimateMethod; entry.estimateVersion = value.estimateVersion; entry.revision = event.revision
+        next.entries.append(entry)
+      }
+      next.syncRevisions[event.entityID] = event.revision
+    }
+    guard changed else { return }
+    guard commit(next, remember: false) else { throw SyncStore.Failure.corrupt }
+    // A remote change invalidates an old local undo snapshot; it must not restore deleted peer records.
+    undoStack.removeAll()
+  }
   func retry(defaults: UserDefaults? = nil) {
     guard let storage else { return }
     do { archive = try storage.load(defaults: defaults ?? self.defaults); storageMessage = nil }
@@ -219,5 +243,14 @@ struct FangcunDrinkTotals {
     alcohol = entries.reduce(0) { $0 + ($1.alcoholGrams ?? 0) }
     hasUnknownAlcohol = entries.contains { $0.alcoholGrams == nil }
     sugar = entries.reduce(0) { $0 + $1.sugarServings }
+  }
+}
+
+
+extension FangcunDrinkEntry {
+  var syncValue: SyncedDrink {
+    .init(id: id.uuidString, kind: kind.rawValue, consumedAt: consumedAt, recordedAt: recordedAt,
+      volumeML: volumeML, caffeineMG: caffeine, alcoholGrams: alcoholGrams, sugarServings: sugarServings,
+      sugarGrams: sugarGrams, estimateMethod: estimateMethod, estimateVersion: estimateVersion)
   }
 }

@@ -394,7 +394,14 @@ private struct WatchPracticeSessionView: View {
           )
         )
       }
+      if let record = try modelContext.fetch(descriptor).first {
+        record.startedAt = startedAt; record.plannedDuration = duration
+      }
       try modelContext.save()
+      if let startedAt {
+        Task { await WatchSyncLifecycle.shared.completed(sessionID: snapshot.sessionID, kind: plan.kind,
+          planned: duration, active: snapshot.activeDuration, started: startedAt, ended: snapshot.endedAt) }
+      }
       return true
     } catch {
       return false

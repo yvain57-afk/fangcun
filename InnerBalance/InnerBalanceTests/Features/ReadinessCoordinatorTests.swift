@@ -109,4 +109,39 @@ import InnerBalanceCore
     #expect(await store.snapshot().assessments.isEmpty)
   }
 
+  @Test(arguments: ["source", "sleep", "stop", "clear"])
+  func changingSelectionOrStoppingDuringAQueryRejectsLateState(_ operation: String) async throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let store = try InsightsStore(directory: directory)
+    let seed = ReadinessPipeline(provider: ReadinessDemoProvider(scenario: "assessable"), store: store)
+    let initial = try await seed.refresh(now: .now, calendar: .current)
+    let provider = GatedProvider()
+    let owner = ReadinessCoordinator(store: store, provider: provider, defaults: UserDefaults(suiteName: UUID().uuidString)!)
+    let first = Task { await owner.refresh() }
+    while !(await provider.entered) { await Task.yield() }
+    if operation == "source" {
+      let change = Task { await owner.selectSource("missing-selected-source", metric: .hrvSDNN) }
+      while await store.snapshot().sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey != "missing-selected-source" { await Task.yield() }
+      await provider.release(); await first.value; await change.value
+      #expect(owner.current?.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == "missing-selected-source")
+      #expect(owner.current?.level == nil)
+    } else if operation == "sleep" {
+      let episode = try #require(initial.episodes.max { $0.end < $1.end })
+      let change = Task { await owner.selectSleep(episode.id) }
+      while await store.snapshot().manualSleepID != episode.id { await Task.yield() }
+      await provider.release(); await first.value; await change.value
+      #expect(owner.snapshot.manualSleepID == episode.id)
+      #expect(owner.current?.manuallySelectedSleep == true)
+    } else {
+      let pending = Task { await owner.refresh(healthDataChanged: true) }
+      await Task.yield()
+      await owner.stop(clear: operation == "clear")
+      await provider.release(); await first.value; await pending.value
+      #expect(!owner.reading && owner.current == nil)
+      #expect(await store.snapshot().current == nil)
+      if operation == "clear" { #expect(await store.snapshot().assessments.isEmpty) }
+    }
+  }
+
 }

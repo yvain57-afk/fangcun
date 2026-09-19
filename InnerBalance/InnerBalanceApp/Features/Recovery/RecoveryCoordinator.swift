@@ -42,6 +42,7 @@ extension EnvironmentValues {
     catch { errorKey = "recovery.storageError"; return false }
   }
   func importPractice(_ record: PracticeCompletionRecord) async {
+    if await store?.isDeleted(record.sessionID) == true { return }
     if records.contains(where: { $0.sessionID == record.sessionID }) { return }
     var value = RecoverySession(sessionID: record.sessionID, action: .practice(record.practiceKind),
       plannedDuration: record.plannedDuration, startedAt: record.startedAt, originDevice: "iPhone")

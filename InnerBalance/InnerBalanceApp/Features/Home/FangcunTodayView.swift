@@ -40,7 +40,7 @@ struct FangcunTodayView: View {
     return FangcunCopy.text("body.state.\(state.rawValue).summary")
   }
   private var evidenceLine: String {
-    if let readiness, readiness.enabled { return FangcunCopy.text(readiness.current?.refreshFailure != nil ? "readiness.refreshError" : "readiness.boundary") }
+    if let readiness, readiness.enabled { return FangcunCopy.text((readiness.current?.refreshFailure != nil || readiness.errorKey != nil) ? "readiness.refreshError" : "readiness.boundary") }
     if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
       return FangcunCopy.text("body.workout.evidence")
     }
@@ -65,7 +65,7 @@ struct FangcunTodayView: View {
           HStack {
             Text(Date.now, format: .dateTime.month().day().weekday(.wide)).font(.caption)
             Spacer()
-            Text(model.isLoading ? "正在更新" : "Apple 健康 · 身体线索").font(.caption2)
+            Text((readiness?.enabled == true ? readiness?.loading == true : model.isLoading) ? "正在更新" : "Apple 健康 · 身体线索").font(.caption2)
           }.foregroundStyle(InnerBalanceTheme.mutedInk)
           hero
           Button(action: onStart) {
@@ -105,6 +105,7 @@ struct FangcunTodayView: View {
             HStack { Text("看看这一周的节奏"); Spacer(); Image(systemName: "arrow.right") }.font(.subheadline).padding(.vertical, 10)
           }.accessibilityIdentifier("today.trends")
           Button("想补充一下自己的感受") { onCheckIn() }
+            .accessibilityIdentifier("home.checkIn")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).frame(minHeight: 44)
           Text("不必把每一天，都过得很用力。")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 18)

@@ -90,6 +90,7 @@ public struct RecoverySession: Codable, Equatable, Sendable {
   public var action: RecoveryActionKind
   public var protocolVersion: Int
   public var plannedDuration: TimeInterval
+  public var plannedDurationKnown: Bool? = true
   public var activeDuration: TimeInterval
   public var startedAt: Date
   public var endedAt: Date?

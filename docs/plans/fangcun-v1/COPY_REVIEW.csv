@@ -206,3 +206,11 @@ recovery.reason.endedEarly,M3,recovery,提前结束，也已经留了片刻,格�
 recovery.reason.interrupted,M3,recovery,中断后保留已知时长，离线间隔未计入,格式化参数见字符串,3,否,是,初稿待人工确认
 recovery.reason.legacyUnknown,M3,recovery,原练习记录，结束原因未单独记录,格式化参数见字符串,3,否,是,初稿待人工确认
 recovery.counts,M3,recovery,同类明确回答：有帮助 %d 次，没明显变化 %d 次，不舒服 %d 次。仅描述记录，不代表疗效。,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.title,M3,sync,跨端记录状态,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.queued,M3,sync,%d 条事件等待对端确认,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.explanation,M3,sync,本地记录先保存。安排传输不代表已经送达，收到对端持久化确认后才移出队列。,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.unavailable,M3,sync,跨端服务暂不可用，本地记录保留。,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.queueError,M3,sync,加入同步队列未完成，可重新尝试。,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.pending,M3,sync,尚未收到确认；连接恢复后可以重试。,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.groupUnavailable,M3,sync,共享容器尚未配置，不提供 Widget 共享缓存。,格式化参数见字符串,3,否,是,初稿待人工确认
+sync.retry,M3,sync,重新尝试传输,格式化参数见字符串,3,否,是,初稿待人工确认

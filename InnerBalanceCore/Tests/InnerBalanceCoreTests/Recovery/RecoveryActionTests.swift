@@ -59,4 +59,28 @@ struct RecoveryActionTests {
     #expect(RecoveryRecommendationEngine.recommend(assessment: nil, favorites: [.quietRest], uncomfortable: [.quietRest])?.action == .seatedReset)
     #expect(RecoveryRecommendationEngine.recommend(assessment: nil, goal: .calm, uncomfortable: [.practice(.physiologicalSigh)])?.action == .quietRest)
   }
+  @Test func legacyArchiveWithoutSyncMetadataAndCorruptionPreserveRecords() async throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let store = try RecoveryStore(directory: directory)
+    var record = RecoverySession(sessionID: "legacy-m303", action: .quietRest, plannedDuration: 120, startedAt: .now, originDevice: "synthetic")
+    record.endedAt = .now; record.endReason = .endedEarly
+    try await store.save(record)
+    let file = directory.appendingPathComponent("recovery-v1.json")
+    var envelope = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any])
+    let encodedPayload = try #require(envelope["payload"] as? String)
+    let payload = try #require(Data(base64Encoded: encodedPayload))
+    var archive = try #require(JSONSerialization.jsonObject(with: payload) as? [String: Any])
+    archive.removeValue(forKey: "syncRevisions"); archive.removeValue(forKey: "tombstones")
+    let oldPayload = try JSONSerialization.data(withJSONObject: archive, options: .sortedKeys)
+    envelope["payload"] = oldPayload.base64EncodedString(); envelope["digest"] = StableDigest.data(oldPayload)
+    try JSONSerialization.data(withJSONObject: envelope).write(to: file)
+    let reopened = try RecoveryStore(directory: directory)
+    #expect(await reopened.records().map(\.sessionID) == ["legacy-m303"])
+    let damaged = Data("damaged archive".utf8)
+    try damaged.write(to: file)
+    #expect(throws: (any Error).self) { _ = try RecoveryStore(directory: directory) }
+    #expect(try Data(contentsOf: file) == damaged)
+  }
+
 }

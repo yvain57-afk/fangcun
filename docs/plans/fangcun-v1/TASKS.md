@@ -46,3 +46,8 @@ M3-01：verified（合成数据与模拟器），9 App / 1 UI，通过证据见 
 ### M3-03
 - 完成纯函数建议、3种本地轻行动、统一sessionID投影和可编辑可跳过反馈。
 - Core/App/UI证据见 M3-03-VERIFICATION.md。真实音频运行环境中断单列，最终全量再核验。
+
+### M3-04
+- 实现两端WC适配、事务outbox/ACK、重复/乱序/tombstone/安装epoch、手机权威摘要和中性缓存回退。
+- 业务投影、HK/WC稳定ID合并与来源写入单一归属已接线；参见 M3-04-VERIFICATION.md。
+- 真机 HealthKit/Watch/App Group分别登记，不推导为已验收；停止点仍为M3，不进入M4。

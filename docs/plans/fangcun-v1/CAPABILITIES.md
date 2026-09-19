@@ -63,3 +63,9 @@ SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`�
 ## M3-02 接入状态
 - 手机准备度 service→store→owner→现行首页/详情/历史：合成数据及模拟器集成已验证；实际 HealthKit 授权读取与锁屏后台仍 implemented_unverified。
 - 不新增健康权限类型、App Group、后台模式；模型阈值仍待校准。
+
+## M3-03 / M3-04
+- 本地轻行动、可选反馈、迁移与核心同步协议：合成Core/App/模拟器UI已验证，不代表内容安全已完成人工发布审查。
+- WatchConnectivity生产适配：iOS/watchOS编译通过，持久化与可控transport通过；真实跨设备送达 implemented_unverified，物理Watch不可用。
+- App Group共享：blocked（工程无可用组配置）；未配置/损坏/过期中性回退已测。正式Widget未开始。
+- 签名Release构建通过；本轮物理iPhone不可达（可达条目为simulated），尚未覆盖安装/启动/真实HealthKit查询。设备检查不得仅按deviceType推断真机。

@@ -22,6 +22,7 @@ extension EnvironmentValues {
   private(set) var reading: Bool
   private(set) var configuration: ReadinessConfiguration
   private(set) var now: Date
+  var onSummaryChange: ((ReadinessAssessment?) async -> Void)?
   var interventions: [ReadinessInterval] = []
   private let clock: () -> Date
   private let defaults: UserDefaults
@@ -91,7 +92,13 @@ extension EnvironmentValues {
     case nil: return current.availability == .limited ? .limited : .insufficient
     }
   }
-  func tick() { now = clock() }
+  func tick() {
+    let before = current?.freshness
+    now = clock()
+    if current?.freshness != before {
+      Task { await onSummaryChange?(current) }
+    }
+  }
   func refresh(healthDataChanged: Bool = false) async {
     tick()
     guard enabled, reading, let pipeline else { return }
@@ -108,6 +115,7 @@ extension EnvironmentValues {
         interventions: interventions, healthDataChanged: healthDataChanged)
       guard version == requestVersion, reading, enabled else { return }
       snapshot = value; errorKey = nil; tick()
+      await onSummaryChange?(current)
       if !observing, let healthProvider {
         try healthProvider.startObserving(pipeline: pipeline, context: { [weak self] in
           guard let self else { return .init(now: .now, calendar: .current) }
@@ -131,23 +139,27 @@ extension EnvironmentValues {
     guard version == requestVersion, reading, enabled, !changingSelection,
       value.current?.configuration == configuration else { return }
     snapshot = value; tick()
+    await onSummaryChange?(current)
   }
   func setTarget(_ hours: Double) async {
     guard (7...10).contains(hours) else { return }
     configuration = .init(sleepTargetHours: hours)
     defaults.set(hours, forKey: "readiness.sleepTarget")
     requestVersion += 1; snapshot.currentAssessmentID = nil
+    await onSummaryChange?(nil)
     await refresh()
   }
   func selectSource(_ key: String, metric: ReadinessMetric) async {
     requestVersion += 1; snapshot.currentAssessmentID = nil; changingSelection = true
     defer { changingSelection = false }
+    await onSummaryChange?(nil)
     do { try await store?.selectSource(key, for: metric, now: clock(), calendar: .current); await refresh() }
     catch { errorKey = "readiness.storageError" }
   }
   func selectSleep(_ id: String) async {
     requestVersion += 1; snapshot.currentAssessmentID = nil; changingSelection = true
     defer { changingSelection = false }
+    await onSummaryChange?(nil)
     do { try await store?.selectSleep(id); await refresh() } catch { errorKey = "readiness.storageError" }
   }
   func stop(clear: Bool = false) async {
@@ -155,6 +167,7 @@ extension EnvironmentValues {
     requestVersion += 1; loading = false; snapshot.currentAssessmentID = nil
     healthProvider?.stopObserving(); observing = false
     await pipeline?.retire(); pipeline = nil
+    await onSummaryChange?(nil)
     do {
       if clear { try await store?.clear(); snapshot = InsightsSnapshot() }
       else { try await store?.invalidateCurrent() }

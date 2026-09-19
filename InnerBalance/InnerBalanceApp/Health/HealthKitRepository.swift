@@ -435,3 +435,32 @@ extension Array where Element == BodyHealthDataKind? {
     Set(compactMap { $0 })
   }
 }
+
+
+extension HealthKitRepository {
+  /// Existing mindful read permission only; imports our own stable session facts, never writes them back.
+  func ownedMindfulSessionsForMerge(now: Date) async throws -> [RecoverySession] {
+    let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+      HKQuery.predicateForSamples(withStart: now.addingTimeInterval(-35*86400), end: now),
+      HKQuery.predicateForObjects(withMetadataKey: HealthMetadataKeys.sessionID)
+    ])
+    let descriptor = HKSampleQueryDescriptor<HKCategorySample>(
+      predicates: [.categorySample(type: HKCategoryType(.mindfulSession), predicate: predicate)],
+      sortDescriptors: [SortDescriptor(\.endDate, order: .reverse)], limit: 1000)
+    return try await descriptor.result(for: healthStore).filter {
+      Self.isOwnedBundleIdentifier($0.sourceRevision.source.bundleIdentifier)
+        && Self.isOwnedSyncIdentifier($0.metadata?[HKMetadataKeySyncIdentifier] as? String)
+    }.compactMap(Self.recoverySession)
+  }
+  static func recoverySession(_ sample: HKCategorySample) -> RecoverySession? {
+    guard sample.categoryType == HKCategoryType(.mindfulSession),
+      let id = sample.metadata?[HealthMetadataKeys.sessionID] as? String,
+      let raw = sample.metadata?[HealthMetadataKeys.practiceType] as? String,
+      let kind = PracticeKind(rawValue: raw), sample.endDate > sample.startDate else { return nil }
+    var result = RecoverySession(sessionID: id, action: .practice(kind), plannedDuration: sample.endDate.timeIntervalSince(sample.startDate),
+      startedAt: sample.startDate, originDevice: "HealthKit")
+    result.plannedDurationKnown = false; result.activeDuration = sample.endDate.timeIntervalSince(sample.startDate)
+    result.endedAt = sample.endDate; result.endReason = .legacyUnknown
+    return result
+  }
+}

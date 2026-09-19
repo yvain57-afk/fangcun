@@ -20,6 +20,7 @@ struct RootView: View {
     case settings
   }
 
+  @Environment(\.phoneSync) private var sync
   @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
   @Environment(\.modelContext) private var modelContext
@@ -156,6 +157,13 @@ struct RootView: View {
     .task {
       await refreshLocalState()
     }
+    .onChange(of: diary.allEntries) { _, _ in
+      if let recovery { Task { await sync?.publishRecords(diary: diary, recovery: recovery) } }
+    }
+    .onChange(of: recovery?.records) { _, _ in
+      updateKnownIntervals()
+      if let recovery { Task { await sync?.publishRecords(diary: diary, recovery: recovery) } }
+    }
     .onChange(of: scenePhase) { _, phase in
       guard phase == .active else { return }
       Task { await refreshLocalState() }
@@ -173,7 +181,12 @@ struct RootView: View {
       readiness?.interventions = records.map { .init(start: $0.startedAt, end: $0.endedAt) }
       for record in records { if let value = record.record { await recovery?.importPractice(value) } }
     }
+    if let recovery, let readiness {
+      await sync?.start(diary: diary, recovery: recovery, readiness: readiness, context: modelContext)
+    }
+    updateKnownIntervals()
     await readiness?.refresh()
+    if let recovery { await sync?.publishRecords(diary: diary, recovery: recovery) }
 
     let writeCoordinator = HealthWriteCoordinator(
       writer: healthWriter,
@@ -182,6 +195,13 @@ struct RootView: View {
     await writeCoordinator.retryPending()
 
     guard let healthRepository else { return }
+    if readiness?.reading == true {
+      let access = await authorizationCoordinator.status(for: .initialBodyStatus)
+      if access.state != .notRequested, let records = try? await healthRepository.ownedMindfulSessionsForMerge(now: .now), readiness?.reading == true {
+        for record in records { try? await recovery?.store?.mergeHealthSession(record) }
+        await recovery?.load()
+      }
+    }
     let syncCoordinator = CheckInSyncCoordinator(
       repository: healthRepository,
       cacheStore: cacheStore
@@ -190,6 +210,17 @@ struct RootView: View {
     latestStressContext = try? cacheStore.latestContextRecord()
   }
 
+  private func updateKnownIntervals() {
+    let original = (try? modelContext.fetch(FetchDescriptor<StoredPracticeCompletion>())) ?? []
+    var intervals = original.map { ReadinessInterval(start: $0.startedAt, end: $0.endedAt) }
+    for record in recovery?.records ?? [] {
+      if case .practice = record.action, let end = record.endedAt {
+        let interval = ReadinessInterval(start: record.startedAt, end: end)
+        if !intervals.contains(interval) { intervals.append(interval) }
+      }
+    }
+    readiness?.interventions = intervals
+  }
   private func startPractice(_ kind: PracticeKind) {
     guard let plan = PracticeCatalog.protocol(for: kind) else { return }
     selectedPracticeWasRecommended = true

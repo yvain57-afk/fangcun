@@ -3,6 +3,7 @@ import SwiftUI
 
 @main
 struct InnerBalanceApp: App {
+  @State private var sync = PhoneSyncCoordinator.make()
   @State private var recovery = RecoveryCoordinator.make()
   @State private var readiness = ReadinessCoordinator.make()
   private let modelContainer: ModelContainer
@@ -37,6 +38,7 @@ struct InnerBalanceApp: App {
       RootView()
         .environment(\.readinessOwner, readiness)
         .environment(\.recoveryOwner, recovery)
+        .environment(\.phoneSync, sync)
         .modifier(FangcunDisplayPreferences())
     }
     .modelContainer(modelContainer)

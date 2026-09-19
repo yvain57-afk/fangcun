@@ -26,6 +26,11 @@ final class RecoveryActionUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["recovery.feedback.current"].label.contains("未回答"))
     app.buttons["不舒服"].tap()
     XCTAssertTrue(app.staticTexts["recovery.feedback.current"].label.contains("不舒服"))
+    app.navigationBars.buttons.firstMatch.tap()
+    app.navigationBars.buttons.firstMatch.tap()
+    app.tabBars.buttons["今日"].tap()
+    for _ in 0..<5 where !suggestion.isHittable { app.swipeDown() }
+    XCTAssertTrue(suggestion.label.contains("座位舒展"))
     let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "m303-feedback"; shot.lifetime = .keepAlways; add(shot)
   }
 }

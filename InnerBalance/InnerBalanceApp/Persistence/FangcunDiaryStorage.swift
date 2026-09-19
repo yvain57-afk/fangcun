@@ -4,13 +4,15 @@ import InnerBalanceCore
 struct FangcunDiaryArchive: Codable {
   var entries: [FangcunDrinkEntry] = []
   var snapshots: [FangcunDaySnapshot] = []
+  var syncRevisions: [String: Int] = [:]
   var migrationDigests: [String: String] = [:]
-  enum CodingKeys: String, CodingKey { case entries, snapshots, migrationDigests }
+  enum CodingKeys: String, CodingKey { case entries, snapshots, migrationDigests, syncRevisions }
   init() {}
   init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy: CodingKeys.self)
     entries = try c.decode([FangcunDrinkEntry].self, forKey: .entries)
     snapshots = try c.decode([FangcunDaySnapshot].self, forKey: .snapshots)
+    syncRevisions = try c.decodeIfPresent([String: Int].self, forKey: .syncRevisions) ?? [:]
     migrationDigests = try c.decodeIfPresent([String: String].self, forKey: .migrationDigests) ?? [:]
   }
 }

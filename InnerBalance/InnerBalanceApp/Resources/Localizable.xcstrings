@@ -2141,6 +2141,86 @@
           }
         }
       }
+    },
+    "sync.title": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跨端记录状态"
+          }
+        }
+      }
+    },
+    "sync.queued": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d 条事件等待对端确认"
+          }
+        }
+      }
+    },
+    "sync.explanation": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本地记录先保存。安排传输不代表已经送达，收到对端持久化确认后才移出队列。"
+          }
+        }
+      }
+    },
+    "sync.unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跨端服务暂不可用，本地记录保留。"
+          }
+        }
+      }
+    },
+    "sync.queueError": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入同步队列未完成，可重新尝试。"
+          }
+        }
+      }
+    },
+    "sync.pending": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未收到确认；连接恢复后可以重试。"
+          }
+        }
+      }
+    },
+    "sync.groupUnavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "共享容器尚未配置，不提供 Widget 共享缓存。"
+          }
+        }
+      }
+    },
+    "sync.retry": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新尝试传输"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

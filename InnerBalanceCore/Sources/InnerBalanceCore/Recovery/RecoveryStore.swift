@@ -3,7 +3,7 @@ import Foundation
 /// Local action/feedback facts only. This store has no HealthKit dependency or readiness write path.
 public actor RecoveryStore {
   public enum Failure: Error { case corrupt, schema, injected, invalid }
-  private struct Archive: Codable { var schema = 1; var sessions: [String: RecoverySession] = [:] }
+  private struct Archive: Codable { var schema = 1; var sessions: [String: RecoverySession] = [:]; var syncRevisions: [String: Int]?; var tombstones: Set<String>? }
   private struct Envelope: Codable { var digest: String; var payload: Data }
   private let file: URL
   private var archive: Archive
@@ -21,9 +21,31 @@ public actor RecoveryStore {
   public func injectWriteFailure() { failNext = true }
   public func records() -> [RecoverySession] { archive.sessions.values.sorted { $0.startedAt > $1.startedAt } }
   public func save(_ record: RecoverySession) throws {
-    guard record.activeDuration >= 0, record.activeDuration <= record.plannedDuration else { throw Failure.invalid }
+    guard record.activeDuration.isFinite, record.activeDuration >= 0, !(archive.tombstones ?? []).contains(record.sessionID) else { throw Failure.invalid }
     if let old = archive.sessions[record.sessionID], old.revision >= record.revision { return }
     var next = archive; next.sessions[record.sessionID] = record
+    try publish(next)
+  }
+  public func mergeHealthSession(_ record: RecoverySession) throws {
+    guard archive.sessions[record.sessionID] == nil, !(archive.tombstones ?? []).contains(record.sessionID) else { return }
+    var next = archive; next.sessions[record.sessionID] = record; try publish(next)
+  }
+  public func isDeleted(_ id: String) -> Bool { (archive.tombstones ?? []).contains(id) }
+  public func applySync(_ events: [SyncEvent]) throws {
+    var next = archive
+    for event in events where event.kind == .session && event.revision > (next.syncRevisions?[event.entityID] ?? 0) {
+      if event.deleted {
+        next.sessions[event.entityID] = nil
+        next.tombstones = (next.tombstones ?? []).union([event.entityID])
+      } else {
+        var incoming = try JSONDecoder().decode(RecoverySession.self, from: event.payload)
+        incoming.feedback?.localNote = next.sessions[event.entityID]?.feedback?.localNote
+        next.sessions[event.entityID] = incoming
+        if event.explicitRestore { next.tombstones?.remove(event.entityID) }
+      }
+      if next.syncRevisions == nil { next.syncRevisions = [:] }
+      next.syncRevisions?[event.entityID] = event.revision
+    }
     try publish(next)
   }
   public func feedback(sessionID: String, helpfulness: RecoveryHelpfulness?, now: Date, note: String? = nil) throws {

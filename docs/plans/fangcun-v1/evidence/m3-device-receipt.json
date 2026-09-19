@@ -1,0 +1,12 @@
+{
+  "signedReleaseBuild": "passed",
+  "signatureVerification": "passed",
+  "version": "1.0.0",
+  "build": "2026091903",
+  "releaseMockFlags": "absent",
+  "installation": "not_run_physical_device_unavailable",
+  "physicalHealthKit": "unverified",
+  "physicalWatch": "unavailable",
+  "sharedAppGroup": "not_configured",
+  "identifiersAndSigningDetails": "kept_local_only"
+}
