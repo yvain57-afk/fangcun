@@ -13,6 +13,9 @@ import Foundation
   public let localCache: SummaryCache
   public let sharedCache: SummaryCache
   public private(set) var lastError: String?
+  public var currentStatus: (@MainActor () -> DailyStatusSnapshot?)?
+  public let statusCache: StatusSummaryCache
+  private var statusIntent = 0
   public var currentAssessment: (@MainActor () -> ReadinessAssessment?)?
   public var onRecordsChanged: (@MainActor (SyncArchive) async throws -> Void)?
   private let transport: any SyncTransport
@@ -21,6 +24,7 @@ import Foundation
   private var summaryIntent = 0
   public init(store: SyncStore, transport: any SyncTransport, role: String, localDirectory: URL, sharedDirectory: URL? = nil) {
     self.store = store; self.transport = transport; self.role = role
+    statusCache = .init(directory: sharedDirectory ?? localDirectory)
     localCache = .init(directory: localDirectory); sharedCache = .init(directory: sharedDirectory)
     transport.onReceive = { [weak self] data in await self?.receive(data) }
     transport.onOpportunity = { [weak self] in await self?.handshake(); await self?.flush(); await self?.sendStoredSummary() }
@@ -89,8 +93,35 @@ import Foundation
       }
     }
   }
+  public func publishStatus(_ snapshot: DailyStatusSnapshot?, now: Date = .now) async {
+    guard role == "phone" else { return }
+    statusIntent += 1; let intent = statusIntent
+    // Legacy surfaces receive a revocation, never a made-up mapping to the old readiness levels.
+    await publish(nil, now: now)
+    guard intent == statusIntent else { return }
+    do {
+      if snapshot == nil { try statusCache.revoke() }
+      let summary = try await store.makeStatusSummary(snapshot, now: now)
+      guard intent == statusIntent else { return }
+      try statusCache.write(summary)
+      let state = await store.snapshot()
+      let packet = SyncPacket(origin: state.installationID, role: role, summary: state.summary, hello: true,
+        statusSummary: peerCapabilities.contains("score-v3") ? summary : nil)
+      try transport.updateContext(JSONEncoder().encode(packet))
+    } catch {
+      lastError = "status_summary_unavailable"
+      if snapshot == nil, intent == statusIntent {
+        let state = await store.snapshot()
+        let summary = DailyStatusSummaryDTO(snapshot: nil, installationID: state.installationID, sequence: state.summarySequence+1, now: now)
+        let legacy = ReadinessSummaryDTO(assessment: nil, installationID: state.installationID, sequence: state.summarySequence+1, now: now)
+        if let data = try? JSONEncoder().encode(SyncPacket(origin: state.installationID, role: role, summary: legacy, hello: true,
+          statusSummary: peerCapabilities.contains("score-v3") ? summary : nil)) { try? transport.updateContext(data) }
+      }
+    }
+  }
   private func sendStoredSummary() async {
     guard role == "phone" else { return }
+    if let currentStatus { await publishStatus(currentStatus()); return }
     if let currentAssessment { await publish(currentAssessment()); return }
     guard let summary = await store.snapshot().summary else { return }
     do { try transport.updateContext(JSONEncoder().encode(SyncPacket(origin: summary.originInstallationID, role: role, summary: summary, hello: true))) }
@@ -106,7 +137,7 @@ import Foundation
         try await store.acceptPeer(packet.originInstallationID)
         if before.peerInstallationID != packet.originInstallationID { peerCapabilities = [] }
         if role == "watch", before.peerInstallationID != packet.originInstallationID {
-          try localCache.revoke(); try sharedCache.revoke()
+          try localCache.revoke(); try sharedCache.revoke(); try statusCache.revoke()
         }
       }
       guard await store.snapshot().peerInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
@@ -122,6 +153,11 @@ import Foundation
         guard packet.role == "phone", summary.originInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
         try await store.receiveSummary(summary)
         if let accepted = await store.snapshot().summary { try localCache.write(accepted); try sharedCache.write(accepted) }
+      }
+      if let summary = packet.statusSummary {
+        guard packet.role == "phone", summary.originInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
+        try await store.receiveStatusSummary(summary)
+        if let accepted = await store.snapshot().statusSummary { try statusCache.write(accepted) }
       }
       lastError = nil
       if packet.hello {

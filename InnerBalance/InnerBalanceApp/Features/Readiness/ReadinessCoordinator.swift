@@ -24,6 +24,7 @@ extension EnvironmentValues {
   private(set) var scoreConfiguration: StatusScoreConfiguration
   private(set) var connected: Bool
   private(set) var now: Date
+  var onStatusChange: ((DailyStatusSnapshot?) async -> Void)?
   var onSummaryChange: ((ReadinessAssessment?) async -> Void)?
   var interventions: [ReadinessInterval] = []
   private let clock: () -> Date
@@ -110,9 +111,11 @@ extension EnvironmentValues {
   }
   func tick() {
     let before = current?.freshness
+    let scoreBefore = statusScore?.scoreID
     now = clock()
-    if current?.freshness != before {
-      Task { await onSummaryChange?(current) }
+    if current?.freshness != before || scoreBefore != statusScore?.scoreID {
+      Task { await onSummaryChange?(current)
+      await onStatusChange?(statusScore) }
     }
   }
   func refresh(healthDataChanged: Bool = false) async {
@@ -127,19 +130,23 @@ extension EnvironmentValues {
       connected = status.state != .notRequested
       guard status.state != .notRequested, version == requestVersion, reading else { return }
     }
+    await pipeline.setOnCommit { [weak self] _ in await self?.acceptStoredSnapshot() }
+    // Disk-first: a cold start or query failure must not erase a still-valid score.
+    await acceptStoredSnapshot()
     do {
       let value = try await pipeline.refresh(now: now, calendar: .current, configuration: configuration,
         interventions: interventions, healthDataChanged: healthDataChanged, scoreConfiguration: scoreConfiguration)
       guard version == requestVersion, reading, enabled else { return }
-      snapshot = value; errorKey = nil; tick()
+      snapshot = value; errorKey = value.statusReadFailed == true ? "readiness.refreshError" : nil; tick()
       await onSummaryChange?(current)
+      await onStatusChange?(statusScore)
       if !observing, let healthProvider {
         try healthProvider.startObserving(pipeline: pipeline, context: { [weak self] in
           guard let self else { return .init(now: .now, calendar: .current) }
-          return .init(now: self.clock(), calendar: .current, configuration: self.configuration, interventions: self.interventions)
+          return .init(now: self.clock(), calendar: .current, configuration: self.configuration, interventions: self.interventions, scoreConfiguration: self.scoreConfiguration)
         }, onSnapshot: { [weak self] value in
           guard let self, self.reading, self.enabled,
-            value.current?.configuration == self.configuration else { return }
+            (value.currentStatus?.configuration == self.scoreConfiguration || value.current?.configuration == self.configuration) else { return }
           // Re-read the committed store: a delayed observer result must not replace newer intent.
           Task { await self.acceptStoredSnapshot() }
         })
@@ -154,9 +161,10 @@ extension EnvironmentValues {
     guard let store else { return }
     let value = await store.snapshot()
     guard version == requestVersion, reading, enabled, !changingSelection,
-      value.current?.configuration == configuration else { return }
+      (value.currentStatus?.configuration == scoreConfiguration || value.current?.configuration == configuration) else { return }
     snapshot = value; tick()
     await onSummaryChange?(current)
+      await onStatusChange?(statusScore)
   }
   func setTarget(_ hours: Double) async {
     guard (7...10).contains(hours) else { return }
@@ -164,21 +172,37 @@ extension EnvironmentValues {
     scoreConfiguration.sleepGoalMinutes = hours*60
     defaults.set(hours*60, forKey: "status-v3.sleepGoal")
     defaults.set(hours, forKey: "readiness.sleepTarget")
-    requestVersion += 1; snapshot.currentAssessmentID = nil
+    requestVersion += 1; snapshot.currentStatusID = nil; snapshot.currentAssessmentID = nil
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     await refresh()
   }
+  func setRegularity(_ enabled: Bool) async {
+    scoreConfiguration.regularityEnabled = enabled
+    defaults.set(enabled, forKey: "status-v3.regularity")
+    requestVersion += 1; snapshot.currentStatusID = nil
+    await onStatusChange?(nil); await refresh()
+  }
+  func saveManualSleep(minutes: Double, end: Date) async {
+    guard let store else { return }
+    do {
+      try await store.saveManualStatusSleep(.init(minutes: minutes, end: end, recordedAt: clock()))
+      await refresh()
+    } catch { errorKey = "readiness.storageError" }
+  }
   func selectSource(_ key: String, metric: ReadinessMetric) async {
-    requestVersion += 1; snapshot.currentAssessmentID = nil; changingSelection = true
+    requestVersion += 1; snapshot.currentStatusID = nil; snapshot.currentAssessmentID = nil; changingSelection = true
     defer { changingSelection = false }
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     do { try await store?.selectSource(key, for: metric, now: clock(), calendar: .current); await refresh() }
     catch { errorKey = "readiness.storageError" }
   }
   func selectSleep(_ id: String) async {
-    requestVersion += 1; snapshot.currentAssessmentID = nil; changingSelection = true
+    requestVersion += 1; snapshot.currentStatusID = nil; snapshot.currentAssessmentID = nil; changingSelection = true
     defer { changingSelection = false }
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     do { try await store?.selectSleep(id); await refresh() } catch { errorKey = "readiness.storageError" }
   }
   func stop(clear: Bool = false) async {
@@ -187,6 +211,7 @@ extension EnvironmentValues {
     healthProvider?.stopObserving(); observing = false
     await pipeline?.retire(); pipeline = nil
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     do {
       if clear { try await store?.clear(); snapshot = InsightsSnapshot() }
       else { try await store?.invalidateCurrent() }

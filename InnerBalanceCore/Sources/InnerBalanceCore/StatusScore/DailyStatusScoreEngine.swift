@@ -13,7 +13,7 @@ public enum SleepScoreEngine {
       subs["regularity"] = 100 * max(0, 1 - delta / c.regularityZeroMinutes)
       numerator += subs["regularity"]! * c.regularityWeight; denominator += c.regularityWeight
     }
-    return (numerator / denominator, subs)
+    return (min(100, max(0, numerator / denominator)), subs)
   }
   public static func circularDistance(_ a: Double, _ b: Double) -> Double {
     let x = (a.truncatingRemainder(dividingBy: 1440) + 1440).truncatingRemainder(dividingBy: 1440)
@@ -49,7 +49,7 @@ public enum DailyStatusScoreEngine {
     let denominator = parts.reduce(0) { $0 + $1.effectiveWeight }
     guard denominator > 0 else { return .init(rawScore: nil, displayScore: nil, band: nil, components: [], sleepSubscores: subs) }
     for index in parts.indices { parts[index].normalizedWeight = parts[index].effectiveWeight / denominator }
-    let raw = parts.reduce(0) { $0 + $1.score*$1.effectiveWeight } / denominator
+    let raw = min(100, max(0, parts.reduce(0) { $0 + $1.score*$1.effectiveWeight } / denominator))
     let score = Int(floor(min(100,max(0,raw))+0.5+1e-10))
     return .init(rawScore: raw, displayScore: score, band: StatusBand.resolve(score), components: parts, sleepSubscores: subs)
   }

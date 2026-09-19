@@ -28,9 +28,12 @@ import Testing
     let container = try ModelContainer(for: schema, configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)])
     await owner.start(diary: diary, recovery: recovery, readiness: readiness, context: container.mainContext)
     await readiness.refresh()
-    #expect(await store.snapshot().summary?.assessmentID == readiness.current?.assessmentID)
+    #expect(readiness.statusScore != nil)
+    #expect(await store.snapshot().statusSummary?.scoreID == readiness.statusScore?.scoreID)
+    #expect(await store.snapshot().summary?.revoked == true)
     await readiness.stop(clear: true)
     #expect(await store.snapshot().summary?.revoked == true)
+    #expect(await store.snapshot().statusSummary?.revoked == true)
     #expect(service.localCache.read(now: .now, peer: (await store.snapshot()).installationID) == .neutral)
     let start = Date.now.addingTimeInterval(-60)
     let hk = HKCategorySample(type: HKCategoryType(.mindfulSession), value: HKCategoryValue.notApplicable.rawValue, start: start, end: .now,

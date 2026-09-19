@@ -17,7 +17,7 @@ struct DailyStatusPresentation {
   var cycle: String {
     let date = score.asOf.formatted(.dateTime.month().day())
     let hour = Calendar.current.component(.hour, from: score.asOf)
-    return date + (hour < 12 ? "晨间评估" : "睡后评估")
+    return date + (score.features.sleepEnd == nil ? "日间评估" : hour < 12 ? "晨间评估" : "睡后评估")
   }
   static func componentName(_ key: String) -> String { key == "sleep" ? "睡眠" : key == "hrv" ? "心率变异性" : "静息心率" }
 }
@@ -37,7 +37,7 @@ struct DailyStatusHero: View {
       layout {
         VStack(alignment: .leading, spacing: 2) {
           HStack(alignment: .firstTextBaseline, spacing: 4) {
-            Text(String(score.displayScore)).font(.system(size: numberSize, weight: .semibold, design: .rounded).monospacedDigit())
+            Text(String(score.displayScore)).font(.system(size: numberSize, weight: .semibold).monospacedDigit())
               .accessibilityIdentifier("status.score")
             Text("/100").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
           }.accessibilityElement(children: .combine).accessibilityLabel("方寸状态分，\(score.displayScore)分")
@@ -68,6 +68,26 @@ struct DailyStatusDetailView: View {
           VStack(alignment: .leading, spacing: 6) {
             Text("\(DailyStatusPresentation.componentName(part.name)) · \(Int(part.score.rounded())) 分").font(.headline)
             Text("占本次评分 \(Int((part.normalizedWeight*100).rounded()))%").font(.subheadline)
+            DisclosureGroup("查看这项数据") {
+              if let value = score.features.displayValues[part.name] {
+                Text(part.name == "sleep" ? "实际睡眠 \(Int(value.rounded())) 分钟" : part.name == "hrv" ? "SDNN \(value.formatted(.number.precision(.fractionLength(1)))) ms" : "系统静息心率 \(value.formatted(.number.precision(.fractionLength(1)))) 次/分")
+              }
+              if let measured = score.features.measuredAt[part.name] {
+                Text("测量："+measured.formatted(.dateTime.month().day().hour().minute()))
+              }
+              if part.name == "sleep" {
+                Text("个人目标 \(Int(score.configuration.sleepGoalMinutes)) 分钟")
+                if score.features.manual { Text("你补记的睡眠") }
+                ForEach(score.sleepSubscores.keys.sorted(),id:\.self) { key in
+                  Text("\(key == "duration" ? "时长" : key == "continuity" ? "连续性" : "规律")：\(Int(score.sleepSubscores[key]!.rounded())) 分")
+                }
+              } else {
+                Text("个人比较历史：\(part.name == "hrv" ? score.features.input.hrvDays : score.features.input.rhrDays) 天")
+                if part.name == "hrv" { Text("本次 \(score.features.input.hrvSamples) 个样本，覆盖 \(score.features.input.hrvHours) 个小时桶") }
+                Text(part.name == "hrv" ? "所选主睡眠内，同源 SDNN 的对数中位数。" : score.features.windowPolicy.contains("dailyRHR") ? "当日系统静息心率；同源过去 28 天每日代表值作个人比较。" : "晨间窗口内系统静息心率；同源过去 28 天每日代表值作个人比较。")
+              }
+            }.font(.caption)
+
           }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
         }
         if score.compositionUpdated { Text("计入项目已更新").font(.caption).accessibilityIdentifier("status.compositionChanged") }

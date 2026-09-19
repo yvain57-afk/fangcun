@@ -16,6 +16,7 @@ public struct SyncArchive: Codable, Sendable {
   public var quarantined: [String: Data] = [:]
   public var summary: ReadinessSummaryDTO?
   public var summarySequence = 0
+  public var statusSummary: DailyStatusSummaryDTO?
 }
 /// Business payload + deduplication + receipt are one atomic transaction. Never writes HealthKit.
 public actor SyncStore {
@@ -45,6 +46,7 @@ public actor SyncStore {
     var next = state
     if let previous = next.peerInstallationID { next.retiredPeers.insert(previous) }
     next.peerInstallationID = id
+    if next.statusSummary?.originInstallationID != next.installationID { next.statusSummary = nil }
     if next.summary?.originInstallationID != next.installationID { next.summary = nil }
     try publish(next)
   }
@@ -104,6 +106,18 @@ public actor SyncStore {
     guard value.schemaVersion == 1, value.originInstallationID == state.peerInstallationID else { throw Failure.peer }
     if let old = state.summary, old.originInstallationID == value.originInstallationID, old.sequence >= value.sequence { return }
     var next = state; next.summary = value; try publish(next)
+  }
+  public func makeStatusSummary(_ value: DailyStatusSnapshot?, now: Date) throws -> DailyStatusSummaryDTO {
+    var next = state; next.summarySequence += 1
+    let summary = DailyStatusSummaryDTO(snapshot: value, installationID: state.installationID, sequence: next.summarySequence, now: now)
+    guard summary.isValid else { throw Failure.invalid }
+    next.statusSummary = summary; try publish(next); return summary
+  }
+  public func receiveStatusSummary(_ value: DailyStatusSummaryDTO) throws {
+    guard value.originInstallationID == state.peerInstallationID else { throw Failure.peer }
+    guard value.isValid else { throw Failure.invalid }
+    if let old = state.statusSummary, old.originInstallationID == value.originInstallationID, old.sequence >= value.sequence { return }
+    var next = state; next.statusSummary = value; try publish(next)
   }
   private func validate(_ event: SyncEvent) throws {
     guard event.schemaVersion == 1, event.revision > 0, !event.entityID.isEmpty else { throw Failure.unknownProtocol }

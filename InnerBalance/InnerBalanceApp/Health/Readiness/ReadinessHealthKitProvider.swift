@@ -62,7 +62,7 @@ final class ReadinessHealthKitProvider: ReadinessHealthDataProviding {
     try startObserving(onChange: {
       let value = context()
       let snapshot = try await pipeline.refresh(now: value.now, calendar: value.calendar,
-        configuration: value.configuration, interventions: value.interventions, healthDataChanged: true)
+        configuration: value.configuration, interventions: value.interventions, healthDataChanged: true, scoreConfiguration: value.scoreConfiguration)
       onSnapshot(snapshot)
     })
   }
@@ -160,4 +160,5 @@ struct ReadinessObservationContext: Sendable {
   var calendar: Calendar
   var configuration: ReadinessConfiguration = .init()
   var interventions: [ReadinessInterval] = []
+  var scoreConfiguration: StatusScoreConfiguration?
 }

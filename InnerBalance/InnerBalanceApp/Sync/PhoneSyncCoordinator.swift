@@ -41,10 +41,10 @@ extension EnvironmentValues {
       for old in try context.fetch(FetchDescriptor<StoredPracticeCompletion>()) where deleted.contains(old.sessionID) { context.delete(old) }
       try context.save()
     }
-    service.currentAssessment = { [weak readiness] in readiness?.current }
-    readiness.onSummaryChange = { [weak service] assessment in await service?.publish(assessment) }
+    service.currentStatus = { [weak readiness] in readiness?.statusScore }
+    readiness.onStatusChange = { [weak service] score in await service?.publishStatus(score) }
     await service.reconcile()
-    await service.publish(readiness.current)
+    await service.publishStatus(readiness.statusScore)
     readyForLocalEvents = true
     service.activate()
     await publishRecords(diary: diary, recovery: recovery)

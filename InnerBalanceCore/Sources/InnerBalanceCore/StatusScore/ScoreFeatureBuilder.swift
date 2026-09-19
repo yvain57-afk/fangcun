@@ -14,12 +14,33 @@ public enum ScoreFeatureBuilder {
     let days = Dictionary(grouping: recent) { calendar.startOfDay(for: $0.end) }
     let latestDay = days.keys.max()
     let selected = manual ?? latestDay.flatMap { days[$0]?.max { $0.asleepDuration == $1.asleepDuration ? $0.end < $1.end : $0.asleepDuration < $1.asleepDuration } }
-    guard let episode = selected else { return nil }
+    if let manual = snapshot.manualStatusSleep, manual.isValid, manual.end <= now,
+      now.timeIntervalSince(manual.end) < 24*3600, manual.end >= (selected?.end ?? .distantPast) {
+      var bundle = ScoreFeatureBundle(input: .init(sleepMinutes: manual.minutes), cycleID: "manualSleep-v3|"+manual.id.uuidString,
+        asOf: manual.end, sleepStart: manual.end.addingTimeInterval(-manual.minutes*60), sleepEnd: manual.end,
+        basisSampleIDs: [manual.id], sourceSegments: ["sleep":"self-reported"], manual: true, windowPolicy: "manualSleep-v3",
+        displayValues: ["sleep":manual.minutes], measuredAt: ["sleep":manual.end], fingerprint: "")
+      ScoreCardioBuilder.append(to: &bundle, episodes: built.episodes, current: nil, samples: samples,
+        sources: snapshot.sources, now: now, calendar: calendar, configuration: configuration, interventions: interventions)
+      bundle.fingerprint = try fingerprint(bundle, samples: samples, configuration: configuration)
+      return bundle
+    }
+    guard let episode = selected else {
+      var bundle = ScoreFeatureBundle(input: .init(), cycleID: "empty", asOf: now,
+        sleepStart: nil, sleepEnd: nil, basisSampleIDs: [], sourceSegments: [:], manual: false,
+        windowPolicy: "noSleep-v3", displayValues: [:], measuredAt: [:], fingerprint: "")
+      ScoreCardioBuilder.append(to: &bundle, episodes: built.episodes, current: nil, samples: samples,
+        sources: snapshot.sources, now: now, calendar: calendar, configuration: configuration, interventions: interventions)
+      guard bundle.input.rhrDeviation != nil else { return nil }
+      bundle.fingerprint = try fingerprint(bundle, samples: samples, configuration: configuration)
+      return bundle
+    }
     var input = StatusScoreInput()
     var dependencies = Set(episode.sampleIDs)
     if episode.sleepDurationUsable, episode.asleepDuration > 0 {
       input.sleepMinutes = episode.asleepDuration / 60
       let related = samples.filter { $0.metric == .sleep && $0.sourceKey == episode.sourceKey && $0.end > episode.start && $0.start < episode.end }
+      dependencies.formUnion(related.map(\.id))
       let awake = SleepEpisodeBuilder.union(related.filter { $0.stage == .awake }.map { .init(start: max(episode.start,$0.start), end: min(episode.end,$0.end)) })
       // Asleep-only is not evidence of complete wake coverage, including when there are zero gaps.
       let covered = SleepEpisodeBuilder.union(episode.intervals + awake)
@@ -41,8 +62,10 @@ public enum ScoreFeatureBuilder {
     }
     var bundle = ScoreFeatureBundle(input: input, cycleID: episode.recoveryCycleID, asOf: episode.end,
       sleepStart: episode.start, sleepEnd: episode.end, basisSampleIDs: dependencies.sorted { $0.uuidString < $1.uuidString },
-      sourceSegments: snapshot.sources.mapValues(\.segmentID), manual: false, windowPolicy: "mainSleep-v3",
+      sourceSegments: snapshot.sources[ReadinessMetric.sleep.rawValue].map { ["sleep": $0.segmentID] } ?? [:], manual: false, windowPolicy: "mainSleep-v3",
       displayValues: input.sleepMinutes.map { ["sleep": $0] } ?? [:], measuredAt: ["sleep": episode.end], fingerprint: "")
+    ScoreCardioBuilder.append(to: &bundle, episodes: built.episodes, current: episode, samples: samples,
+      sources: snapshot.sources, now: now, calendar: calendar, configuration: configuration, interventions: interventions)
     bundle.fingerprint = try fingerprint(bundle, samples: samples, configuration: configuration)
     return bundle
   }

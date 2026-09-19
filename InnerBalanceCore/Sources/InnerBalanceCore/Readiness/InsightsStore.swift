@@ -36,6 +36,8 @@ public struct InsightsSnapshot: Codable, Sendable {
   public var statusScores: [DailyStatusSnapshot]?
   public var currentStatusID: String?
   public var statusDeletionAudit: [DeletedStatusAudit]?
+  public var statusReadFailed: Bool?
+  public var manualStatusSleep: SelfReportedSleep?
   public init() {}
   public var current: ReadinessAssessment? { assessments.first { $0.assessmentID == currentAssessmentID } }
 
@@ -64,6 +66,7 @@ public struct InsightsSnapshot: Codable, Sendable {
     let scoreIDs = Set(removedScores.map(\.scoreID))
     statusScores?.removeAll { scoreIDs.contains($0.scoreID) }
     if currentStatusID.map(scoreIDs.contains) == true { currentStatusID = nil }
+    if let manual = manualStatusSleep, tombstones.contains(manual.id.uuidString) { manualStatusSleep = nil }
     ledger.tombstones.formUnion(tombstones)
     ledger.samples = ledger.samples.filter { !tombstones.contains($0.key) }
     episodes.removeAll { $0.sampleIDs.contains { tombstones.contains($0.uuidString) } }
@@ -134,6 +137,7 @@ public actor InsightsStore {
   public func commit(_ candidate: InsightsSnapshot, expectedGeneration: Int) throws -> InsightsSnapshot {
     guard state.generation == expectedGeneration else { throw InsightsStoreError.staleTransaction }
     guard candidate.generation == expectedGeneration else { throw InsightsStoreError.invalidTransaction }
+    guard (candidate.statusScores ?? []).allSatisfy(\.isValid), candidate.manualStatusSleep.map(\.isValid) ?? true else { throw InsightsStoreError.invalidTransaction }
     let fault = nextFault; nextFault = .none
     if fault == .beforePublish { throw InsightsStoreError.injectedFailure }
     var next = candidate
@@ -166,6 +170,12 @@ public actor InsightsStore {
     try commit(next, expectedGeneration: state.generation)
   }
 
+  public func saveManualStatusSleep(_ value: SelfReportedSleep) throws {
+    guard value.isValid else { throw InsightsStoreError.invalidTransaction }
+    var next = state; next.manualStatusSleep = value; next.currentStatusID = nil
+    try commit(next, expectedGeneration: state.generation)
+  }
+
   public func selectSleep(_ episodeID: String) throws {
     guard state.episodes.contains(where: { $0.id == episodeID }) else { throw InsightsStoreError.invalidTransaction }
     var next = state; next.manualSleepID = episodeID; next.currentAssessmentID = nil; next.currentStatusID = nil
@@ -192,6 +202,7 @@ public actor InsightsStore {
   public func clear() throws {
     privacy.epoch = state.generation + 1
     privacy.deletedIDs.formUnion(state.ledger.samples.keys)
+    if let manual = state.manualStatusSleep { privacy.deletedIDs.insert(manual.id.uuidString) }
     try Self.write(privacy, to: directory.appendingPathComponent("deletions-v1.json"))
     var empty = InsightsSnapshot(); empty.generation = privacy.epoch
     empty.ledger.tombstones = privacy.deletedIDs

@@ -32,6 +32,8 @@ public actor ReadinessPipeline {
     var request: Request
     var waiters: [CheckedContinuation<InsightsSnapshot, Error>]
   }
+  private var onCommit: (@Sendable (InsightsSnapshot) async -> Void)?
+  public func setOnCommit(_ callback: (@Sendable (InsightsSnapshot) async -> Void)?) { onCommit = callback }
   private var retired = false
   /// Ends this owner's lifetime. In-flight SDK queries may finish, but cannot publish or schedule work.
   public func retire() {
@@ -101,12 +103,16 @@ public actor ReadinessPipeline {
     guard !retired else { throw RefreshError.superseded }
     let initial = await store.snapshot()
     var candidate = initial
+    var expectedGeneration = initial.generation
+    let mayPublishProgress = initial.currentStatus.map { now >= $0.validUntil } ?? true
     var initialization = initial.initialization ?? [:]
     var failure: ReadinessReadFailure?
     var anyReadFailed = false
     var resetMetrics: Set<ReadinessMetric> = []
     let metrics: [ReadinessMetric] = [.sleep,.hrvSDNN,.restingHeartRate,.workout]
     for metric in metrics {
+      let beforeMetric = candidate.ledger
+      var metricFailed = false
       var cursor = candidate.ledger.cursors[metric.rawValue]
       if cursor == nil {
         initialization[metric.rawValue] = .inProgress
@@ -135,15 +141,41 @@ public actor ReadinessPipeline {
             candidate.ledger.cursors[metric.rawValue] = nil
             continue
           }
-          anyReadFailed = true
+          anyReadFailed = true; metricFailed = true
           if metric != .workout { failure = reason }
           break
+        }
+      }
+      if scoreConfiguration != nil {
+        if metricFailed {
+          // Failed pages cannot advance a cursor or leak a partial metric into the denominator.
+          let tombstones = candidate.ledger.tombstones
+          candidate.ledger.samples = candidate.ledger.samples.filter { $0.value.metric != metric }
+          for (key, row) in beforeMetric.samples where row.metric == metric { candidate.ledger.samples[key] = row }
+          candidate.ledger.cursors[metric.rawValue] = beforeMetric.cursors[metric.rawValue]
+          candidate.redact(tombstones)
+          initialization[metric.rawValue] = initial.initialization?[metric.rawValue] ?? .unread
+        } else if initialization[metric.rawValue] == .complete {
+          candidate.sources[metric.rawValue] = StableSourceSelector.select(metric: metric, samples: candidate.ledger.normalizedSamples,
+            existing: candidate.sources[metric.rawValue], calendar: calendar, now: now)
+        }
+        candidate.initialization = initialization
+        candidate.redact(candidate.ledger.tombstones)
+        if mayPublishProgress, !anyReadFailed, let scoreConfiguration,
+          let features = try ScoreFeatureBuilder.build(snapshot: candidate, now: now, calendar: calendar,
+            configuration: scoreConfiguration, interventions: interventions) {
+          try candidate.recordStatus(features, configuration: scoreConfiguration, now: now)
+          guard !retired else { throw RefreshError.superseded }
+          candidate = try await store.commit(candidate, expectedGeneration: expectedGeneration)
+          expectedGeneration = candidate.generation
+          await onCommit?(candidate)
         }
       }
     }
     candidate.ledger.samples = candidate.ledger.samples.filter { $0.value.end >= now.addingTimeInterval(-35*86_400) }
     let samples = candidate.ledger.normalizedSamples
     candidate.lastRefreshAttemptAt = now
+    if scoreConfiguration != nil { candidate.statusReadFailed = anyReadFailed }
     if !anyReadFailed { candidate.lastSuccessfulRefreshAt = now }
     candidate.initialization = initialization
     for metric in metrics {
@@ -177,6 +209,8 @@ public actor ReadinessPipeline {
     candidate.requiresResync = failure != nil && initial.requiresResync
     // compare-and-swap rejects a late response after source selection, deletion, or clear().
     guard !retired else { throw RefreshError.superseded }
-    return try await store.commit(candidate, expectedGeneration: initial.generation)
+    let committed = try await store.commit(candidate, expectedGeneration: expectedGeneration)
+    await onCommit?(committed)
+    return committed
   }
 }

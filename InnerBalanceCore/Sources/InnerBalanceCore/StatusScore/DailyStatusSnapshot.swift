@@ -1,5 +1,15 @@
 import Foundation
 
+public struct SelfReportedSleep: Codable, Equatable, Sendable {
+  public var id: UUID
+  public var minutes: Double
+  public var end: Date
+  public var recordedAt: Date
+  public init(id: UUID = UUID(), minutes: Double, end: Date, recordedAt: Date) {
+    self.id = id; self.minutes = minutes; self.end = end; self.recordedAt = recordedAt
+  }
+  public var isValid: Bool { minutes.isFinite && (0...1440).contains(minutes) && end <= recordedAt && recordedAt.timeIntervalSince(end) < 24*3600 }
+}
 public struct ScoreFeatureBundle: Codable, Equatable, Sendable {
   public var input: StatusScoreInput
   public var cycleID: String
@@ -36,7 +46,12 @@ public struct DailyStatusSnapshot: Codable, Equatable, Sendable {
   public var inputFingerprint: String
   public var compositionUpdated: Bool
   public var isValid: Bool {
-    rawScore.isFinite && (0...100).contains(rawScore) && StatusBand.resolve(displayScore) == band
+    configuration.isValid && qualityPolicyVersion == configuration.qualityPolicyVersion
+      && features.asOf == asOf && features.cycleID == cycleID && features.fingerprint == inputFingerprint
+      && Set(components.map(\.name)).count == components.count && Set(components.map(\.name)).isSubset(of: ["sleep","hrv","rhr"])
+      && components.allSatisfy { $0.effectiveWeight.isFinite && $0.effectiveWeight > 0 }
+      && abs(components.reduce(0) { $0+$1.score*$1.normalizedWeight }-rawScore) < 1e-8
+      && rawScore.isFinite && (0...100).contains(rawScore) && StatusBand.resolve(displayScore) == band
       && Int(floor(rawScore+0.5+1e-10)) == displayScore && modelVersion == "fangcun-status-3.0"
       && !components.isEmpty && components.allSatisfy { $0.score.isFinite && (0...100).contains($0.score) && $0.normalizedWeight.isFinite && $0.normalizedWeight > 0 }
       && abs(components.reduce(0) { $0 + $1.normalizedWeight } - 1) < 1e-8 && currentUntil > asOf && validUntil > currentUntil
