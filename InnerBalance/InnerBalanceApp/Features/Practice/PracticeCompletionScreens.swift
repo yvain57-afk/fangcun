@@ -25,7 +25,7 @@ struct PracticeComparisonScreen: View {
     } else {
       ScrollView {
         VStack(alignment: .leading, spacing: FangcunLayout.spacing(7)) {
-          FangcunCompanion(scene: viewModel.actualDuration ?? 0 >= viewModel.duration - 1 ? .complete : .rest)
+          FangcunCompanion(scene: viewModel.actualDuration ?? 0 >= viewModel.duration - 1 ? .complete : .rest, paused: true)
             .frame(height: 155).frame(maxWidth: .infinity)
           VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
             Text("已经为自己留了片刻")
@@ -119,9 +119,8 @@ struct PracticeSavedScreen: View {
       VStack(spacing: FangcunLayout.spacing(5)) {
         Text("练习结果")
           .fangcunSectionLabelStyle()
-        FangcunCompanion(scene: scene)
+        FangcunCompanion(scene: scene, event: scene == .complete ? .completed : .endedEarly)
           .frame(height: 185)
-        .scaleEffect(appeared || reduceMotion ? 1 : 0.94)
         .opacity(appeared ? 1 : 0)
         Text("本次练习已保存")
           .font(.title.weight(.semibold))

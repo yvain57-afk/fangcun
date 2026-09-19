@@ -1,4 +1,5 @@
 import SwiftUI
+import InnerBalanceCore
 
 enum FangcunCompanionScene: String {
   case calm = "duo-calm", rest = "dog-rest", curious = "cat-curious"
@@ -24,51 +25,62 @@ struct FangcunCompanion: View {
   var breath: Double = 0
   var paused = false
   var reaction = 0
+  var event: CompanionMotionEvent = .entered
   @Environment(\.accessibilityReduceMotion) private var systemReduced
   @Environment(\.scenePhase) private var phase
   @AppStorage("fangcun.reduceMotion") private var reduced = false
+  @AppStorage("fangcun.motionMode") private var mode = CompanionMotionMode.standard.rawValue
+  @State private var lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
   @State private var start = Date.now
   @State private var visible = true
-  @State private var frozenTime = 0.0
-  @State private var gestureFinished = false
-
+  @State private var gesture: CompanionPresentation?
+  @State private var coordinator = CompanionMotionCoordinator()
+  private var key: String { scene.rawValue + ":" + String(reaction) }
+  private var staticMode: Bool { systemReduced || reduced || mode == "static" || lowPower }
+  private var active: Bool { !staticMode && !paused && visible && phase == .active }
+  private var eventValue: Float { event == .waterCommitted ? 1 : event == .drinkUndone ? 2 : event == .drinkCommitted ? 3 : 0 }
   var body: some View {
-    let mode = scene.mode
-    let amount = Float(breath)
-    let reduceValue: Float = systemReduced || reduced ? 1 : 0
-    TimelineView(.animation(minimumInterval: 1.0 / 30, paused: stopped)) { context in
-      let time = stopped ? frozenTime : context.date.timeIntervalSince(start)
-      Image("Companion-\(scene.rawValue)")
-        .resizable().aspectRatio(contentMode: .fit)
-        .colorEffect(ShaderLibrary.fangcunPaperAlpha())
-        .visualEffect { content, geometry in
-          content.distortionEffect(
-            ShaderLibrary.fangcunCompanionWarp(.float2(geometry.size), .float(mode),
-              .float(Float(time)), .float(amount), .float(reduceValue)),
-            maxSampleOffset: CGSize(width: 10, height: 10))
+    Group {
+      if scene == .breathe {
+        // Authoritative session expansion survives pause. No decorative timeline.
+        artwork(time: 0, amount: staticMode ? 0 : Float(breath), intensity: 1)
+      } else if active, let gesture {
+        TimelineView(.animation(minimumInterval: 1.0 / 30)) { context in
+          artwork(time: Float(context.date.timeIntervalSince(start)), amount: 0, intensity: Float(gesture.intensity))
         }
+      } else { artwork(time: 0, amount: 0, intensity: 0) }
     }
     .aspectRatio(scene.ratio, contentMode: .fit)
-    .clipShape(RoundedRectangle(cornerRadius: 20))
     .accessibilityHidden(true)
-    .onAppear { start = .now; visible = true }
-    .onDisappear { visible = false }
-    .onScrollVisibilityChange { isVisible in visible = isVisible }
-    .onChange(of: stopped) { wasStopped, isStopped in
-      if isStopped { frozenTime = Date.now.timeIntervalSince(start) }
-      else if wasStopped { start = Date.now.addingTimeInterval(-frozenTime) }
+    .onAppear { visible = true }
+    .onDisappear { visible = false; gesture = nil; coordinator.stop() }
+    .onScrollVisibilityChange { isVisible in visible = isVisible; if !isVisible { gesture = nil } }
+    .onChange(of: active) { _, isActive in if !isActive { gesture = nil; coordinator.stop() } }
+    .onReceive(NotificationCenter.default.publisher(for: .NSProcessInfoPowerStateDidChange)) { _ in
+      lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
     }
-    .onChange(of: reaction) { _, _ in start = .now; frozenTime = 0 }
-    .task(id: reaction) {
+    .task(id: key) {
       guard scene != .breathe else { return }
-      gestureFinished = false
-      do { try await Task.sleep(for: .milliseconds(scene == .calm ? 1800 : scene == .drink ? 1100 : scene == .complete ? 1300 : 1600)) }
-      catch { return }
-      frozenTime = 0; gestureFinished = true
+      let now = Date.now
+      let motion = CompanionEvent(id: key, kind: event, committedAt: now)
+      gesture = coordinator.accept(motion, scene: scene.rawValue, context: "native", now: now,
+        mode: CompanionMotionMode(rawValue: mode) ?? .standard, reduceMotion: systemReduced || reduced,
+        lowPower: lowPower, visible: visible, active: phase == .active, covered: paused)
+      guard let duration = gesture?.duration else { return }
+      start = now
+      do { try await Task.sleep(for: .seconds(duration)) } catch { return }
+      gesture = nil; coordinator.stop()
     }
   }
-  // Breathing receives its expansion from the session clock; it needs no second clock.
-  private var stopped: Bool { scene == .breathe || gestureFinished || paused || systemReduced || reduced || !visible || phase != .active }
+  private func artwork(time: Float, amount: Float, intensity: Float) -> some View {
+    Image("Companion-\(scene.rawValue)").resizable().aspectRatio(contentMode: .fit)
+      .colorEffect(ShaderLibrary.fangcunPaperAlpha())
+      .visualEffect { content, geometry in
+        content.distortionEffect(ShaderLibrary.fangcunCompanionWarp(.float2(geometry.size), .float(scene.mode),
+          .float(time), .float(amount), .float(staticMode ? 1 : 0), .float(eventValue), .float(intensity)),
+          maxSampleOffset: CGSize(width: 10, height: 10))
+      }
+  }
 }
 
 extension View {

@@ -3,7 +3,7 @@ using namespace metal;
 float fcArea(float2 p, float2 c, float2 r) { float2 q=(p-c)/r; float a=clamp(1-dot(q,q),0.0,1.0); return a*a; }
 float fcHead(float2 p, float2 c, float2 r) { float e=clamp((1-length((p-c)/r))/.4,0.0,1.0); return e*e*(3-2*e); }
 float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F*t/d); return s*s; }
-[[ stitchable ]] float2 fangcunCompanionWarp(float2 position, float2 size, float mode, float time, float breath, float reduced) {
+[[ stitchable ]] float2 fangcunCompanionWarp(float2 position, float2 size, float mode, float time, float breath, float reduced, float event, float intensity) {
  if(reduced>0.5) return position;
  float2 p=position/max(size,float2(1)), delta=0;
  float grounded=clamp((.79-p.y)/.11,0.0,1.0);
@@ -13,12 +13,19 @@ float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F
   float head=fcHead(p,float2(.67,.43),float2(.22,.28))*grounded;
   delta=float2(.015,-.010)*wag*tail+float2(-(p.y-.43),p.x-.67)*.025*hello*head;
  } else if(mode<1.5) {
-  delta.y=-.0045*(1-cos(time*M_PI_F/4))/2*fcArea(p,float2(.72,.53),float2(.18,.20))*grounded;
+  delta.y=-.0045*fcGesture(time,1.6)*fcArea(p,float2(.72,.53),float2(.18,.20))*grounded;
  } else if(mode<2.5) {
   float look=fcGesture(time,1.6)*fcHead(p,float2(.54,.43),float2(.31,.32))*grounded;
   delta=float2(.008-(p.y-.43)*.024,.004+(p.x-.54)*.024)*look;
  } else if(mode<3.5) {
-  delta.y=.014*fcGesture(time,.85)*fcHead(p,float2(.51,.43),float2(.30,.30))*grounded;
+  float duration=event>2.5?.6:event>.5?1.1:.8;
+  if(event<1.5 || event>2.5) delta.y=.010*fcGesture(time,duration)*fcHead(p,float2(.51,.43),float2(.30,.30))*clamp((.69-p.y)/.10,0.0,1.0);
+  if(event>.5 && event<2.5) {
+   // Only cup interior moves; rim, base, animal feet remain fixed.
+   float cup=fcArea(p,float2(.158,.771),float2(.047,.027));
+   delta.y+=(event<1.5?-.008:.008)*fcGesture(time,event<1.5?1.1:.25)*cup;
+   if(event<1.5) delta.x+=.005*sin(time*9)*fcGesture(time,1.1)*fcArea(p,float2(.758,.75),float2(.065,.08));
+  }
  } else if(mode<4.5) {
   float chest=fcArea(p,float2(.52,.58),float2(.35,.32))*clamp((.82-p.y)/.16,0.0,1.0);
   delta=float2((p.x-.52)*.065,-.018)*breath*chest;
@@ -26,7 +33,7 @@ float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F
   float touch=fcGesture(time,1.3)*fcArea(p,float2(.51,.61),float2(.15,.14));
   delta=float2(p.x<.5?.007:-.007,-.005)*touch;
  }
- return position-delta*size;
+ return position-delta*size*intensity;
 }
 
 // Remove only near-neutral paper pixels, retaining the colored print and its texture.
