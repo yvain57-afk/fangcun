@@ -19,6 +19,23 @@ struct FangcunTodayView: View {
   @AppStorage("fangcun.largeType") private var largeType = false
   @State private var drinks = false
   @State private var askingHealth = false
+  @State private var localAction: StatusLocalLaunch?
+  @State private var safety = false
+  private var status: DailyStatusSnapshot? { readiness?.statusScore }
+  private var statusNow: Date { readiness?.now ?? .now }
+  private var isNight: Bool {
+    if let care, care.preferences.sleepPlanConfirmed {
+      return care.preferences.sleepCycles(now: statusNow, calendar: .current).contains { statusNow >= $0.start.addingTimeInterval(-90*60) && statusNow < $0.end }
+    }
+    return Calendar.current.component(.hour, from: statusNow) >= 22 || Calendar.current.component(.hour, from: statusNow) < 6
+  }
+  private var primaryAction: StatusPrimaryAction {
+    if care?.selection?.candidate.category == .danger { return .safety }
+    if status == nil { return readiness?.connected == false ? .connect : .sync }
+    return StatusPresentationPolicy.action(score: status, night: isNight,
+      driving: recovery?.environment == .driving || recovery?.environment == .unavailable,
+      avoidBreathing: recovery?.uncomfortable.contains(.practice(.physiologicalSigh)) == true)
+  }
 
   private var state: FangcunDayState {
     if let readiness, readiness.enabled { return readiness.scene }
@@ -62,25 +79,32 @@ struct FangcunTodayView: View {
         VStack(spacing: 20) {
           header
           HStack {
-            Text(Date.now, format: .dateTime.month().day().weekday(.wide)).font(.caption)
+            Text(statusNow, format: .dateTime.month().day().weekday(.wide)).font(.caption)
             Spacer()
-            Text((readiness?.enabled == true ? readiness?.loading == true : model.isLoading) ? "正在更新" : "Apple 健康 · 身体线索").font(.caption2)
+            Text(readiness?.loading == true ? "正在更新" : "方寸状态分").font(.caption2)
           }.foregroundStyle(InnerBalanceTheme.mutedInk)
           hero
-          Button(action: onStart) {
+          Button(action: startPrimary) {
             HStack(spacing: 14) {
               Image(systemName: "wind").font(.title2)
               VStack(alignment: .leading, spacing: 5) {
-                Text("开始 5 分钟呼吸").font(.headline)
-                Text("双吸一呼 · 留一点时间给自己").font(.caption)
+                Text(primaryAction.title).font(.headline)
               }
               Spacer(minLength: 0)
               Image(systemName: "arrow.up.right")
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 18)
           }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
-            .disabled(recovery?.canStart == false || care?.selection?.candidate.category == .danger)
-          if let recovery, care?.selection?.candidate.category != .danger { RecoverySuggestionView(owner: recovery, assessment: readiness?.current, onPractice: onSuggestedPractice) }
-          if let readiness, readiness.enabled { ReadinessEvidenceLink(owner: readiness, onStart: onStart) } else { evidenceCard }
+            .disabled(primaryAction == .unavailable || askingHealth)
+          if let status {
+            NavigationLink { DailyStatusDetailView(score: status, onStart: startPrimary, actionTitle: primaryAction.title) } label: {
+              VStack(alignment: .leading, spacing: 12) {
+                ForEach(status.components, id: \.name) { part in
+                  HStack { Text(DailyStatusPresentation.componentName(part.name)); Spacer(); Text("\(Int(part.score.rounded())) 分").monospacedDigit() }.font(.subheadline)
+                }
+                HStack { Text("看看分数构成"); Spacer(); Image(systemName: "chevron.right") }.font(.caption)
+              }.fangcunPaperCard()
+            }.buttonStyle(.plain).accessibilityIdentifier("today.evidence")
+          }
           VStack(alignment: .leading, spacing: 12) {
           Button { drinks = true } label: {
             HStack(spacing: 14) {
@@ -120,6 +144,12 @@ struct FangcunTodayView: View {
         if route == "record" { drinks = true; care?.pendingRoute = nil }
       }
       .sheet(isPresented: $drinks) { FangcunDrinkSheet() }
+      .fullScreenCover(item: $localAction) { launch in
+        if let recovery, let plan = RecoveryProtocol.local(launch.action) { RecoverySessionView(owner: recovery, plan: plan, environment: recovery.environment) }
+      }
+      .sheet(isPresented: $safety) {
+        VStack(spacing: 20) { Text("请立即寻求身边人的帮助或联系当地急救。不要独处或驾车。").font(.title3); Button("关闭") { safety = false } }.padding(24)
+      }
 
     }
     .task {
@@ -145,35 +175,24 @@ struct FangcunTodayView: View {
       Spacer()
       Button { largeType.toggle() } label: { Image(systemName: "textformat.size").frame(width: 44, height: 44) }.accessibilityLabel("切换大字号")
       Button { dark.toggle() } label: { Image(systemName: dark ? "sun.max" : "moon").frame(width: 44, height: 44) }.accessibilityLabel("切换深浅色模式")
+      Menu {
+        Button("开始 5 分钟呼吸", action: onStart)
+        Button("开始 2 分钟安静休息") { localAction = .init(action: .quietRest) }
+      } label: { Image(systemName: "ellipsis").frame(width: 44, height: 44) }.accessibilityLabel("选择练习")
     }.foregroundStyle(InnerBalanceTheme.strongFill)
   }
   private var hero: some View {
-    VStack(alignment: .leading, spacing: 16) {
-      HStack {
-        Label(readiness?.enabled == true ? FangcunCopy.text("guidance.kind." + (readiness?.guidance.kind.rawValue ?? "onboarding")) : state.shortTitle, systemImage: "circle.fill").font(.caption).labelStyle(.titleAndIcon)
-          .foregroundStyle(state == .elevated ? InnerBalanceTheme.emphasis : InnerBalanceTheme.strongFill)
-          .padding(.horizontal, 10).padding(.vertical, 6).background(InnerBalanceTheme.subtleFill, in: Capsule())
-        Spacer()
+    Group {
+      if let status { DailyStatusHero(score: status, now: statusNow, night: isNight, covered: drinks || localAction != nil) }
+      else {
+        VStack(alignment: .leading, spacing: 12) {
+          Text("今日状态").font(.subheadline)
+          Text(readiness?.errorKey != nil ? "连接暂时中断" : readiness?.connected == false ? "连接 Apple 健康，查看今日状态" : "同步今日数据")
+            .font(.title2.weight(.semibold)).accessibilityIdentifier("status.empty")
+          FangcunCompanion(scene: .curious, paused: drinks).frame(width: 96, height: 80)
+        }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
       }
-      Text(readiness?.enabled == true ? readiness!.guidance.title : state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
-        .accessibilityIdentifier("today.conclusion").accessibilityValue(readiness?.enabled == true ? readiness!.presentationKey : state.rawValue)
-      Text((readiness?.enabled == true ? readiness?.current?.latestMeasuredAt : model.latestMeasuredAt).map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0)) }
-        ?? FangcunCopy.text("body.time.noMeasurement"))
-        .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
-        .accessibilityIdentifier("today.measuredAt")
-        .accessibilityValue((readiness?.enabled == true ? readiness?.current?.latestMeasuredAt : model.latestMeasuredAt)?.ISO8601Format() ?? "none")
-      ViewThatFits(in: .horizontal) {
-        HStack(spacing: 10) { Text(summary).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true); character.frame(width: 142) }
-        VStack(alignment: .leading, spacing: 10) { Text(summary).font(.subheadline); character.frame(maxWidth: 180).frame(maxWidth: .infinity) }
-      }
-      if readiness?.enabled != true && !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
-        Text(evidenceLine).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
-          .accessibilityIdentifier("today.evidenceSummary")
-      }
-      if let note = readiness?.guidance.noteKey {
-        Text(FangcunCopy.text(note)).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
-      }
-    }.fangcunPaperCard()
+    }
   }
   private var character: some View {
     FangcunCompanion(scene: readiness?.enabled == true ? readiness!.guidance.scene : state.scene, paused: drinks)
@@ -221,7 +240,19 @@ struct FangcunTodayView: View {
     diary.record(FangcunDaySnapshot(date: .now, state: state, summary: evidenceLine, sleep: sleepText,
       training: model.trainingSummary.map { "近 24 小时 \($0.count) 次 · \(Int($0.totalDuration / 60)) 分钟" } ?? "近 24 小时暂无训练记录"))
   }
+  private func startPrimary() {
+    switch primaryAction {
+    case .breathing, .resume: onStart()
+    case .shortBreathing: onSuggestedPractice(.physiologicalSigh, 120)
+    case .quietRest: localAction = .init(action: .quietRest)
+    case .safety: safety = true
+    case .sync: Task { await readiness?.refresh() }
+    case .connect: Task { askingHealth = true; _ = await authorization.request(.initialBodyStatus); await readiness?.refresh(); askingHealth = false }
+    case .unavailable: break
+    }
+  }
 }
+private struct StatusLocalLaunch: Identifiable { let action: RecoveryActionKind; var id: String { action.id } }
 
 struct FangcunEvidenceDetail: View {
   let model: HomeViewModel

@@ -21,6 +21,8 @@ extension EnvironmentValues {
   private(set) var enabled: Bool
   private(set) var reading: Bool
   private(set) var configuration: ReadinessConfiguration
+  private(set) var scoreConfiguration: StatusScoreConfiguration
+  private(set) var connected: Bool
   private(set) var now: Date
   var onSummaryChange: ((ReadinessAssessment?) async -> Void)?
   var interventions: [ReadinessInterval] = []
@@ -42,7 +44,11 @@ extension EnvironmentValues {
     self.pipeline = pipeline ?? store.flatMap { s in provider.map { ReadinessPipeline(provider: $0, store: s) } }
     enabled = defaults.object(forKey: "readiness.enabled") as? Bool ?? true
     reading = defaults.object(forKey: "readiness.reading") as? Bool ?? true
-    configuration = .init(sleepTargetHours: defaults.object(forKey: "readiness.sleepTarget") as? Double ?? 8)
+    let target = defaults.object(forKey: "readiness.sleepTarget") as? Double ?? 8
+    configuration = .init(sleepTargetHours: target)
+    scoreConfiguration = .init(sleepGoalMinutes: defaults.object(forKey: "status-v3.sleepGoal") as? Double ?? target*60,
+      regularityEnabled: defaults.object(forKey: "status-v3.regularity") as? Bool ?? true)
+    connected = !requiresAuthorization
     now = clock()
     if store == nil { errorKey = "readiness.storageError" }
   }
@@ -57,6 +63,10 @@ extension EnvironmentValues {
     if let flag = args.first(where: { $0.hasPrefix("--readiness-fixture=") }) {
       let scenario = String(flag.dropFirst("--readiness-fixture=".count))
       let store = try? InsightsStore(directory: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+      if scenario.hasPrefix("score") {
+        let date = ISO8601DateFormatter().date(from: args.contains("--score-night") ? "2026-09-20T15:22:00Z" : "2026-09-20T04:00:00Z")!
+        return .init(store: store, provider: ReadinessDemoProvider(scenario: scenario, now: date), defaults: UserDefaults(suiteName: UUID().uuidString)!, clock: { date })
+      }
       return .init(store: store, provider: ReadinessDemoProvider(scenario: scenario),
         defaults: UserDefaults(suiteName: UUID().uuidString)!)
     }
@@ -70,6 +80,11 @@ extension EnvironmentValues {
     guard enabled, reading, var value = snapshot.current, value.configuration == configuration else { return nil }
     value.freshness = AssessmentFreshness.resolve(value, now: now, newerSleepEnd: snapshot.episodes.map(\.end).max())
     return value
+  }
+  var statusScore: DailyStatusSnapshot? {
+    guard enabled, reading, let score = snapshot.currentStatus, score.configuration == scoreConfiguration,
+      now < score.validUntil else { return nil }
+    return score
   }
   var presentationKey: String {
     guard reading else { return "stopped" }
@@ -109,11 +124,12 @@ extension EnvironmentValues {
     defer { if version == requestVersion { loading = false } }
     if requiresAuthorization {
       let status = await HealthAuthorizationCoordinator().status(for: .initialBodyStatus)
+      connected = status.state != .notRequested
       guard status.state != .notRequested, version == requestVersion, reading else { return }
     }
     do {
       let value = try await pipeline.refresh(now: now, calendar: .current, configuration: configuration,
-        interventions: interventions, healthDataChanged: healthDataChanged)
+        interventions: interventions, healthDataChanged: healthDataChanged, scoreConfiguration: scoreConfiguration)
       guard version == requestVersion, reading, enabled else { return }
       snapshot = value; errorKey = nil; tick()
       await onSummaryChange?(current)
@@ -145,6 +161,8 @@ extension EnvironmentValues {
   func setTarget(_ hours: Double) async {
     guard (7...10).contains(hours) else { return }
     configuration = .init(sleepTargetHours: hours)
+    scoreConfiguration.sleepGoalMinutes = hours*60
+    defaults.set(hours*60, forKey: "status-v3.sleepGoal")
     defaults.set(hours, forKey: "readiness.sleepTarget")
     requestVersion += 1; snapshot.currentAssessmentID = nil
     await onSummaryChange?(nil)

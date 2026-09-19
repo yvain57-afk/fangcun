@@ -32,6 +32,10 @@ public struct InsightsSnapshot: Codable, Sendable {
   public var currentAssessmentID: String?
   public var requiresResync = false
   public var manualSleepID: String?
+  // Optional additions preserve schema-1 archives without rewriting legacy assessments.
+  public var statusScores: [DailyStatusSnapshot]?
+  public var currentStatusID: String?
+  public var statusDeletionAudit: [DeletedStatusAudit]?
   public init() {}
   public var current: ReadinessAssessment? { assessments.first { $0.assessmentID == currentAssessmentID } }
 
@@ -53,6 +57,13 @@ public struct InsightsSnapshot: Codable, Sendable {
   }
 
   mutating func redact(_ tombstones: Set<String>) {
+    let removedScores = (statusScores ?? []).filter { $0.features.basisSampleIDs.contains { tombstones.contains($0.uuidString) } }
+    for score in removedScores where !(statusDeletionAudit ?? []).contains(where: { $0.scoreID == score.scoreID }) {
+      statusDeletionAudit = (statusDeletionAudit ?? []) + [.init(scoreID: score.scoreID, cycleID: score.cycleID, revision: score.revision)]
+    }
+    let scoreIDs = Set(removedScores.map(\.scoreID))
+    statusScores?.removeAll { scoreIDs.contains($0.scoreID) }
+    if currentStatusID.map(scoreIDs.contains) == true { currentStatusID = nil }
     ledger.tombstones.formUnion(tombstones)
     ledger.samples = ledger.samples.filter { !tombstones.contains($0.key) }
     episodes.removeAll { $0.sampleIDs.contains { tombstones.contains($0.uuidString) } }
@@ -102,6 +113,7 @@ public actor InsightsStore {
         state.requiresResync = true
         state.ledger.cursors = [:]
         state.currentAssessmentID = nil
+        state.currentStatusID = nil
       }
     } else { state = InsightsSnapshot() }
     // clear() journals a newer epoch before publishing an empty snapshot.
@@ -150,12 +162,13 @@ public actor InsightsStore {
     next.sources[metric.rawValue] = StableSourceSelector.select(metric: metric, samples: next.ledger.normalizedSamples,
       existing: next.sources[metric.rawValue], requested: sourceKey, calendar: calendar, now: now)
     next.currentAssessmentID = nil
+    next.currentStatusID = nil
     try commit(next, expectedGeneration: state.generation)
   }
 
   public func selectSleep(_ episodeID: String) throws {
     guard state.episodes.contains(where: { $0.id == episodeID }) else { throw InsightsStoreError.invalidTransaction }
-    var next = state; next.manualSleepID = episodeID; next.currentAssessmentID = nil
+    var next = state; next.manualSleepID = episodeID; next.currentAssessmentID = nil; next.currentStatusID = nil
     try commit(next, expectedGeneration: state.generation)
   }
 
@@ -172,7 +185,7 @@ public actor InsightsStore {
   }
 
   public func invalidateCurrent() throws {
-    var next = state; next.currentAssessmentID = nil
+    var next = state; next.currentAssessmentID = nil; next.currentStatusID = nil
     try commit(next, expectedGeneration: state.generation)
   }
 

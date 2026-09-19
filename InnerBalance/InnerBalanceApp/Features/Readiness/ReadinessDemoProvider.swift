@@ -12,6 +12,14 @@ actor ReadinessDemoProvider: ReadinessDataProviding {
   func changes(for metric: ReadinessMetric, cursor: HealthReadCursor?, now: Date) async throws -> ReadinessChangeBatch {
     if scenario == "failed" || failure { throw ReadinessReadFailure.queryFailed }
     let source = ReadinessSource(bundleID: "org.example.synthetic", name: "Synthetic Wearable Source With A Long English Display Name", samplingMethod: "system")
+    if scenario.hasPrefix("scoreSleep") {
+      let minutes = Double(scenario.dropFirst("scoreSleep".count)) ?? 375
+      let end = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: reference)!
+      let row = ReadinessSample(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, metric: .sleep,
+        unit: "category", stage: .asleep, start: end.addingTimeInterval(-minutes*60), end: end, source: source, queriedAt: now)
+      return .init(metric: metric, samples: metric == .sleep && cursor == nil ? [row] : [],
+        cursor: .init(anchor: Data([1]), windowStart: now.addingTimeInterval(-35*86400)))
+    }
     var rows: [ReadinessSample] = []
     let days = scenario == "provisional" ? 8 : scenario == "oneDay" ? 1 : 20
     if scenario != "insufficient", cursor == nil {

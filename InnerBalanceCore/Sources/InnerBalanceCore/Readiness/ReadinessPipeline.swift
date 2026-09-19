@@ -14,10 +14,11 @@ public actor ReadinessPipeline {
     var now: Date
     var calendar: Calendar
     var configuration: ReadinessConfiguration
+    var scoreConfiguration: StatusScoreConfiguration?
     var interventions: [ReadinessInterval]
     var generation: Int
     func sameSemantics(as other: Self) -> Bool {
-      configuration == other.configuration && calendar == other.calendar
+      configuration == other.configuration && scoreConfiguration == other.scoreConfiguration && calendar == other.calendar
         && interventions == other.interventions && generation == other.generation
     }
   }
@@ -44,12 +45,12 @@ public actor ReadinessPipeline {
   public init(provider: any ReadinessDataProviding, store: InsightsStore) { self.provider = provider; self.store = store }
 
   public func refresh(now: Date, calendar: Calendar, configuration: ReadinessConfiguration = .init(),
-    interventions: [ReadinessInterval] = [], healthDataChanged: Bool = false) async throws -> InsightsSnapshot {
+    interventions: [ReadinessInterval] = [], healthDataChanged: Bool = false, scoreConfiguration: StatusScoreConfiguration? = nil) async throws -> InsightsSnapshot {
     guard !retired else { throw RefreshError.superseded }
     waitingCallers += 1
     defer { waitingCallers -= 1 }
     let generation = await store.snapshot().generation
-    let request = Request(now: now, calendar: calendar, configuration: configuration,
+    let request = Request(now: now, calendar: calendar, configuration: configuration, scoreConfiguration: scoreConfiguration,
       interventions: interventions.sorted { $0.start == $1.start ? $0.end < $1.end : $0.start < $1.start }, generation: generation)
     guard let flight else { return try await start(request, waiters: []).value }
     if pending == nil, !healthDataChanged, flight.request.sameSemantics(as: request) {
@@ -75,7 +76,7 @@ public actor ReadinessPipeline {
       let result: Result<InsightsSnapshot, Error>
       do {
         result = .success(try await self.run(now: request.now, calendar: request.calendar,
-          configuration: request.configuration, interventions: request.interventions))
+          configuration: request.configuration, interventions: request.interventions, scoreConfiguration: request.scoreConfiguration))
       } catch { result = .failure(error) }
       self.finished(id, result: result)
       return try result.get()
@@ -96,7 +97,7 @@ public actor ReadinessPipeline {
   }
 
   private func run(now: Date, calendar: Calendar, configuration: ReadinessConfiguration,
-    interventions: [ReadinessInterval]) async throws -> InsightsSnapshot {
+    interventions: [ReadinessInterval], scoreConfiguration: StatusScoreConfiguration?) async throws -> InsightsSnapshot {
     guard !retired else { throw RefreshError.superseded }
     let initial = await store.snapshot()
     var candidate = initial
@@ -167,6 +168,12 @@ public actor ReadinessPipeline {
     candidate.redact(candidate.ledger.tombstones)
     candidate.episodes = prepared.episodes
     candidate.record(result)
+    if let scoreConfiguration, !anyReadFailed {
+      if let features = try ScoreFeatureBuilder.build(snapshot: candidate, now: now, calendar: calendar,
+        configuration: scoreConfiguration, interventions: interventions) {
+        try candidate.recordStatus(features, configuration: scoreConfiguration, now: now)
+      } else { candidate.currentStatusID = nil }
+    }
     candidate.requiresResync = failure != nil && initial.requiresResync
     // compare-and-swap rejects a late response after source selection, deletion, or clear().
     guard !retired else { throw RefreshError.superseded }
