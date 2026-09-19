@@ -5,13 +5,17 @@ struct FangcunDiaryArchive: Codable {
   var entries: [FangcunDrinkEntry] = []
   var snapshots: [FangcunDaySnapshot] = []
   var syncRevisions: [String: Int] = [:]
+  var commands: [String: DrinkCommitReceipt] = [:]
+  var localRevisions: [String: Int] = [:]
   var migrationDigests: [String: String] = [:]
-  enum CodingKeys: String, CodingKey { case entries, snapshots, migrationDigests, syncRevisions }
+  enum CodingKeys: String, CodingKey { case entries, snapshots, migrationDigests, syncRevisions, commands, localRevisions }
   init() {}
   init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy: CodingKeys.self)
     entries = try c.decode([FangcunDrinkEntry].self, forKey: .entries)
     snapshots = try c.decode([FangcunDaySnapshot].self, forKey: .snapshots)
+    commands = try c.decodeIfPresent([String: DrinkCommitReceipt].self, forKey: .commands) ?? [:]
+    localRevisions = try c.decodeIfPresent([String: Int].self, forKey: .localRevisions) ?? [:]
     syncRevisions = try c.decodeIfPresent([String: Int].self, forKey: .syncRevisions) ?? [:]
     migrationDigests = try c.decodeIfPresent([String: String].self, forKey: .migrationDigests) ?? [:]
   }

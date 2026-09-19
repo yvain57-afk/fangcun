@@ -88,18 +88,21 @@ struct FangcunDiaryMigrationTests {
     let sixDaysAgo = Calendar.current.date(byAdding: .day, value: -6, to: now)!
     diary.edit(entry.id, consumedAt: sixDaysAgo, volumeML: 600, now: now)
     let edited = try #require(diary.allEntries.first)
-    #expect(edited.id == entry.id && edited.revision == 2 && edited.volumeML == 600 && edited.caffeine == 340)
-    #expect(edited.sugarServings == 2 && edited.sugarGrams == nil && edited.recordedAt == now)
+    #expect(edited.id == entry.id && edited.revision == 2 && edited.volumeML == 600 && edited.caffeine == 170)
+    #expect(edited.sugarServings == 1 && edited.sugarGrams == nil && edited.recordedAt == now)
     diary.add(.water, at: now-8*86400, now: now)
     diary.add(.water, at: now+1, now: now)
     #expect(diary.allEntries.count == 1)
-    diary.undo(); #expect(diary.allEntries.first == entry)
-    var unknown = FangcunDiaryArchive(); var value = entry; value.alcoholGrams = nil
+    diary.undo()
+    let undone = try #require(diary.allEntries.first)
+    #expect(undone.id == entry.id && undone.volumeML == entry.volumeML && undone.caffeine == entry.caffeine)
+    #expect(undone.revision > edited.revision && undone.consumedAt == entry.consumedAt)
+    var unknown = FangcunDiaryArchive(); var value = entry; value.alcoholGrams = nil; value.details = nil
     unknown.entries = [value]; try file.save(unknown)
     let reopened = FangcunDiary(defaults: d, storage: file)
     reopened.edit(entry.id, consumedAt: now, volumeML: 150, now: now)
     #expect(reopened.allEntries.first?.alcoholGrams == nil)
     #expect(FangcunDrinkTotals(reopened.allEntries).hasUnknownAlcohol)
-    #expect(FangcunDrinkTotals(reopened.allEntries).sugar == 0.5)
+    #expect(FangcunDrinkTotals(reopened.allEntries).sugar == 1)
   }
 }

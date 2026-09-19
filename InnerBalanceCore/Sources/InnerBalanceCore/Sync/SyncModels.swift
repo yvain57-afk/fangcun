@@ -12,9 +12,11 @@ public struct SyncedDrink: Codable, Equatable, Sendable {
   public var sugarServings: Double
   public var sugarGrams: Double?
   public var estimateMethod: String
+  public var beverageDetails: BeverageDetails? = nil
   public var estimateVersion: Int
   public init(id: String, kind: String, consumedAt: Date, recordedAt: Date?, volumeML: Int,
-    caffeineMG: Int, alcoholGrams: Double?, sugarServings: Double, sugarGrams: Double?, estimateMethod: String, estimateVersion: Int) {
+    caffeineMG: Int, alcoholGrams: Double?, sugarServings: Double, sugarGrams: Double?, estimateMethod: String, estimateVersion: Int, beverageDetails: BeverageDetails? = nil) {
+    self.beverageDetails = beverageDetails
     self.id = id; self.kind = kind; self.consumedAt = consumedAt; self.recordedAt = recordedAt
     self.volumeML = volumeML; self.caffeineMG = caffeineMG; self.alcoholGrams = alcoholGrams
     self.sugarServings = sugarServings; self.sugarGrams = sugarGrams; self.estimateMethod = estimateMethod; self.estimateVersion = estimateVersion
@@ -78,6 +80,7 @@ public struct SyncPacket: Codable, Sendable {
   public var event: SyncEvent?
   public var acknowledgement: SyncAcknowledgement?
   public var summary: ReadinessSummaryDTO?
+  public var capabilities: [String]? = ["beverage-v2"]
   public var hello = false
   public init(origin: String, role: String, event: SyncEvent? = nil, acknowledgement: SyncAcknowledgement? = nil,
     summary: ReadinessSummaryDTO? = nil, hello: Bool = false) {

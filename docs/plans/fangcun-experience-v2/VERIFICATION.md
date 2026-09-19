@@ -20,3 +20,12 @@ See [quality evidence](V2-02-VERIFICATION.md) and [deidentified coverage finding
 ## Remaining integration
 
 App full suite, revised UI contracts, final six-scene motion captures, care scheduling tests, Watch simulator and physical overwrite/update verification are not yet claimed passed.
+
+## V2-04 dose and persistence
+
+- `run.py v204-red3 InnerBalanceTests/BeverageV2Tests`: 2 tests, 2 failures reproducing per-serving dilution and old fixed 10 g estimate for a new beer. Earlier red/red2 failed to compile because XCTest inherited the App target's default actor isolation; converted the new regression to the project's Swift Testing style before assessing behavior.
+- `run.py v204-commands InnerBalanceTests/BeverageV2Tests InnerBalanceTests/FangcunDiaryMigrationTests InnerBalanceTests/BeverageCareCoordinatorTests`: normal exit 0, 10 tests passed; result bundle readable.
+- `run.py v2-app-first InnerBalanceTests`: normal exit 0, 187 tests passed. A later full rerun includes subsequent additions.
+- Existing migration assertions were explicitly updated for V2 behavior: fixed per-serving caffeine/sugar no longer scales with dilution; undo restores values but advances revision; legacy unknown estimate remains unknown. Original golden/model tests unchanged. The previous first integration run failed six old assumptions in this one migration test; all corrected expectations subsequently passed.
+- Data storage remains the checksummed, atomic `diary-v2.json` authority. Optional details, command receipts and local revision tombstones decode with defaults from older archives. Existing IDs, old beer 10 g estimates and backups retained. No clear/reimport.
+- New beverage DTOs remain unacknowledged in the outbox until peer advertises `beverage-v2`; no fallback to water/zero. Legacy payloads without new details remain supported.

@@ -29,11 +29,11 @@ enum FangcunDayState: String, Codable, CaseIterable {
 }
 
 enum FangcunDrink: String, Codable, CaseIterable, Identifiable {
-  case water, coffee, sweetCoffee, beer, soda
+  case water, coffee, sweetCoffee, beer, soda, tea, milk, alcohol, other
   var id: String { rawValue }
-  var title: String { switch self { case .water: "白水"; case .coffee: "美式"; case .sweetCoffee: "甜拿铁"; case .beer: "啤酒"; case .soda: "含糖饮料" } }
-  var symbol: String { switch self { case .water: "drop"; case .coffee, .sweetCoffee: "cup.and.saucer"; case .beer: "wineglass"; case .soda: "takeoutbag.and.cup.and.straw" } }
-  var fluid: Int { switch self { case .water: 250; case .coffee, .sweetCoffee: 300; case .beer, .soda: 330 } }
+  var title: String { switch self { case .water: "白水"; case .coffee: "美式"; case .sweetCoffee: "甜拿铁"; case .beer: "啤酒"; case .soda: "含糖饮料"; case .tea: "茶"; case .milk: "牛奶"; case .alcohol: "其他酒饮"; case .other: "其他饮品" } }
+  var symbol: String { switch self { case .water: "drop"; case .coffee, .sweetCoffee: "cup.and.saucer"; case .beer: "wineglass"; case .soda, .tea, .milk, .alcohol, .other: "takeoutbag.and.cup.and.straw" } }
+  var fluid: Int { switch self { case .water: 250; case .coffee, .sweetCoffee: 300; case .beer, .soda: 330; case .tea, .milk, .other: 250; case .alcohol: 150 } }
   var alcohol: Int { self == .beer ? 10 : 0 }
   var sugar: Int { self == .sweetCoffee || self == .soda ? 1 : 0 }
   var isCoffee: Bool { self == .coffee || self == .sweetCoffee }
@@ -52,7 +52,9 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
   var estimateMethod: String
   var estimateVersion: Int
   var revision: Int
+  var details: BeverageDetails? = nil
   var date: Date { consumedAt }
+  var displayName: String { details?.displayName ?? kind.title }
   init(id: UUID = UUID(), date: Date, kind: FangcunDrink, caffeine: Int, recordedAt: Date? = .now) {
     self.id = id; consumedAt = date; self.recordedAt = recordedAt; self.kind = kind
     volumeML = kind.fluid; self.caffeine = caffeine; alcoholGrams = Double(kind.alcohol)
@@ -60,7 +62,7 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
     estimateMethod = "fixedCupEstimate"; estimateVersion = 1; revision = 1
   }
   enum CodingKeys: String, CodingKey {
-    case id, consumedAt, recordedAt, date, kind, volumeML, caffeine, alcoholGrams, sugarServings, sugarGrams, estimateMethod, estimateVersion, revision
+    case id, consumedAt, recordedAt, date, kind, volumeML, caffeine, alcoholGrams, sugarServings, sugarGrams, estimateMethod, estimateVersion, revision, details
   }
   init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -76,6 +78,7 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
     estimateMethod = try c.decodeIfPresent(String.self, forKey: .estimateMethod) ?? "legacyFixedCupEstimate"
     estimateVersion = try c.decodeIfPresent(Int.self, forKey: .estimateVersion) ?? 1
     revision = try c.decodeIfPresent(Int.self, forKey: .revision) ?? 1
+    details = try c.decodeIfPresent(BeverageDetails.self, forKey: .details)
   }
   func encode(to encoder: Encoder) throws {
     var c = encoder.container(keyedBy: CodingKeys.self)
@@ -85,6 +88,7 @@ struct FangcunDrinkEntry: Codable, Identifiable, Equatable {
     try c.encodeIfPresent(alcoholGrams, forKey: .alcoholGrams); try c.encode(sugarServings, forKey: .sugarServings)
     try c.encodeIfPresent(sugarGrams, forKey: .sugarGrams); try c.encode(estimateMethod, forKey: .estimateMethod)
     try c.encode(estimateVersion, forKey: .estimateVersion); try c.encode(revision, forKey: .revision)
+    try c.encodeIfPresent(details, forKey: .details)
   }
   func migrated() -> Self {
     var result = self; result.recordedAt = nil; result.estimateMethod = "legacyFixedCupEstimate"; return result
@@ -148,41 +152,97 @@ final class FangcunDiary {
   func legacySnapshots(on date: Date) -> [FangcunDaySnapshot] {
     archive.snapshots.filter { $0.isLegacy && Calendar.current.isDate($0.date, inSameDayAs: date) }
   }
-  func add(_ kind: FangcunDrink, caffeine: Int = 140, at date: Date = .now, now: Date = .now, volumeML: Int? = nil) {
-    guard editable(date, now: now), entries(on: date).count < 1000 else { return }
+  @discardableResult func add(_ kind: FangcunDrink, caffeine: Int = 140, at date: Date = .now, now: Date = .now,
+    volumeML: Int? = nil, details: BeverageDetails? = nil, commandID: String = UUID().uuidString) -> DrinkCommandResult {
+    if let receipt = archive.commands[commandID] { return .committed(receipt) }
+    guard editable(date, now: now), entries(on: date).count < 1000,
+      (10...3000).contains(volumeML ?? kind.fluid) else { return .rejected }
     var next = archive
-    var entry = FangcunDrinkEntry(date: date, kind: kind, caffeine: kind.isCoffee ? min(500, max(0, caffeine)) : 0, recordedAt: now)
-    if let volumeML {
-      guard (10...3000).contains(volumeML) else { return }
-      let ratio = Double(volumeML) / Double(entry.volumeML)
-      entry.volumeML = volumeML; entry.caffeine = Int((Double(entry.caffeine)*ratio).rounded())
-      entry.alcoholGrams = entry.alcoholGrams.map { $0*ratio }; entry.sugarServings *= ratio
-      entry.estimateMethod = "scaledCupEstimate"
-    }
+    var entry = FangcunDrinkEntry(date: date, kind: kind, caffeine: 0, recordedAt: now)
+    entry.volumeML = volumeML ?? kind.fluid
+    entry.details = details ?? Self.defaultDetails(kind, caffeine: caffeine)
+    guard Self.valid(entry.details!) else { return .rejected }
+    entry.caffeine = Int((entry.details!.caffeineMG(volumeML: entry.volumeML) ?? 0).rounded())
+    entry.alcoholGrams = entry.details!.alcoholGrams(volumeML: entry.volumeML)
+    entry.estimateMethod = entry.details!.caffeineMethod.rawValue; entry.estimateVersion = 2
     next.entries.append(entry)
-    commit(next, remember: true)
+    let receipt = DrinkCommitReceipt(eventID: commandID, entityID: entry.id, revision: entry.revision, committedAt: now)
+    next.commands[commandID] = receipt
+    return commit(next, remember: true) ? .committed(receipt) : .failed
   }
-  func edit(_ id: UUID, consumedAt: Date, volumeML: Int, now: Date = .now) {
+  @discardableResult func edit(_ id: UUID, consumedAt: Date, volumeML: Int, now: Date = .now,
+    details: BeverageDetails? = nil, commandID: String = UUID().uuidString) -> DrinkCommandResult {
+    if let receipt = archive.commands[commandID] { return .committed(receipt) }
     guard editable(consumedAt, now: now), (10...3000).contains(volumeML),
-      let index = archive.entries.firstIndex(where: { $0.id == id }) else { return }
+      let index = archive.entries.firstIndex(where: { $0.id == id }) else { return .rejected }
     var next = archive; var entry = next.entries[index]
-    let ratio = Double(volumeML) / Double(max(1, entry.volumeML))
     entry.consumedAt = consumedAt; entry.volumeML = volumeML
-    entry.caffeine = Int((Double(entry.caffeine)*ratio).rounded())
-    entry.alcoholGrams = entry.alcoholGrams.map { $0*ratio }
-    entry.sugarServings *= ratio; entry.sugarGrams = entry.sugarGrams.map { $0*ratio }
-    entry.revision += 1; entry.estimateMethod = "scaledCupEstimate"
-    next.entries[index] = entry; commit(next, remember: true)
+    if let details { guard Self.valid(details) else { return .rejected }; entry.details = details }
+    if let detail = entry.details {
+      entry.caffeine = Int((detail.caffeineMG(volumeML: volumeML) ?? 0).rounded())
+      entry.alcoholGrams = detail.alcoholGrams(volumeML: volumeML)
+      entry.estimateMethod = detail.caffeineMethod.rawValue; entry.estimateVersion = 2
+    }
+    // Legacy estimates are historical facts, not newly inferred concentrations.
+    entry.revision = max(entry.revision, next.localRevisions[id.uuidString] ?? 0) + 1
+    next.entries[index] = entry; next.localRevisions[id.uuidString] = entry.revision
+    let receipt = DrinkCommitReceipt(eventID: commandID, entityID: id, revision: entry.revision, committedAt: now)
+    next.commands[commandID] = receipt
+    return commit(next, remember: true) ? .committed(receipt) : .failed
   }
-  func remove(_ kind: FangcunDrink, on date: Date = .now) {
-    guard let index = archive.entries.lastIndex(where: { $0.kind == kind && Calendar.current.isDate($0.date, inSameDayAs: date) }) else { return }
-    var next = archive; next.entries.remove(at: index); commit(next, remember: true)
+  @discardableResult func remove(_ kind: FangcunDrink, on date: Date = .now, commandID: String = UUID().uuidString) -> DrinkCommandResult {
+    if let receipt = archive.commands[commandID] { return .committed(receipt) }
+    guard let entry = archive.entries.last(where: { $0.kind == kind && Calendar.current.isDate($0.date, inSameDayAs: date) }) else { return .rejected }
+    return remove(id: entry.id, commandID: commandID)
+  }
+  @discardableResult func remove(id: UUID, commandID: String = UUID().uuidString) -> DrinkCommandResult {
+    if let receipt = archive.commands[commandID] { return .committed(receipt) }
+    guard let entry = archive.entries.first(where: { $0.id == id }) else { return .rejected }
+    var next = archive; next.entries.removeAll { $0.id == id }
+    let revision = max(entry.revision, next.localRevisions[id.uuidString] ?? 0) + 1
+    next.localRevisions[id.uuidString] = revision
+    let receipt = DrinkCommitReceipt(eventID: commandID, entityID: id, revision: revision, committedAt: .now)
+    next.commands[commandID] = receipt
+    return commit(next, remember: true) ? .committed(receipt) : .failed
   }
   var canUndo: Bool { !undoStack.isEmpty && storageMessage == nil }
-  func undo() {
-    guard let previous = undoStack.last else { return }
-    var next = archive; next.entries = previous
-    if commit(next, remember: false) { undoStack.removeLast() }
+  @discardableResult func undo(commandID: String = UUID().uuidString) -> DrinkCommandResult {
+    if let receipt = archive.commands[commandID] { return .committed(receipt) }
+    guard let previous = undoStack.last else { return .rejected }
+    var next = archive
+    let ids = Set(previous.map(\.id) + archive.entries.map(\.id))
+    let changed = ids.filter { id in previous.first(where: { $0.id == id }) != archive.entries.first(where: { $0.id == id }) }
+    guard let id = changed.first else { return .rejected }
+    next.entries = previous.map { value in
+      var entry = value
+      if changed.contains(entry.id) {
+        entry.revision = max(entry.revision, max(next.localRevisions[entry.id.uuidString] ?? 0,
+          archive.entries.first(where: { $0.id == entry.id })?.revision ?? 0)) + 1
+        next.localRevisions[entry.id.uuidString] = entry.revision
+      }
+      return entry
+    }
+    for id in changed where !previous.contains(where: { $0.id == id }) {
+      next.localRevisions[id.uuidString] = max(next.localRevisions[id.uuidString] ?? 0,
+        archive.entries.first(where: { $0.id == id })?.revision ?? 0) + 1
+    }
+    let receipt = DrinkCommitReceipt(eventID: commandID, entityID: id, revision: next.localRevisions[id.uuidString] ?? 1, committedAt: .now)
+    next.commands[commandID] = receipt
+    guard commit(next, remember: false) else { return .failed }
+    undoStack.removeLast(); return .committed(receipt)
+  }
+  static func defaultDetails(_ kind: FangcunDrink, caffeine: Int) -> BeverageDetails {
+    .init(displayName: kind.title,
+      caffeinePresence: kind.isCoffee ? (caffeine == 0 ? .no : .yes) : kind == .tea || kind == .other ? .unknown : .no,
+      caffeineMethod: kind == .tea || kind == .other ? .unknown : .perServing,
+      caffeineDose: kind.isCoffee ? Double(min(1000, max(0, caffeine))) : kind == .tea || kind == .other ? nil : 0,
+      alcoholPresence: kind == .beer || kind == .alcohol ? .yes : kind == .other ? .unknown : .no,
+      abvPercent: kind == .beer ? 5 : nil)
+  }
+  private static func valid(_ detail: BeverageDetails) -> Bool {
+    !detail.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && detail.displayName.count <= 80
+      && (detail.caffeineDose.map { $0.isFinite && (0...2000).contains($0) } ?? true)
+      && (detail.abvPercent.map { $0.isFinite && (0...100).contains($0) } ?? true)
   }
   func record(_ snapshot: FangcunDaySnapshot) {
     var next = archive
@@ -216,6 +276,8 @@ final class FangcunDiary {
         entry.volumeML = value.volumeML; entry.alcoholGrams = value.alcoholGrams
         entry.sugarServings = value.sugarServings; entry.sugarGrams = value.sugarGrams
         entry.estimateMethod = value.estimateMethod; entry.estimateVersion = value.estimateVersion; entry.revision = event.revision
+        entry.details = value.beverageDetails
+        if entry.details != nil { entry.details?.origin = "remote" }
         next.entries.append(entry)
       }
       next.syncRevisions[event.entityID] = event.revision
@@ -251,6 +313,28 @@ extension FangcunDrinkEntry {
   var syncValue: SyncedDrink {
     .init(id: id.uuidString, kind: kind.rawValue, consumedAt: consumedAt, recordedAt: recordedAt,
       volumeML: volumeML, caffeineMG: caffeine, alcoholGrams: alcoholGrams, sugarServings: sugarServings,
-      sugarGrams: sugarGrams, estimateMethod: estimateMethod, estimateVersion: estimateVersion)
+      sugarGrams: sugarGrams, estimateMethod: estimateMethod, estimateVersion: estimateVersion, beverageDetails: details)
+  }
+}
+
+struct DrinkCommitReceipt: Codable, Equatable {
+  var eventID: String
+  var entityID: UUID
+  var revision: Int
+  var committedAt: Date
+}
+enum DrinkCommandResult: Equatable {
+  case committed(DrinkCommitReceipt), rejected, failed
+  var receipt: DrinkCommitReceipt? { if case let .committed(value) = self { value } else { nil } }
+}
+extension FangcunDrinkEntry {
+  var beverage: BeverageEvent {
+    .init(id: id.uuidString, revision: revision, categoryCode: kind.rawValue, displayName: displayName,
+      consumedAt: consumedAt, recordedAt: recordedAt, volumeML: volumeML,
+      caffeineMG: details.map { $0.caffeineMG(volumeML: volumeML) } ?? Double(caffeine),
+      caffeinePresence: details?.caffeinePresence ?? (caffeine > 0 ? .yes : .no),
+      alcoholGrams: alcoholGrams, alcoholPresence: details?.alcoholPresence ?? (alcoholGrams == nil ? .unknown : (alcoholGrams! > 0 ? .yes : .no)),
+      abvPercent: details?.abvPercent, sugarServings: sugarServings, sugarGrams: sugarGrams,
+      estimateMethod: estimateMethod, estimateVersion: estimateVersion, origin: details?.origin ?? "legacy")
   }
 }

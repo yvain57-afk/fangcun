@@ -33,3 +33,111 @@ guidance.baselineLearning,V2-01,个人参照还在积累，暂不显示个人范
 guidance.metric.sleep,V2-01,实际睡眠,implemented; human review pending
 guidance.hours,V2-01,约 %.1f 小时,implemented; human review pending
 guidance.diagnostics,V2-01,数据诊断（高级）,implemented; human review pending
+motion.mode,V2-03..06,陪伴动效,implemented; human review pending
+motion.standard,V2-03..06,标准,implemented; human review pending
+motion.gentle,V2-03..06,轻柔,implemented; human review pending
+motion.static,V2-03..06,静态,implemented; human review pending
+drink.recordedFluid,V2-03..06,已记录饮品 %d ml · 非酒精饮品 %d ml,implemented; human review pending
+drink.recordedDose,V2-03..06,已知咖啡因约 %.0f mg · 酒精约 %.0f g,implemented; human review pending
+drink.unknownCaffeine,V2-03..06,部分咖啡因含量未知，合计只包含已知部分。,implemented; human review pending
+drink.saved,V2-03..06,这杯已经记好。,implemented; human review pending
+drink.removed,V2-03..06,已减少一杯。,implemented; human review pending
+drink.undone,V2-03..06,已撤销上一笔。,implemented; human review pending
+drink.rejected,V2-03..06,这笔暂时不能记录，请检查时间和杯量。,implemented; human review pending
+drink.failed,V2-03..06,还没保存成功，请检查后重试。,implemented; human review pending
+drink.name,V2-03..06,饮品名称,implemented; human review pending
+drink.legacy,V2-03..06,这是旧记录，调整杯量不会重新推算当时的咖啡因或酒精。,implemented; human review pending
+drink.caffeinePresence,V2-03..06,是否含咖啡因,implemented; human review pending
+drink.alcoholPresence,V2-03..06,是否含酒精,implemented; human review pending
+drink.presence.yes,V2-03..06,有,implemented; human review pending
+drink.presence.no,V2-03..06,没有,implemented; human review pending
+drink.presence.unknown,V2-03..06,不确定,implemented; human review pending
+drink.doseMethod,V2-03..06,剂量方式,implemented; human review pending
+drink.dose.perServing,V2-03..06,每杯剂量,implemented; human review pending
+drink.dose.per100ML,V2-03..06,每 100 ml 含量,implemented; human review pending
+drink.dose.unknown,V2-03..06,含量未知,implemented; human review pending
+drink.doseMG,V2-03..06,咖啡因（mg）,implemented; human review pending
+drink.abvKnown,V2-03..06,知道酒精度,implemented; human review pending
+drink.abv,V2-03..06,酒精度（% vol）,implemented; human review pending
+drink.delete,V2-03..06,删除这笔记录,implemented; human review pending
+care.settings,V2-03..06,饮品与关怀,implemented; human review pending
+care.inApp,V2-03..06,在 App 内显示轻关怀,implemented; human review pending
+care.fluidRestrictionSetting,V2-03..06,医生要求限制液体摄入,implemented; human review pending
+care.adult,V2-03..06,成人一般参考适用于我,implemented; human review pending
+care.referenceBoundary,V2-03..06,参考量只用于已记录的非酒精饮品。需求因人而异；儿童、孕期或特殊健康情况，请使用自己的专业建议。可选范围是软件设置，不代表医学安全范围。,implemented; human review pending
+care.reference,V2-03..06,非酒精饮品参考量：%d ml,implemented; human review pending
+care.referenceAccept,V2-03..06,采用这个参考量,implemented; human review pending
+care.cup,V2-03..06,一杯白水的默认杯量,implemented; human review pending
+care.customCup,V2-03..06,自定义杯量（ml）,implemented; human review pending
+care.sleepPlan,V2-03..06,你的作息计划,implemented; human review pending
+care.confirmSleep,V2-03..06,使用我确认的睡眠计划,implemented; human review pending
+care.sleep,V2-03..06,预计入睡,implemented; human review pending
+care.wake,V2-03..06,预计起床,implemented; human review pending
+care.window,V2-03..06,睡前 %.0f 小时开始留意咖啡因,implemented; human review pending
+care.shift,V2-03..06,这次作息不同（临时覆盖）,implemented; human review pending
+care.manualCutoff,V2-03..06,只设置咖啡截止时间,implemented; human review pending
+care.cutoff,V2-03..06,咖啡截止时间,implemented; human review pending
+care.caffeineReference,V2-03..06,咖啡因参考：%.0f mg / 24 小时,implemented; human review pending
+care.notifications,V2-03..06,手机本地提醒,implemented; human review pending
+care.push.water,V2-03..06,开启饮品轻提醒,implemented; human review pending
+care.push.caffeine,V2-03..06,开启咖啡收尾提醒,implemented; human review pending
+care.push.alcohol,V2-03..06,允许我主动预约酒后关怀,implemented; human review pending
+care.lockDetails,V2-03..06,锁屏可显示关怀类别,implemented; human review pending
+care.authorization.unknown,V2-03..06,尚未读取通知状态,implemented; human review pending
+care.authorization.notAsked,V2-03..06,尚未申请通知权限,implemented; human review pending
+care.authorization.enabled,V2-03..06,系统已允许通知,implemented; human review pending
+care.authorization.denied,V2-03..06,通知权限未开启，可在系统设置中调整。,implemented; human review pending
+care.authorization.unavailable,V2-03..06,当前测试环境不申请系统通知权限。,implemented; human review pending
+care.plannedThrough,V2-03..06,已安排到 %@；下次打开 App 会更新。,implemented; human review pending
+care.notificationBoundary,V2-03..06,默认静音，不显示健康数值。每天与滚动 24 小时最多两条，间隔至少四小时；夜间和已确认的睡眠时间不打扰。预约不代表已经送达或被阅读。,implemented; human review pending
+care.record,V2-03..06,去记录,implemented; human review pending
+care.view,V2-03..06,看看记录,implemented; human review pending
+care.ack,V2-03..06,喝过，先不记,implemented; human review pending
+care.snooze,V2-03..06,一小时后再说,implemented; human review pending
+care.mute,V2-03..06,今天不再提醒,implemented; human review pending
+care.dismiss,V2-03..06,暂时收起这条关怀,implemented; human review pending
+care.laterAlcohol,V2-03..06,30 分钟后提醒我关照自己,implemented; human review pending
+care.tooMuch,V2-03..06,我觉得喝多了,implemented; human review pending
+care.severe,V2-03..06,了解酒后危险症状,implemented; human review pending
+care.severeConfirm,V2-03..06,我现在有这些症状,implemented; human review pending
+care.alcoholHelp,V2-03..06,需要额外照顾时,implemented; human review pending
+care.clear,V2-03..06,清除关怀偏好与提醒,implemented; human review pending
+care.clearExplanation,V2-03..06,只清除关怀设置、关怀回执和本 App 的关怀通知；饮品和练习记录保留。,implemented; human review pending
+care.storageError,V2-03..06,关怀设置暂时无法保存，已停止新增提醒。,implemented; human review pending
+care.notificationError,V2-03..06,这次提醒未能安排成功，稍后重新打开 App 再试。,implemented; human review pending
+care.W01.title,V2-03..06,今天还没记饮品,implemented; human review pending
+care.W01.body,V2-03..06,喝过了，可以顺手补一下。,implemented; human review pending
+care.W02.title,V2-03..06,咖啡也计入已记录的液体,implemented; human review pending
+care.W02.body,V2-03..06,下一杯想换换口味，也可以选白水。,implemented; human review pending
+care.W03.title,V2-03..06,忙了一阵，给水杯续一点？,implemented; human review pending
+care.W03.body,V2-03..06,按自己的需要来；喝过但没记，也没关系。,implemented; human review pending
+care.W04.title,V2-03..06,已记录到今天的参考量,implemented; human review pending
+care.W04.body,V2-03..06,之后按自己的需要来，不用赶进度。,implemented; human review pending
+care.water.recordsOnly,V2-03..06,没有记录，不等于没有喝过。,implemented; human review pending
+care.water.coffeeCounts,V2-03..06,这里统计的是已记录饮品，不是全天实际摄入量。,implemented; human review pending
+care.C01.title,V2-03..06,这杯咖啡因，时间可以留意一下,implemented; human review pending
+care.C01.body,V2-03..06,已进入你设置的咖啡收尾时段。之后想喝点什么，可以考虑无咖啡因的选择。,implemented; human review pending
+care.C02.title,V2-03..06,已知咖啡因达到你的参考量,implemented; human review pending
+care.C02.body,V2-03..06,今天接下来可以先停一停含咖啡因饮品，留意自己的感受。,implemented; human review pending
+care.C03.title,V2-03..06,咖啡因的量和时间，都值得留意,implemented; human review pending
+care.C03.body,V2-03..06,已知摄入达到参考量，也进入了你的收尾时段。接下来可以选择无咖啡因饮品。,implemented; human review pending
+care.caffeine.partial,V2-03..06,部分含量未知；这条参考仅合计已知部分，不表示剩下的摄入是安全的。,implemented; human review pending
+care.caffeine.reference,V2-03..06,成人一般参考不等于个人安全上限，也不能预测今晚一定失眠。,implemented; human review pending
+care.A01.title,V2-03..06,临近休息，先停一停酒饮,implemented; human review pending
+care.A01.body,V2-03..06,可以给今晚留一些安静的空间，并安排安全的返程。,implemented; human review pending
+care.A02.title,V2-03..06,先停止饮酒，照顾好自己,implemented; human review pending
+care.A02.body,V2-03..06,请不要驾驶。尽量和可信任的人待在一起，需要时请人帮助。,implemented; human review pending
+care.A03.title,V2-03..06,酒精量还不确定,implemented; human review pending
+care.A03.body,V2-03..06,先留意自己的感受，避免继续饮酒，不要驾驶。不能据未知含量判断喝多或没事。,implemented; human review pending
+care.A04.title,V2-03..06,上一段休息前，有一笔酒饮记录,implemented; human review pending
+care.A04.body,V2-03..06,今天可以按感受放缓安排。这笔记录不能证明宿醉或解释所有不适。,implemented; human review pending
+care.A05.title,V2-03..06,这些症状需要立即求助,implemented; human review pending
+care.A05.body,V2-03..06,如果出现难以唤醒、呼吸缓慢或不规则、抽搐、反复呕吐或明显意识混乱，请立即联系当地急救，不要独自待着。不要用睡一觉、运动或呼吸练习替代急救。,implemented; human review pending
+care.emergency,V2-03..06,立即请身边的人联系当地急救；不要驾车自行就医。,implemented; human review pending
+care.alcohol.boundary,V2-03..06,水、咖啡和呼吸练习都不能抵消酒精，也不能据此判断何时能驾驶。,implemented; human review pending
+care.fluidRestricted,V2-03..06,你设置了液体限制，请遵循医生给你的饮水安排。,implemented; human review pending
+care.notification.title,V2-03..06,方寸,implemented; human review pending
+care.notification.generic,V2-03..06,给自己留一点缓冲。,implemented; human review pending
+care.notification.water,V2-03..06,忙了一阵，给水杯续一点？按自己的需要来。,implemented; human review pending
+care.notification.caffeine,V2-03..06,快到你设定的咖啡收尾时间了。,implemented; human review pending
+care.notification.alcohol,V2-03..06,到了你预约关照自己的时间。先休息，并安排安全返程。,implemented; human review pending

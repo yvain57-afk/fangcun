@@ -16,6 +16,7 @@ import Foundation
   public var currentAssessment: (@MainActor () -> ReadinessAssessment?)?
   public var onRecordsChanged: (@MainActor (SyncArchive) async throws -> Void)?
   private let transport: any SyncTransport
+  private var peerCapabilities: Set<String> = []
   private var flushing = false
   private var summaryIntent = 0
   public init(store: SyncStore, transport: any SyncTransport, role: String, localDirectory: URL, sharedDirectory: URL? = nil) {
@@ -54,6 +55,11 @@ import Foundation
     guard !flushing else { return }; flushing = true; defer { flushing = false }
     let state = await store.snapshot()
     for event in await store.pending(now: now, manual: manual) {
+      if event.kind == .drink, !event.deleted,
+        let drink = try? JSONDecoder().decode(SyncedDrink.self, from: event.payload),
+        drink.beverageDetails != nil, !peerCapabilities.contains("beverage-v2") {
+        lastError = "peer_beverage_upgrade_required"; continue
+      }
       do {
         try await store.attempted(event.eventID, now: now)
         let packet = SyncPacket(origin: state.installationID, role: role, event: event)
@@ -103,6 +109,7 @@ import Foundation
         }
       }
       guard await store.snapshot().peerInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
+      if let capabilities = packet.capabilities { peerCapabilities = Set(capabilities) }
       if let event = packet.event {
         guard event.originInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
         let ack = try await store.receive(event)
@@ -116,6 +123,9 @@ import Foundation
         if let accepted = await store.snapshot().summary { try localCache.write(accepted); try sharedCache.write(accepted) }
       }
       lastError = nil
+      if packet.hello {
+        return try JSONEncoder().encode(SyncPacket(origin: (await store.snapshot()).installationID, role: role))
+      }
     } catch {
       lastError = String(describing: error)
       try? await store.quarantine(data)
