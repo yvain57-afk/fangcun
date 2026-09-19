@@ -1,4 +1,5 @@
 {
+  "sourceRef": "codex/fangcun-v1-m0-m1",
   "description": "File-level hashes of public materials; excludes this manifest and the generated index.",
   "files": [
     {
@@ -13,8 +14,8 @@
     },
     {
       "path": "AI_CONTEXT.md",
-      "bytes": 3668,
-      "sha256": "9204aaca385e631054a2567ff9931f27d6ee9cc8187485180d861ff8be6f7f70"
+      "bytes": 4719,
+      "sha256": "7f6a3f2e0d11b0b9acb991025ee14c64cd224542f1bf1d6e1cbe2299cc05724a"
     },
     {
       "path": "InnerBalance/Configuration/InnerBalance-Info.plist",
@@ -33,13 +34,13 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/App/InnerBalanceApp.swift",
-      "bytes": 889,
-      "sha256": "0a11b7f09a0eb653c6a459dfed08bb923237a2021af3772af205eba444d170f9"
+      "bytes": 1365,
+      "sha256": "1ff9183808cc8d04369b5943114e6bd1205d6c04aa992408de9982716d9ba29c"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/App/RootView.swift",
-      "bytes": 7823,
-      "sha256": "865dc01088ed4e21412b36165b4f2abb1c9156f8a40a4d41d375b54017742e04"
+      "bytes": 11101,
+      "sha256": "fd7dfa9e284e4eceaf7931fcc8c9aa3215ce49500f7a381bc7f4e20345f4c018"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Assets.xcassets/AccentColor.colorset/Contents.json",
@@ -213,8 +214,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunSecondaryText.colorset/Contents.json",
-      "bytes": 701,
-      "sha256": "8901bf889b21bc0af3695313c387514c54b10c162a81c6efe53700a0771f0fa3"
+      "bytes": 702,
+      "sha256": "aa23fd72331db98e48c7c182fd20f05588ec4d2e6653bf93e03a3a7e5fe2bb4e"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunWarmHighlight.colorset/Contents.json",
@@ -228,18 +229,23 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/DesignSystem/FangcunCompanion.metal",
-      "bytes": 1654,
-      "sha256": "3b5d0e620a12305587123eee50037380163465076f756f9d7f74a9ce4f77c7bc"
+      "bytes": 2564,
+      "sha256": "da4a739025e255f56b4e0004703ad298382a310a4dca6d6d1784ead0fa35ba82"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/DesignSystem/FangcunCompanion.swift",
-      "bytes": 3291,
-      "sha256": "baf2353a8baf5bf938b100ea6c0f5b57652d69a7524c5532e6520d0c5342591a"
+      "bytes": 4617,
+      "sha256": "dda219d43240f40d611d70da9d1f136d8627c88fbd4225b2d3d3ac681071904f"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/DesignSystem/FangcunCopy.swift",
+      "bytes": 613,
+      "sha256": "443faef2853f037d6eb831de5926a6edf61c85d4e349c680ea3e1bb6bad650d4"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/DesignSystem/FangcunDisplayPreferences.swift",
-      "bytes": 708,
-      "sha256": "dde83a517db064e7a5ec0593fcc8ba0dad72312be76721160baeac600851d569"
+      "bytes": 1101,
+      "sha256": "5bf1d09305f8477bacad9b739d0e289389919d66c8fd0d8e0f3176ee8c48b6b1"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/DesignSystem/InnerBalanceTheme.swift",
@@ -302,14 +308,29 @@
       "sha256": "3c99821a57c1f4d0e06842475a98cad12421e0693014d9cfa28b04c24c6adc72"
     },
     {
+      "path": "InnerBalance/InnerBalanceApp/Features/Home/BeverageCareCoordinator.swift",
+      "bytes": 12480,
+      "sha256": "5187ce228e61e69645fe3fb8c73169af5fbf1c2cfa929aea920e30ade182a4df"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Home/BeverageCareViews.swift",
+      "bytes": 8249,
+      "sha256": "8f838430447130cdf97573e35734defbc3e6921638c1175c0c30aea6809c63f8"
+    },
+    {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/BodyLoadCard.swift",
       "bytes": 6630,
       "sha256": "ee48085d653f7dd60ba98c1b58cf832209378f2151eb059573c1bb276ec97317"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/BodyLoadSectionComponents.swift",
-      "bytes": 9653,
-      "sha256": "9df566a76a3c4b216c0d92ae7585bd2bfc9db87220e6b7236dfa98b953344d0a"
+      "bytes": 9640,
+      "sha256": "7f7d65f812c0f13418695024e401466d4641b26528b8204e47c88d527284dbc9"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Home/CareNotificationClient.swift",
+      "bytes": 2407,
+      "sha256": "603fc2d49e1ae14400f6ad79015e689e4491db1a4a6777b624e2985cde8643bd"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/DailyWordField.swift",
@@ -322,9 +343,14 @@
       "sha256": "35519a26a9e0e879b15be88b64d5d71faf5671fafdeaf0703133e933f08ff0c3"
     },
     {
+      "path": "InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkEditor.swift",
+      "bytes": 6431,
+      "sha256": "f0ad47b00232398f5a157825acbb9158967521e169717f5568a4c96c5ebdeafe"
+    },
+    {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkSheet.swift",
-      "bytes": 4368,
-      "sha256": "c1bbf420e0cce63aa1b5fd9d967fb44bafe74abfc79d3f239af5d6c341a4681e"
+      "bytes": 8310,
+      "sha256": "fd696edb727ceaba278a4edec3346b07e0e272e954235a97202fcb68135f0f43"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/FangcunHomeHeader.swift",
@@ -333,13 +359,13 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/FangcunTodayView.swift",
-      "bytes": 13095,
-      "sha256": "0b1f2d7deb765dc5d7946eef598d67507b0d5d53de49ad901c8c18cc5c4fa34b"
+      "bytes": 16168,
+      "sha256": "3e9fc02847560aa3775ee672294bd3582c089448da544f84732670e6615d5e84"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/FangcunTrendsView.swift",
-      "bytes": 4613,
-      "sha256": "0f22989b5c311eb9a394a6a5fcf9eab3bc833b0a54357631ecc211f57b8cc056"
+      "bytes": 5564,
+      "sha256": "b917f3aef9be95daa49b20877be1e109e21862c28659c489fcab4f7f988fdb81"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/HealthAuthorizationInvitation.swift",
@@ -348,8 +374,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/HealthEvidenceView.swift",
-      "bytes": 2376,
-      "sha256": "4b2ff811f98280b41df1491f04ab7f9404781bd5652a196dbfb75b35de70992b"
+      "bytes": 2626,
+      "sha256": "a99b265081e7a47815a590cdcbcace5fec2d459f53198fb3ba01cb90b7d6ae02"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/HomeEchoController.swift",
@@ -363,8 +389,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/HomeViewModel.swift",
-      "bytes": 12968,
-      "sha256": "9651ae9435b68a87632e2a18253e4b467f7ad656430509716c556c5bef06c815"
+      "bytes": 14503,
+      "sha256": "934925c7ea2dd7654452751730c065ab281857a9c8894a748ca338d99eaa094a"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/TodayCoordinator.swift",
@@ -418,8 +444,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Practice/PracticeCompletionScreens.swift",
-      "bytes": 5830,
-      "sha256": "773d8ac9dbaf08f9cda00db9911e1957d6f06dc5318c1956868ad8cee945e8cd"
+      "bytes": 5840,
+      "sha256": "f133eb43f65055a10ee87daa234fdfe2148030b666602ae0af8bc21d2e51a478"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Practice/PracticeInputComponents.swift",
@@ -458,13 +484,13 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionDialogs.swift",
-      "bytes": 2880,
-      "sha256": "66ae3a6f9eef04a4c500eea5139ed1853d5864ff73d1503875247665c77e98bd"
+      "bytes": 3208,
+      "sha256": "0e73a1181d882ceae77a4fe72625a966b3a5e503bc24699dda2e482f3f954692"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionScreens.swift",
-      "bytes": 3524,
-      "sha256": "eed6925fe7f1dc6420bad79e8ee0e4e653079441b10b662fbc9f48ededfee2d4"
+      "bytes": 3583,
+      "sha256": "7beea0c6fd3d0be6f5dee6d307b982dff5bebcedb4a0b25c6f2d506adbc85de2"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionView.swift",
@@ -497,9 +523,39 @@
       "sha256": "c1779fdfdf2a22febc82e8c35a7d847f23c1df342dbfe0b4c918ba97b3044c14"
     },
     {
+      "path": "InnerBalance/InnerBalanceApp/Features/Readiness/DayGuidancePresentation.swift",
+      "bytes": 3170,
+      "sha256": "b78273bf8879bbc3c6208e9c7a74ec00c37a62d275bfad0ac3c2e8aef44e1608"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessCoordinator.swift",
+      "bytes": 8842,
+      "sha256": "9c2fc74209b4fa4b5f7ada17fcaa1ac14fb834adb672924a64a798096065bef6"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessDemoProvider.swift",
+      "bytes": 2287,
+      "sha256": "20c5ce698e5aa08c0e213fcf33641fdc517572a6f99e52cc74d4b037d94f0690"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessViews.swift",
+      "bytes": 18513,
+      "sha256": "baaa1e8e08333dfd475682c2094d6a7ee96f48a2918fb408fb5ce812823df464"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Recovery/RecoveryCoordinator.swift",
+      "bytes": 4879,
+      "sha256": "7017ae74134d1b55d0e31de9f42c354826a432fcdfc24185f7285c085135686b"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Recovery/RecoveryViews.swift",
+      "bytes": 9066,
+      "sha256": "c43d82e926d78abf26765f1f871022737f3bb5e81c27d969cceff84bc3373a19"
+    },
+    {
       "path": "InnerBalance/InnerBalanceApp/Features/Settings/SettingsView.swift",
-      "bytes": 5340,
-      "sha256": "7639f8115781dee377757b5d813fe86dae1bf492f9cbe4b4f307634a83aba472"
+      "bytes": 6443,
+      "sha256": "d81674e656ec55c2e584f015ffa1e586bd292bed14161a101421583f861bbcd4"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Health/HealthAuthorizationCoordinator.swift",
@@ -508,8 +564,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Health/HealthKitRepository.swift",
-      "bytes": 13881,
-      "sha256": "2e0f073b9092d335dcba181a63bd5db0e5ad9e5048a0f4a93ae8effc7ff5e397"
+      "bytes": 15693,
+      "sha256": "2df356ce99e895892bbc38b5e6e16026f75dc95a80033d4e7624710f43abf8f1"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Health/HealthMetadataKeys.swift",
@@ -522,9 +578,29 @@
       "sha256": "53e3a1d29ad92b54b159bbc1ab375fbdd5d849140aa1d60fbac271177a7e4797"
     },
     {
+      "path": "InnerBalance/InnerBalanceApp/Health/HomeHealthFixture.swift",
+      "bytes": 2812,
+      "sha256": "525fde56d2e9c7a06b5e7a3e62e6ab99ca3a6a37390d2e5b593977677cdda72f"
+    },
+    {
       "path": "InnerBalance/InnerBalanceApp/Health/MindfulSessionRecord.swift",
       "bytes": 551,
       "sha256": "d27a6d6c7b124becf5037c89cf383735ab1e50bd232f7f7ee1fcb6a066a3acb5"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessHealthKitProvider.swift",
+      "bytes": 8520,
+      "sha256": "a75f40e9b7a146347bb0cd63edc4e3ed52feda358efb283bd1f48aa9cbf2e2bf"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessObserverCompletion.swift",
+      "bytes": 623,
+      "sha256": "fbe3cd703ad761a1d6ae8cee1f478454e107396d82c967eedd1a1fd28fac8942"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessServices.swift",
+      "bytes": 783,
+      "sha256": "137694c7626beb5275452447dc1a170f01222c624a4c8e7048cb9f4aea47b333"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Health/StateOfMindMapper.swift",
@@ -558,8 +634,13 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Persistence/FangcunDiary.swift",
-      "bytes": 4607,
-      "sha256": "4872a9c3561c7181bc956b37d4a3a6cd8c549af21b41d3496f0adfb03812c4f0"
+      "bytes": 18739,
+      "sha256": "0a2051e453a595bdc27192c9f7c88c487e46b77aecdcaea0774dac6d46ff02dc"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Persistence/FangcunDiaryStorage.swift",
+      "bytes": 5620,
+      "sha256": "8ff1fcd32a000a81b038dc9ddbc101b351aa7005719369912f860c1c5ce5bd38"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Persistence/HealthWriteCoordinator.swift",
@@ -673,8 +754,13 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings",
-      "bytes": 147,
-      "sha256": "c15b2a8ba593465c6fd155ecd95f0943e62674e6aa4ea7364ca37c59df338279"
+      "bytes": 92273,
+      "sha256": "3555732968e1d5b38c3764e7acf89a2cea87523340de96d89cfa64449fa0d1d1"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Sync/PhoneSyncCoordinator.swift",
+      "bytes": 4572,
+      "sha256": "842641121817da6301f4ad4372879d923c5be34999a3ec4bae73df4e308d87ef"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Compliance/PrivacyManifestTests.swift",
@@ -687,9 +773,29 @@
       "sha256": "fed2d915cdef7db89217e5cc70ecaeba5c814f54673999b79e5498459a1459d0"
     },
     {
+      "path": "InnerBalance/InnerBalanceTests/Features/BeverageCareCoordinatorTests.swift",
+      "bytes": 913,
+      "sha256": "4dbee723d401ed8b77f1ebf8a9400a2069c2bb6aadc27d3d370a2184bd4518a3"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/BeverageV2Tests.swift",
+      "bytes": 3153,
+      "sha256": "ee63ab81d0aef6e80bcc1bb39482bde792f30349ec3b0a6cb05a2afaa87fb2d3"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/CareNotificationTests.swift",
+      "bytes": 4249,
+      "sha256": "d771628a89632ad834d01bb86b2e0ded00090a7183309b51ef606a5f10683f2e"
+    },
+    {
       "path": "InnerBalance/InnerBalanceTests/Features/CheckInViewModelTests.swift",
       "bytes": 7371,
       "sha256": "9948c3fafb226bbe7e88028f9ed247c2ab6294a6c5f0fca337e397c32d997614"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/DayGuidanceV2Tests.swift",
+      "bytes": 1515,
+      "sha256": "64dd8a2422e8354edac93695195880b9f4e96a54dcbf47c3a357ad59f0c4831c"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Features/DiagnosticsExporterTests.swift",
@@ -698,13 +804,13 @@
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Features/FangcunDesignSystemTests.swift",
-      "bytes": 8398,
-      "sha256": "778c81409766e4e1fb0e58e8e0cc0576acf1af4e3b8bddf30af5318efad3045c"
+      "bytes": 8894,
+      "sha256": "49920dd004a70805a5290d6acbaf935d544b181273a5cc848cd8a05f0148a2d3"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Features/FangcunDiaryTests.swift",
-      "bytes": 2433,
-      "sha256": "81b56cab1a7aeb2e7599a8c7801f1bf00ecbd74164b8821a0287072f803e5641"
+      "bytes": 4040,
+      "sha256": "6a2773483513c6c16b65b132fd6aa2a55dc3cdce09ca10542f18850993a5f6df"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Features/FangcunHomePresentationTests.swift",
@@ -712,19 +818,49 @@
       "sha256": "9ec1e08eebfdc01df460df4fd5996c99cbb23eb5496079b7c1753f1259a45c54"
     },
     {
+      "path": "InnerBalance/InnerBalanceTests/Features/HomeEvidencePipelineTests.swift",
+      "bytes": 3906,
+      "sha256": "76d4d03c872650feb18410b06a1c3e5f297d8aee05a8ded2cade9fc74a776b7b"
+    },
+    {
       "path": "InnerBalance/InnerBalanceTests/Features/HomeViewModelTests.swift",
       "bytes": 23186,
       "sha256": "9117be1132ddcece69b144623e51457ef751ba50fca944bfa967cfebb03e2c17"
     },
     {
+      "path": "InnerBalance/InnerBalanceTests/Features/PhoneSyncIntegrationTests.swift",
+      "bytes": 6254,
+      "sha256": "7ab37efec286dafdf2d79daa0c3c521ddb9bb3277272a3613bcf90e09df8d60a"
+    },
+    {
       "path": "InnerBalance/InnerBalanceTests/Features/PracticePresentationTests.swift",
-      "bytes": 24977,
-      "sha256": "276731232a03a0566966314489fa682f6814faf0670fb174026633710a020b15"
+      "bytes": 25943,
+      "sha256": "a0748046ae2ca958eaa0bf47ee640cdd4e4e39877278c54e34487016449d8c74"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Features/PracticeSessionViewModelTests.swift",
       "bytes": 4202,
       "sha256": "1c089fc9f7e82720a43ae65c2ba45fa4ec81c127a7bb81b96bbd2bf96c60dbfb"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/ReadinessCoordinatorTests.swift",
+      "bytes": 8264,
+      "sha256": "9d5284de8c2f2a4a83001eab81430577a914b3567bc46b5152189247f2e79ce9"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/ReadinessHealthKitProviderTests.swift",
+      "bytes": 1824,
+      "sha256": "595edf016a1a5eaddb62a1878d4751f3defba7c77ceb754d48f8e1b81d407e8f"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/ReadinessObserverTests.swift",
+      "bytes": 6102,
+      "sha256": "e514f9bb60598e0ce48d8d3c3db0fb83e6f06c5b9813475d1dc7ff82ad9dd249"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/RecoverySessionTests.swift",
+      "bytes": 2728,
+      "sha256": "1dfbd866909a24841c782025b3f81d3180ddae1cf588dcaac746349eebb5276f"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Health/HealthAuthorizationCoordinatorTests.swift",
@@ -762,6 +898,11 @@
       "sha256": "4167e6477869b9a15068406721738bb4189f37bbd4383aebfa2527e319c91078"
     },
     {
+      "path": "InnerBalance/InnerBalanceTests/Persistence/FangcunDiaryMigrationTests.swift",
+      "bytes": 6790,
+      "sha256": "56dbe1cb0f234ad7105e8eba2c3de7746455e935e6294b55994791cf77bd94ea"
+    },
+    {
       "path": "InnerBalance/InnerBalanceTests/Persistence/PendingHealthWriteTests.swift",
       "bytes": 5446,
       "sha256": "cb2b8072fbf1cd10b8959b0459fd159cea3818a65ea8da0cdc34afd5bf77139b"
@@ -778,33 +919,63 @@
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift",
-      "bytes": 16423,
-      "sha256": "f59fcfa9a4d54bcea340931537557d915e14622c60a4d81a3380a18098720386"
+      "bytes": 16611,
+      "sha256": "9b0faa31830b958c363072b1f81d3a718c4d736a7159d604b9f36d1296619bc4"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceUITests/DrinkEditorUITests.swift",
+      "bytes": 1893,
+      "sha256": "d09daf173a794f30f69330caf6fc2b7c64ba3f73d1106012487cacbcb3836989"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceUITests/ExperienceV2SceneUITests.swift",
+      "bytes": 5003,
+      "sha256": "c10a2c532162c51ab9df7da6de22f419877d6c0b084e94398e2ef022b1277a30"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceUITests/ExperienceV2UITests.swift",
+      "bytes": 2265,
+      "sha256": "e94ebd38c875484e9e0dbcef1c87ca53da15dc3cf40d6b888d046da30ade1bce"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift",
-      "bytes": 4028,
-      "sha256": "bec002af5ac898863630a3ae39fa4fd15e8534444cb65c57eef5ca338d9f2140"
+      "bytes": 4074,
+      "sha256": "50598d7fb46973b9cbf79de391bb63be30d78ad6f1b89889a13ba8ea5b5f9f20"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift",
-      "bytes": 4632,
-      "sha256": "dba931b08dda220cf116426f1e4825bcc72a5e8dca72fd28d90764b998eacc6b"
+      "bytes": 6032,
+      "sha256": "5830164545ba0cb220adadcf66e501494bd793efc96b38113c16bf786bf96f28"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift",
-      "bytes": 9010,
-      "sha256": "5c3315215e279710672b940a68a797e4e0bf2b5390458d3c0321093504d7484e"
+      "bytes": 9078,
+      "sha256": "c30736038a05fc22558cc25c05f8f83d54a86b7403cc940695a7e8fa5bc66749"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceUITests/HomeEvidencePipelineUITests.swift",
+      "bytes": 3636,
+      "sha256": "b7e01970333e6369cdf3ec6331359cf4888f764f5c79131fa95a6ceae5c432ba"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift",
-      "bytes": 1972,
-      "sha256": "61d177ef8852c28edaf328982bc94e6f7c0e898ca56e83ea0812fcf0447a6996"
+      "bytes": 2956,
+      "sha256": "9486cebd094370ac6245da400e7f3378fd84cf76b3ead2a0b56480739e672e7a"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceUITests/ReadinessHomeUITests.swift",
+      "bytes": 6088,
+      "sha256": "ab55b3e078ce7d86c91c78c7612404105cbf8d20c39b4dc0348794f728f032bd"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceUITests/RecoveryActionUITests.swift",
+      "bytes": 1990,
+      "sha256": "f4749ee53650c993194ea0e6f832b81a11ede7a45769ee2f39f40f7ce37df2b9"
     },
     {
       "path": "InnerBalance/InnerBalanceWatch/App/InnerBalanceWatchApp.swift",
-      "bytes": 606,
-      "sha256": "de26dfceca38d05b7d746742a64ab6548821a77ab1a83b4678c557a0e4dd0f73"
+      "bytes": 699,
+      "sha256": "cefd5b7a96a8ec9d6e17c19dd0aecc94db624c5baf7769b305ad9f20ccb1ffff"
     },
     {
       "path": "InnerBalance/InnerBalanceWatch/App/WatchRootView.swift",
@@ -843,8 +1014,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceWatch/Features/Practice/WatchPracticeView.swift",
-      "bytes": 14752,
-      "sha256": "2c95f488ab54aa7dfb12cee474d0c561a31c3428ac6f34e1c969df657bc10b55"
+      "bytes": 15144,
+      "sha256": "2fc988ac45af039effc8b393af3979cb26e4f61c572d3c2787906be265c47ec0"
     },
     {
       "path": "InnerBalance/InnerBalanceWatch/Features/Sync/WatchSyncStatusView.swift",
@@ -868,8 +1039,13 @@
     },
     {
       "path": "InnerBalance/InnerBalanceWatch/Persistence/WatchPracticeCompletion.swift",
-      "bytes": 625,
-      "sha256": "952115f6b93d449f6674459d89aa672a470ff63662c72cde8a75ff04b76bce1b"
+      "bytes": 685,
+      "sha256": "fb07c5534042753025b3d5078c0fac8b1738fda239cb1c80b841cbb743832ae3"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceWatch/Sync/WatchSyncLifecycle.swift",
+      "bytes": 4247,
+      "sha256": "83e7fe2b37152a568039822543ec066ce8c732865f8f7fa0bef373485b59f392"
     },
     {
       "path": "InnerBalanceCore/Package.swift",
@@ -877,14 +1053,34 @@
       "sha256": "fb6a37de920f32d681784763737c8bfa2fdd367139b712aedf0ff84e5b549f09"
     },
     {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/BeverageCareEngine.swift",
+      "bytes": 11563,
+      "sha256": "62a5591e202a1e68ecbea210e5db35a6f9461bd34bce821e4623c6a993f6ce7d"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/BeverageModels.swift",
+      "bytes": 4457,
+      "sha256": "4fa5f6c4a012867c2a9d1bd390cd1db7b3b37e6285a7c14e660833da29a59e73"
+    },
+    {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/BodyLoadEngine.swift",
-      "bytes": 4902,
-      "sha256": "dcd56d415b90de9bbaa17d5c2306f56b4c30fe7a6a8984df3dae3ac5497816a4"
+      "bytes": 6453,
+      "sha256": "c65bd4dcf5f80cc54c0fefa6f7c5dc0aa075d960ccd0db63f8987a82bdc2bff1"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/SleepEpisodeAnalyzer.swift",
       "bytes": 2881,
       "sha256": "c59b1bce970431b5230d2a2749be4e58920393f954c3997e9b48b7c0ff93859e"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/CareNotificationPlanner.swift",
+      "bytes": 4404,
+      "sha256": "858b552195ced130a46cff4602f7955d0668a27166ca03c934b92d15d07d27b8"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/CompanionMotionPolicy.swift",
+      "bytes": 3389,
+      "sha256": "6f4ac444935406878d7ae454ba3920eda9b4b4f3897349cda7003e776595b1c1"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Emotion/EmotionCatalog.swift",
@@ -942,6 +1138,46 @@
       "sha256": "18e7dc6ee01ef2598a1c1327ccffc38bff4ba2ed970c817a3cbf4844d2390c7e"
     },
     {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineBuilder.swift",
+      "bytes": 7838,
+      "sha256": "593f033360b5f5694ed69a5bf11c8abe215ae3cbc1047e702cb04812dd2950e7"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineCoverageAudit.swift",
+      "bytes": 5410,
+      "sha256": "c5e974aa42c5e1bce57081fc281cdd04e68905c4056131ab11df35b91ecbe7ae"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift",
+      "bytes": 11454,
+      "sha256": "2623063c18ed02377e78ee19ba4315a7e38f76039f4d5d0a101cce5a913cfa8c"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessConfiguration.swift",
+      "bytes": 3823,
+      "sha256": "aa7f46ed792ef78e9b36ff88b70189bb2df1e7052b0f0d1579c736c316cb95ea"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessEngine.swift",
+      "bytes": 14553,
+      "sha256": "944946b7db66a38692218aeb85f539a150b745e9be35ba249864c96615d2ade1"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift",
+      "bytes": 8901,
+      "sha256": "4f51aa5622e6ee87b0f1fb03bb95a99eb8cfcae382ea1a95f5eae56f7f0fc356"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessSamples.swift",
+      "bytes": 9887,
+      "sha256": "501ed1afcfdfb0723329df89d1a946077cb08d00993d96011c34ac0e634b4095"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/SleepEpisodeBuilder.swift",
+      "bytes": 10281,
+      "sha256": "095327c7aed896da80156a8a90c4881faf273d73d35e2987c1f9ae254430b9bb"
+    },
+    {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/CurrentMomentDecision.swift",
       "bytes": 10447,
       "sha256": "fa0b39c1b810c99cebcb2f318658968756c786514296760cfb8ac64a59907ca2"
@@ -955,6 +1191,16 @@
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/RecommendationEngine.swift",
       "bytes": 1488,
       "sha256": "eca870e0d7148696aa332224888e4a1ee8257b2c3a23f98623b659a51fb98716"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Recovery/RecoveryAction.swift",
+      "bytes": 7365,
+      "sha256": "685b1686cc8e87b16f005daa38ad156d0e73173db98e098b3503a728937fea95"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Recovery/RecoveryStore.swift",
+      "bytes": 4169,
+      "sha256": "022f11def1d08f9f6061431957baca02111300e30506f0f03e9d0f39e6206dcd"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyEchoState.swift",
@@ -972,9 +1218,44 @@
       "sha256": "4dfa5fd387bbdea65fc50ddd4b7f965c2a68a5cb8e1556df931086436a558c43"
     },
     {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SummaryCache.swift",
+      "bytes": 1210,
+      "sha256": "a4f0d75172b91f5652e8246f57eb3f53b7557abc75bd18a09b3fb76938ded45c"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncModels.swift",
+      "bytes": 4390,
+      "sha256": "9ab92d1b07608eafe245ae47c51540587db04b21e612452f3827d7e9cdc735ea"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncService.swift",
+      "bytes": 7360,
+      "sha256": "09c15857c0e8a7f946fb05e9d8a97c64a2a597ab45bb26e7730e1753e9561636"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncStore.swift",
+      "bytes": 7289,
+      "sha256": "d95a0018826b06ca905397bbd43eed7a8c6a87cb360d1b3bbe2097969e36442d"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/WatchConnectivityTransport.swift",
+      "bytes": 3211,
+      "sha256": "8f32c36227a8e0f78a7c06be735950aa347cc2f2fefa52c2179749ff5be10b46"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/BeverageCareTests.swift",
+      "bytes": 11609,
+      "sha256": "44ed67fe8b7d8eda159d4f54b647d43ba4a6eaa5ab6f1c2ab145452586d3cf44"
+    },
+    {
       "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/BodyLoadEngineTests.swift",
-      "bytes": 5011,
-      "sha256": "445625a5c245394ae98e32c54fc01ae4421a936032e61a7adeb035a06255882e"
+      "bytes": 6813,
+      "sha256": "a8db391d79199ca706e741b20a1e852b9f78efd375869c076ef4964665c35359"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/CompanionMotionPolicyTests.swift",
+      "bytes": 3641,
+      "sha256": "3b4782e4d3e1944a598a4ee293610a85657ab14a39ab0af2130ba59c4578e9ed"
     },
     {
       "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/CurrentMomentDecisionTests.swift",
@@ -1017,14 +1298,89 @@
       "sha256": "6e9b1970708f852401af65cb89d52780cadaf15dbf2636e945cd52de9bd6df5e"
     },
     {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/InsightsStoreTests.swift",
+      "bytes": 12352,
+      "sha256": "9eed47acd7f30f3409fb214cb09f6a642266b69c2b46a0ae399b60b0ace4bd50"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewProvider.swift",
+      "bytes": 1887,
+      "sha256": "305e934de2546289ef4db9ce533b0c20e06e6be7f4e48c29deb930fe1062f305"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR01Tests.swift",
+      "bytes": 4698,
+      "sha256": "160a25b9f424afc7993fc4f63867a801094fa6c28d7d56ba5b5310d04d9254ae"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR02Tests.swift",
+      "bytes": 2955,
+      "sha256": "4fc3d2736f6af8a71dca7ecc45cd3cd69de889577410a6f4a830e3b0671dd402"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR03Tests.swift",
+      "bytes": 4263,
+      "sha256": "3185682d70f51857289e9973cbfbb067fa0e497b30bac21c61708fb7bb9a74e3"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR04Tests.swift",
+      "bytes": 2217,
+      "sha256": "cbfdf678ff7810aee3a8127f9543822d7ef5e8f4b440d850e2395e285f7e614a"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessEngineTests.swift",
+      "bytes": 9293,
+      "sha256": "4f3c9e2be63611b79ce1499122c4bc672665459ba5327d800d85b93b81e78430"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessFeatureTests.swift",
+      "bytes": 5211,
+      "sha256": "fd242bcb68e3bc384d1816c8e905c901c0275124a740f58919765e556e7bcb0f"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessFixture.swift",
+      "bytes": 2224,
+      "sha256": "7da682ec5319db91c50c60728593368a6b4050ce90f05b87c223f550a1abec80"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessLifecycleTests.swift",
+      "bytes": 1850,
+      "sha256": "e545ab216fddd6493dc2ca9900a40adddd51be9bee7e4e07957a550e10c41c95"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessSourceTests.swift",
+      "bytes": 3415,
+      "sha256": "efa57df2dc4a33f6ea0e2197b830931e33f7a245b8e4e93a18fa24d919daa604"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/V2SleepQualityTests.swift",
+      "bytes": 7920,
+      "sha256": "eeea3722061b2f56e5459a9e3132a794440e92fb453cb24d5f78f76f2e55458f"
+    },
+    {
       "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/RecommendationEngineTests.swift",
       "bytes": 2041,
       "sha256": "9c5475b937f3c34389ae51e9786a69ec8ad91c5b91853d1d57aa07731ee7bc5a"
     },
     {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Recovery/RecoveryActionTests.swift",
+      "bytes": 5842,
+      "sha256": "56e2acc6f4fd4745013e0b998b55806179d0fadaa73fa2fbcb7d19d218e5858b"
+    },
+    {
       "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift",
       "bytes": 2378,
       "sha256": "57ea9f2339c15d128eacb7dad32feca717d2f49ac0494952a4d18ac5b1d73329"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Sync/BeverageSyncV2Tests.swift",
+      "bytes": 2232,
+      "sha256": "af2b64bed612ab9a3d0cb14c3fe105bfc3619274c67412f87dedb243011f3dba"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Sync/SyncReliabilityTests.swift",
+      "bytes": 7298,
+      "sha256": "e77ebb2b6808c908c4908fd96677a9a283a64bb3491007e7d820a962a67421a3"
     },
     {
       "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchCompassGridTests.swift",
@@ -1038,83 +1394,358 @@
     },
     {
       "path": "README.md",
-      "bytes": 5363,
-      "sha256": "c98df90bcba5876d4e77eb6ff48c8eb31288175e55401a103176b6a5a780f520"
+      "bytes": 5609,
+      "sha256": "47aa05559134cf2f54b2e0e430f62a46ee841ba6eb310a00388baac74a10d60e"
     },
     {
       "path": "ai/README.md",
-      "bytes": 1942,
-      "sha256": "65da0638b1a8c3705d5b79f2e3d0104913039fa58a649518e4bf65ef0ab685c2"
+      "bytes": 9784,
+      "sha256": "04c28ceb48fa6e64b7e5a3b34823fabce7d643fa728ed325f4e38198f906601f"
     },
     {
       "path": "ai/source-01.txt",
-      "bytes": 148678,
-      "sha256": "f13c8ce8981716253ec6a3a6c9c609e601cb9034d477e07e48100cf63634e26e"
+      "bytes": 151764,
+      "sha256": "8be6041569aff0b00982d917884db86342bdd18f37f1e5624f7a09fab0fa6e40"
     },
     {
       "path": "ai/source-02.txt",
-      "bytes": 158931,
-      "sha256": "914530bc9ad881283ffad0ea722e3d7f7dd2343a68e10d549ef62d74e03423f9"
+      "bytes": 157598,
+      "sha256": "d08dd7b211037e104b6b1442f75d2b70c25e46108647ef6e9271927b1aa12d6e"
     },
     {
       "path": "ai/source-03.txt",
-      "bytes": 153029,
-      "sha256": "ccfca30e9ef6ca6ee88db8b5940200521822600a7d800d97d524191b982059b2"
+      "bytes": 158148,
+      "sha256": "3b44a6a6f1809fde321e879242ab1d2b549dd2c89cb37dd56519ce32b42eda10"
     },
     {
       "path": "ai/source-04.txt",
-      "bytes": 157100,
-      "sha256": "7129482ad9ea5443e5efcb0daff536428d774804d03a7c36a3aef3b3d4f05e5a"
+      "bytes": 152257,
+      "sha256": "7993cfe7ce8b0b291f5f680023c0f668053c1cd52f6c72576bd75d13918c3ed3"
     },
     {
       "path": "ai/source-05.txt",
-      "bytes": 138782,
-      "sha256": "a1fb5dbf7ec9b4ee92245e7aae882dc7eceb01e05044c51fb20b1221be951b4a"
+      "bytes": 157148,
+      "sha256": "a17a965b6bdba8286eb92674dd463d5af9b560b57fedffa2d96f32cbb78b68be"
     },
     {
       "path": "ai/source-06.txt",
-      "bytes": 159325,
-      "sha256": "815032f0c4055786cf0848c5256cdc165c19899b0cb7f2c6fce52fb7568e63ea"
+      "bytes": 147246,
+      "sha256": "cba8b81971d9770c183fcbab2c0e5777c4f1809830bd6d3eb93f2ddf4494810f"
     },
     {
       "path": "ai/source-07.txt",
+      "bytes": 156574,
+      "sha256": "0a947070e5de6a54579679edd77df3e8449af4a77acbd04de5530feb9c6d1459"
+    },
+    {
+      "path": "ai/source-08.txt",
+      "bytes": 150270,
+      "sha256": "b7ea35599af694957d0425373a9bf993c5de9d4b1d7486830859146832b136ab"
+    },
+    {
+      "path": "ai/source-09.txt",
+      "bytes": 127920,
+      "sha256": "d0425c28bf709eafd1bdc7bd864eaf8eaa499ade8e4ad77e73f0627e357a8efc"
+    },
+    {
+      "path": "ai/source-10.txt",
       "bytes": 155913,
       "sha256": "66bda938a2abff8ab10743e56093ecf6e1d89f1fded236abe5ea4bbf1ee4b4bd"
     },
     {
-      "path": "ai/source-08.txt",
+      "path": "ai/source-11.txt",
       "bytes": 152369,
       "sha256": "bc0172dd3949b5b5e98382fb3a546cdc74e33a3bdf366ac42af222294fe5074b"
     },
     {
-      "path": "ai/source-09.txt",
+      "path": "ai/source-12.txt",
       "bytes": 116216,
       "sha256": "1a143af9929da0179e0d2c9c7a14a35cb1b1e7dee5d1d52cf8e359612a3e38a0"
     },
     {
-      "path": "ai/source-10.txt",
+      "path": "ai/source-13.txt",
       "bytes": 138581,
       "sha256": "e3e9fa9eef71dee4343b8c0284a0feb8f9c4b01cf8772342385c31fae0e96b80"
     },
     {
-      "path": "ai/source-11.txt",
-      "bytes": 128572,
-      "sha256": "c2634007a8f8bd0b7683b0580a463ffb1c460acf51582eb644b9191d0e6911d7"
-    },
-    {
-      "path": "ai/source-12.txt",
-      "bytes": 129632,
-      "sha256": "7a739a93f3106f7f5fa9fd1385b8526cc2b16e2333ab3580c223890a9ae4d028"
-    },
-    {
-      "path": "ai/source-13.txt",
-      "bytes": 158632,
-      "sha256": "03a292b8496893189dc045adb9ead60426cf2381db571f2ae09fdc28ae2e026a"
-    },
-    {
       "path": "ai/source-14.txt",
-      "bytes": 30956,
-      "sha256": "aa7f8c82549fd739edffafa1c66f60cd5c7e2503ec2ddc77bb3f39fc974fdb79"
+      "bytes": 129071,
+      "sha256": "5fd927ed540463d963f50a499307eea94c288facb40264fe44f33742803b6977"
+    },
+    {
+      "path": "ai/source-15.txt",
+      "bytes": 155639,
+      "sha256": "ab416f0a5024c1b99f32d06ccc97480abe947c7e65a75a72bd5331353c132b11"
+    },
+    {
+      "path": "ai/source-16.txt",
+      "bytes": 150729,
+      "sha256": "e7f6cb7676e0846f7dc9d3084e9fe7cf7ab5c981f7710165ca669f7a2e274982"
+    },
+    {
+      "path": "ai/source-17.txt",
+      "bytes": 152778,
+      "sha256": "6f44214eb15c27fc486f604df8d5d43450b94c13fcac0df741a399dcb1c8a913"
+    },
+    {
+      "path": "ai/source-18.txt",
+      "bytes": 144552,
+      "sha256": "6811e8fd7d1874d09597513c109a2473f9f733a093e3b3e303de77733ab4a4f6"
+    },
+    {
+      "path": "ai/source-19.txt",
+      "bytes": 20134,
+      "sha256": "c4fb68b28abc815126a011b5276acf5e27369cf0c2b58b11ef891265410d8f44"
+    },
+    {
+      "path": "ai/source-20.txt",
+      "bytes": 196559,
+      "sha256": "c64c81e7280dc417db1c621552238fae5269f5bacd7255e16e68fc9faeaf0b5a"
+    },
+    {
+      "path": "ai/source-21.txt",
+      "bytes": 79421,
+      "sha256": "8c73205eaa88661ad4f2395c14527c4fff866a618a53df93c9566b90f5203a7a"
+    },
+    {
+      "path": "ai/source-22.txt",
+      "bytes": 107805,
+      "sha256": "6c0d9f703dd76a191cb86fde01d619f3b34d158667df4310991279da0fa49585"
+    },
+    {
+      "path": "ai/source-23.txt",
+      "bytes": 117850,
+      "sha256": "d63539442d8b389a3ce460cb24f0ca0583216275dc6827d9f65e93f37e741b10"
+    },
+    {
+      "path": "ai/source-24.txt",
+      "bytes": 49168,
+      "sha256": "85a30d4ffd9ff46a2135d5dbc6dd958dd7b254ccfb711df60ffe4dc9b6f9b1f2"
+    },
+    {
+      "path": "ai/source-25.txt",
+      "bytes": 462079,
+      "sha256": "88695ae85fa0b971581fb2ff2fb86af187d7a5558960ee752d44eec624a3d937"
+    },
+    {
+      "path": "ai/source-26.txt",
+      "bytes": 42428,
+      "sha256": "6e7bcf7b488e3249037cc6f22967e909171bc6a19849e160251cd77d10ae3802"
+    },
+    {
+      "path": "ai/source-27.txt",
+      "bytes": 233795,
+      "sha256": "839baf5989f165972828426d9100104a5a1eb3c75eaee1c6e8e2f64989997f0b"
+    },
+    {
+      "path": "ai/source-28.txt",
+      "bytes": 155798,
+      "sha256": "a6e9b0d91675d2809bc2f27929f6d3942bdc9f6d9e7a29e0210db5157cbde428"
+    },
+    {
+      "path": "ai/source-29.txt",
+      "bytes": 25718,
+      "sha256": "d4b179d40c27752e99aec41d566530680a5c48c58ff2882f2e2ee214b616640e"
+    },
+    {
+      "path": "ai/source-30.txt",
+      "bytes": 284423,
+      "sha256": "e557be910895acca8eda435ca5acfee644142c84f7f983ac9f4f33b2f33eabb7"
+    },
+    {
+      "path": "ai/source-31.txt",
+      "bytes": 145539,
+      "sha256": "3487ae45d6caf543bd9422a3c898103f63d0cf57bf099ef0f46d287ef43ec452"
+    },
+    {
+      "path": "ai/source-32.txt",
+      "bytes": 51795,
+      "sha256": "fe0205e7322ba9e1e9f9b21668c14ca89f947806285f0b7df0ce6b06969b1a22"
+    },
+    {
+      "path": "ai/source-33.txt",
+      "bytes": 196270,
+      "sha256": "a589ecd350bf2d013a360222ad32b2c7f8cb8519d3a828d6c3b4cbe1635f1d46"
+    },
+    {
+      "path": "ai/source-34.txt",
+      "bytes": 164433,
+      "sha256": "6c08e093ca5896978ff8697434f6eb4169b3a068b8e29edb6f2dee590717066c"
+    },
+    {
+      "path": "ai/source-35.txt",
+      "bytes": 66562,
+      "sha256": "df4550165a2a1b7ecb5499b18f71bfca77498c6098efb7ebfd0ec046b047af6c"
+    },
+    {
+      "path": "ai/source-36.txt",
+      "bytes": 191434,
+      "sha256": "1c4ae4810bd63fe66c6f501889191088635b54dbaecb4a957c1070e771796654"
+    },
+    {
+      "path": "ai/source-37.txt",
+      "bytes": 267366,
+      "sha256": "7892445e0a799ed37f5fbb40a6556ba9331d2f0c715d1e9f4a97fe59742ce0b7"
+    },
+    {
+      "path": "ai/source-38.txt",
+      "bytes": 479533,
+      "sha256": "f443556eb5981d914de759c0f26fe1638876f66926ddc00e9c711e122f9b08ba"
+    },
+    {
+      "path": "ai/source-39.txt",
+      "bytes": 38463,
+      "sha256": "86207fc6a5df91c504277594205ea53a167ddabac1e82abb4ac9663c249b25f4"
+    },
+    {
+      "path": "ai/source-40.txt",
+      "bytes": 157472,
+      "sha256": "1b2701f4f550a40b4f58dcb9dbc1b7b7039058540b2e7d7e7a8d40d8db17a332"
+    },
+    {
+      "path": "ai/source-41.txt",
+      "bytes": 477234,
+      "sha256": "ca48c96b47e78bf8346a98a26b79d90c8047b54b27a307dd683a389308fcc57d"
+    },
+    {
+      "path": "ai/source-42.txt",
+      "bytes": 62374,
+      "sha256": "60ae11b4aaf2e5e2ffb91ab915418a322759e883e16ef634822cd9c7417e11ee"
+    },
+    {
+      "path": "ai/source-43.txt",
+      "bytes": 260255,
+      "sha256": "c450fd6734ec0d5c7be6baf47c99f4893898963b402e5b2c06618860fd375fd9"
+    },
+    {
+      "path": "ai/source-44.txt",
+      "bytes": 150869,
+      "sha256": "7b4a585872da1e1139e16179d5772e7aeed813d47dc91dae5d5a45bace963464"
+    },
+    {
+      "path": "ai/source-45.txt",
+      "bytes": 171740,
+      "sha256": "edb4d79a25e246642ea8552f3c04b2d4ab8f859e6b27b8a9c2908d8c10084ef9"
+    },
+    {
+      "path": "ai/source-46.txt",
+      "bytes": 239,
+      "sha256": "d6c87fbc63efc92d2c046f811f067f1dd8944f104fd5c0c874fd1935633d2146"
+    },
+    {
+      "path": "ai/source-47.txt",
+      "bytes": 269801,
+      "sha256": "b38a7ce7aac3b84cdd3e139fdd8d10c27b22db525bd8b88f6cf8415ab9932012"
+    },
+    {
+      "path": "ai/source-48.txt",
+      "bytes": 106666,
+      "sha256": "6dd16837a3d0af3c4892a063912f5ec5934487f767143993d72878488e53db0a"
+    },
+    {
+      "path": "ai/source-49.txt",
+      "bytes": 130517,
+      "sha256": "12748df494bb8b58f50501db8174348d4f7c74ec985ac9658fc435360d62b502"
+    },
+    {
+      "path": "ai/source-50.txt",
+      "bytes": 98888,
+      "sha256": "5e707ac6b6f7b88577920487fc40fd6b1adf67c470b538d37a7554c3f4a8a9cc"
+    },
+    {
+      "path": "ai/source-51.txt",
+      "bytes": 150179,
+      "sha256": "beb1b68482fb6d6a3b742a86c2edb73081111fe2f576ae226ec9c2fad7df361d"
+    },
+    {
+      "path": "ai/source-52.txt",
+      "bytes": 292876,
+      "sha256": "7b831c8a103927c32570292b7caae10f23e1663c8f4255d4d4c4ff168a573ac3"
+    },
+    {
+      "path": "ai/source-53.txt",
+      "bytes": 207642,
+      "sha256": "9a41517410ef50f2438d4d00ee48b6ad9319de9c1dfc7faf3c9e584efd86bec1"
+    },
+    {
+      "path": "ai/source-54.txt",
+      "bytes": 105021,
+      "sha256": "2d8f9781b6b4afd217e7a6afb6fde0eaa315ae9384da45cd5441583faaa25996"
+    },
+    {
+      "path": "ai/source-55.txt",
+      "bytes": 128543,
+      "sha256": "189cb72aca10510b03ebaca2f651f8f631c64875219a0b716dff12d3cc018cbc"
+    },
+    {
+      "path": "ai/source-56.txt",
+      "bytes": 110637,
+      "sha256": "f00b9647b1341adf489d39a12b5c7b0fff6990ec32637f7ca542f077465e692a"
+    },
+    {
+      "path": "ai/source-57.txt",
+      "bytes": 85751,
+      "sha256": "05dba7dc754ac7320064bd4646ae156191dec6349a1cb5cc37b5bf990ae5f248"
+    },
+    {
+      "path": "ai/source-58.txt",
+      "bytes": 125048,
+      "sha256": "5d0c35728804e3ee6cbdb0a6db5acb1169c832f4d907815a7199452af6423677"
+    },
+    {
+      "path": "ai/source-59.txt",
+      "bytes": 138337,
+      "sha256": "1ea80c065c616423616e8f2f7e6bc4899d5fece5f289070857564c0365f890bb"
+    },
+    {
+      "path": "ai/source-60.txt",
+      "bytes": 130186,
+      "sha256": "1bca47b512ded836527c89815d04869cc87694b4a8b3cdf1b60d59cc117a1b3a"
+    },
+    {
+      "path": "ai/source-61.txt",
+      "bytes": 308509,
+      "sha256": "49155eb120dcd3067517dd6e33eb0cc9dc6f548ae62981f2a1259315a279ea95"
+    },
+    {
+      "path": "ai/source-62.txt",
+      "bytes": 107231,
+      "sha256": "215c92b40c55913b2013a9f2d73b556402712b3ba3dc2cc20eec0cbcc74409cd"
+    },
+    {
+      "path": "ai/source-63.txt",
+      "bytes": 140905,
+      "sha256": "57f14448b5f4448ea709697ebd99b3fad751eb350d07e3c6e36f4f432b30cabe"
+    },
+    {
+      "path": "ai/source-64.txt",
+      "bytes": 191100,
+      "sha256": "0d89a61511f1a2315f08039532fbea2d8a77f5875f41469657e2f9bf85d1c9c9"
+    },
+    {
+      "path": "ai/source-65.txt",
+      "bytes": 126098,
+      "sha256": "0a3d166e1cdf15da4d90148a4dfaa8999502ebab9153e72850914cca8b277eb1"
+    },
+    {
+      "path": "ai/source-66.txt",
+      "bytes": 135169,
+      "sha256": "3ab9ad2e112fb62b79150492a88f1097621a19be99d88f06e3cd8aaa6abb9bbc"
+    },
+    {
+      "path": "ai/source-67.txt",
+      "bytes": 158586,
+      "sha256": "3ba5043e8d89f7e8b075d1639624281d2af4d3864b61d49ab01850ff70ee4283"
+    },
+    {
+      "path": "ai/source-68.txt",
+      "bytes": 158849,
+      "sha256": "c8d17828f6b1449020bbd8c1fd8a1a287b6b26626585ec24a6bbb70ffa269e4d"
+    },
+    {
+      "path": "ai/source-69.txt",
+      "bytes": 36804,
+      "sha256": "a70290e4b5fbca932ee66f7cdf8b646f22d2b519f280a91934f799264c7390d7"
     },
     {
       "path": "design/brief/交付核验.json",
@@ -1423,8 +2054,8 @@
     },
     {
       "path": "docs/CURRENT_DESIGN.md",
-      "bytes": 2315,
-      "sha256": "e65bd8d1baf98dc86295f4c2bea0c1d26571ad81fe2c72f36facfdc88c6b3201"
+      "bytes": 2814,
+      "sha256": "fb73b391ce6f0b0225bf3233abef25686c1891d9cb0f2b8cfd70ddc1df0d0858"
     },
     {
       "path": "docs/archive/product-marketing-20260809.md",
@@ -1547,6 +2178,351 @@
       "sha256": "c1e650f4f3af8de9beb912676af88934f8c6ec4f7e757e104e444326de5f0c72"
     },
     {
+      "path": "docs/plans/fangcun-experience-v2/ACCEPTANCE_CASES.json",
+      "bytes": 17329,
+      "sha256": "19aa843d58a4bd1bcdac0e1a4cfca819f55cf2af09e49cb41081d2d82f478ac6"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/ACCEPTANCE_RESULTS.md",
+      "bytes": 9076,
+      "sha256": "84f32ede5e5a0838a15721d16978de6e666e4c12fcbf4aa801bfe8cd0a78a091"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/ASSET_MAP.md",
+      "bytes": 912,
+      "sha256": "f34849863dbfa4f5eca65ffd470d00d7fad9cfb7795c31b61157c8e4ec043305"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/BASELINE_COVERAGE_FINDINGS.md",
+      "bytes": 2354,
+      "sha256": "98c3165d1ade92487951512ffd30d52028fba7ed1b0914332667469742ffb9f0"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/CARE_POLICY_DEFAULTS.json",
+      "bytes": 4837,
+      "sha256": "44ac6995691a0e369601d28187a705283ca10525e9c92b24ee241bf2e38f2924"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/CARE_SOURCES.md",
+      "bytes": 1993,
+      "sha256": "7663e0cd020d180977908275bc3f558531ee16dcd8cdb9b8c3402c97b6201233"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/COMPANION_MOTION_SPEC.json",
+      "bytes": 4125,
+      "sha256": "3c0233bfa93a48def52f04a78a91987dcc5a1ea9304ea1c1f69c22e7cbf38605"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/COPY_CATALOG.zh-Hans.json",
+      "bytes": 11582,
+      "sha256": "05ce21497b9212dfd85b6a13dc750f5b71d5cd544e7cb7b446ff636428aae924"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/COPY_REVIEW.csv",
+      "bytes": 15240,
+      "sha256": "2d73d6c13f873870b2c43647325cedac301eda0ae07b9d8a92088fb3e8a717ac"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/DECISIONS.md",
+      "bytes": 2730,
+      "sha256": "d779d878d1399be80069e6314e5f793e2bb3b1e0b4bb6255644ecbcc733bd5b1"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+      "bytes": 45922,
+      "sha256": "38eda518056b7d1ff96934a68d81547f2d016cd422721c002842d6b428257b29"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/MANIFEST.json",
+      "bytes": 1584,
+      "sha256": "aeb806621aa27c0acb273033729477393de55ab794d9b9c177f8a32c86dd3d32"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/MOTION_REVIEW.md",
+      "bytes": 2282,
+      "sha256": "16e1f6b43b664885cd735a3d7e5c5248c819b59d23acbff889a11d8377b0845e"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/README.md",
+      "bytes": 888,
+      "sha256": "2720227d43dcb2bdaa995a8f58d0ce315eb604529f3ef079b138580ef7119a22"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/REVIEW.md",
+      "bytes": 5234,
+      "sha256": "196c1268b6db5c46e27f0356283f16b512ab4dc3848c7af7c10d99b01e10bddf"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/START_CODEX.md",
+      "bytes": 2689,
+      "sha256": "f93d5261506183d417190bb080c6959e86ccf30d9453c21394009c7b38dc8821"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/TASKS.md",
+      "bytes": 2412,
+      "sha256": "de6488e2473ca52d6e82ccee0af1189ea312c3d17c3ef26d2e908e1fd96b0641"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/V2-02-VERIFICATION.md",
+      "bytes": 4535,
+      "sha256": "087dc367be4e1e8996c0c6b2dce117eaf2d30b431e1781df2b0970bb2fb85d30"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/VERIFICATION.md",
+      "bytes": 11656,
+      "sha256": "9c65c9de79c507f5886600cd1908e522689078e2caa8b8f2a1ada81f620e01c8"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/README.md",
+      "bytes": 1983,
+      "sha256": "08361bd1552ae71e8c2d75cb429e058f6d1cadcbd0c90dc5915003afe01d8725"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/breathing.mp4",
+      "bytes": 53026,
+      "sha256": "5ea97b6885d035f92c4e2ff445dec0b052d3b8215a9602ef54b10c1b0fe3fefa"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/calm.mp4",
+      "bytes": 66797,
+      "sha256": "f18e184c82a211280145a461ab29e691c5dd8f05be0e4487207f06f0058cde52"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/complete.mp4",
+      "bytes": 19937,
+      "sha256": "8ab43beada885229aa1bf23a7c5f0f82efb8b9772497b7c26314adf66e77144e"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/curious.mp4",
+      "bytes": 47643,
+      "sha256": "7c36a4c2b336602a25831d2c95030dd6f018bcee0990c6bee6b49101f498fe97"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/drinks.mp4",
+      "bytes": 226512,
+      "sha256": "5d10013aff4728ef43615f206bb4c7432dcb134b32d3ceafb478944db6cbc170"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/rest.mp4",
+      "bytes": 43489,
+      "sha256": "12daca13a446ac8e42ea1dd6a8f7f862f0e7a913a65fa175a954c12a6298e0f6"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-assessable.png",
+      "bytes": 374425,
+      "sha256": "537fe7efe5c8b78928a984b6c2d12d6d32d1a2712749795575dea8b2db791eea"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-completed.png",
+      "bytes": 286663,
+      "sha256": "5e229dd830e8ed67bcf12bf4422bc47e28374015fbfe7a8f57231d9f00b8ce29"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-dark-large-detail.png",
+      "bytes": 379973,
+      "sha256": "1e6a5ec96876bd63c1652b552b8a785e1aaf73d1a15d30df528ba163772f7b28"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-dark-large-drink-summary.png",
+      "bytes": 449003,
+      "sha256": "7e62bd6720026956e7769adc59f9d0038f0e13af6a38fdb47cb17d784bbab12f"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-dark-large-drinks.png",
+      "bytes": 401016,
+      "sha256": "7435b0e38600a96dd448634b9bcc18d3237f1328c69a0f66919c29ab8a938a8e"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-dark-large-home.png",
+      "bytes": 329579,
+      "sha256": "621226f414f0079aedbf312934eafc3623107f483c20add8a3271862c4d1c842"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-drink-alcohol.png",
+      "bytes": 390527,
+      "sha256": "0803af3a0a961630eb9bdf657c8013b421308c6a26b4b81ea6764bb6f012d48b"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-drink-coffee.png",
+      "bytes": 390943,
+      "sha256": "9047a7fd8be247d1a9c2131619dabee2291a5430224a21efc32e69c9dcdc32f7"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-drink-undo.png",
+      "bytes": 389940,
+      "sha256": "e6fc045f1e2b251c07ecee94c7a1074030ff56bf62347a91d3f4d33d4003256b"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-drink-water.png",
+      "bytes": 391240,
+      "sha256": "bb1b6446c950a2119a1890d624464c9e87194077d69abba1086e75402860941a"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-insufficient.png",
+      "bytes": 363019,
+      "sha256": "e512dacef43f5cc672ee0c47f58debe86f10cfec7a43d41a9572af65a49ea5ec"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-low.png",
+      "bytes": 378370,
+      "sha256": "4ba2e3aed6f17f03fded71077ea631614d03322c28ed75a0347f5a16070018a2"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/scene-reduced.png",
+      "bytes": 384547,
+      "sha256": "fa5a5b224f9e0f29b33342d4798596ef387d3049215407c623a34383a725be2b"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/v2-breathing.png",
+      "bytes": 284005,
+      "sha256": "79007b51a4ea00bf3f4e9aff0e5994463f288bc53d6305c7571f477567082679"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/v2-detail.png",
+      "bytes": 238951,
+      "sha256": "8fbe1d66c0b14c40ae172dc0cdf39d54ed1ae111331c470b546e9a5b1ac0c695"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/v2-drinks.png",
+      "bytes": 395657,
+      "sha256": "0ca75c066300e1b6b97cc6ce2e92ade0e1c0f3d3e22df34a6b4b80307178128d"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/final-native/v2-home.png",
+      "bytes": 374408,
+      "sha256": "e03caaf232e0b7651644b47f9ae028be0de9a94e06cc73e85854e7403003597a"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/first-native/breathing.mp4",
+      "bytes": 81897,
+      "sha256": "d6d16f41ebe0b8e28c200bebb7d8ceb565b21dddd87b428ac3cbb6bfeca3e53c"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/first-native/home.mp4",
+      "bytes": 34269,
+      "sha256": "fb2af625b257fa48a053035211e185b3715caf45969eb2bd8c2960b785b7bd8e"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/first-native/v2-breathing.png",
+      "bytes": 283721,
+      "sha256": "8637a463765323b985f89cfd92dd36bcbc988e24a3edc0e5cfe5be1e470a6d06"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/first-native/v2-detail.png",
+      "bytes": 237638,
+      "sha256": "021c5478a6df54e39500b2db4df9dec2e7c335f816709fc5ebbb9120bdeca35c"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/first-native/v2-drinks.png",
+      "bytes": 407420,
+      "sha256": "c323544949202ae4074753200cef68401afe292e5c381611dd6b1828b848ef69"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/first-native/v2-home.png",
+      "bytes": 375009,
+      "sha256": "7a6688ae379f95bd31ef75131064a82d96c5461b5293843cd4a03354654ee775"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/first-native/water.mp4",
+      "bytes": 83766,
+      "sha256": "0fb3951205bb8f7e4b862f1d8f1e552f5f5a62dd291621f05573dc23afec118f"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/phone-upgrade.json",
+      "bytes": 385,
+      "sha256": "9e5fe24d58a9a7184667313595ab202c44a0c2086bfb975cf35978c630282dc2"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/core-v2-acceptance.txt",
+      "bytes": 34490,
+      "sha256": "0e57fda615de1fef1e5f0d6a6a1ef5827d5947f1dd46e553e5cbb4785623683e"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/core-v2-final.txt",
+      "bytes": 34162,
+      "sha256": "e5a09b78eef4b2f28eb05dbf89a2a37a26159454fa33e780e4bd58740a2e38d0"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-app-final-summary.json",
+      "bytes": 138,
+      "sha256": "8339bf3caf286d0017b6411902104e88f611367cff87acc54d65adf001a31dbb"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-app-final.txt",
+      "bytes": 45851,
+      "sha256": "37fc27e0ecb0f274ba704d3a6eeb4ebbf4a686c73ae8ee2d4d12e1c9ad2a2238"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-ui-accessible-summary.json",
+      "bytes": 134,
+      "sha256": "0b1956ef8bd8ae55c1bc348882f653a6dc8fad16a1951b6cebf8f1440fb328f8"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-ui-accessible.txt",
+      "bytes": 1481,
+      "sha256": "845330ea14e0d1f1bbabbd9cd54a61497c6b67c8128957aecdc908f3131714a2"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-ui-final-summary.json",
+      "bytes": 136,
+      "sha256": "db1fe417f8c6e17771f65eb4ef28b602e9cf4db28660d42f66c9a21659cc49fa"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-ui-final.txt",
+      "bytes": 3655,
+      "sha256": "941bbaed9f44730fb6b907c3f33b50b55f555bde652a7a598f434ba3f107e58c"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-ui-full-summary.json",
+      "bytes": 137,
+      "sha256": "cf8186395593a62ae994fda9fd8ab76587bcbc055857caaec0980f4358dc5efc"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v2-ui-full.txt",
+      "bytes": 12715,
+      "sha256": "f2d38b7fe3337668eed9cf285e94406965e756a097ec3f20281d383fae01e4a0"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v201-first-summary.json",
+      "bytes": 134,
+      "sha256": "190ad1ba699cba2d392b24ddd7bd1400e47081b4ce9548525d217241943ca987"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v201-first.txt",
+      "bytes": 760,
+      "sha256": "39ecc619722cbc69a287c8abc58e46bb2bbd083985e0185145c0db7ab61fcfa1"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v204-commands-summary.json",
+      "bytes": 136,
+      "sha256": "db1fe417f8c6e17771f65eb4ef28b602e9cf4db28660d42f66c9a21659cc49fa"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v204-commands.txt",
+      "bytes": 2618,
+      "sha256": "4f1250eeff51815ff47e9e30219db7fce66fd2346a3c8fc1d3549d695b17f1d9"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v204-red3-summary.json",
+      "bytes": 134,
+      "sha256": "11649c2b9e076b8a1b15de04a0c79f75160c6ce118c8d4aaff8b3d5112d37351"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/v204-red3.txt",
+      "bytes": 1206,
+      "sha256": "3c0cd7e8ab0db067ef0beaca65c168dd2730b80950c517a16f90f36e9384acb8"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/evidence/tests/watch-build.txt",
+      "bytes": 99,
+      "sha256": "17662d697e4b898ace1e82b1d0906ac28d2bba8ae602d653d423a1109b72bb74"
+    },
+    {
+      "path": "docs/plans/fangcun-experience-v2/方寸_体验与饮品关怀_Codex任务书_v2.0.docx",
+      "bytes": 68184,
+      "sha256": "f2b31866292489d8245044a64e7aadce5ca597ae0ddff20b665ee7df6f24066a"
+    },
+    {
       "path": "docs/plans/fangcun-p0-response-loop/BLOCKED.md",
       "bytes": 5654,
       "sha256": "0dd774399bf9adb8ab0478448f66844d210f8ff17f40cdef0506813f8a7ef8e3"
@@ -1557,9 +2533,954 @@
       "sha256": "2befae1985518f420adfa0058b2df57ade0cef0296afcbbe9516daae982698ce"
     },
     {
+      "path": "docs/plans/fangcun-v1/ADR-002-insights-store.md",
+      "bytes": 3591,
+      "sha256": "93ed0be79d5ff4612d9d7668740d96c32a679f7bf74e4654a46c10b14a017e8d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/BASELINE.md",
+      "bytes": 2533,
+      "sha256": "319264563eb8ea623805c61d2d28fa46ca11c1acb386ce896dc4dbbd8c946ca4"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/BLOCKED.md",
+      "bytes": 1016,
+      "sha256": "2448edd479cb26ad3d9f148444be6528b6999423b925c4ef317b6d7354832af2"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/CAPABILITIES.md",
+      "bytes": 6659,
+      "sha256": "c412994c71864fb35598a1292d19b7ecd1a71152647e791979d28eead88e844e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/COPY_REVIEW.csv",
+      "bytes": 30970,
+      "sha256": "21d9ce6c954c501b1b4c6f6ee0ec1d7631c71f88e878150aa4a1894139c3adcf"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/DECISIONS.md",
+      "bytes": 13516,
+      "sha256": "d67a1f28bd2aff3833ce6c4d3f5415db5853176f7f0e80b037c5c5803d2c8f13"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/FANGCUN_CODEX_SPEC_v1.0.md",
+      "bytes": 88142,
+      "sha256": "72a6e047fcd637152fedfe642e29d969a0a0dd91ec60b976b3c208f652d6d165"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/FANGCUN_M3_START_AFTER_M2R1.md",
+      "bytes": 22893,
+      "sha256": "b169856052b88dddca7f9d4ce087b4fef23ee9d6f8befaba4a33ba531c12ac0b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M2-GPT-REVIEW-R1.md",
+      "bytes": 19665,
+      "sha256": "10ab79925c092b4e29c6ccfee2f4772a5ce93743aaa9cf79be6bd77f9e1eb63e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M2-R1-RESULTS.md",
+      "bytes": 5992,
+      "sha256": "d71594832258f5acc4519fc323d8451f3242ec7aa352603a7c3332b873f8bd2a"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M2-REVIEW.md",
+      "bytes": 2237,
+      "sha256": "46818855e41f2b9a087133826bdb268d1d1a2957b9f87b611e5a5e91b7fd082c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-01-VERIFICATION.md",
+      "bytes": 2600,
+      "sha256": "1520713aa1483497acd99d0acdc2e629f231d8947acb1cd648733e1105618955"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-02-VERIFICATION.md",
+      "bytes": 3982,
+      "sha256": "b559451248ca81698086d75e4508dcc942cd240b4e458f1e8854068104a1367b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-03-VERIFICATION.md",
+      "bytes": 2670,
+      "sha256": "a9471b74f24b3fc8b66568d6489b170f252aefa2cd73550b0bdfd075feaaf4eb"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-04-VERIFICATION.md",
+      "bytes": 4176,
+      "sha256": "7af832511698ca8e8e7fc6eed01c4963409bb073cecfb3b32d70cbc1476f42a6"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-CHANGED-FILES.txt",
+      "bytes": 8359,
+      "sha256": "984320fe249311c3878d66ac83428c362e82f80805d83c1041988846d3af3495"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-LEGACY-UI.md",
+      "bytes": 3774,
+      "sha256": "f1a64765a8f40276b66dacf340ac5b11ceb0c062e7012dab166422e87e48d2fe"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-PRE-CONTRACT.md",
+      "bytes": 2090,
+      "sha256": "0d5af8af465da7a4c8ab651326c1080f094f8e12366c769ca6052f3112b7c5ab"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-PRE-VERIFICATION.md",
+      "bytes": 2127,
+      "sha256": "9be41751b07732782103c979428ef27d9509087e4a6bf27748a796e2521866cb"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/M3-REVIEW.md",
+      "bytes": 15995,
+      "sha256": "3152ec2eff48cf8a10fa06cbdb020625ee116394e3948b0d19462c200ee1e447"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/MIGRATION_ROLLBACK.md",
+      "bytes": 1362,
+      "sha256": "ca2ae571aa2b4a44fd93b1ef026899bc58ab3e24963e05db49b3dca77701a211"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/PRIVACY_RELEASE.md",
+      "bytes": 621,
+      "sha256": "37620edb5ff37ca8ca584b476d83759e1edd2c9796575e86ce93f416f2972720"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/READINESS_GOLDEN_FIXTURES.json",
+      "bytes": 3357,
+      "sha256": "fd1df33f5038d2cd6f41904a93bef106b4f777bb9fff84a566d7f41765c54cd8"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/SCREENSHOTS.md",
+      "bytes": 5308,
+      "sha256": "33e7817a3ef72bee7665deb715cb6f9e544814a174909dc226e191c0362c309a"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/START_CODEX.md",
+      "bytes": 1752,
+      "sha256": "df85d351558078f81c2804d7030ad52b07439b73201044fc437705958ab70df6"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/TASKS.md",
+      "bytes": 3933,
+      "sha256": "df7c5adf56e22a680b04c21b87a26fe5bca25b4d063a1487f6bdfe83053a95d8"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/VERIFICATION.md",
+      "bytes": 30011,
+      "sha256": "9947f7f635e722813c5cf58255a0645c1a4de3ef082ad132adc788425b3566a1"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/baseline-core.txt",
+      "bytes": 20044,
+      "sha256": "66d35a8030a930b0fb0b47a0869ed87a4b5214b0ad4c7f5bb870afcfcbf812c8"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/baseline.txt",
+      "bytes": 196474,
+      "sha256": "ef5ed345c3ac3a93b1863aff46d2bf66ad2fa7a3ab7be6c2cb80692481d6caa2"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/device-receipt.json",
+      "bytes": 566,
+      "sha256": "929690854bb5fb4eaa5f87be659ec7cb6b211566d2f5aacac18c36959eb5a7b8"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/iphonesimulator-probe.txt",
+      "bytes": 255,
+      "sha256": "b15ebca90353739c49aceb092fdea77e6a049129ba4e9447a7176fa38826e85f"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m1-audit.txt",
+      "bytes": 56754,
+      "sha256": "b6fd4aa2329c614270b981318a04a0a99b2cdfb281f298b5d5aa726448f0dd8c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m1-core.txt",
+      "bytes": 21487,
+      "sha256": "eb6386b357db0459cc5279766a53b1de60a4077c65b7c3b95b1f487f95d300f5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m1-final-unit.txt",
+      "bytes": 107715,
+      "sha256": "3623662f0d05b331d9c6bf86201960b79a79200a71ae818df358572610e3cfdd"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m1-final.txt",
+      "bytes": 117765,
+      "sha256": "7f3e31c8ae0b73567cf706da9141e73f56b6f52a44b16dacd0429513481ce0b0"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m1-preferences.txt",
+      "bytes": 49077,
+      "sha256": "03fadd380c0708732949d95fb937fbb7fdb2aa64f7e6d40fcfdac38329f9f775"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m1-watch.txt",
+      "bytes": 461994,
+      "sha256": "881c756a471548aaece3f2c873e53bfed2ab3747de7f2c5255f48041067c0dce"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-01-app-recheck.txt",
+      "bytes": 42334,
+      "sha256": "66ae41093357dc79e66d47dcdac6d6180ce47d562aac550763400c24b9520285"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-01-app.txt",
+      "bytes": 233709,
+      "sha256": "854df9589a10edfffc73b1a19da1e65c09af96a060eadd0afdc281119ce91cd5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-01-core.txt",
+      "bytes": 21989,
+      "sha256": "eedf4044297a20a58477244dd0a64d4cc2e4380960573322f3520bfc123e0efd"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-02-core-recheck.txt",
+      "bytes": 23067,
+      "sha256": "5aad3179440f3e5ae4c2698e51e897d48d1be6189a28eb5f157060acdafcbeda"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-02-core.txt",
+      "bytes": 23578,
+      "sha256": "0337b7dd0a7fa37a7c66916ae4e58d0637a47b2dd9a0df9e93d9a3a495f9533b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-03-core-recheck.txt",
+      "bytes": 24482,
+      "sha256": "98d57dd97b9a87b6be1f31a0b407903937314940a3920aecf99d8efa90b8c0cd"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-03-core.txt",
+      "bytes": 27860,
+      "sha256": "3f2d967643325787399a2cf805a33712390ad4b165fa1288c68c862b3b03bd53"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-04-core-final.txt",
+      "bytes": 8559,
+      "sha256": "00ebb720b808abbfa899b9d798a44dc68ec86d97ba52bfafb83509d648d421bb"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-04-core-recheck.txt",
+      "bytes": 25624,
+      "sha256": "c4838598921d57c6492658a93272254800aee287bdaae1373742e1660f834c3c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-04-core.txt",
+      "bytes": 25631,
+      "sha256": "deb3e6471327ddd38cf21f017a5157fad0bca256c30facc6b6ae39ef7c112cc0"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-app-acceptance.txt",
+      "bytes": 284329,
+      "sha256": "76284d75fe21700aafac0d316b63341ba02e8fa2b1022aacb38b4f0f63d4cd3c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-app-final.txt",
+      "bytes": 35165,
+      "sha256": "9f88c4936b13064ccc6f38cfdf3f2f60fde9f61a5252b04a34e959499a7a9930"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-core-delivery.txt",
+      "bytes": 25724,
+      "sha256": "7357c184a2b3f29af8077c31b2e368e8a847aaa63286e58f038e61cc1ba342de"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r01-before.txt",
+      "bytes": 11547,
+      "sha256": "b964433d47c4f5bc5712f1b8b010e3e6236afcf293124bfbc6e7e1ecb35a2f16"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r01-green.txt",
+      "bytes": 1441,
+      "sha256": "e21fe5b1776749cfd611e34a46b8e67835a6cbf5620bbd0d253aa0a855b974a8"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r01-red.txt",
+      "bytes": 28395,
+      "sha256": "ba3c269d67d8773dc4b4250b13712d1faf99ac2412735ba38ce6439e12611c36"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r02-green.txt",
+      "bytes": 1194,
+      "sha256": "00da03859b2f9568217570cc73c78e2e35e9cc1e8d605c0d3030079314b9a600"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r02-red.txt",
+      "bytes": 5779,
+      "sha256": "26ea5148ad498b071e92b597aa42cf78891afabcdaf67ec1756284062599e97d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r03-cache-green.txt",
+      "bytes": 2630,
+      "sha256": "769b9b8515c0ecd8befeb9bb8687fb6a037b7ace5f703dc0679fe70f6037a3c7"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r03-cache-red.txt",
+      "bytes": 1788,
+      "sha256": "967843f2ef4f272f57cbccc6817b40ef097c90e09e932555e7eb0334d35abd2e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r03-green-recheck.txt",
+      "bytes": 2201,
+      "sha256": "f8576998ae81e1e09b07eb40a9c466b50cca532ac43220427f43a328f0b4dd3d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r03-green.txt",
+      "bytes": 6438,
+      "sha256": "fb80cf474cd0a1dfa436c982b0c1143dad63d483ae302310f0fb3fbf989e2032"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r03-red.txt",
+      "bytes": 3697,
+      "sha256": "43e3e89f7c7225b74a1c95a15afc6c7d84896c3172e9de389fbfc2dedb262aa5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r04-green-recheck.txt",
+      "bytes": 622,
+      "sha256": "63a3a8b1b3386333a006c6e9449265d15716ff64bc48bee83fbd6abc1e017a90"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r04-red-recheck.txt",
+      "bytes": 6778,
+      "sha256": "4e352d9b1e93930ea5596d57cac304e6a1cece9a1b1c6ecf1d233b6f2d4fc62d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r04-red.txt",
+      "bytes": 10776,
+      "sha256": "35ee66e62df974d9a4327fff2fc55f752c3da0c85d5517eb441c9f239dcaa7c2"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r05-green-final.txt",
+      "bytes": 51700,
+      "sha256": "10cc9ada5c127064ee0dc1a724eb10f175c0f96a14d4044ac28be54e4cf22a7d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r05-green.txt",
+      "bytes": 196181,
+      "sha256": "2383f66aaefc38152d4f1e7ff897384ed1e4d9d62e9bba719b7e976061f0bfaa"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r05-red-order.txt",
+      "bytes": 164340,
+      "sha256": "986a89c4dd87321d2b8c3a7790795d9cc404dfa8fd2af548633be2d69d9f0787"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r05-red-recheck.txt",
+      "bytes": 66467,
+      "sha256": "455d1e67feb33c77b39832adbdef102b8ea8c8be46f81e4e7a444c7ff93e1872"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r05-red.txt",
+      "bytes": 191347,
+      "sha256": "c878f3de22185dc9541581aacc50fd09ce8afae09c3140d3492f7715e14e84a6"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r1-app-final.txt",
+      "bytes": 267274,
+      "sha256": "521732c409be4aca114304d0a0266178cacc9fbe7ce8a95208383278af537eb0"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r1-baseline-ui-build.txt",
+      "bytes": 479433,
+      "sha256": "871c95d6f15c3041e4b7e63318ac6a90499c575726f10998f7892897e2b9f32b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r1-baseline-ui.txt",
+      "bytes": 9948,
+      "sha256": "fdec19ddcaaed1afb638d0b3f6e56aad5f572cb09a4c10f4530e6e32e461de5e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r1-core-final.txt",
+      "bytes": 28328,
+      "sha256": "d6c6394b1a93cc9a0fe737bc00bb7a44872d8b39dfea2d7608b2c5ccda49ce81"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r1-ui-final.txt",
+      "bytes": 157381,
+      "sha256": "c620a03b5481ab55024982fb8d70647ff529f5791574c00c7cf98e71ac957349"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-r1-watch-final.txt",
+      "bytes": 477140,
+      "sha256": "8dfc8e01a430dd8d60f65a96b93440efcf83749d2cf5aa260339070f137800de"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-ui-acceptance.txt",
+      "bytes": 62281,
+      "sha256": "d7ab3ab8ed267fd2a4cbd7d908ffad8f5a2b9bafa4983b2737e302782e2f1132"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m2-watch.txt",
+      "bytes": 260170,
+      "sha256": "eafd690eb4485640e76e2bffdfe10f2e9f28d172aa17b4184ac2b2f2011fdaf6"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-baseline-ui-summary.json",
+      "bytes": 136,
+      "sha256": "ca415c1a4fb79c0ea72a1b80df32ea81746b59044bb942b74d6db7a01f4b0187"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-baseline-ui.txt",
+      "bytes": 81259,
+      "sha256": "3e6d77540a3a043fce758306de2f3e84f3bfc38edfde275ecbcfac23089e2305"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-device-receipt.json",
+      "bytes": 1109,
+      "sha256": "e3062079cef86d0a12c0a5fee4f3d7ed4ef97cdf8c708be79c9b786585d60b8e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-accepted-summary.json",
+      "bytes": 138,
+      "sha256": "85d9a0ff9b4bec7301796ea362915ba0a9e0185b31f8055249c3b16ad1888e27"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-accepted.txt",
+      "bytes": 67500,
+      "sha256": "12bcad978a31c3d922f2d371cd981d13c20b22a1b4f56bde4857a79d21bb5001"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-delivery-summary.json",
+      "bytes": 138,
+      "sha256": "85d9a0ff9b4bec7301796ea362915ba0a9e0185b31f8055249c3b16ad1888e27"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-delivery.txt",
+      "bytes": 171645,
+      "sha256": "9deeae4118ee64aa49d3820982816fb42b4ffc5528ebea9916c8361a836cbe4b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-final-summary.json",
+      "bytes": 138,
+      "sha256": "85d9a0ff9b4bec7301796ea362915ba0a9e0185b31f8055249c3b16ad1888e27"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-final.txt",
+      "bytes": 269709,
+      "sha256": "c7f778f304dd86052edb03a0babac0245ab33b24636d456b027f28db7731d5a4"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-full-summary.json",
+      "bytes": 138,
+      "sha256": "9e94e391faa04fc8c8102e59ac40357e9d2ac85bfc9b1b7864156440894a6e0b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-app-full.txt",
+      "bytes": 106097,
+      "sha256": "23d858ca32ad559026eaa835d9c96eb4823d6650072e6e6b81a52db5f4e282bc"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-copy-final-summary.json",
+      "bytes": 138,
+      "sha256": "c9281af6bf436a07bc52b19718c42e1d30628dd27ab4f1fecf6934f01ea048fc"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-copy-final.txt",
+      "bytes": 99621,
+      "sha256": "277ebfd22005223ed15d758445102430b1888ea8fea86b361db2b744679aa57f"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-core-delivery.txt",
+      "bytes": 30466,
+      "sha256": "2c87e8e0b3390ebdc88ad39b57fe37b3faf41e8c94397788e0e482a4f7e30c06"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-detail-delivery-summary.json",
+      "bytes": 134,
+      "sha256": "6a7abb470aaece2eb308be9687f8b4df91418f81d48dc99ac2cbe77b071176f5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-detail-delivery.txt",
+      "bytes": 98551,
+      "sha256": "1d4f45248974eb782dbe806c84fa633f15bab09b96a66a50f1554dca2eb5310d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-ui-delivery-summary.json",
+      "bytes": 136,
+      "sha256": "47a51e4f321a5815004845a488ade6211e78bc0c44d6be8547b525a4e886065e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-ui-delivery.txt",
+      "bytes": 149849,
+      "sha256": "e5c1861d851aba986d8fbe28c59e624bb0e07c5fcd01e84d6f962928ca93a3a7"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-ui-full-summary.json",
+      "bytes": 137,
+      "sha256": "a640d87fc76816116c808834ff62ad0b995b283f840785e15e42639d3af761bc"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-ui-full.txt",
+      "bytes": 292786,
+      "sha256": "823e693f109c51e1699ec677dca6c19afb456cf8128a97958a7dbea72142bbb9"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m3-watch-final.txt",
+      "bytes": 207548,
+      "sha256": "7e4117378f38f8ecb5aea95d25098ce11fe5560878859455e4210d82844512ef"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m301-existing-summary.json",
+      "bytes": 134,
+      "sha256": "793375f55bf7da89ea5539ace25cb01fda6a89ea004bd8678a858526e0531359"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m301-existing.txt",
+      "bytes": 104457,
+      "sha256": "d117c9e8c68a1074e42c6385b258f96229deb3752a3614ad1dc8f34bb10a09ca"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m301-final-summary.json",
+      "bytes": 136,
+      "sha256": "db1fe417f8c6e17771f65eb4ef28b602e9cf4db28660d42f66c9a21659cc49fa"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m301-final.txt",
+      "bytes": 128215,
+      "sha256": "209b555f19831d98445a20d0ce96f9c977c4406e3eafaa08209284ee8439ad18"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m301-regression-summary.json",
+      "bytes": 134,
+      "sha256": "6a7abb470aaece2eb308be9687f8b4df91418f81d48dc99ac2cbe77b071176f5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m301-regression.txt",
+      "bytes": 109421,
+      "sha256": "8cfaa4a88397fa92982502c69aa82a54dfb293515423bbbf7646c1f17054630d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-core.txt",
+      "bytes": 789,
+      "sha256": "ce0184351e4b0fdc6518a6c71d72ba39c9c43141d59e2b3af3ba169233a8bc23"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-history-recheck-summary.json",
+      "bytes": 134,
+      "sha256": "190ad1ba699cba2d392b24ddd7bd1400e47081b4ce9548525d217241943ca987"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-history-recheck.txt",
+      "bytes": 85416,
+      "sha256": "fb21b5f6526355ad3885396dafcd70d19143c46e3f590ca0c7a4ba12b7952dfe"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-history-summary.json",
+      "bytes": 134,
+      "sha256": "42635a326296d0eb54dd9f690d7cbf93ea4c1d4e354f545bcba3b3922036d62b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-history.txt",
+      "bytes": 124719,
+      "sha256": "ec7b984dcffc7f8420bf2e491971bcc10cb20cd598703bcbfdcebd6b123dd415"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-recheck-summary.json",
+      "bytes": 136,
+      "sha256": "5af849cbf85915a11d87b08ddcd8122748a9ca07b88cb1dac522dcb6e99ce0ee"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-recheck.txt",
+      "bytes": 138012,
+      "sha256": "0ae08acef47b96bbf4d0680c2546305c9be90c1877bd47bf63a1d5b70fda667e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-tests-summary.json",
+      "bytes": 134,
+      "sha256": "23f97a1d042084f4efce7ce7e551f5f9e27719050a2476aac7b79eca6ff91ed0"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m302-tests.txt",
+      "bytes": 129861,
+      "sha256": "252fbae7c90e5ad9962f87bb34ddb28612e023325ec8eec05791b346de9f0f08"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m303-build-summary.json",
+      "bytes": 136,
+      "sha256": "24f00ee4eb243371d8c96656c23c52a601e08a5777bd37494eb86e80be43f551"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m303-build.txt",
+      "bytes": 308419,
+      "sha256": "e6102b0916c0b4c5a02e673131ba73b3c43b90a0c2607b5dbb5e0e1ee1ac3bbe"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m303-core-recheck.txt",
+      "bytes": 1340,
+      "sha256": "0d1e26ae0ea669adcbcf7b48766b7fad3bfc5674234d314d7eadbadd1e9241d7"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m303-core.txt",
+      "bytes": 9569,
+      "sha256": "1baa354ceb906a1da9151ea1334eb723ff55d740902c5effb01cca1e54251d12"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m303-tests-summary.json",
+      "bytes": 134,
+      "sha256": "0b1956ef8bd8ae55c1bc348882f653a6dc8fad16a1951b6cebf8f1440fb328f8"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m303-tests.txt",
+      "bytes": 95576,
+      "sha256": "d256de55fe62f8090094282058cf70aa8baf7bcf71fc51bbfefb1abe2f1ce292"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m304-app-tests-summary.json",
+      "bytes": 134,
+      "sha256": "b1d7d4ff5f01bef7f20f4c9ec183bbc6f5258c6638646c53c0d9da5b3ed692f5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m304-app-tests.txt",
+      "bytes": 91196,
+      "sha256": "369380b696ab421f02ae40ce0ddc6419b2806cf937516169845815ba8620c3d1"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-m304-core-recheck.txt",
+      "bytes": 1055,
+      "sha256": "8b4508680156f903020a5272a2e98ac1019117df6c28bb57d74ca1ccde06aa61"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-app-final-summary.json",
+      "bytes": 138,
+      "sha256": "9b98ad703cc1459b5f6bf65593855a5336d1213be1c58fc2b9c39565d2aae8d5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-app-final.txt",
+      "bytes": 47896,
+      "sha256": "7420e50fc051247d42267e900d304069beac1ccf48094c4d9971deca926cd16e"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-app-summary.json",
+      "bytes": 138,
+      "sha256": "42b850f74ab4b4c13bca11e3f1c8bce26414b98e691ad5386ce1122cba1b282a"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-app.txt",
+      "bytes": 191013,
+      "sha256": "471c969568c0a100696ae4ada6c24ab45cfa7ec59c4c8d498b7de0dd3268bf0c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-ui-recheck-summary.json",
+      "bytes": 134,
+      "sha256": "bc888660f886268eafe26ccf268882dfd10db2ea8b37328eb2b3a0c97a12c62f"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-ui-recheck.txt",
+      "bytes": 125538,
+      "sha256": "850ac70cb64b3a930179833e2cab2c150934f8e60314a5b9b9fb5edc9d09696c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-ui-summary.json",
+      "bytes": 134,
+      "sha256": "ce13c72b37b614aaa0eb679d087cab7b7a9acdd618954466c4bb4facc0b52c61"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/m3-pre-ui.txt",
+      "bytes": 110214,
+      "sha256": "40aed06285d92aa5808f4f2aa5620f87cfaee857a9c04531b6c2d536c84549dc"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/pre-m2-regression.txt",
+      "bytes": 24421,
+      "sha256": "043f474522c76f1b9f7a4d53eb7d378346ccecaa265f9d3966a2600de6ae6de4"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/watchsimulator-probe.txt",
+      "bytes": 257,
+      "sha256": "51222a8d18c0ce7106d03f17836301818cf7d272761821633230925ca4c9b103"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/evidence/widget-probe.txt",
+      "bytes": 96361,
+      "sha256": "5d3f3789b33d050edaffc2d72c0ed14283f40e058522cd72f0f73fe33514f2e6"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/intake.json",
+      "bytes": 269,
+      "sha256": "8565c2851a32b0ae13a613faeffa670fdad0c9a2c8b5d4832f8a3954ef945ef2"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/probes/PlatformProbe.swift",
+      "bytes": 1369,
+      "sha256": "6d1f148467d4a69e6d801effd3f5ac3328e6c5fa7e51512a76ab0fb4dd947aa4"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/probes/WidgetProbe.swift",
+      "bytes": 848,
+      "sha256": "0732e8ae2f83d7bea9a88132167599570600ccbec7e2a0bd72493c807cbc55c0"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/probes/project.yml",
+      "bytes": 592,
+      "sha256": "80bd1b37a6f3951b4cefa3849ad24afdf54a1be29bf1cd12961db4017f3bb1b7"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-breathing-live.png",
+      "bytes": 486411,
+      "sha256": "9194af0cfb2437370b286109e610238122d13084f39f86c55277ed8cc8dac504"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-breathing-paused.png",
+      "bytes": 488251,
+      "sha256": "7e72574b4fe94d91c8d8a67fd6707e0e03016fd648ef282f9b87ae45f2c267ab"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-breathing.png",
+      "bytes": 478864,
+      "sha256": "ff5d2d75030012c31d39eed22d26baaa9b37fb0ab0e1cd60ac0a48047965bf07"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-completion.png",
+      "bytes": 435518,
+      "sha256": "a044cc2c650cced7a11dda799726fe1f981be24fd73471efb302885a28960f95"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-drinks.png",
+      "bytes": 691245,
+      "sha256": "e68c37e177f34187d653b42f5c3ffbc36149ad956ba38fc3b0ea59a68c544f1a"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-elevated.png",
+      "bytes": 553449,
+      "sha256": "bf64bcd95b26abcead910058580e507f39cbc37c83fec79cc8bf9aeb09ae14b5"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-home.png",
+      "bytes": 519382,
+      "sha256": "bbdd211934194752fd21fe7d6126c2aa29cf418a54c338dc23a7d587b256f85f"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-insufficient.png",
+      "bytes": 545953,
+      "sha256": "7f580dba36ea55aaba7cad391973ac7a23c4ae9f02eecf92bb25adff0604523b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-settings.png",
+      "bytes": 258690,
+      "sha256": "8d9a6e99c2777afe4b26cb9355931aff89d8d658d3592268cb5062e1ee4c66ba"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-steady.png",
+      "bytes": 481993,
+      "sha256": "855ea1a941e91b3520a3e0dacd8d8b4e2c0fe2f9cb9cf912dd9fac1a0bb96b47"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/baseline/redesign-trends.png",
+      "bytes": 280130,
+      "sha256": "37ad55dfe41a9d2c33c065f6c82f9e2ad084d510f5d25df81661272878f8357a"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-baselineBuilding.png",
+      "bytes": 538173,
+      "sha256": "753bd84985a4c4fbd9c28143a42ecbb5e1f847c2eabb2cac567f8550d8bf2f3c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-elevated.png",
+      "bytes": 572988,
+      "sha256": "0fa6ab7d357fb90341dab6cc0bbfabeb4710c01935ed5749a3ff33abfb97ec26"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-failed.png",
+      "bytes": 533315,
+      "sha256": "8a4f16847f26725c2c15ff699aaec56ce59ef60f6a698b6d6a2431016eeb9a64"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-noCurrentHistory.png",
+      "bytes": 524737,
+      "sha256": "d96c277a7e6770188ff3fab72eabdc3aa85801dce17dda66fdf390369b78decb"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-oneCardio.png",
+      "bytes": 560976,
+      "sha256": "81d14b1f6958572934a737e1e000605306ee00ab7c53c7f97b7d358ac8d9aac1"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-previousSleep.png",
+      "bytes": 533711,
+      "sha256": "175f0da984d51384d37fbecb6c3455df0a012b85bfbfa201814c2dde3fad0de1"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-sleepOnly.png",
+      "bytes": 542925,
+      "sha256": "6011725ba99abc1414f6336fa41d3516a400933bb790ed6700018a23b9fa46a2"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-stale-measurement.png",
+      "bytes": 526405,
+      "sha256": "208cb259a7cd2195b3a168362cdb87995dfd94ee941d810daae6201057b1a4f4"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-steady.png",
+      "bytes": 481017,
+      "sha256": "ad993fe7fcca5214353f877484df85a0a59c08e36024bb0bdf253673a0dc363f"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-time-detail.png",
+      "bytes": 361929,
+      "sha256": "e56b527f3bc9a85a6a34b661add6710cab56481b5bb5f6b97a28bc1bde1bbdd7"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-unreliablePair.png",
+      "bytes": 534075,
+      "sha256": "9c7105705e6228f7c675d5755b8b415184144f203f7b9f7869475dc08ae600dd"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-watch.png",
+      "bytes": 591046,
+      "sha256": "468232d386f3e875aa36e4998e34c88e726c01d51c784f4f1fba7e64a1e0b283"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/m1-workoutProtected.png",
+      "bytes": 545948,
+      "sha256": "8082548aa8a80f925965b74ab76e097f4fe0ef13c629b2ee8fb8d0d39f15cfdf"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-breathing-live.png",
+      "bytes": 485939,
+      "sha256": "82427d07137225cb8b1973ca8e59996f1cf05eba422062d9c2f93e92a04d589b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-breathing-paused.png",
+      "bytes": 489427,
+      "sha256": "fe3a71d12684843139955b5b64b57a17c8b429d26a6c17721ffe59cfa3ee59ee"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-breathing.png",
+      "bytes": 477600,
+      "sha256": "5827fba80ec802b147b7c913a5a0efe1f71905d57241685ad9024f0f4624b98c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-completion.png",
+      "bytes": 434122,
+      "sha256": "0e2725f935a5f4ce7f22a439249a83bb73c35d2e69bd5a4b403838fc84f6220b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-drinks.png",
+      "bytes": 691318,
+      "sha256": "98848a22e988c17a5db583e1285b5d9889d7436163ab00a0a2e74beac20e5731"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-elevated.png",
+      "bytes": 575881,
+      "sha256": "833b02e869030c272ed73bea4d72830451babe97c2ac35a7580b624f9efc20aa"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-home.png",
+      "bytes": 532834,
+      "sha256": "c3db40f0cb09031d5907988e08de7249fb3a37de31f71af819f7708c7009f9fa"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-insufficient.png",
+      "bytes": 543495,
+      "sha256": "1c2e5f78fbf0570db4da5f8873cc3fbabc7f05f0373fc5ef5250a5db6922b557"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-settings.png",
+      "bytes": 257879,
+      "sha256": "803bed351fb1c736cdc39cc481fc878982eda159189daac5a5d3fbec4ba99bb3"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-steady.png",
+      "bytes": 486796,
+      "sha256": "ea2fa4073b68723d070d8c54b37661c95fe96f3218acf5af2a9865e67efff704"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m1/redesign-trends.png",
+      "bytes": 279860,
+      "sha256": "e100e7dd9b95b72b27b608cfc754d33f90fd8b587c9fbcfeb7b545697a686986"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/README.md",
+      "bytes": 1193,
+      "sha256": "c5f1631ff0766cc90a7e48d30f1d491a6b747c276dd445b6e0bd290fade2c0dd"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/action-feedback-after-edit.png",
+      "bytes": 522802,
+      "sha256": "955abae5abb8a23d0f7a82829825826a9c5b550090176c25fb39359d10f0a7ec"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/action-feedback.png",
+      "bytes": 167665,
+      "sha256": "e4ac803c920709aede30615186058386fcdf68b4167bdca1b0ed5c073e4247dc"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/breathing-paused.png",
+      "bytes": 486030,
+      "sha256": "e5d415806d74d01b8253f9017c855ab0279238dad79fef19d907e9da775021bb"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/home-light.png",
+      "bytes": 525630,
+      "sha256": "97775f22293217b440336a2ccb62fba1e0e74d5c6d8ed9ea6f3e9aa10cdf6833"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-dark-large-detail.png",
+      "bytes": 412086,
+      "sha256": "9b81599cc51cdf96ec4e7547643cac51a2360e63587fc1cb6b2f878a5d855a39"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-dark-large-home.png",
+      "bytes": 531276,
+      "sha256": "6fa8d696037e7adad2db7b17f6c96e815128797463a67c5379f913ecc3bc51cd"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-detail-times.png",
+      "bytes": 702169,
+      "sha256": "3fcb90678a98a2132803506676c14d845c9c01a0583a0080f98a00cb02502326"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-home-assessable.png",
+      "bytes": 525383,
+      "sha256": "885bae91a73b1a941c0655899c9f0792d5cfff3e2355f85109675ef3e92f357b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-home-awaitingData.png",
+      "bytes": 531334,
+      "sha256": "9cbe4bcf45b3046e85a09f56f0234c30942783152c2864c742e81ce21f60a0f1"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-home-failed.png",
+      "bytes": 518895,
+      "sha256": "586051e6584a52a986235036744b3cec3aab8e5fa533022f498b77e73ac80911"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-home-insufficient.png",
+      "bytes": 522730,
+      "sha256": "7c945ccf61ce86a783f6d8fb96ebda159108e2956fd10d66528fadcd4060221c"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-home-limited.png",
+      "bytes": 529264,
+      "sha256": "07f0a17a0f9cb7934fdd5f700010476201d27a07902825310aff9c9dbc81f541"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3/readiness-home-provisional.png",
+      "bytes": 506932,
+      "sha256": "5a9b3138e498264bd83930c9c7836e638eb76e9c42fb34a6dec529bdf6d18847"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3-pre/dark.png",
+      "bytes": 575515,
+      "sha256": "d5e4c0cba47185a546d95d76f592dc637eecea9d6d73ef2ac39c9995a1fdc78d"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3-pre/large.png",
+      "bytes": 543085,
+      "sha256": "2158a848e6ef820c6483dbcd5a29c2085547be3c76cd86552c0d265018633e14"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3-pre/light.png",
+      "bytes": 487259,
+      "sha256": "4ed0f7a8cbef5d2a58584ec6d45498699d9766a08b0b846623628268291e358b"
+    },
+    {
+      "path": "docs/plans/fangcun-v1/screenshots/m3-pre/practice-return.png",
+      "bytes": 541384,
+      "sha256": "3350dee70eb77d7265e87aa7e98191a1923d83d76f6cfe93a40f1ea2a2181f57"
+    },
+    {
       "path": "docs/verification/STATUS.md",
-      "bytes": 3915,
-      "sha256": "1232ad5885448c24ccbe31ed053a0872e9f883701779e946c4866a6bed70c5ab"
+      "bytes": 4469,
+      "sha256": "3223e504a40ae780ef5791dde912b22221d88bc8721204aedb6fe671d2495ffa"
     },
     {
       "path": "docs/verification/motion/43469171-776F-413B-8EBE-C71693ECC76F.png",
@@ -1628,18 +3549,18 @@
     },
     {
       "path": "llms-full.txt",
-      "bytes": 12404,
-      "sha256": "0ff4fca79651efbdbc4be6afd91661083204429b6c2c000f7afe88994cedea60"
+      "bytes": 14508,
+      "sha256": "8fd03a35134f9716a0d76563b65c9559f8ac7338a6ad7d8d545b06efb0a46d24"
     },
     {
       "path": "llms.txt",
-      "bytes": 446,
-      "sha256": "ba43bfe316f7a336c024841a59303709fd6609821795166d3ef93b0926d7ec96"
+      "bytes": 518,
+      "sha256": "5cce9a3b73eb6fd4c52a4866254f473e632af156751c1c9a185dd124180d79fa"
     },
     {
       "path": "scripts/generate_ai_index.py",
-      "bytes": 4032,
-      "sha256": "1fc30b04c14cb29b55c9ea645bd8e3c0cc57355e3124c1e46285bf95399be423"
+      "bytes": 4311,
+      "sha256": "751a295e9e57f49bb4f611bf61471e2ddc7f1100e3e7c94a2563e64f1ebbb73b"
     },
     {
       "path": "web/.gitignore",

@@ -7,7 +7,10 @@ import json
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-RAW = "https://raw.githubusercontent.com/yvain57-afk/fangcun/main/"
+SOURCE_REF = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=ROOT, text=True).strip()
+if SOURCE_REF == "HEAD":
+    SOURCE_REF = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+RAW = f"https://raw.githubusercontent.com/yvain57-afk/fangcun/{SOURCE_REF}/"
 TEXT = {".swift", ".metal", ".md", ".txt", ".js", ".jsx", ".ts", ".tsx", ".json", ".css", ".html", ".svg", ".plist", ".entitlements", ".pbxproj", ".command", ".py", ".yml", ".yaml"}
 
 
@@ -69,6 +72,7 @@ def main():
         manifest.append({"path": path, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
     (ROOT / "FILE_INDEX.md").write_text("\n".join(index) + "\n", encoding="utf-8")
     (ROOT / "publication-manifest.json").write_text(json.dumps({
+        "sourceRef": SOURCE_REF,
         "description": "File-level hashes of public materials; excludes this manifest and the generated index.",
         "files": manifest}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Indexed {len(all_files)} files; wrote {len(chunks)} text bundles.")

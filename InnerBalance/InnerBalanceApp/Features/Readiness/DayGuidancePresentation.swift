@@ -35,7 +35,7 @@ struct DayGuidancePresentation {
       if let seconds = a.actualSleepSeconds, a.sleepDurationUsable {
         reasons.append(.init(key: "guidance.reason.sleep", number: seconds / 3600))
       }
-      reasons.append(.init(key: "guidance.reason." + ((a.autonomicSeverity ?? 0) > 0 ? "bodyLower" : "bodyUsual")))
+      reasons.append(.init(key: "guidance.reason." + ((a.autonomicSeverity ?? 0) > 0 ? "bodyLower" : (a.sleepSeverity ?? 0) > 0 ? "sleepShort" : "bodyUsual")))
       return result(.recoveryAssessment, level.rawValue, reasons, level == .usual ? "rhythm" : "ease",
         a.refreshFailure != nil || serviceError ? "cached" : a.availability == .provisional ? "provisional" : nil,
         level == .usual ? .calm : .rest)

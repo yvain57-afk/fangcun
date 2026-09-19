@@ -1,0 +1,820 @@
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-ui-acceptance.txt =====
+Command line invocation:
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination "platform=iOS Simulator,id=<UUID>" -derivedDataPath <DERIVED_DATA> -resultBundlePath <EVIDENCE>/m2-ui-acceptance.xcresult -parallel-testing-enabled NO "-only-testing:InnerBalanceUITests/HomeEvidencePipelineUITests" "-only-testing:InnerBalanceUITests/FangcunRedesignUITests" CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  InnerBalanceCore: <REPO>/InnerBalanceCore @ local
+
+2026-09-18 20:31:29.198 xcodebuild[19021:8486612] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+Writing result bundle at path:
+	<EVIDENCE>/m2-ui-acceptance.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (8 targets)
+    Target 'InnerBalanceUITests' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance' in project 'InnerBalance'
+    Target 'InnerBalanceTests' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance' in project 'InnerBalance'
+    Target 'InnerBalance' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance Watch App' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+        ➜ Explicit dependency on target 'InnerBalanceCore' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore' in project 'InnerBalanceCore' (no dependencies)
+    Target 'InnerBalance Watch App' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+        ➜ Explicit dependency on target 'InnerBalanceCore' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore' in project 'InnerBalanceCore' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 <REPO>/InnerBalance/InnerBalanceWatch/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/ibtool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcstringstool compile --dry-run --output-directory <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build <REPO>/InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 <REPO>/InnerBalance/InnerBalanceApp/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: 0713d810a20ae1e5604a5ceaee278828
+Build description path: <DERIVED_DATA>/Build/Intermediates.noindex/XCBuildData/0713d810a20ae1e5604a5ceaee278828.xcbuilddata
+ClangStatCache /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+
+ClangStatCache /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -o <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Info.plist <REPO>/InnerBalance/Configuration/InnerBalanceWatch-Info.plist (in target 'InnerBalance Watch App' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <REPO>/InnerBalance/Configuration/InnerBalanceWatch-Info.plist -producttype com.apple.product-type.application -genpkginfo <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/PkgInfo -expandbuildsettings -format binary -platform watchsimulator -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/assetcatalog_generated_info.plist -o <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Info.plist
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app (in target 'InnerBalance Watch App' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/InnerBalance\ Watch\ App.debug.dylib --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Extensions --platform watchsimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-watchsimulator/InnerBalance\ Watch\ App.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-watchsimulator/InnerBalance\ Watch\ App.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+Ignoring --strip-bitcode because --sign was not passed
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Info.plist <REPO>/InnerBalance/Configuration/InnerBalance-Info.plist (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <REPO>/InnerBalance/Configuration/InnerBalance-Info.plist -producttype com.apple.product-type.application -genpkginfo <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/FangcunLaunch-SBPartialInfo.plist -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/assetcatalog_generated_info.plist -scanforprivacyfile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Watch/InnerBalance\ Watch\ App.app -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Info.plist
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app (in target 'InnerBalance' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/InnerBalance.debug.dylib --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Info.plist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/empty-InnerBalanceTests.plist (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/empty-InnerBalanceTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Info.plist
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest (in target 'InnerBalanceTests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/InnerBalanceTests --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalance.app/PlugIns/InnerBalanceTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+ProcessInfoPlistFile <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Info.plist <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/empty-InnerBalanceUITests.plist (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-infoPlistUtility <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/empty-InnerBalanceUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/ProductTypeInfoPlistAdditions.plist -o <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Info.plist
+
+CopySwiftLibs <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest (in target 'InnerBalanceUITests' from project 'InnerBalance')
+    cd <REPO>/InnerBalance
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/InnerBalanceUITests --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Frameworks --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/PlugIns --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/SystemExtensions --scan-folder <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.5252.6.5Cc6uQ/Metal.xctoolchain --toolchain /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <DERIVED_DATA>/Build/Products/Debug-iphonesimulator/InnerBalanceUITests-Runner.app/PlugIns/InnerBalanceUITests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalanceUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+2026-09-18 20:31:31.846496+0800 InnerBalanceUITests-Runner[19067:8487060] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-09-18 20:31:34.040.
+Test Suite 'InnerBalanceUITests.xctest' started at 2026-09-18 20:31:34.041.
+Test Suite 'FangcunRedesignUITests' started at 2026-09-18 20:31:34.041.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testAcceptedSoloAndDuoScenesInDarkAndLargeType]' started.
+    t =     0.00s Start Test at 2026-09-18 20:31:34.042
+    t =     0.06s Set Up
+    t =     0.07s Open <APP_BUNDLE>
+    t =     0.07s     Launch <APP_BUNDLE>
+2026-09-18 20:31:34.298 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:31:34.298 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     0.67s         Setting up automation session
+objc[19067]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.6KbZG7/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x1084e8398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.6KbZG7/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x108748310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     2.42s         Wait for <APP_BUNDLE> to idle
+    t =     4.29s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =     5.34s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =     5.34s         Checking existence of `"today.conclusion" StaticText`
+    t =     5.56s Find the "today.conclusion" StaticText
+    t =     5.58s Find the Target Application '<APP_BUNDLE>'
+    t =     5.67s Added attachment named 'redesign-steady'
+    t =     5.67s Find the "today.start" Button
+    t =     5.76s Find the "today.start" Button
+    t =     5.78s Find the "today.start" Button
+    t =     5.80s Find the "today.start" Button
+    t =     5.83s Find the "today.start" Button
+    t =     5.85s Find the "today.start" Button
+    t =     5.88s Find the "today.start" Button
+    t =     5.91s Find the "today.start" Button
+    t =     5.93s Terminate <APP_BUNDLE>:19099
+    t =     6.98s Open <APP_BUNDLE>
+    t =     6.99s     Launch <APP_BUNDLE>
+2026-09-18 20:31:41.028 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:31:41.028 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     7.20s         Setting up automation session
+    t =     8.76s         Wait for <APP_BUNDLE> to idle
+    t =    10.42s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    11.45s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    11.45s         Checking existence of `"today.conclusion" StaticText`
+    t =    11.57s Find the "today.conclusion" StaticText
+    t =    11.59s Find the Target Application '<APP_BUNDLE>'
+    t =    11.67s Added attachment named 'redesign-elevated'
+    t =    11.67s Find the "today.start" Button
+    t =    11.71s Find the "today.start" Button
+    t =    11.73s Find the "today.start" Button
+    t =    11.76s Find the "today.start" Button
+    t =    11.78s Find the "today.start" Button
+    t =    11.81s Find the "today.start" Button
+    t =    11.83s Find the "today.start" Button
+    t =    11.85s Find the "today.start" Button
+    t =    11.87s Terminate <APP_BUNDLE>:19152
+    t =    12.94s Open <APP_BUNDLE>
+    t =    12.94s     Launch <APP_BUNDLE>
+2026-09-18 20:31:46.986 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:31:46.986 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    13.16s         Setting up automation session
+    t =    14.84s         Wait for <APP_BUNDLE> to idle
+    t =    16.44s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    17.50s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    17.50s         Checking existence of `"today.conclusion" StaticText`
+    t =    17.62s Find the "today.conclusion" StaticText
+    t =    17.65s Find the Target Application '<APP_BUNDLE>'
+    t =    17.77s Added attachment named 'redesign-insufficient'
+    t =    17.77s Find the "today.start" Button
+    t =    17.84s Find the "today.start" Button
+    t =    17.90s Find the "today.start" Button
+    t =    17.95s Find the "today.start" Button
+    t =    17.97s Find the "today.start" Button
+    t =    18.00s Find the "today.start" Button
+    t =    18.03s Find the "today.start" Button
+    t =    18.07s Find the "today.start" Button
+    t =    18.10s Terminate <APP_BUNDLE>:19193
+    t =    19.18s Tear Down
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testAcceptedSoloAndDuoScenesInDarkAndLargeType]' passed (19.235 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' started.
+    t =     0.00s Start Test at 2026-09-18 20:31:53.277
+    t =     0.01s Set Up
+    t =     0.01s Open <APP_BUNDLE>
+    t =     0.01s     Launch <APP_BUNDLE>
+2026-09-18 20:31:53.293 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:31:53.293 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     0.23s         Setting up automation session
+    t =     2.75s         Wait for <APP_BUNDLE> to idle
+    t =     4.38s Waiting 10.0s for "today.start" Button to exist
+    t =     5.45s     Checking `Expect predicate `existsNoRetry == 1` for object "today.start" Button`
+    t =     5.45s         Checking existence of `"today.start" Button`
+    t =     5.55s Tap "today.start" Button
+    t =     5.55s     Wait for <APP_BUNDLE> to idle
+    t =     5.55s     Find the "today.start" Button
+    t =     5.59s     Check for interrupting elements affecting "today.start" Button
+    t =     5.67s     Synthesize event
+    t =     6.03s     Wait for <APP_BUNDLE> to idle
+    t =     6.76s Waiting 10.0s for "暂停练习" Button to exist
+    t =     7.81s     Checking `Expect predicate `existsNoRetry == 1` for object "暂停练习" Button`
+    t =     7.81s         Checking existence of `"暂停练习" Button`
+    t =     7.90s Checking existence of `"双吸一呼" StaticText`
+    t =     9.00s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =     9.00s     Find the "practice.breathPhase" StaticText
+    t =     9.04s     Capturing element debug description
+    t =     9.18s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =     9.23s         Find: Descendants matching type StaticText
+    t =     9.23s         Find: Elements matching predicate '"practice.breathPhase" IN identifiers'
+    t =     9.23s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =     9.31s         Find: Descendants matching type StaticText
+    t =     9.31s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =     9.97s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =     9.97s     Find the "practice.breathPhase" StaticText
+    t =    10.02s     Capturing element debug description
+    t =    10.21s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =    10.25s         Find: Descendants matching type StaticText
+    t =    10.25s         Find: Elements matching predicate '"practice.breathPhase" IN identifiers'
+    t =    10.25s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =    10.32s         Find: Descendants matching type StaticText
+    t =    10.32s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =    10.96s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =    10.96s     Find the "practice.breathPhase" StaticText
+    t =    11.00s     Capturing element debug description
+    t =    11.11s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =    11.15s         Find: Descendants matching type StaticText
+    t =    11.15s         Find: Elements matching predicate '"practice.breathPhase" IN identifiers'
+    t =    11.15s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =    11.23s         Find: Descendants matching type StaticText
+    t =    11.24s         Requesting snapshot of accessibility hierarchy for app with pid 19436
+    t =    11.98s Checking `Expect predicate `label == "呼气"` for object "practice.breathPhase" StaticText`
+    t =    11.98s     Find the "practice.breathPhase" StaticText
+    t =    12.06s Find the Target Application '<APP_BUNDLE>'
+    t =    12.20s Added attachment named 'redesign-breathing-live'
+    t =    12.20s Tap "暂停练习" Button
+    t =    12.20s     Wait for <APP_BUNDLE> to idle
+    t =    12.21s     Find the "暂停练习" Button
+    t =    12.24s     Check for interrupting elements affecting "pause.fill" Button
+    t =    12.29s     Synthesize event
+    t =    12.60s     Wait for <APP_BUNDLE> to idle
+    t =    12.61s Waiting 5.0s for "已暂停" StaticText to exist
+    t =    13.67s     Checking `Expect predicate `existsNoRetry == 1` for object "已暂停" StaticText`
+    t =    13.67s         Checking existence of `"已暂停" StaticText`
+    t =    13.70s Find the Target Application '<APP_BUNDLE>'
+    t =    13.80s Added attachment named 'redesign-breathing-paused'
+    t =    13.80s Tap "结束" Button
+    t =    13.80s     Wait for <APP_BUNDLE> to idle
+    t =    13.81s     Find the "结束" Button
+    t =    13.83s     Check for interrupting elements affecting "结束" Button
+    t =    13.87s     Synthesize event
+    t =    14.15s     Wait for <APP_BUNDLE> to idle
+    t =    14.19s Tap "结束练习" Button
+    t =    14.19s     Wait for <APP_BUNDLE> to idle
+    t =    14.38s     Find the "结束练习" Button
+    t =    14.44s     Check for interrupting elements affecting "结束练习" Button
+    t =    14.47s     Synthesize event
+    t =    14.76s     Wait for <APP_BUNDLE> to idle
+    t =    14.93s Waiting 5.0s for "先完成" Button to exist
+    t =    15.99s     Checking `Expect predicate `existsNoRetry == 1` for object "先完成" Button`
+    t =    15.99s         Checking existence of `"先完成" Button`
+    t =    16.04s Tear Down
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' passed (16.269 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testDisplayPreferencesSurviveRelaunch]' started.
+    t =     0.00s Start Test at 2026-09-18 20:32:09.547
+    t =     0.02s Set Up
+    t =     0.02s Open <APP_BUNDLE>
+    t =     0.02s     Launch <APP_BUNDLE>
+    t =     0.02s         Terminate <APP_BUNDLE>:19436
+2026-09-18 20:32:10.607 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:32:10.607 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.27s         Setting up automation session
+    t =     2.92s         Wait for <APP_BUNDLE> to idle
+    t =     4.51s Tap "设置" Button
+    t =     4.51s     Wait for <APP_BUNDLE> to idle
+    t =     4.51s     Find the "设置" Button
+    t =     4.59s     Check for interrupting elements affecting "设置" Button
+    t =     4.61s     Synthesize event
+    t =     4.91s     Wait for <APP_BUNDLE> to idle
+    t =     6.99s Find the "深色模式" Switch
+    t =     7.11s Find the "深色模式" Switch
+    t =     7.15s Find the "深色模式" Switch
+    t =     7.18s Find the "深色模式" Switch
+    t =     7.22s Find the "深色模式" Switch
+    t =     7.26s Checking existence of `"深色模式" Switch`
+    t =     7.28s Find the "深色模式" Switch
+    t =     7.31s Tap "深色模式" Switch[0.93, 0.50]
+    t =     7.31s     Wait for <APP_BUNDLE> to idle
+    t =     7.31s     Find the "深色模式" Switch
+    t =     7.34s     Check for interrupting elements affecting "深色模式" Switch
+    t =     7.37s     Synthesize event
+    t =     7.37s         Find the "深色模式" Switch
+    t =     7.40s         Find the "深色模式" Switch
+    t =     7.44s         Find the "深色模式" Switch
+    t =     7.75s     Wait for <APP_BUNDLE> to idle
+    t =     8.79s Find the "深色模式" Switch
+    t =     8.84s Find the "较大字号" Switch
+    t =     8.88s Find the "较大字号" Switch
+    t =     8.92s Find the "较大字号" Switch
+    t =     8.95s Find the "较大字号" Switch
+    t =     8.99s Find the "较大字号" Switch
+    t =     9.02s Checking existence of `"较大字号" Switch`
+    t =     9.05s Find the "较大字号" Switch
+    t =     9.07s Tap "较大字号" Switch[0.93, 0.50]
+    t =     9.07s     Wait for <APP_BUNDLE> to idle
+    t =     9.08s     Find the "较大字号" Switch
+    t =     9.11s     Check for interrupting elements affecting "较大字号" Switch
+    t =     9.13s     Synthesize event
+    t =     9.13s         Find the "较大字号" Switch
+    t =     9.16s         Find the "较大字号" Switch
+    t =     9.20s         Find the "较大字号" Switch
+    t =     9.51s     Wait for <APP_BUNDLE> to idle
+    t =    10.81s Find the "较大字号" Switch
+    t =    10.87s Find the "减少动态效果" Switch
+    t =    10.90s Find the "减少动态效果" Switch
+    t =    10.94s Find the "减少动态效果" Switch
+    t =    10.97s Find the "减少动态效果" Switch
+    t =    11.00s Find the "减少动态效果" Switch
+    t =    11.04s Checking existence of `"减少动态效果" Switch`
+    t =    11.06s Find the "减少动态效果" Switch
+    t =    11.09s Tap "减少动态效果" Switch[0.93, 0.50]
+    t =    11.09s     Wait for <APP_BUNDLE> to idle
+    t =    11.09s     Find the "减少动态效果" Switch
+    t =    11.14s     Check for interrupting elements affecting "减少动态效果" Switch
+    t =    11.16s     Synthesize event
+    t =    11.16s         Find the "减少动态效果" Switch
+    t =    11.19s         Find the "减少动态效果" Switch
+    t =    11.22s         Find the "减少动态效果" Switch
+    t =    11.53s     Wait for <APP_BUNDLE> to idle
+    t =    12.85s Find the "减少动态效果" Switch
+    t =    12.90s Terminate <APP_BUNDLE>:19788
+    t =    13.98s Open <APP_BUNDLE>
+    t =    13.98s     Launch <APP_BUNDLE>
+2026-09-18 20:32:23.528 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:32:23.528 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    14.20s         Setting up automation session
+    t =    15.75s         Wait for <APP_BUNDLE> to idle
+    t =    17.35s Tap "设置" Button
+    t =    17.35s     Wait for <APP_BUNDLE> to idle
+    t =    17.36s     Find the "设置" Button
+    t =    17.48s     Check for interrupting elements affecting "设置" Button
+    t =    17.50s     Synthesize event
+    t =    17.81s     Wait for <APP_BUNDLE> to idle
+    t =    19.67s Find the "深色模式" Switch
+    t =    19.72s Find the "较大字号" Switch
+    t =    19.75s Find the "减少动态效果" Switch
+    t =    19.77s Find the Target Application '<APP_BUNDLE>'
+    t =    19.85s Added attachment named 'preferences-relaunch'
+    t =    19.85s Find the "深色模式" Switch
+    t =    19.88s Find the "深色模式" Switch
+    t =    19.92s Find the "深色模式" Switch
+    t =    19.95s Find the "深色模式" Switch
+    t =    19.98s Find the "深色模式" Switch
+    t =    20.01s Tap "深色模式" Switch[0.93, 0.50]
+    t =    20.01s     Wait for <APP_BUNDLE> to idle
+    t =    20.01s     Find the "深色模式" Switch
+    t =    20.04s     Check for interrupting elements affecting "深色模式" Switch
+    t =    20.06s     Synthesize event
+    t =    20.06s         Find the "深色模式" Switch
+    t =    20.09s         Find the "深色模式" Switch
+    t =    20.12s         Find the "深色模式" Switch
+    t =    20.43s     Wait for <APP_BUNDLE> to idle
+    t =    21.44s Find the "较大字号" Switch
+    t =    21.50s Find the "较大字号" Switch
+    t =    21.54s Find the "较大字号" Switch
+    t =    21.57s Find the "较大字号" Switch
+    t =    21.60s Find the "较大字号" Switch
+    t =    21.64s Tap "较大字号" Switch[0.93, 0.50]
+    t =    21.64s     Wait for <APP_BUNDLE> to idle
+    t =    21.64s     Find the "较大字号" Switch
+    t =    21.66s     Check for interrupting elements affecting "较大字号" Switch
+    t =    21.69s     Synthesize event
+    t =    21.69s         Find the "较大字号" Switch
+    t =    21.72s         Find the "较大字号" Switch
+    t =    21.75s         Find the "较大字号" Switch
+    t =    22.06s     Wait for <APP_BUNDLE> to idle
+    t =    23.36s Find the "减少动态效果" Switch
+    t =    23.43s Find the "减少动态效果" Switch
+    t =    23.46s Find the "减少动态效果" Switch
+    t =    23.50s Find the "减少动态效果" Switch
+    t =    23.54s Find the "减少动态效果" Switch
+    t =    23.58s Tap "减少动态效果" Switch[0.93, 0.50]
+    t =    23.58s     Wait for <APP_BUNDLE> to idle
+    t =    23.59s     Find the "减少动态效果" Switch
+    t =    23.63s     Check for interrupting elements affecting "减少动态效果" Switch
+    t =    23.66s     Synthesize event
+    t =    23.66s         Find the "减少动态效果" Switch
+    t =    23.69s         Find the "减少动态效果" Switch
+    t =    23.72s         Find the "减少动态效果" Switch
+    t =    24.04s     Wait for <APP_BUNDLE> to idle
+    t =    25.35s Tear Down
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testDisplayPreferencesSurviveRelaunch]' passed (25.606 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' started.
+    t =     0.00s Start Test at 2026-09-18 20:32:35.154
+    t =     0.02s Set Up
+    t =     0.02s Open <APP_BUNDLE>
+    t =     0.03s     Launch <APP_BUNDLE>
+    t =     0.03s         Terminate <APP_BUNDLE>:19834
+2026-09-18 20:32:36.242 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:32:36.242 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.30s         Setting up automation session
+    t =     2.85s         Wait for <APP_BUNDLE> to idle
+    t =     4.41s Waiting 15.0s for "today.conclusion" StaticText to exist
+    t =     5.44s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =     5.44s         Checking existence of `"today.conclusion" StaticText`
+    t =     5.55s Checking existence of `"home.echo.state.calm" Button`
+    t =     5.57s Find the "today.start" Button
+    t =     5.61s Find the Target Application '<APP_BUNDLE>'
+    t =     5.69s Added attachment named 'redesign-home'
+    t =     5.69s Find the "today.drinks" Button
+    t =     5.71s Swipe up ScrollView (First Match)
+    t =     5.71s     Wait for <APP_BUNDLE> to idle
+    t =     5.71s     Find the ScrollView (First Match)
+    t =     5.73s     Check for interrupting elements affecting ScrollView
+    t =     5.75s     Synthesize event
+    t =     6.19s     Wait for <APP_BUNDLE> to idle
+    t =     7.03s Find the "today.drinks" Button
+    t =     7.08s Find the "today.drinks" Button
+    t =     7.10s Find the "today.drinks" Button
+    t =     7.13s Find the "today.drinks" Button
+    t =     7.15s Find the "today.drinks" Button
+    t =     7.18s Find the "today.drinks" Button
+    t =     7.20s Tap "today.drinks" Button
+    t =     7.20s     Wait for <APP_BUNDLE> to idle
+    t =     7.20s     Find the "today.drinks" Button
+    t =     7.22s     Check for interrupting elements affecting "today.drinks" Button
+    t =     7.24s     Synthesize event
+    t =     7.53s     Wait for <APP_BUNDLE> to idle
+    t =     7.58s Waiting 5.0s for "增加白水" Button to exist
+    t =     8.64s     Checking `Expect predicate `existsNoRetry == 1` for object "增加白水" Button`
+    t =     8.64s         Checking existence of `"增加白水" Button`
+    t =     8.72s Tap "增加白水" Button
+    t =     8.72s     Wait for <APP_BUNDLE> to idle
+    t =     8.72s     Find the "增加白水" Button
+    t =     8.76s     Check for interrupting elements affecting "plus" Button
+    t =     8.78s     Synthesize event
+    t =     9.07s     Wait for <APP_BUNDLE> to idle
+    t =     9.81s Tap "增加美式" Button
+    t =     9.81s     Wait for <APP_BUNDLE> to idle
+    t =     9.82s     Find the "增加美式" Button
+    t =     9.87s     Check for interrupting elements affecting "plus" Button
+    t =     9.90s     Synthesize event
+    t =    10.19s     Wait for <APP_BUNDLE> to idle
+    t =    10.95s Find the "drinks.totals" Any
+    t =    11.00s Tap "撤销" Button
+    t =    11.00s     Wait for <APP_BUNDLE> to idle
+    t =    11.01s     Find the "撤销" Button
+    t =    11.04s     Check for interrupting elements affecting "撤销" Button
+    t =    11.06s     Synthesize event
+    t =    11.35s     Wait for <APP_BUNDLE> to idle
+    t =    12.10s Find the "drinks.totals" Any
+    t =    12.13s Find the Target Application '<APP_BUNDLE>'
+    t =    12.24s Added attachment named 'redesign-drinks'
+    t =    12.24s Tap "完成" Button
+    t =    12.24s     Wait for <APP_BUNDLE> to idle
+    t =    12.24s     Find the "完成" Button
+    t =    12.27s     Check for interrupting elements affecting "完成" Button
+    t =    12.29s     Synthesize event
+    t =    12.58s     Wait for <APP_BUNDLE> to idle
+    t =    12.97s Find the "today.trends" Button
+    t =    13.01s Find the "today.trends" Button
+    t =    13.04s Find the "today.trends" Button
+    t =    13.06s Find the "today.trends" Button
+    t =    13.08s Find the "today.trends" Button
+    t =    13.11s Find the "today.trends" Button
+    t =    13.13s Find the "today.trends" Button
+    t =    13.16s Tap "today.trends" Button
+    t =    13.16s     Wait for <APP_BUNDLE> to idle
+    t =    13.16s     Find the "today.trends" Button
+    t =    13.18s     Check for interrupting elements affecting "today.trends" Button
+    t =    13.20s     Synthesize event
+    t =    13.49s     Wait for <APP_BUNDLE> to idle
+    t =    13.99s Waiting 5.0s for "trends.snapshot" StaticText to exist
+    t =    15.03s     Checking `Expect predicate `existsNoRetry == 1` for object "trends.snapshot" StaticText`
+    t =    15.03s         Checking existence of `"trends.snapshot" StaticText`
+    t =    15.06s Find the Target Application '<APP_BUNDLE>'
+    t =    15.13s Added attachment named 'redesign-trends'
+    t =    15.13s Tap Button (First Match)
+    t =    15.13s     Wait for <APP_BUNDLE> to idle
+    t =    15.13s     Find the Button (First Match)
+    t =    15.15s     Check for interrupting elements affecting "BackButton" Button
+    t =    15.17s     Synthesize event
+    t =    15.46s     Wait for <APP_BUNDLE> to idle
+    t =    15.77s Find the "today.start" Button
+    t =    15.80s Find the "today.start" Button
+    t =    15.82s Find the "today.start" Button
+    t =    15.85s Find the "today.start" Button
+    t =    15.87s Tap "today.start" Button
+    t =    15.87s     Wait for <APP_BUNDLE> to idle
+    t =    15.87s     Find the "today.start" Button
+    t =    15.90s     Check for interrupting elements affecting "today.start" Button
+    t =    15.91s     Synthesize event
+    t =    16.20s     Wait for <APP_BUNDLE> to idle
+    t =    16.44s Waiting 10.0s for "暂停练习" Button to exist
+    t =    17.50s     Checking `Expect predicate `existsNoRetry == 1` for object "暂停练习" Button`
+    t =    17.50s         Checking existence of `"暂停练习" Button`
+    t =    17.58s Find the Target Application '<APP_BUNDLE>'
+    t =    17.66s Added attachment named 'redesign-breathing'
+    t =    17.66s Tap "暂停练习" Button
+    t =    17.66s     Wait for <APP_BUNDLE> to idle
+    t =    17.66s     Find the "暂停练习" Button
+    t =    17.69s     Check for interrupting elements affecting "pause.fill" Button
+    t =    17.71s     Synthesize event
+    t =    18.00s     Wait for <APP_BUNDLE> to idle
+    t =    18.00s Waiting 4.0s for "已暂停" StaticText to exist
+    t =    19.06s     Checking `Expect predicate `existsNoRetry == 1` for object "已暂停" StaticText`
+    t =    19.06s         Checking existence of `"已暂停" StaticText`
+    t =    19.08s Tap "继续练习" Button
+    t =    19.08s     Wait for <APP_BUNDLE> to idle
+    t =    19.08s     Find the "继续练习" Button
+    t =    19.11s     Check for interrupting elements affecting "play.fill" Button
+    t =    19.13s     Synthesize event
+    t =    19.42s     Wait for <APP_BUNDLE> to idle
+    t =    19.43s Waiting 4.0s for "pause.fill" Button to exist
+    t =    20.49s     Checking `Expect predicate `existsNoRetry == 1` for object "pause.fill" Button`
+    t =    20.49s         Checking existence of `"pause.fill" Button`
+    t =    20.55s Tap "结束" Button
+    t =    20.55s     Wait for <APP_BUNDLE> to idle
+    t =    20.56s     Find the "结束" Button
+    t =    20.61s     Check for interrupting elements affecting "结束" Button
+    t =    20.64s     Synthesize event
+    t =    20.92s     Wait for <APP_BUNDLE> to idle
+    t =    21.05s Tap "结束练习" Button
+    t =    21.05s     Wait for <APP_BUNDLE> to idle
+    t =    21.06s     Find the "结束练习" Button
+    t =    21.12s     Check for interrupting elements affecting "结束练习" Button
+    t =    21.15s     Synthesize event
+    t =    21.44s     Wait for <APP_BUNDLE> to idle
+    t =    21.62s Waiting 6.0s for "先完成" Button to exist
+    t =    22.65s     Checking `Expect predicate `existsNoRetry == 1` for object "先完成" Button`
+    t =    22.65s         Checking existence of `"先完成" Button`
+    t =    22.71s Find the "先完成" Button
+    t =    22.75s Find the "先完成" Button
+    t =    22.78s Find the "先完成" Button
+    t =    22.81s Find the "先完成" Button
+    t =    22.85s Find the "先完成" Button
+    t =    22.88s Find the "先完成" Button
+    t =    22.91s Find the "先完成" Button
+    t =    22.94s Tap "先完成" Button
+    t =    22.94s     Wait for <APP_BUNDLE> to idle
+    t =    22.95s     Find the "先完成" Button
+    t =    22.97s     Check for interrupting elements affecting "先完成" Button
+    t =    23.00s     Synthesize event
+    t =    23.29s     Wait for <APP_BUNDLE> to idle
+    t =    23.29s Waiting 8.0s for "practice.saved.done" Button to exist
+    t =    24.33s     Checking `Expect predicate `existsNoRetry == 1` for object "practice.saved.done" Button`
+    t =    24.33s         Checking existence of `"practice.saved.done" Button`
+    t =    24.36s Find the Target Application '<APP_BUNDLE>'
+    t =    24.44s Added attachment named 'redesign-completion'
+    t =    24.44s Tap "practice.saved.done" Button
+    t =    24.44s     Wait for <APP_BUNDLE> to idle
+    t =    24.44s     Find the "practice.saved.done" Button
+    t =    24.47s     Check for interrupting elements affecting "practice.saved.done" Button
+    t =    24.49s     Synthesize event
+    t =    24.77s     Wait for <APP_BUNDLE> to idle
+    t =    25.11s Tap "设置" Button
+    t =    25.11s     Wait for <APP_BUNDLE> to idle
+    t =    25.13s     Find the "设置" Button
+    t =    25.16s     Check for interrupting elements affecting "gearshape.fill" Button
+    t =    25.19s     Synthesize event
+    t =    25.47s     Wait for <APP_BUNDLE> to idle
+    t =    27.31s Waiting 5.0s for "深色模式" Switch to exist
+    t =    28.35s     Checking `Expect predicate `existsNoRetry == 1` for object "深色模式" Switch`
+    t =    28.35s         Checking existence of `"深色模式" Switch`
+    t =    28.43s Find the Target Application '<APP_BUNDLE>'
+    t =    28.51s Added attachment named 'redesign-settings'
+    t =    28.51s Tear Down
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' passed (28.775 seconds).
+Test Suite 'FangcunRedesignUITests' passed at 2026-09-18 20:33:03.929.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 89.885 (89.889) seconds
+Test Suite 'HomeEvidencePipelineUITests' started at 2026-09-18 20:33:03.940.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testHistoryFailureAndLimitedEvidence]' started.
+    t =     0.00s Start Test at 2026-09-18 20:33:03.940
+    t =     0.02s Set Up
+    t =     0.02s Open <APP_BUNDLE>
+    t =     0.02s     Launch <APP_BUNDLE>
+    t =     0.02s         Terminate <APP_BUNDLE>:19884
+2026-09-18 20:33:05.042 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:05.042 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.32s         Setting up automation session
+    t =     2.87s         Wait for <APP_BUNDLE> to idle
+    t =     4.45s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =     5.48s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =     5.48s         Checking existence of `"today.conclusion" StaticText`
+    t =     6.60s Checking `Expect predicate `value == "insufficient"` for object "today.conclusion" StaticText`
+    t =     6.60s     Find the "today.conclusion" StaticText
+    t =     6.65s Find the Target Application '<APP_BUNDLE>'
+    t =     6.73s Added attachment named 'm1-noCurrentHistory'
+    t =     6.73s Terminate <APP_BUNDLE>:19984
+    t =     7.77s Open <APP_BUNDLE>
+    t =     7.77s     Launch <APP_BUNDLE>
+2026-09-18 20:33:11.716 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:11.716 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     7.99s         Setting up automation session
+    t =     9.54s         Wait for <APP_BUNDLE> to idle
+    t =    11.09s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    12.13s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    12.13s         Checking existence of `"today.conclusion" StaticText`
+    t =    13.25s Checking `Expect predicate `value == "insufficient"` for object "today.conclusion" StaticText`
+    t =    13.25s     Find the "today.conclusion" StaticText
+    t =    13.30s Find the "today.measuredAt" StaticText
+    t =    13.32s Find the Target Application '<APP_BUNDLE>'
+    t =    13.41s Added attachment named 'm1-failed'
+    t =    13.41s Terminate <APP_BUNDLE>:20032
+    t =    14.45s Open <APP_BUNDLE>
+    t =    14.46s     Launch <APP_BUNDLE>
+2026-09-18 20:33:18.398 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:18.398 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    14.66s         Setting up automation session
+    t =    16.24s         Wait for <APP_BUNDLE> to idle
+    t =    17.85s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    18.87s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    18.87s         Checking existence of `"today.conclusion" StaticText`
+    t =    20.00s Checking `Expect predicate `value == "limited"` for object "today.conclusion" StaticText`
+    t =    20.00s     Find the "today.conclusion" StaticText
+    t =    20.04s Find the Target Application '<APP_BUNDLE>'
+    t =    20.12s Added attachment named 'm1-sleepOnly'
+    t =    20.12s Terminate <APP_BUNDLE>:20053
+    t =    21.20s Open <APP_BUNDLE>
+    t =    21.20s     Launch <APP_BUNDLE>
+2026-09-18 20:33:25.146 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:25.146 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    21.42s         Setting up automation session
+    t =    23.06s         Wait for <APP_BUNDLE> to idle
+    t =    24.63s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    25.68s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    25.68s         Checking existence of `"today.conclusion" StaticText`
+    t =    26.81s Checking `Expect predicate `value == "limited"` for object "today.conclusion" StaticText`
+    t =    26.81s     Find the "today.conclusion" StaticText
+    t =    26.85s Find the Target Application '<APP_BUNDLE>'
+    t =    26.94s Added attachment named 'm1-oneCardio'
+    t =    26.94s Terminate <APP_BUNDLE>:20095
+    t =    28.01s Tear Down
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testHistoryFailureAndLimitedEvidence]' passed (28.062 seconds).
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testMeasurementTimeDoesNotBecomeQueryTime]' started.
+    t =     0.00s Start Test at 2026-09-18 20:33:32.003
+    t =     0.01s Set Up
+    t =     0.02s Open <APP_BUNDLE>
+    t =     0.02s     Launch <APP_BUNDLE>
+2026-09-18 20:33:32.021 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:32.021 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     0.23s         Setting up automation session
+    t =     1.76s         Wait for <APP_BUNDLE> to idle
+    t =     3.33s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =     4.37s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =     4.37s         Checking existence of `"today.conclusion" StaticText`
+    t =     5.51s Checking `Expect predicate `value == "insufficient"` for object "today.conclusion" StaticText`
+    t =     5.51s     Find the "today.conclusion" StaticText
+    t =     5.56s Find the "today.measuredAt" StaticText
+    t =     5.59s Find the Target Application '<APP_BUNDLE>'
+    t =     5.67s Added attachment named 'm1-stale-measurement'
+    t =     5.67s Find the "today.evidence" Button
+    t =     5.71s Find the "today.evidence" Button
+    t =     5.74s Find the "today.evidence" Button
+    t =     5.77s Find the "today.evidence" Button
+    t =     5.79s Find the "today.evidence" Button
+    t =     5.82s Tap "today.evidence" Button
+    t =     5.82s     Wait for <APP_BUNDLE> to idle
+    t =     5.82s     Find the "today.evidence" Button
+    t =     5.84s     Check for interrupting elements affecting "today.evidence" Button
+    t =     5.86s     Synthesize event
+    t =     6.14s     Wait for <APP_BUNDLE> to idle
+    t =     6.62s Waiting 5.0s for "evidence.fetchedAt" StaticText to exist
+    t =     7.65s     Checking `Expect predicate `existsNoRetry == 1` for object "evidence.fetchedAt" StaticText`
+    t =     7.65s         Checking existence of `"evidence.fetchedAt" StaticText`
+    t =     7.71s Find the "evidence.fetchedAt" StaticText
+    t =     7.73s Find the "evidence.computedAt" StaticText
+    t =     7.75s Find the Target Application '<APP_BUNDLE>'
+    t =     7.83s Added attachment named 'm1-time-detail'
+    t =     7.83s Tear Down
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testMeasurementTimeDoesNotBecomeQueryTime]' passed (8.052 seconds).
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testPreviousSleepAndIncompleteBaselines]' started.
+    t =     0.00s Start Test at 2026-09-18 20:33:40.057
+    t =     0.02s Set Up
+    t =     0.02s Open <APP_BUNDLE>
+    t =     0.03s     Launch <APP_BUNDLE>
+    t =     0.03s         Terminate <APP_BUNDLE>:20116
+2026-09-18 20:33:41.147 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:41.147 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.30s         Setting up automation session
+    t =     2.84s         Wait for <APP_BUNDLE> to idle
+    t =     4.40s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =     5.42s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =     5.42s         Checking existence of `"today.conclusion" StaticText`
+    t =     6.53s Checking `Expect predicate `value == "insufficient"` for object "today.conclusion" StaticText`
+    t =     6.53s     Find the "today.conclusion" StaticText
+    t =     6.55s Find the "today.evidence" Button
+    t =     6.60s Find the "today.evidence" Button
+    t =     6.63s Find the "today.evidence" Button
+    t =     6.65s Find the "today.evidence" Button
+    t =     6.68s Find the "today.evidence" Button
+    t =     6.71s Find the "today.evidence" Button
+    t =     6.73s Find the "today.evidence" Button
+    t =     6.75s Find the "today.evidence" Button
+    t =     6.77s Find the Target Application '<APP_BUNDLE>'
+    t =     6.84s Added attachment named 'm1-previousSleep'
+    t =     6.84s Terminate <APP_BUNDLE>:20153
+    t =     7.90s Open <APP_BUNDLE>
+    t =     7.90s     Launch <APP_BUNDLE>
+2026-09-18 20:33:47.963 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:47.963 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     8.12s         Setting up automation session
+    t =     9.67s         Wait for <APP_BUNDLE> to idle
+    t =    11.24s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    12.28s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    12.28s         Checking existence of `"today.conclusion" StaticText`
+    t =    13.44s Checking `Expect predicate `value == "limited"` for object "today.conclusion" StaticText`
+    t =    13.44s     Find the "today.conclusion" StaticText
+    t =    13.49s Find the Target Application '<APP_BUNDLE>'
+    t =    13.58s Added attachment named 'm1-baselineBuilding'
+    t =    13.58s Terminate <APP_BUNDLE>:20174
+    t =    14.64s Open <APP_BUNDLE>
+    t =    14.64s     Launch <APP_BUNDLE>
+2026-09-18 20:33:54.696 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:33:54.696 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    14.85s         Setting up automation session
+    t =    16.40s         Wait for <APP_BUNDLE> to idle
+    t =    17.97s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    19.00s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    19.00s         Checking existence of `"today.conclusion" StaticText`
+    t =    20.17s Checking `Expect predicate `value == "limited"` for object "today.conclusion" StaticText`
+    t =    20.17s     Find the "today.conclusion" StaticText
+    t =    20.21s Find the Target Application '<APP_BUNDLE>'
+    t =    20.30s Added attachment named 'm1-unreliablePair'
+    t =    20.30s Terminate <APP_BUNDLE>:20194
+    t =    21.35s Tear Down
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testPreviousSleepAndIncompleteBaselines]' passed (21.395 seconds).
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testQualifiedEvidenceAndWorkoutProtection]' started.
+    t =     0.00s Start Test at 2026-09-18 20:34:01.452
+    t =     0.02s Set Up
+    t =     0.02s Open <APP_BUNDLE>
+    t =     0.02s     Launch <APP_BUNDLE>
+2026-09-18 20:34:01.472 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:34:01.472 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     0.23s         Setting up automation session
+    t =     1.77s         Wait for <APP_BUNDLE> to idle
+    t =     3.33s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =     4.36s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =     4.36s         Checking existence of `"today.conclusion" StaticText`
+    t =     5.49s Checking `Expect predicate `value == "steady"` for object "today.conclusion" StaticText`
+    t =     5.49s     Find the "today.conclusion" StaticText
+    t =     5.54s Find the Target Application '<APP_BUNDLE>'
+    t =     5.62s Added attachment named 'm1-steady'
+    t =     5.62s Terminate <APP_BUNDLE>:20217
+    t =     6.68s Open <APP_BUNDLE>
+    t =     6.69s     Launch <APP_BUNDLE>
+2026-09-18 20:34:08.141 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:34:08.141 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     6.89s         Setting up automation session
+    t =     8.44s         Wait for <APP_BUNDLE> to idle
+    t =    10.02s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    11.07s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    11.07s         Checking existence of `"today.conclusion" StaticText`
+    t =    12.22s Checking `Expect predicate `value == "watch"` for object "today.conclusion" StaticText`
+    t =    12.22s     Find the "today.conclusion" StaticText
+    t =    12.27s Find the Target Application '<APP_BUNDLE>'
+    t =    12.36s Added attachment named 'm1-watch'
+    t =    12.36s Terminate <APP_BUNDLE>:20237
+    t =    13.42s Open <APP_BUNDLE>
+    t =    13.43s     Launch <APP_BUNDLE>
+2026-09-18 20:34:14.881 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:34:14.881 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    13.63s         Setting up automation session
+    t =    15.19s         Wait for <APP_BUNDLE> to idle
+    t =    16.75s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    17.76s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    17.76s         Checking existence of `"today.conclusion" StaticText`
+    t =    18.90s Checking `Expect predicate `value == "elevated"` for object "today.conclusion" StaticText`
+    t =    18.90s     Find the "today.conclusion" StaticText
+    t =    18.95s Find the Target Application '<APP_BUNDLE>'
+    t =    19.04s Added attachment named 'm1-elevated'
+    t =    19.04s Terminate <APP_BUNDLE>:20265
+    t =    20.11s Open <APP_BUNDLE>
+    t =    20.12s     Launch <APP_BUNDLE>
+2026-09-18 20:34:21.569 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-09-18 20:34:21.569 xcodebuild[19021:8486612] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    20.32s         Setting up automation session
+    t =    21.86s         Wait for <APP_BUNDLE> to idle
+    t =    23.43s Waiting 10.0s for "today.conclusion" StaticText to exist
+    t =    24.45s     Checking `Expect predicate `existsNoRetry == 1` for object "today.conclusion" StaticText`
+    t =    24.45s         Checking existence of `"today.conclusion" StaticText`
+    t =    25.60s Checking `Expect predicate `value == "limited"` for object "today.conclusion" StaticText`
+    t =    25.60s     Find the "today.conclusion" StaticText
+    t =    25.64s Find the "today.evidenceSummary" StaticText
+    t =    25.65s Find the Target Application '<APP_BUNDLE>'
+    t =    25.74s Added attachment named 'm1-workoutProtected'
+    t =    25.74s Terminate <APP_BUNDLE>:20287
+    t =    26.79s Tear Down
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testQualifiedEvidenceAndWorkoutProtection]' passed (26.839 seconds).
+Test Suite 'HomeEvidencePipelineUITests' passed at 2026-09-18 20:34:28.291.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 84.348 (84.352) seconds
+Test Suite 'InnerBalanceUITests.xctest' passed at 2026-09-18 20:34:28.291.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 174.233 (174.251) seconds
+Test Suite 'Selected tests' passed at 2026-09-18 20:34:28.292.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 174.233 (174.252) seconds
+2026-09-18 20:34:28.639 xcodebuild[19021:8486612] [MT] IDETestOperationsObserverDebug: 177.842 elapsed -- Testing started completed.
+2026-09-18 20:34:28.639 xcodebuild[19021:8486612] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-18 20:34:28.639 xcodebuild[19021:8486612] [MT] IDETestOperationsObserverDebug: 177.842 sec, +177.842 sec -- end
+
+Test session results, code coverage, and logs:
+	<EVIDENCE>/m2-ui-acceptance.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
+
+===== END FILE =====

@@ -1,0 +1,494 @@
+Synthetic test output excerpt. Complete logs and result bundle remain local.
+Test Suite 'All tests' started at 2026-09-19 17:57:02.360.
+Test Suite 'All tests' passed at 2026-09-19 17:57:02.363.
+◇ Test run started.
+◇ Test acknowledgeAndMuteNeverWriteDiaryAndSurviveRestart() started.
+✔ Test acknowledgeAndMuteNeverWriteDiaryAndSurviveRestart() passed after 0.002 seconds.
+✔ Suite BeverageCareCoordinatorTests passed after 0.003 seconds.
+◇ Test testDilutingPerServingCoffeeKeepsDose() started.
+✔ Test testDilutingPerServingCoffeeKeepsDose() passed after 0.006 seconds.
+◇ Test testNewBeerUsesVolumeAndABV() started.
+✔ Test testNewBeerUsesVolumeAndABV() passed after 0.003 seconds.
+◇ Test committedCommandsAreDurableAndUndoIsANewRevision() started.
+✔ Test committedCommandsAreDurableAndUndoIsANewRevision() passed after 0.003 seconds.
+◇ Test unknownDoseProjectionAndLegacyBeerNeverBecomeZeroOrRecalculated() started.
+✔ Test unknownDoseProjectionAndLegacyBeerNeverBecomeZeroOrRecalculated() passed after 0.001 seconds.
+✔ Suite BeverageV2Tests passed after 0.015 seconds.
+◇ Test noPromptAtStartupAndDeniedNeverRequestsAgain() started.
+✔ Test noPromptAtStartupAndDeniedNeverRequestsAgain() passed after 0.001 seconds.
+◇ Test plansCancelOnlyOwnedRequestsAndClearRetainsOtherFeatures() started.
+✔ Test plansCancelOnlyOwnedRequestsAndClearRetainsOtherFeatures() passed after 0.006 seconds.
+◇ Test foregroundCareIsSilentAndSchedulingIsNotDelivery() started.
+✔ Test foregroundCareIsSilentAndSchedulingIsNotDelivery() passed after 0.002 seconds.
+◇ Test coldStartActionIsPersistedAndDuplicateDoesNotNavigateTwice() started.
+✔ Test coldStartActionIsPersistedAndDuplicateDoesNotNavigateTwice() passed after 0.004 seconds.
+✔ Suite CareNotificationTests passed after 0.015 seconds.
+◇ Test "A newer sync version replaces the same check-in without duplication" started.
+✔ Test "A newer sync version replaces the same check-in without duplication" passed after 0.015 seconds.
+◇ Test "A HealthKit deletion removes the matching cached check-in" started.
+✔ Test "A HealthKit deletion removes the matching cached check-in" passed after 0.003 seconds.
+◇ Test "最后一条 HealthKit 情绪被删除后首页状态会完整清空" started.
+✔ Test "最后一条 HealthKit 情绪被删除后首页状态会完整清空" passed after 0.001 seconds.
+◇ Test "练习后的空上下文不会清掉当天已选压力来源" started.
+✔ Test "练习后的空上下文不会清掉当天已选压力来源" passed after 0.002 seconds.
+✔ Suite "Local check-in cache" passed after 0.022 seconds.
+◇ Test "没有选择位置时罗盘不显示默认中心点" started.
+✔ Test "没有选择位置时罗盘不显示默认中心点" passed after 0.001 seconds.
+◇ Test "罗盘只在用户确认落点时触发一次触觉" started.
+✔ Test "罗盘只在用户确认落点时触发一次触觉" passed after 0.001 seconds.
+◇ Test "情绪词淡入在减少动态效果时不使用缩放时长" started.
+✔ Test "情绪词淡入在减少动态效果时不使用缩放时长" passed after 0.001 seconds.
+◇ Test "罗盘坐标保持中心、方向与圆形边界" started.
+✔ Test "罗盘坐标保持中心、方向与圆形边界" passed after 0.001 seconds.
+◇ Test "Every compass position offers four to six labels without changing coordinates" started.
+✔ Test "Every compass position offers four to six labels without changing coordinates" passed after 0.001 seconds.
+◇ Test "Selecting a suggested word immediately saves the primary record" started.
+✔ Test "Selecting a suggested word immediately saves the primary record" passed after 0.001 seconds.
+◇ Test "Unclassified saves the selected coordinates with no labels" started.
+✔ Test "Unclassified saves the selected coordinates with no labels" passed after 0.001 seconds.
+◇ Test "Optional context failure does not roll back the primary save" started.
+✔ Test "Optional context failure does not roll back the primary save" passed after 0.001 seconds.
+◇ Test "Completion time is captured after the primary write finishes" started.
+✔ Test "Completion time is captured after the primary write finishes" passed after 0.001 seconds.
+◇ Test "Hopeless check-ins expose static support guidance" started.
+✔ Test "Hopeless check-ins expose static support guidance" passed after 0.001 seconds.
+✔ Suite "Two-step emotion check-in" passed after 0.001 seconds.
+◇ Test "Saving today's echo makes it available immediately and in history" started.
+✔ Test "Saving today's echo makes it available immediately and in history" passed after 0.004 seconds.
+◇ Test "Saving again on the same local day edits instead of duplicating" started.
+✔ Test "Saving again on the same local day edits instead of duplicating" passed after 0.002 seconds.
+◇ Test "点一下当下状态即可保存，不需要填写文字" started.
+✔ Test "点一下当下状态即可保存，不需要填写文字" passed after 0.001 seconds.
+◇ Test "旧版生成句在历史里会换成同日同状态的名家句" started.
+✔ Test "旧版生成句在历史里会换成同日同状态的名家句" passed after 0.005 seconds.
+◇ Test "真实旧版记录首次读取后固定名家句，跨时区和重启不再变化" started.
+✔ Test "真实旧版记录首次读取后固定名家句，跨时区和重启不再变化" passed after 0.002 seconds.
+◇ Test "已保存的现代版权金句会替换为同日同状态的公版句" started.
+✔ Test "已保存的现代版权金句会替换为同日同状态的公版句" passed after 0.001 seconds.
+◇ Test "同一自然日在相邻时区切换后仍是同一条回声" started.
+✔ Test "同一自然日在相邻时区切换后仍是同一条回声" passed after 0.001 seconds.
+◇ Test "切换时区后本地日期不同就不沿用上一天回声" started.
+✔ Test "切换时区后本地日期不同就不沿用上一天回声" passed after 0.001 seconds.
+✔ Suite "Daily echo" passed after 0.022 seconds.
+◇ Test rawProviderToOwnerProducesScopedLanguage(_:) started.
+◇ Test case passing 1 argument scenario → "assessable" to rawProviderToOwnerProducesScopedLanguage(_:) started.
+​◇ Test case passing 1 argument scenario → "reduced" to rawProviderToOwnerProducesScopedLanguage(_:) started.
+​◇ Test case passing 1 argument scenario → "low" to rawProviderToOwnerProducesScopedLanguage(_:) started.
+​◇ Test case passing 1 argument scenario → "oneDay" to rawProviderToOwnerProducesScopedLanguage(_:) started.
+​◇ Test case passing 1 argument scenario → "sleepOnly" to rawProviderToOwnerProducesScopedLanguage(_:) started.
+​◇ Test case passing 1 argument scenario → "insufficient" to rawProviderToOwnerProducesScopedLanguage(_:) started.
+​✔ Test rawProviderToOwnerProducesScopedLanguage(_:) with 6 test cases passed after 0.229 seconds.
+✔ Suite DayGuidanceV2Tests passed after 0.230 seconds.
+◇ Test "Export contains only status and aggregate counters" started.
+✔ Test "Export contains only status and aggregate counters" passed after 0.001 seconds.
+◇ Test "Diagnostics appear only in Debug or TestFlight" started.
+✔ Test "Diagnostics appear only in Debug or TestFlight" passed after 0.001 seconds.
+◇ Test "Builder aggregates local funnel, duration and sync diagnostics" started.
+✔ Test "Builder aggregates local funnel, duration and sync diagnostics" passed after 0.006 seconds.
+✔ Suite "Privacy-safe diagnostics export" passed after 0.007 seconds.
+◇ Test "The iPhone interface uses only approved flat monochrome primitives" started.
+✔ Test "The iPhone interface uses only approved flat monochrome primitives" passed after 0.062 seconds.
+◇ Test "The system tab bar keeps the native floating surface" started.
+✔ Test "The system tab bar keeps the native floating surface" passed after 0.001 seconds.
+◇ Test "Scrollable pages do not reserve a second tab bar height" started.
+✔ Test "Scrollable pages do not reserve a second tab bar height" passed after 0.001 seconds.
+◇ Test "The warm paper palette is accessible in both appearances" started.
+✔ Test "The warm paper palette is accessible in both appearances" passed after 0.001 seconds.
+◇ Test "Explicit appearance and accessibility preferences preserve system accessibility" started.
+✔ Test "Explicit appearance and accessibility preferences preserve system accessibility" passed after 0.001 seconds.
+◇ Test "Breathing-field tokens keep the approved base measurements" started.
+✔ Test "Breathing-field tokens keep the approved base measurements" passed after 0.001 seconds.
+◇ Test "Motion feedback stays subtle and removes physical movement for Reduce Motion" started.
+✔ Test "Motion feedback stays subtle and removes physical movement for Reduce Motion" passed after 0.001 seconds.
+✔ Suite "Fangcun design system" passed after 0.065 seconds.
+◇ Test migrationKeepsIDsTotalsWordsAndVerifiedOriginalBytes() started.
+✔ Test migrationKeepsIDsTotalsWordsAndVerifiedOriginalBytes() passed after 0.005 seconds.
+◇ Test interruptedMigrationResumesWithoutDuplication(_:) started.
+◇ Test case passing 1 argument fault → .afterBackup to interruptedMigrationResumesWithoutDuplication(_:) started.
+​◇ Test case passing 1 argument fault → .beforePublish to interruptedMigrationResumesWithoutDuplication(_:) started.
+​◇ Test case passing 1 argument fault → .afterPublish to interruptedMigrationResumesWithoutDuplication(_:) started.
+​✔ Test interruptedMigrationResumesWithoutDuplication(_:) with 3 test cases passed after 0.011 seconds.
+◇ Test preM1BackupCannotResurrectRemovedDrinks() started.
+✔ Test preM1BackupCannotResurrectRemovedDrinks() passed after 0.003 seconds.
+◇ Test damagedInputAndTargetNeverBecomeAnEmptyArchive() started.
+✔ Test damagedInputAndTargetNeverBecomeAnEmptyArchive() passed after 0.003 seconds.
+◇ Test writeFailureRetryEditingAndUndoKeepEstimatesAndUnknowns() started.
+✔ Test writeFailureRetryEditingAndUndoKeepEstimatesAndUnknowns() passed after 0.003 seconds.
+✔ Suite "M3-01 safe diary migration" passed after 0.026 seconds.
+◇ Test compositeDrinkUndoAndReload() started.
+✔ Test compositeDrinkUndoAndReload() passed after 0.003 seconds.
+◇ Test dayBoundariesAndUnknownHistory() started.
+✔ Test dayBoundariesAndUnknownHistory() passed after 0.003 seconds.
+◇ Test unreadableArchiveIsNotOverwritten() started.
+✔ Test unreadableArchiveIsNotOverwritten() passed after 0.002 seconds.
+◇ Test legacySnapshotKeepsItsMeaningAndSurvivesSameDayRefresh() started.
+✔ Test legacySnapshotKeepsItsMeaningAndSurvivesSameDayRefresh() passed after 0.004 seconds.
+✔ Suite "Native diary persistence" passed after 0.013 seconds.
+◇ Test "Echo choices use three paper columns and two accessibility columns" started.
+✔ Test "Echo choices use three paper columns and two accessibility columns" passed after 0.001 seconds.
+◇ Test "Arc layout does not invent a selected state" started.
+✔ Test "Arc layout does not invent a selected state" passed after 0.001 seconds.
+◇ Test "已有状态冷启动不触发选择触觉" started.
+✔ Test "已有状态冷启动不触发选择触觉" passed after 0.001 seconds.
+✔ Suite "Editorial home presentation" passed after 0.001 seconds.
+◇ Test "Quick then detailed makes the detailed check-in the only current state" started.
+✔ Test "Quick then detailed makes the detailed check-in the only current state" passed after 0.001 seconds.
+◇ Test "Detailed then quick makes the quick state current again" started.
+✔ Test "Detailed then quick makes the quick state current again" passed after 0.001 seconds.
+◇ Test "2026 年每天六种快捷状态都呈现不同的一句，包括 9 月 8 日" started.
+✔ Test "2026 年每天六种快捷状态都呈现不同的一句，包括 9 月 8 日" passed after 0.008 seconds.
+◇ Test "快捷状态附带明确来源时仍按来源选择回应句" started.
+✔ Test "快捷状态附带明确来源时仍按来源选择回应句" passed after 0.001 seconds.
+◇ Test "The same persisted inputs rebuild the same response after relaunch" started.
+✔ Test "The same persisted inputs rebuild the same response after relaunch" passed after 0.001 seconds.
+◇ Test "读取中、无权限和数据不足不会被伪装成低压力" started.
+✔ Test "读取中、无权限和数据不足不会被伪装成低压力" passed after 0.001 seconds.
+◇ Test "用户已明确选择时，压力等级不被传感器改写" started.
+✔ Test "用户已明确选择时，压力等级不被传感器改写" passed after 0.001 seconds.
+◇ Test "低压时各来源的说明和行动一致，不增加练习任务" started.
+◇ Test case passing 1 argument source → .none to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .work to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .tasks to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .health to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .family to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .relationship to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .money to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .training to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .sleep to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .physicalTension to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .mentalLoad to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .lowEnergy to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​◇ Test case passing 1 argument source → .bodySignals to "低压时各来源的说明和行动一致，不增加练习任务" started.
+​✔ Test "低压时各来源的说明和行动一致，不增加练习任务" with 13 test cases passed after 0.002 seconds.
+◇ Test "一个压力档案同时驱动来源、名言和练习" started.
+✔ Test "一个压力档案同时驱动来源、名言和练习" passed after 0.001 seconds.
+◇ Test "Only today's latest completion is assembled into the response" started.
+✔ Test "Only today's latest completion is assembled into the response" passed after 0.001 seconds.
+◇ Test "Finishing without feedback saves locally, writes one Mindful Session and no post state" started.
+✔ Test "Finishing without feedback saves locally, writes one Mindful Session and no post state" passed after 0.003 seconds.
+◇ Test "Saving completion repeatedly keeps one row and one Mindful Session" started.
+✔ Test "Saving completion repeatedly keeps one row and one Mindful Session" passed after 0.002 seconds.
+◇ Test "Feedback updates the same session without writing another Mindful Session" started.
+✔ Test "Feedback updates the same session without writing another Mindful Session" passed after 0.003 seconds.
+◇ Test "A skipped response has no invented before or after comparison" started.
+✔ Test "A skipped response has no invented before or after comparison" passed after 0.001 seconds.
+◇ Test "The unselected starting default is not treated as user input" started.
+✔ Test "The unselected starting default is not treated as user input" passed after 0.001 seconds.
+◇ Test "Post feedback can be kept without inventing a missing pre-practice comparison" started.
+✔ Test "Post feedback can be kept without inventing a missing pre-practice comparison" passed after 0.002 seconds.
+✔ Suite "Fangcun response loop" passed after 0.027 seconds.
+◇ Test "Initial access does not request workout evidence permissions" started.
+✔ Test "Initial access does not request workout evidence permissions" passed after 0.001 seconds.
+◇ Test "A status query error remains retryable instead of hiding authorization" started.
+✔ Test "A status query error remains retryable instead of hiding authorization" passed after 0.001 seconds.
+✔ Suite "Health authorization layers" passed after 0.001 seconds.
+◇ Test "Only the iPhone and Watch app bundle identifiers are treated as owned sources" started.
+✔ Test "Only the iPhone and Watch app bundle identifiers are treated as owned sources" passed after 0.001 seconds.
+◇ Test "Owned State of Mind queries are restricted by app metadata before reading" started.
+✔ Test "Owned State of Mind queries are restricted by app metadata before reading" passed after 0.001 seconds.
+◇ Test "Anchored State of Mind changes keep the highest sync version" started.
+✔ Test "Anchored State of Mind changes keep the highest sync version" passed after 0.002 seconds.
+◇ Test "常见训练类型在身体来信中有具体名称" started.
+✔ Test "常见训练类型在身体来信中有具体名称" passed after 0.001 seconds.
+✔ Suite "HealthKit repository" passed after 0.003 seconds.
+◇ Test "State of Mind metadata carries stable sync identity and typed fields" started.
+✔ Test "State of Mind metadata carries stable sync identity and typed fields" passed after 0.001 seconds.
+◇ Test "压力来源保留用户选择的主次顺序" started.
+✔ Test "压力来源保留用户选择的主次顺序" passed after 0.001 seconds.
+◇ Test "Mindful Session metadata stores only an eligible heart-rate summary" started.
+✔ Test "Mindful Session metadata stores only an eligible heart-rate summary" passed after 0.001 seconds.
+✔ Suite "Health metadata" passed after 0.001 seconds.
+◇ Test "An anchored-query cursor can be restored and cleared" started.
+✔ Test "An anchored-query cursor can be restored and cleared" passed after 0.002 seconds.
+✔ Suite "Health sync cursor" passed after 0.002 seconds.
+◇ Test "Raw provider input drives current-evidence qualification" started.
+◇ Test case passing 1 argument fixture → .noCurrentHistory to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .stale to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .failed to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .sleepOnly to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .oneCardio to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .baselineBuilding to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .steady to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .watch to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .elevated to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .workoutProtected to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .previousSleep to "Raw provider input drives current-evidence qualification" started.
+​◇ Test case passing 1 argument fixture → .unreliablePair to "Raw provider input drives current-evidence qualification" started.
+​✔ Test "Raw provider input drives current-evidence qualification" with 12 test cases passed after 0.005 seconds.
+◇ Test "Fresh queries never advance measurement timestamps" started.
+✔ Test "Fresh queries never advance measurement timestamps" passed after 0.001 seconds.
+◇ Test "Old baseline days and future values cannot qualify current evidence" started.
+✔ Test "Old baseline days and future values cannot qualify current evidence" passed after 0.001 seconds.
+✔ Suite "M1 current evidence pipeline" passed after 0.005 seconds.
+◇ Test "压力来源只在同日且记录语义允许时沿用" started.
+✔ Test "压力来源只在同日且记录语义允许时沿用" passed after 0.001 seconds.
+◇ Test "自动来源优先识别睡眠、训练和其他身体信号" started.
+✔ Test "自动来源优先识别睡眠、训练和其他身体信号" passed after 0.001 seconds.
+◇ Test "没有可靠身体证据时仍给出明确且保守的日程动作" started.
+✔ Test "没有可靠身体证据时仍给出明确且保守的日程动作" passed after 0.001 seconds.
+◇ Test "Evidence that only needs review cannot produce a steady display" started.
+✔ Test "Evidence that only needs review cannot produce a steady display" passed after 0.001 seconds.
+◇ Test "Workout-sensitive deviations are shown as protected after recent training" started.
+✔ Test "Workout-sensitive deviations are shown as protected after recent training" passed after 0.001 seconds.
+◇ Test "Recent training never hides an independent sleep deviation" started.
+✔ Test "Recent training never hides an independent sleep deviation" passed after 0.001 seconds.
+◇ Test "两项独立可靠异常会给出优先恢复的行动结论" started.
+✔ Test "两项独立可靠异常会给出优先恢复的行动结论" passed after 0.001 seconds.
+◇ Test "重叠刷新只让最新请求更新数据和结束读取状态" started.
+◇ Test case passing 1 argument olderFinishesFirst → true to "重叠刷新只让最新请求更新数据和结束读取状态" started.
+​◇ Test case passing 1 argument olderFinishesFirst → false to "重叠刷新只让最新请求更新数据和结束读取状态" started.
+​✔ Test "重叠刷新只让最新请求更新数据和结束读取状态" with 2 test cases passed after 0.001 seconds.
+◇ Test "Day zero still shows raw Watch readings without inferring deviation" started.
+✔ Test "Day zero still shows raw Watch readings without inferring deviation" passed after 0.001 seconds.
+◇ Test "Home displays the newest Watch reading with its own measurement time" started.
+✔ Test "Home displays the newest Watch reading with its own measurement time" passed after 0.001 seconds.
+◇ Test "超过当前评估窗口的 Watch 最新读数仍显示真实测量时间" started.
+✔ Test "超过当前评估窗口的 Watch 最新读数仍显示真实测量时间" passed after 0.001 seconds.
+◇ Test "同时间的混合来源不会把 Watch 数值配上第三方来源" started.
+✔ Test "同时间的混合来源不会把 Watch 数值配上第三方来源" passed after 0.001 seconds.
+◇ Test "旧 Watch 读数不会与当前第三方读数混成可靠结论" started.
+✔ Test "旧 Watch 读数不会与当前第三方读数混成可靠结论" passed after 0.001 seconds.
+◇ Test "Four baseline days show progress and raw evidence without an elevated conclusion" started.
+✔ Test "Four baseline days show progress and raw evidence without an elevated conclusion" passed after 0.001 seconds.
+◇ Test "An implausibly long main sleep is marked for confirmation and excluded" started.
+✔ Test "An implausibly long main sleep is marked for confirmation and excluded" passed after 0.001 seconds.
+◇ Test "身体来信汇总近二十四小时训练并保留最近一次类型和来源" started.
+✔ Test "身体来信汇总近二十四小时训练并保留最近一次类型和来源" passed after 0.001 seconds.
+◇ Test "同一训练被 Watch 和第三方重复记录时只计算一次并优先 Watch" started.
+✔ Test "同一训练被 Watch 和第三方重复记录时只计算一次并优先 Watch" passed after 0.001 seconds.
+◇ Test "训练摘要用可扫读的次数和总时长呈现" started.
+✔ Test "训练摘要用可扫读的次数和总时长呈现" passed after 0.001 seconds.
+◇ Test "空训练查询只说明未读到记录" started.
+✔ Test "空训练查询只说明未读到记录" passed after 0.001 seconds.
+◇ Test "今日推荐和练习结果只使用当前自然日记录" started.
+✔ Test "今日推荐和练习结果只使用当前自然日记录" passed after 0.001 seconds.
+✔ Suite "Cold-start home" passed after 0.005 seconds.
+◇ Test "A failed State of Mind save is queued with its stable sync identity" started.
+✔ Test "A failed State of Mind save is queued with its stable sync identity" passed after 0.002 seconds.
+◇ Test "Repeated failures for the same HealthKit identity create one pending write" started.
+✔ Test "Repeated failures for the same HealthKit identity create one pending write" passed after 0.002 seconds.
+◇ Test "A lower sync version cannot replace a newer pending payload" started.
+✔ Test "A lower sync version cannot replace a newer pending payload" passed after 0.001 seconds.
+◇ Test "A successful retry removes the pending HealthKit write" started.
+✔ Test "A successful retry removes the pending HealthKit write" passed after 0.001 seconds.
+✔ Suite "Pending HealthKit writes" passed after 0.007 seconds.
+◇ Test receiverProjectsUnknownDrinkValuesAndDeduplicatesHealthSession() started.
+✔ Test receiverProjectsUnknownDrinkValuesAndDeduplicatesHealthSession() passed after 0.084 seconds.
+◇ Test undoUsesNewTransportRevisionAndArchiveCompatibility() started.
+✔ Test undoUsesNewTransportRevisionAndArchiveCompatibility() passed after 0.004 seconds.
+✔ Suite PhoneSyncIntegrationTests passed after 0.089 seconds.
+◇ Test "The latest completed practice is restored for home evidence" started.
+✔ Test "The latest completed practice is restored for home evidence" passed after 0.002 seconds.
+◇ Test "Kegel saves locally without being written as a Mindful Session" started.
+✔ Test "Kegel saves locally without being written as a Mindful Session" passed after 0.001 seconds.
+◇ Test "Completed breathing is saved locally and as one Mindful Session" started.
+✔ Test "Completed breathing is saved locally and as one Mindful Session" passed after 0.002 seconds.
+◇ Test "Local persistence failure never writes HealthKit or reports success" started.
+✔ Test "Local persistence failure never writes HealthKit or reports success" passed after 0.002 seconds.
+◇ Test "A health-status update failure preserves a successfully saved completion" started.
+✔ Test "A health-status update failure preserves a successfully saved completion" passed after 0.001 seconds.
+✔ Suite "Practice completion persistence" passed after 0.011 seconds.
+◇ Test "Feedback is local before HealthKit and survives a new context without a health read" started.
+✔ Test "Feedback is local before HealthKit and survives a new context without a health read" passed after 0.003 seconds.
+◇ Test "Repeated feedback keeps one local row and one health write" started.
+◇ Test case passing 1 argument healthWriteFails → false to "Repeated feedback keeps one local row and one health write" started.
+​◇ Test case passing 1 argument healthWriteFails → true to "Repeated feedback keeps one local row and one health write" started.
+​✔ Test "Repeated feedback keeps one local row and one health write" with 2 test cases passed after 0.007 seconds.
+◇ Test "Feedback is delivered to home only after a successful local save" started.
+◇ Test case passing 1 argument hasBeforeRating → false to "Feedback is delivered to home only after a successful local save" started.
+​◇ Test case passing 1 argument hasBeforeRating → true to "Feedback is delivered to home only after a successful local save" started.
+​✔ Test "Feedback is delivered to home only after a successful local save" with 2 test cases passed after 0.006 seconds.
+◇ Test "A failed feedback transaction publishes neither input; an edited retry keeps both consistent" started.
+✔ Test "A failed feedback transaction publishes neither input; an edited retry keeps both consistent" passed after 0.003 seconds.
+◇ Test "Skipping after a failed feedback transaction leaves no partial post state" started.
+✔ Test "Skipping after a failed feedback transaction leaves no partial post state" passed after 0.002 seconds.
+◇ Test "A post-sync status failure leaves the committed feedback saved and home available" started.
+✔ Test "A post-sync status failure leaves the committed feedback saved and home available" passed after 0.003 seconds.
+◇ Test "The legacy save entry also preserves feedback when only sync status fails" started.
+✔ Test "The legacy save entry also preserves feedback when only sync status fails" passed after 0.002 seconds.
+◇ Test "Skipping feedback saves completion without creating a check-in or a comparison" started.
+✔ Test "Skipping feedback saves completion without creating a check-in or a comparison" passed after 0.002 seconds.
+✔ Suite "Practice feedback local response loop" passed after 0.032 seconds.
+◇ Test "五种练习使用与动作本身匹配的视觉舞台" started.
+✔ Test "五种练习使用与动作本身匹配的视觉舞台" passed after 0.001 seconds.
+◇ Test "练习后只需选择相对变化即可得到可比较的强度" started.
+✔ Test "练习后只需选择相对变化即可得到可比较的强度" passed after 0.001 seconds.
+◇ Test "未填写练前状态时，只需选择练后感受即可保留" started.
+✔ Test "未填写练前状态时，只需选择练后感受即可保留" passed after 0.001 seconds.
+◇ Test "填写过练前状态时，保留变化仍需相对变化和练后感受" started.
+✔ Test "填写过练前状态时，保留变化仍需相对变化和练后感受" passed after 0.001 seconds.
+◇ Test "没有练前参照的完成文案只确认保存现在的感受" started.
+✔ Test "没有练前参照的完成文案只确认保存现在的感受" passed after 0.001 seconds.
+◇ Test "练习库先说明适用场景" started.
+✔ Test "练习库先说明适用场景" passed after 0.001 seconds.
+◇ Test "五种练习都有完整且可读的功能说明" started.
+✔ Test "五种练习都有完整且可读的功能说明" passed after 0.001 seconds.
+◇ Test "准备页用三个可理解的起点代替数字滑杆" started.
+✔ Test "准备页用三个可理解的起点代替数字滑杆" passed after 0.001 seconds.
+◇ Test "静心、身体扫描和凯格尔都有独立的可视节奏" started.
+✔ Test "静心、身体扫描和凯格尔都有独立的可视节奏" passed after 0.001 seconds.
+◇ Test "暂停和继续共享同一个播放器页面身份" started.
+✔ Test "暂停和继续共享同一个播放器页面身份" passed after 0.001 seconds.
+◇ Test "只有需要连续动画的舞台才高频刷新" started.
+✔ Test "只有需要连续动画的舞台才高频刷新" passed after 0.001 seconds.
+◇ Test "呼吸场域用弧面开合表达相位，而不是倒计时" started.
+✔ Test "呼吸场域用弧面开合表达相位，而不是倒计时" passed after 0.001 seconds.
+◇ Test "节律呼吸在吸气转呼气时弧面位置连续" started.
+✔ Test "节律呼吸在吸气转呼气时弧面位置连续" passed after 0.001 seconds.
+◇ Test "减少动态效果时弧面不发生物理位移" started.
+✔ Test "减少动态效果时弧面不发生物理位移" passed after 0.001 seconds.
+◇ Test "暂停后恢复只播放当前相位的剩余部分" started.
+✔ Test "暂停后恢复只播放当前相位的剩余部分" passed after 0.001 seconds.
+◇ Test "保存失败对话框的重试动作必须再次发起保存" started.
+✔ Test "保存失败对话框的重试动作必须再次发起保存" passed after 0.001 seconds.
+◇ Test "提前结束文案不承诺尚未发生的保存，也不要求凯格尔评价感受" started.
+✔ Test "提前结束文案不承诺尚未发生的保存，也不要求凯格尔评价感受" passed after 0.001 seconds.
+◇ Test "凯格尔只说明练习本身，不解释它和压力的关系" started.
+✔ Test "凯格尔只说明练习本身，不解释它和压力的关系" passed after 0.001 seconds.
+◇ Test "凯格尔使用完成记录而不是主观调节证据" started.
+✔ Test "凯格尔使用完成记录而不是主观调节证据" passed after 0.001 seconds.
+◇ Test "凯格尔准备页包含完整的安全提醒" started.
+✔ Test "凯格尔准备页包含完整的安全提醒" passed after 0.001 seconds.
+◇ Test "声音模式明确控制语音、节奏与环境声层" started.
+✔ Test "声音模式明确控制语音、节奏与环境声层" passed after 0.001 seconds.
+◇ Test "五种练习使用各自的声音提示时间线" started.
+✔ Test "五种练习使用各自的声音提示时间线" passed after 0.001 seconds.
+◇ Test "声音提示在相位内只触发一次并在下一周期重新触发" started.
+✔ Test "声音提示在相位内只触发一次并在下一周期重新触发" passed after 0.001 seconds.
+◇ Test "重复动作只在开头完整播报，长练习保持稀疏引导" started.
+✔ Test "重复动作只在开头完整播报，长练习保持稀疏引导" passed after 0.001 seconds.
+◇ Test "NSDR 引导不会留下超过半分钟的空白" started.
+✔ Test "NSDR 引导不会留下超过半分钟的空白" passed after 0.001 seconds.
+◇ Test "NSDR 身体扫描之间穿插轻柔呼吸提示" started.
+✔ Test "NSDR 身体扫描之间穿插轻柔呼吸提示" passed after 0.001 seconds.
+◇ Test "NSDR 在结束前把用户温和带回而不是突然停下" started.
+✔ Test "NSDR 在结束前把用户温和带回而不是突然停下" passed after 0.001 seconds.
+◇ Test "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+◇ Test case passing 1 argument elapsed → 0.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 24.999 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 25.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 49.999 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 50.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 75.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 100.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 125.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 150.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 569.999 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 570.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 575.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​◇ Test case passing 1 argument elapsed → 599.0 to "NSDR 文字、视觉和触觉在语音相位边界同步" started.
+​✔ Test "NSDR 文字、视觉和触觉在语音相位边界同步" with 13 test cases passed after 0.003 seconds.
+◇ Test "NSDR 在第 25 秒聚焦肩膀，并在最后 30 秒统一进入返回阶段" started.
+✔ Test "NSDR 在第 25 秒聚焦肩膀，并在最后 30 秒统一进入返回阶段" passed after 0.001 seconds.
+◇ Test "提示音的升降与时长能表达动作方向" started.
+✔ Test "提示音的升降与时长能表达动作方向" passed after 0.001 seconds.
+◇ Test "提示音渲染为有包络的本地 PCM" started.
+✔ Test "提示音渲染为有包络的本地 PCM" passed after 0.023 seconds.
+◇ Test "不同练习拥有可循环且彼此不同的环境声底色" started.
+✔ Test "不同练习拥有可循环且彼此不同的环境声底色" passed after 0.027 seconds.
+◇ Test "声音选项直接说明用户会听到什么" started.
+✔ Test "声音选项直接说明用户会听到什么" passed after 0.001 seconds.
+◇ Test "播放类别依赖系统的 A2DP 与 AirPlay 路由，不传入非法选项" started.
+✔ Test "播放类别依赖系统的 A2DP 与 AirPlay 路由，不传入非法选项" passed after 0.001 seconds.
+◇ Test "没有真人语音资源时不向用户开放语音选项" started.
+✔ Test "没有真人语音资源时不向用户开放语音选项" passed after 0.001 seconds.
+◇ Test "语音资源齐全时默认引导，缺失时安全退回节奏" started.
+✔ Test "语音资源齐全时默认引导，缺失时安全退回节奏" passed after 0.002 seconds.
+◇ Test "知性女声首次启用时打开语音，之后尊重用户选择" started.
+✔ Test "知性女声首次启用时打开语音，之后尊重用户选择" passed after 0.002 seconds.
+◇ Test "五种练习所需的知性女声资源都随 App 打包" started.
+✔ Test "五种练习所需的知性女声资源都随 App 打包" passed after 0.108 seconds.
+◇ Test "真实音频图可以启动持续环境声" started.
+✔ Test "真实音频图可以启动持续环境声" passed after 0.357 seconds.
+◇ Test "开始练习会让声音控制器进入持续播放状态" started.
+✔ Test "开始练习会让声音控制器进入持续播放状态" passed after 0.444 seconds.
+◇ Test "运行中音频配置变化会自动重建而不是变成静音暂停" started.
+✔ Test "运行中音频配置变化会自动重建而不是变成静音暂停" passed after 0.628 seconds.
+◇ Test "连续音频配置通知只重建一次" started.
+✔ Test "连续音频配置通知只重建一次" passed after 0.614 seconds.
+◇ Test "退出后迟到的音频准备结果不会重新激活练习" started.
+✔ Test "退出后迟到的音频准备结果不会重新激活练习" passed after 0.001 seconds.
+◇ Test "未开始的准备页不创建会话或启动音频，关闭后保持停止" started.
+✔ Test "未开始的准备页不创建会话或启动音频，关闭后保持停止" passed after 0.001 seconds.
+◇ Test "每条语音提示都有稳定的本地资源名" started.
+✔ Test "每条语音提示都有稳定的本地资源名" passed after 0.001 seconds.
+◇ Test "语音文案短而可以离屏理解" started.
+✔ Test "语音文案短而可以离屏理解" passed after 0.001 seconds.
+◇ Test "只有持续环境声开启时才允许锁屏继续" started.
+✔ Test "只有持续环境声开启时才允许锁屏继续" passed after 0.001 seconds.
+◇ Test "没有可恢复配置时，音频硬件变化才暂停练习" started.
+✔ Test "没有可恢复配置时，音频硬件变化才暂停练习" passed after 0.001 seconds.
+✔ Suite "Practice presentation" passed after 2.226 seconds.
+◇ Test "Pause and resume use absolute time without counting the pause" started.
+✔ Test "Pause and resume use absolute time without counting the pause" passed after 0.001 seconds.
+◇ Test "Leaving the active scene pauses the session and preserves the remaining time" started.
+✔ Test "Leaving the active scene pauses the session and preserves the remaining time" passed after 0.001 seconds.
+◇ Test "NSDR 暂停期间保留当前阶段，恢复后按有效练习时长切换" started.
+✔ Test "NSDR 暂停期间保留当前阶段，恢复后按有效练习时长切换" passed after 0.001 seconds.
+◇ Test "Completing a session creates a restrained subjective comparison record" started.
+✔ Test "Completing a session creates a restrained subjective comparison record" passed after 0.001 seconds.
+✔ Suite "Practice session" passed after 0.004 seconds.
+◇ Test "TestFlight 候选构建使用正式 1.0 版本号" started.
+✔ Test "TestFlight 候选构建使用正式 1.0 版本号" passed after 0.001 seconds.
+◇ Test "TestFlight 候选构建不声明非豁免加密" started.
+✔ Test "TestFlight 候选构建不声明非豁免加密" passed after 0.001 seconds.
+◇ Test "成品 App 携带隐私清单并仅声明 App 内 UserDefaults" started.
+✔ Test "成品 App 携带隐私清单并仅声明 App 内 UserDefaults" passed after 0.001 seconds.
+✔ Suite "隐私合规" passed after 0.001 seconds.
+◇ Test rawProviderThroughPipelineStoreAndOwner(_:) started.
+◇ Test case passing 1 argument scenario → "assessable" to rawProviderThroughPipelineStoreAndOwner(_:) started.
+​◇ Test case passing 1 argument scenario → "provisional" to rawProviderThroughPipelineStoreAndOwner(_:) started.
+​◇ Test case passing 1 argument scenario → "limited" to rawProviderThroughPipelineStoreAndOwner(_:) started.
+​◇ Test case passing 1 argument scenario → "insufficient" to rawProviderThroughPipelineStoreAndOwner(_:) started.
+​◇ Test case passing 1 argument scenario → "awaitingData" to rawProviderThroughPipelineStoreAndOwner(_:) started.
+​◇ Test case passing 1 argument scenario → "failed" to rawProviderThroughPipelineStoreAndOwner(_:) started.
+​✔ Test rawProviderThroughPipelineStoreAndOwner(_:) with 6 test cases passed after 0.241 seconds.
+◇ Test failedRefreshKeepsAnchorAndIndependentCheckTimes() started.
+✔ Test failedRefreshKeepsAnchorAndIndependentCheckTimes() passed after 0.180 seconds.
+◇ Test clockBoundariesStopAndExplicitResumeDoNotRewardPractices() started.
+✔ Test clockBoundariesStopAndExplicitResumeDoNotRewardPractices() passed after 0.081 seconds.
+◇ Test settingsVersionAndSourcesPersistWithoutChangingGoldenParameters() started.
+✔ Test settingsVersionAndSourcesPersistWithoutChangingGoldenParameters() passed after 0.257 seconds.
+◇ Test latestIntentWinsAndStopIsolatesLateOwnerResults() started.
+✔ Test latestIntentWinsAndStopIsolatesLateOwnerResults() passed after 0.128 seconds.
+◇ Test changingSelectionOrStoppingDuringAQueryRejectsLateState(_:) started.
+◇ Test case passing 1 argument operation → "source" to changingSelectionOrStoppingDuringAQueryRejectsLateState(_:) started.
+​◇ Test case passing 1 argument operation → "sleep" to changingSelectionOrStoppingDuringAQueryRejectsLateState(_:) started.
+​◇ Test case passing 1 argument operation → "stop" to changingSelectionOrStoppingDuringAQueryRejectsLateState(_:) started.
+​◇ Test case passing 1 argument operation → "clear" to changingSelectionOrStoppingDuringAQueryRejectsLateState(_:) started.
+​✔ Test changingSelectionOrStoppingDuringAQueryRejectsLateState(_:) with 4 test cases passed after 0.630 seconds.
+✔ Suite ReadinessCoordinatorTests passed after 1.519 seconds.
+◇ Test actualHKObjectsNormalizeWithoutWritingHealthStore() started.
+✔ Test actualHKObjectsNormalizeWithoutWritingHealthStore() passed after 0.015 seconds.
+✔ Suite "M2 HealthKit adapter" passed after 0.015 seconds.
+◇ Test acknowledgesOnlyAfterProcessingAndPersistence() started.
+✔ Test acknowledgesOnlyAfterProcessingAndPersistence() passed after 0.001 seconds.
+◇ Test processingErrorAndCancellationFinishBeforeExactlyOneAcknowledgement() started.
+✔ Test processingErrorAndCancellationFinishBeforeExactlyOneAcknowledgement() passed after 0.003 seconds.
+◇ Test callbackErrorStillAcknowledgesOnceWithoutRunningProcessing() started.
+✔ Test callbackErrorStillAcknowledgesOnceWithoutRunningProcessing() passed after 0.001 seconds.
+◇ Test sdkCompletionAdapterIsOneShot() started.
+✔ Test sdkCompletionAdapterIsOneShot() passed after 0.001 seconds.
+◇ Test actualTaskCancellationAcknowledgesAfterCooperativeCleanup() started.
+✔ Test actualTaskCancellationAcknowledgesAfterCooperativeCleanup() passed after 0.001 seconds.
+◇ Test mergedObserverCallbacksWaitForCatchupPersistence() started.
+✔ Test mergedObserverCallbacksWaitForCatchupPersistence() passed after 0.004 seconds.
+✔ Suite "M2-R05 observer completion ordering" passed after 0.008 seconds.
+◇ Test localSaveFailureRetryAndPauseHaveOneIdentity(_:) started.
+◇ Test case passing 1 argument action → .movementBreak to localSaveFailureRetryAndPauseHaveOneIdentity(_:) started.
+​◇ Test case passing 1 argument action → .seatedReset to localSaveFailureRetryAndPauseHaveOneIdentity(_:) started.
+​◇ Test case passing 1 argument action → .quietRest to localSaveFailureRetryAndPauseHaveOneIdentity(_:) started.
+​✔ Test localSaveFailureRetryAndPauseHaveOneIdentity(_:) with 3 test cases passed after 0.006 seconds.
+◇ Test legacyPracticeIdentitySurvivesReconciliationAndFeedbackEdit() started.
+✔ Test legacyPracticeIdentitySurvivesReconciliationAndFeedbackEdit() passed after 0.001 seconds.
+✔ Suite RecoverySessionTests passed after 0.007 seconds.
+◇ Test "A classified check-in maps coordinates, labels, associations and metadata" started.
+✔ Test "A classified check-in maps coordinates, labels, associations and metadata" passed after 0.001 seconds.
+◇ Test "An unclassified sample round-trips with empty labels" started.
+✔ Test "An unclassified sample round-trips with empty labels" passed after 0.001 seconds.
+◇ Test "Optional sources are capped and custom-only sources survive in metadata" started.
+✔ Test "Optional sources are capped and custom-only sources survive in metadata" passed after 0.001 seconds.
+✔ Suite "State of Mind mapping" passed after 0.001 seconds.
+✔ Test run with 195 tests in 31 suites passed after 4.396 seconds.
+Test session results, code coverage, and logs:
+** TEST SUCCEEDED **

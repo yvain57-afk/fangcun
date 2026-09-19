@@ -1,0 +1,1677 @@
+
+===== FILE: docs/plans/fangcun-v1/FANGCUN_M3_START_AFTER_M2R1.md =====
+# 方寸 Fangcun｜M2-R1 复核结论与 M3 执行补充
+
+版本：v1.0  
+复核日期：2026-09-19（Asia/Singapore）  
+仓库：`yvain57-afk/fangcun`  
+开发分支：`codex/fangcun-v1-m0-m1`  
+本次审阅 HEAD：`b80f81c9f4ad68381b68f6ade30c02e6848718e6`  
+上一轮审阅基准：`b69b4cc26520bc42e9c742ba67ed26e81714a84d`  
+main 核对值：`905626c6e08dc7a36ddd4e219abf6945795ac62f`
+
+本文补充原 `FANGCUN_CODEX_SPEC_v1.0.md`，用于下一轮 Codex 执行。原任务书的产品范围、算法参数、golden fixtures、权限边界和设计约束继续有效。本文不授权合并 main、上架、TestFlight 发布或上传健康资料。
+
+## 1. 复核结论与证据边界
+
+**M2-R01～R05 的本轮指定审阅可以关闭，下一轮进入 M3。** 先以独立维护提交处理既有测试债务，再顺序完成 M3-01～M3-04。无需为已经修复的五项问题再开启整轮 M2 补修。
+
+这是对固定 HEAD 的源码、测试实现和已提交日志的远程复核。此次没有重新运行 Swift/Xcode 测试，没有进行 iPhone/Watch 真机实验，也没有验证准备度的医学效度或预测准确性。范围外路径不据此推导为不存在缺陷。
+
+分支和 main 均通过 GitHub ref 读取核对。Core 最终日志确实记录 `103 tests in 21 suites passed`。App 166/169、目标首页 UI 8/8、扩大旧练习 UI 2 项失败及 Watch 模拟器编译结果，按交付报告和验证材料登记；不得称为全仓全绿。[S1–S3]
+
+### 五项关闭依据
+
+| 问题 | 当前源码与测试覆盖 | 本轮结论 |
+| --- | --- | --- |
+| R01 删除依赖 | 依赖包含历史睡眠及影响取样的记录；旧评估缺依赖元数据时保守撤销；测试覆盖删除、20→19 天基线重算、修订、损坏恢复和旧文件兼容 | 本轮问题关闭；当前依赖策略偏保守，后续如优化精度不得减弱删除保护 |
+| R02 分页选源 | 按指标保存初始化进度，初始化读完才默认选源；分页失败和 100 页预算中断可续读，手动选择仍优先 | 本轮问题关闭 |
+| R03 并发刷新 | 区分配置、Calendar、练习上下文和 generation；新事件有有界补读；失败缓存核对上下文 | 本轮问题关闭；M3 生命周期必须使用这些接口并测试页面结果的时序 |
+| R04 无新证据修订 | 指纹使用固定逻辑窗口，真实取样仍受当前时间限制；开窗期刷新、3 小时边界、18/24 小时、新证据与配置变化均有回归 | 本轮问题关闭 |
+| R05 observer 确认 | 真实回调与测试共用处理入口；处理后通过一次性 owner 确认；包含取消、错误、并发确认和真实 pipeline/store 补读测试 | 本轮问题关闭；不等于 HealthKit 真机后台已经验收 |
+
+生产修改与针对性测试见 [S4–S8]。不因为进入 M3 删除或放宽这些回归。
+
+## 2. M3 开工前：独立修复既有测试债务
+
+这部分先形成 `M3-PRE` 提交，保持与新功能改动可区分。先核对本地 HEAD、未提交修改和实际工具链；不得回退后续有效修改，不夹带无关工作区文件。
+
+### 2.1 三项 App 失败
+
+1. `FangcunDesignSystemTests.approvedPaperPalette`：根据当前已确认版画蓝、暖纸白和橙色方案校正过时的棕色契约。必须逐项核对资源/规范，不能以“代码现在是什么”作为测试预期的唯一依据。
+2. 同一测试中的次级文字对比度 `4.4631 < 4.5` 是已报告的真实可访问性不足。允许最小的语义色 token 调整，保持品牌风格，并留下浅/深色、大字截图。不得降低 4.5 门槛、删除检查或把不合格结果四舍五入为通过。
+3. `paperAppearanceDoesNotInvertAtNight`：改为当前显示偏好、适用的系统跟随逻辑和重新启动保留的行为测试；不要恢复强制浅色模式。
+4. `finishDialogCopyMatchesTheNextStep`：核对提前结束对话框中操作的真实意义，用稳定标识和行为检查替代锁定整句旧文案；文案目录完整性另行保留。
+
+上面四条处理事项对应原有三项失败测试，不能混淆测试数与失败断言数。[S2]
+
+### 2.2 两项旧练习 UI 失败
+
+目前两项都先在旧启动按钮定位失败，尚未走到各自最终断言。`PracticeReturnHomeUITests.swift` 还引用旧“此刻”页签及旧文案，不能仅修第一处定位就宣布验证结束。[S9]
+
+使用当前真实练习库入口和稳定 accessibilityIdentifier，实际走通：
+
+- 从练习库启动现有练习，提前结束，完成本地保存，返回**当前「今日」页**，确认对应会话已保存且首页状态/提示与记录一致。
+- 从练习库进入准备页、尚未开始就关闭，确认仍停在练习页，没有凭空新增完成记录，也没有遗留音频或运行会话。
+
+如定位更新后发现真实交互缺陷，应先复现并最小修复。不得删除测试、只测试按钮存在、缩短流程绕过保存，或以增加等待时间掩盖错误。
+
+### 2.3 测试运行自身的完成状态
+
+上一轮扩大 UI 运行执行完测试后卡在 Xcode 诊断收集，最终被终止，退出 143。可登记控制台中的单项结果，不能视为完整成功的验收运行。[S1–S2]
+
+本轮应取得正常结束、退出状态明确且可读取的结果包。是否使用 `-collect-test-diagnostics never`，以本机 `xcodebuild` 支持为准；跳过系统诊断收集不得改变测试选择或断言。将工具链运行失败、测试失败、被终止及成功重跑分开记录。
+
+## 3. M3 的范围与停止点
+
+执行次序：`M3-PRE → M3-01 → M3-02 → M3-03 → M3-04`。各阶段可独立提交与检查。局部设备/签名依赖只阻塞相关验收，不阻塞其他可验证任务。
+
+本轮目标：**手机通过真实数据服务形成「读取与评估 → 解释 → 行动 → 保存与反馈 → 历史」的可运行链路，并建立可测试的跨端同步基础。**
+
+仍不实施：Watch 新首页与独立练习会话（M4）、活动提醒与正式 Widgets（M5）、Live Activity 与整体发布验收（M6）、额外体征研究（M7）。
+
+M3-04 允许新增必要的两端同步适配和共享模型；不借此重做 Watch 界面、呼吸时钟或后台运行策略。不存在可用物理 Watch 时，协议/持久化/模拟传输照常开发，实际跨设备送达仍标 `implemented_unverified/blocked`。
+
+## 4. M3-01：饮品与旧历史安全迁移
+
+按原任务书第 5 章执行，不因新 Insights store 已建立而跳过原记录迁移。
+
+- 对旧 `fangcun.native.diary.v1` 和既有 M1 legacy 记录完整备份、校验后导入；迁移标识只有在目标事务成功后写入。
+- 迁移可重复执行，不重复插入；覆盖首次迁移、中断后重启、损坏输入、目标写入失败。错误时保留原字节，不清库，不卸载 App 解决问题。
+- 旧饮品 date 映射为已知饮用时间；录入时间未知则保持未知或明确迁移来源。原固定杯量和成分继续标为估算，不改写成实测。调整默认杯量不重算历史。
+- 手机支持任务书规定的过去 7 天补记、编辑时间/容量、撤销。未知的糖量/酒精量不填成实测零。
+- 旧每日快照保存原文字及旧口径；不得将其转换成新的 HRV、睡眠样本或准备度等级。
+- 原 SwiftData 练习、反馈、健康写入队列与用户偏好继续可读；不因新数据库引入第二条重复健康写入链路。
+
+交付迁移前后条数、估算总量、稳定 ID 和备份校验的合成测试。真实用户资料仅在本机核对，不提交 Git。
+
+## 5. M3-02：准备度接入手机，保持既有视觉
+
+### 5.1 服务与生命周期
+
+复用 `ReadinessServices.make()`、`ReadinessPipeline` 和 `InsightsStore`。一个应用生命周期内保持明确的服务所有者；不要在每次 View 重绘时新建 store、重复注册 observer 或重新扫描所有健康数据。
+
+触发点按原任务书：首次合法初始化、回前台、用户刷新、相关授权流程完成、相关健康数据事件、用户修改来源/主睡眠/睡眠目标。observer 使用已修复的 `startObserving(pipeline:context:)`，确保健康事件带有 `healthDataChanged: true`；context 在调用时读取最新偏好和已知练习区间。
+
+页面状态更新还要保留请求版本约束。引擎已区分请求语义，ViewModel 仍不能把较早请求结果覆盖到用户刚修改的新配置上。`superseded` 应作为正常替代路径收尾，不能变成闪烁报错或重新写入旧状态。
+
+**异步调用返回不代表读到了新资料，也不代表准备度合格。** 依据结果的 `refreshFailure`、`availability`、`freshness` 和实际刷新记录分别显示。不要只用任务是否抛错、observer 的完成回调或 `.processed` 标记来判断健康查询/评估成功。
+
+在用户停止读取或执行相应隐私清除后，取消/隔离旧生命周期的待处理请求，撤销外部摘要；旧任务或待补读事件不能重新恢复已停用的状态。重新启用读取按用户明确选择进行。这属于 M3 页面与服务接线验收，不要求重新设计准备度算法。
+
+### 5.2 今日页与详情
+
+遵循原任务书第 6 章：保留页头、主状态卡、五分钟呼吸主入口、身体线索、饮品、趋势与可选感受入口的顺序和现有猫狗资产。
+
+主卡消费统一 `ReadinessAssessment`。不新增百分制大分数、电池或另一套竞争的压力结论。数据不足不以旧「平稳」链路偷偷填补；数据不足也不阻止用户进入既有练习。
+
+将资料资格、整体参考、有效时段、刷新过程分别处理。`level != nil` 本身不足以表示“当前可用”；超过期限或已有新周期时按 freshness 正确回退。页面在前台经过到期边界时也要更新，不能只在重新打开后更新。
+
+时间分别使用：主睡眠结束、证据测量、证据查询、最后刷新尝试/成功、计算完成。详情可以展开，首页避免堆积术语；不得用刷新时间冒充测量时间。
+
+HRV 对数特征只供内部计算，展示使用对应的 ms 值与明确统计口径。HRV、静息心率各自显示有效基线日数；两者不能用最大值代替整体资格。来源缺失、有限资料和失败必须可解释。
+
+提供主来源、主睡眠选择与睡眠目标设置；选源、目标、人工选段改变后，页面只接受相应版本的结果。非 Apple Watch 来源按照实际可读字段与质量处理，不写品牌全支持承诺。
+
+### 5.3 历史与设置
+
+7/28 天视图使用等尺寸状态标记；保留空白、有限、初步和 legacy 的区别。一天多个恢复周期及同周期修订不可互相覆盖。只展示真实已存新评估，不用今天配置补造安装前的准备度历史。
+
+新增本阶段已经实现的设置项。提醒、Widget 等后续功能不放可点击却无效果的正式开关。文案仍集中管理，以稳定 key 和格式化参数承载，更新 `COPY_REVIEW.csv`。
+
+只在明确关闭 readiness 功能开关时使用修正后的 M1 旧链路；同一次展示不混合两套结论。开关回退不丢数据、不返回 Mock。
+
+## 6. M3-03：建议、三种轻行动与可跳过反馈
+
+落实原任务书第 9 章，不扩展新医疗建议或新课程库。[S10]
+
+- 复用既有练习，新增独立 `RecoveryActionKind` 包装，不破坏旧 Codable 枚举。落实 `movementBreak` 120 秒、`seatedReset` 60 秒、`quietRest` 120 秒及原安全边界。
+- 新轻行动记录为本地活动/休息，不伪造 HealthKit 训练、热量、睡眠或正念时长。普通练习仍沿用现有健康写入规则。
+- 一次最多一个次级建议，保留默认五分钟呼吸主入口。可根据用户主动提供的时间、环境、目的和明确不适反馈调整；不强迫心情问卷，不用 HRV 推断心理诊断。
+- 本地会话保存成功后才显示已记录；健康写入或同步失败不能丢掉已完成事实。双击结束/重试只形成一个 session。
+- 反馈可选有帮助、没明显变化、不舒服或跳过。跳过保持未回答，不伪造积极/中性情绪；反馈编辑保留 revision。
+- 完成练习、轻活动和反馈都不自动增加准备度。依据同类显式反馈展示次数时，未回答不计入分母，数量门槛沿用原任务书，不写疗效结论。
+- 原有用户记录、原练习准备/退出/保存/返回路径完整保留。走动不要求盯屏，座位替代和安全退出可达。
+
+## 7. M3-04：跨端 DTO、可靠事件队列与摘要基础
+
+按原任务书第 8 章提供可执行实现，不以接口空壳或页面假同步替代。[S11]
+
+1. 定义版本化摘要 DTO、实体事件、删除 tombstone、安装 epoch 和稳定 ID。手机作为恢复评估权威端；其他端消费结果，不另写评分规则。
+2. 区分可被更新替代的摘要和不能丢的完成/反馈/饮品事件。事件入本地 outbox 后才能显示排队；接收端事务落盘后才能 ACK；源端收到 ACK 才释放事件。
+3. 覆盖重复、乱序、较低版本、未知协议、掉线、进程重启、删除后重放、安装 epoch 变化。即时发送失败回持久化队列，不用轮询保活。
+4. 维持单一 HealthKit 写入归属：源设备负责自己的新会话，接收端只导入本地 App 记录。来自 HealthKit 与 WC 的同一会话合并，不能重复写入。
+5. 提供生产 WatchConnectivity 适配和可控测试 transport；必要时在两端应用生命周期接最小接收/持久化能力。不要改变 Watch 页面、计时器或开启未验证的后台模式。
+6. 实现最小摘要缓存、schema version、原子替换及损坏/过期回退。准备好各自同设备的 App Group 访问；跨 iPhone/Watch 不能依赖同一磁盘路径。
+7. App Group/签名配置必须使用工作区真实可用资源；配置不可用时记录具体阻塞，不用假组名声称已验收。M3 不创建正式 Widget 页面或承诺刷新频率。
+8. 无配对手表时继续完成协议/存储/模拟传输测试；不能把模拟 ACK 写成“已同步真实手机/手表”。
+
+## 8. 必须补齐的整合验收
+
+下表是 M3 集成重点，原任务书第 15 章继续有效。每项应有实际测试名或明确人工步骤、结果和验证层级。
+
+| ID | 场景 | 预期 |
+| --- | --- | --- |
+| M3-I01 | 原存档迁移成功后再次启动 | 条数/ID/估值不重复、不漂移，原记录可查 |
+| M3-I02 | 迁移中断、目标写失败、原存档损坏 | 原字节保留，不以空库覆盖；可重试或明确回退 |
+| M3-I03 | 完整、初步、有限、无资料、等待、读取失败经真实 service 到当前首页 | 与引擎状态一致；不能只注入最终页面标签 |
+| M3-I04 | 有效旧缓存 + 新查询失败；仅刷新检查无新证据 | 保留原锚点，显示失败/检查时间，不能变成新测量 |
+| M3-I05 | 页面停留跨过 18/24 小时边界，或新主睡眠到达 | 自动按 freshness 回退，不继续显示旧当前状态 |
+| M3-I06 | 请求中改目标、来源、主睡眠；读取某指标后又有新事件 | 显示最新意图对应结果，旧请求不覆盖；补读后更新 |
+| M3-I07 | 删除依赖、停止读取、清除后仍有迟到回调/排队刷新 | 状态/摘要正确撤销，停用后不重新激活 |
+| M3-I08 | 今日/详情/7与28天历史的同一评估 | ID/版本/依据一致；legacy 与空白不改写，多周期不覆盖 |
+| M3-I09 | 练习库开始→提前结束→保存→返回今日 | 真实会话一次保存，页面与记录一致 |
+| M3-I10 | 练习准备页未开始就关闭 | 仍在练习页，无虚构会话、无遗留运行 |
+| M3-I11 | 三种新轻行动、暂停、提前结束、重复结束、保存失败重试 | 有效时长与结束原因准确，事件唯一，健康记录不伪造 |
+| M3-I12 | 跳过反馈、选择不舒服、编辑反馈 | 无默认积极回答；推荐过滤有效；准备度不自动改变 |
+| M3-I13 | 重复/乱序消息、ACK 丢失、离线重启后重放 | 本地只应用一次，ACK 只在落盘后发出，不丢事件 |
+| M3-I14 | 删除先到、旧事件后到；新安装 epoch；未知协议 | 删除不复活，旧配对摘要不冒充当前，不静默清空事件 |
+| M3-I15 | 摘要损坏、过期、未配置共享容器、通信不可达 | 中性回退且不丢业务记录，不以 Mock 或“已同步”遮盖 |
+| M3-I16 | 浅/深色、大字、中文长文案、英文长来源、无障碍朗读 | 主要操作可达，读数与文字清楚，风格保持；对比度通过 |
+
+Core 全量、App 全量和既有/新增 UI 分开运行并报告。App 的旧失败不能长期从全量测试中排除。若出现新失败，定位是否由本轮引入；不能用原有 3 项失败掩盖新的失败项。
+
+## 9. iPhone 真机验证与有限阻塞
+
+M3 接入服务后，真实 HealthKit 读取应当进入本轮手工核验。使用已有签名与已授权设备；可以按既有本机开发安装授权覆盖安装，保留用户记录，不卸载重装。
+
+核对真实授权流程、实际可读类型、来源、主睡眠和测量时间、反复刷新、正常回前台、来源/目标变化、查询保护或失败时的回退。没有新数据/基线不足应当算一个真实结果；不得为了在用户手机上出现合格等级而修改阈值或注入 Mock。
+
+可安全操作的新增/删除测试使用明确合成、自有测试数据，不删除用户真实健康记录，不触碰其他应用的数据。不能安全复现的场景保持待验证。
+
+区分：安装成功、启动成功、真实只读查询验证、真实增量/删除、真实锁屏读取、后台事件、跨设备送达。这些必须分别记录，不能互相推导。
+
+真实健康值和截图留在用户本机。Git 只提交合成截图、脱敏结果和必要摘要。缺设备时继续纯数据及 UI 集成工作，发布/最终验收保持相应阻塞。
+
+## 10. 文档、提交与交付
+
+每个阶段保存清楚的提交，继续在原开发分支推送；不强推、不合并 main、不新增后端/遥测/在线 AI。
+
+更新原有 `TASKS.md`、`DECISIONS.md`、`VERIFICATION.md`、`CAPABILITIES.md` 和 `COPY_REVIEW.csv`。保留历史失败记录，新增本轮结果。新增 `M3-REVIEW.md` 作为统一入口，至少列出：
+
+- 基准/最终 HEAD、工作区处理情况、各阶段提交及修改文件；
+- 三项 App 与两项旧 UI 的具体处理、源码/测试契约依据及正常退出的复验；
+- 新首页、详情、历史、迁移、建议/轻行动、同步基础的已完成范围；
+- 实际测试命令、通过/失败/未执行、日志与结果包层级；
+- 合成截图、记录迁移校验、真实 iPhone 人工检查的脱敏摘要；
+- 尚未验证的 HealthKit/Watch/签名能力与可执行下一步；
+- 功能开关、旧数据保护与非破坏性回退方式。
+
+M3-04 若仅完成模拟传输，准确登记，不能用它宣布 M4 同步体验已验收。
+
+**完成 M3 后停止，交付固定 HEAD 和报告入口供复核。不要自动进入 M4–M6。**
+
+## 11. 可直接粘贴给 Codex 的启动指令
+
+```text
+收到。请将本轮已完成的 M2-R01～R05 保留为基线。
+
+继续读取原 FANGCUN_CODEX_SPEC_v1.0.md，以及本次提供的
+FANGCUN_M3_START_AFTER_M2R1.md。
+
+审阅 HEAD：b80f81c9f4ad68381b68f6ade30c02e6848718e6。
+若本地有更新先核对差异，保留有效改动，不回退或覆盖工作区。
+
+本轮先以独立 M3-PRE 提交修复 3 项既有 App 测试失败和 2 项
+旧练习 UI 定位/行为验收。不要降低对比度门槛、删断言或恢复旧 UI。
+取得正常退出且结果包可读的复验，再依次完成 M3-01～M3-04：
+安全迁移、手机准备度接入、建议/三种轻行动/反馈、跨端同步基础。
+
+保留既有视觉、五分钟呼吸主入口、用户记录、模型参数和 golden fixtures。
+各模块按本补充文档验收。真实 HealthKit、Watch、签名与模拟结果分开登记；
+单项设备条件不足不阻塞其他可测试任务，但不能把未验证写成通过。
+
+按阶段提交，更新文档和文案清单，推送原开发分支，返回最终 HEAD、
+M3-REVIEW.md 和实际验证结果。不得强推、合并 main、上架或上传健康资料。
+
+M3 完成后停止，不进入 M4–M6。
+```
+
+## 12. 固定版本来源
+
+所有仓库内容均以本次审阅 HEAD 为准，链接可供 Codex 复核。以下是工程证据，并非临床有效性证明。
+
+[S1] [M2-R1-RESULTS.md](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/docs/plans/fangcun-v1/M2-R1-RESULTS.md)
+
+[S2] [VERIFICATION.md](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/docs/plans/fangcun-v1/VERIFICATION.md)
+
+[S3] [Core 最终日志](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/docs/plans/fangcun-v1/evidence/m2-r1-core-final.txt)
+
+[S4] [ReadinessEngine.swift](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessEngine.swift)
+
+[S5] [ReadinessPipeline.swift](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift)
+
+[S6] [InsightsStore.swift](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift)
+
+[S7] [ReadinessHealthKitProvider.swift](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessHealthKitProvider.swift)；[ReadinessObserverCompletion.swift](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessObserverCompletion.swift)
+
+[S8] [Core M2ReviewR01–R04 测试目录](https://github.com/yvain57-afk/fangcun/tree/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness)；[ReadinessObserverTests.swift](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalance/InnerBalanceTests/Features/ReadinessObserverTests.swift)
+
+[S9] [PracticeReturnHomeUITests.swift](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift)
+
+[S10] [原任务书，第 5、6、9、14、15 章](https://github.com/yvain57-afk/fangcun/blob/b80f81c9f4ad68381b68f6ade30c02e6848718e6/docs/plans/fangcun-v1/FANGCUN_CODEX_SPEC_v1.0.md)
+
+[S11] 同 [S10] 第 8 章：同步数据权属、幂等、HealthKit 单一写入端和离线边界。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M2-GPT-REVIEW-R1.md =====
+# 方寸 Fangcun｜M2 远程代码审阅与补修任务 R1
+
+审阅日期：2026-09-18（Asia/Singapore）  
+仓库：`yvain57-afk/fangcun`  
+分支：`codex/fangcun-v1-m0-m1`  
+固定审阅 HEAD：`b69b4cc26520bc42e9c742ba67ed26e81714a84d`  
+main 基准：`905626c6e08dc7a36ddd4e219abf6945795ac62f`
+
+## 0. 本轮结论与执行范围
+
+M2 的独立数据域、准备度引擎和评估存储已经有实际代码，服务未接入首页符合停止点。无需推倒重做，也不需要更换视觉体系。
+
+**建议先完成 M2-R 补修，再进入 M3。此次交给 Codex 的执行范围仅为本文件的 M2-R，不自动启动 M3–M6，不合并 main。**
+
+以下发现来自固定提交的源码、测试代码、原任务书和交付记录之间的对照。它们是可按控制流定位的边界问题，尚未在本轮运行原工程或在物理设备上复现。Codex 必须先在自己的原工程中增加针对性回归，保留修复前失败与修复后通过的证据。如果某项判断不成立，用同一场景的实际测试和代码路径证明，不必为了服从审阅而改出新问题。
+
+本轮没有修改 GitHub、没有重新执行 Core/Xcode 测试、没有重新安装手机或手表。仓库报告的 Core 93、UI 8、App 160/163 是交付方结果，不能改写成审阅者独立重跑结果。
+
+本文件是原 `FANGCUN_CODEX_SPEC_v1.0.md` 的补充，不替换第 4 章模型，不改变权重、门槛或已有产品承诺。
+
+## 1. 已核对并应保留的工作
+
+- 开发分支指向上述 HEAD，main 仍指向上述基准。
+- `ReadinessPipeline`、标准化/选源、睡眠识别、逐源基线、`ReadinessEngine`、`InsightsStore` 已形成独立链路。
+- availability、level、freshness 与 syncState 分开；规则集中配置；未加入练习奖励分。
+- 存储已有原子替换、前一版本备份、删除日志、generation 校验和修订关系；这些结构应继续利用。
+- 正常路径、合成样本、原 golden fixtures 与若干故障注入已有测试。测试通过不涵盖下述尚需补充的交错场景。
+- 真实 HealthKit 增量、锁屏访问和 Watch 后台/传输仍属于未验证能力，不用编译成功替代。
+
+依据：[交付入口](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/docs/plans/fangcun-v1/M2-REVIEW.md)、[核验记录](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/docs/plans/fangcun-v1/VERIFICATION.md)、[能力矩阵](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/docs/plans/fangcun-v1/CAPABILITIES.md)。
+
+## 2. M2-R01｜补齐评估的间接数据依赖与删除失效
+
+**优先级：P1；进入 M3 前完成。**
+
+### 当前代码路径
+
+`BaselineBuilder.build` 使用历史睡眠段决定纳入哪些日期、哪些 HRV/静息心率样本。`ReadinessEngine.evaluate` 生成 `contributingSampleIDs` 时，仅收集当前睡眠样本、当前体征样本和基线体征样本，没有包含构建基线所使用的历史睡眠样本。
+
+`InsightsSnapshot.redact` 又只根据 `contributingSampleIDs` 与 tombstone 的交集移除评估。因此，删除一条参与基线的历史睡眠记录，可能移除原始样本和 episode，却保留仍依赖这条睡眠的 current assessment、旧基线日数和历史结果。
+
+### 最小复现场景
+
+1. 使用现有 `ReadinessFixture.records()` 建立 20 日成熟基线及合格当前评估。
+2. 删除历史睡眠 UUID，例如现有 fixture 的 `f.id(101)`；该样本属于前一日睡眠，不是当前睡眠或体征。
+3. 通过 `InsightsStore.deleteSamples` 注入删除，在重新计算前读取 snapshot。
+4. 检查原 current 是否失效、受影响历史评估是否已撤销为最小审计信息。
+5. 再刷新、重启、注入查询失败或主文件损坏，确认旧备份不能把未撤销结果恢复为当前合格结论。
+
+### 修复要求
+
+建立完整的评估依赖集合，至少覆盖参与基线的历史主睡眠样本 UUID。可以使用依赖摘要/图或扩展 contributing IDs；不要求保存额外健康原始值。
+
+同时核对用于睡眠冲突、质控、样本排除和主段选择的间接依赖。会改变评估资格或计算输入的记录，不应仅因未成为最终显示值而脱离失效关系。
+
+删除后立即撤销受影响结果的当前资格，清理受影响旧结果，保留最小 audit 与 revision/supersedes 关系。重算完成后，剩余资料仍充分时允许生成新的合格结果；禁止把“删除后暂时失效”误实现为“以后永远不给等级”。
+
+删除、备份恢复与失败缓存保留使用同一套依赖判定。对历史睡眠的删除也应适用，不仅测试删除当前 HRV。
+
+### 验收
+
+`R01a` 删除历史基线睡眠后，原 current 不再可作为有效结果返回。  
+`R01b` 重算后基线日数相应变化；仍成熟时可重新得到 usual，但必须具有正确新依据及修订关系。  
+`R01c` 故障恢复和失败查询不能恢复未撤销的旧评估；原始记录与历史派生内容不从备份复活。
+
+定位：[BaselineBuilder](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineBuilder.swift)、[ReadinessEngine](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessEngine.swift)、[InsightsStore](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift)。
+
+## 3. M2-R02｜首次分页未完成时，不固化不完整的主来源选择
+
+**优先级：P1；进入 M3 前完成。**
+
+### 当前代码路径
+
+`ReadinessPipeline.run` 会先把成功页的样本和 cursor 写入 candidate。后续页发生错误时跳出循环，但仍继续调用 `StableSourceSelector.select`，随后提交 candidate。
+
+`StableSourceSelector.select` 对 existing 直接返回，符合日常稳定选源要求。但首次读取未完成时，先到的一小部分数据也可能被固化成 existing。后续续读拿到历史覆盖更充分的来源后，不会重新完成首次选源。
+
+### 最小复现场景
+
+同一个指标的第一页仅包含来源 A 的少量样本，`hasMore=true`；第二页本应包含来源 B 的完整 20 日历史，但第一次请求该页失败。
+
+第一次刷新保存进度，第二次刷新从已提交 cursor 继续并完成全部数据。验证最终首次主源按完整候选集合选择 B，而非永久停留在 A。
+
+### 修复要求
+
+对每个指标记录初始化/重建状态，例如 unread、inProgress、complete；名称可调整。只有该指标的首次有界读取完成后，才冻结默认主源。
+
+允许持久化中间样本和事务性 cursor，以便继续分页；但初始化进度与“可以得出合格结论”必须分开。达到页数/工作预算上限也属于仍需续读，不得当作完整来源发现。
+
+手动来源选择继续优先；已经完成初始化的稳定来源不得因为一次失败而清空或自动换源。该修复针对首次不完整来源发现，也应审视失效锚点重建的同类情况，不取消已有稳定选源原则。
+
+### 验收
+
+`R02a` 第一页成功、第二页失败后，恢复续读仍能正确完成首次选源。  
+`R02b` 分页未结束时不输出虚假的 assessable/provisional。  
+`R02c` 完成初始化后，主源暂时缺数据仍不自动切换。  
+`R02d` 显式手动选择不会被初始化完成后的自动选择覆盖。
+
+定位：[ReadinessPipeline.run](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift)、[StableSourceSelector](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessSamples.swift)。
+
+## 4. M2-R03｜单飞合并必须识别请求语义变化，并补做新事件刷新
+
+**优先级：P1；进入 M3 前完成。**
+
+### 当前代码路径
+
+`ReadinessPipeline.refresh` 只要发现已有 `flight`，便直接返回其结果，没有比较 configuration、calendar/time zone、interventions 等输入。
+
+例如第一轮按睡眠目标 8 小时计算尚未完成；用户改为 10 小时后触发第二轮，第二轮仍可能得到第一轮 8 小时的结果。generation 校验只覆盖 store generation 的变化，单独变更函数参数不会自动改变 generation。
+
+类似地，在第一轮已经读完睡眠之后收到新的睡眠事件，第二次刷新若只是加入旧 flight，没有 dirty/pending 机制，就可能不在这一轮读取到新事件。之后再有刷新机会才会补上。
+
+### 最小复现场景
+
+使用可暂停的 provider：A 请求 configuration 为 8 小时，暂停其第一次查询；B 请求 configuration 为 10 小时；恢复 provider。B 不能以“已处理新配置”的语义返回 A 的旧配置结果。
+
+另建事件交错测试：先完成睡眠查询、暂停后续指标查询，再注入睡眠新增事件并请求刷新；当前轮结束后必须有一次能处理该变化的刷新。
+
+### 修复要求
+
+为请求定义可比较的语义身份，至少涵盖配置版本、来源/存储 generation、时区以及影响取样的已知练习上下文版本。不要仅按函数名把所有调用视为同一个请求。
+
+同语义请求可以共享在途结果；不同语义请求须串行接续、重新启动，或明确返回 superseded 并由协调器重试，不能悄悄作为已完成返回旧结果。
+
+当在途期间收到相关变化，记录 dirty/pending 状态，并在当前轮之后进行有界的合并补刷新。避免每个回调都启动全量查询，也不能无限重试。source selection、clear/delete 的迟到请求保护继续保留。
+
+### 验收
+
+`R03a` 同输入并发仍可合并。  
+`R03b` 8 小时请求与 10 小时请求不能无差别共享旧结果；最终可见结果对应最新有效设置。  
+`R03c` 在途期间出现新的相关健康事件，完成后补刷新，不依赖用户再拉一次页面。  
+`R03d` 来源切换、删除、清除之后，迟到请求不能覆盖新事实。
+
+定位：[ReadinessPipeline.refresh](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift)、[现有并发测试](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/InsightsStoreTests.swift)。
+
+## 5. M2-R04｜修订身份应由有效证据决定，不由移动的读取窗口决定
+
+**优先级：P2，但应在首页、历史和同步接入前完成。**
+
+### 当前代码路径
+
+`CurrentMetricExtractor` 的静息心率窗口终点为 `min(now, sleepEnd + 3h)`，符合当前取样规则。`ReadinessEngine` 计算 inputFingerprint 时，只清除了顶层 now/queriedAt，仍编码完整 feature.window。
+
+因此，在睡眠结束后第 0.5–3 小时内，即使所有样本、来源、配置和质量状态都不变，时间推进也会改变 RHR window.end、fingerprint，并使 `InsightsSnapshot.record` 创建新 revision。
+
+现有存储重复刷新测试使用 `ReadinessFixture` 默认数据，主睡眠结束已过去 4 小时；该场景中窗口已经封闭，不能覆盖上述问题。
+
+### 最小复现场景
+
+将现有 fixture 全部样本时间向后平移 2 小时，使当前主睡眠结束距 now 为 2 小时。不要改变样本 ID、值和来源。分别在 now 与 now+60 秒执行完整 provider→pipeline→store 刷新，期间 provider 不提供任何新样本。
+
+预期同一个 assessmentID、revision、inputFingerprint，validUntil 不延长。再加入真实新样本，才应按实际证据变化判断是否生成修订。
+
+### 修复要求
+
+将稳定的评估证据身份与“本次查到哪个时刻”的运行信息分开。fingerprint 保留实际采用的样本、来源、基线、配置、逻辑取样范围与资格等语义；滚动查询截止时间不应单独造成修订。
+
+不能为修复指纹而放宽静息心率当前窗口、接受未来样本或改变原模型。也不能简单禁止修订，导致晚到睡眠、删除、来源变化和真实新证据无法被记录。
+
+查询时间另需核对：`ReadinessInputBuilder` 目前从样本 `queriedAt` 取最大值；无新增样本的成功查询不会更新该值。界面接入时区分“该评估证据被读取的时间”与“最近一次检查/刷新时间”，不要互相冒充。
+
+### 验收
+
+`R04a` 醒后 2 小时与 2 小时 1 分、完全相同样本，身份与修订保持一致。  
+`R04b` 醒后 3 小时边界仍保持证据身份稳定；18/24 小时可以正常改变新鲜度和空态，但不把单纯时间流逝当作新的健康证据。新周期或真正资格变化仍可形成相应记录，不强制所有过期状态沿用原 ID。  
+`R04c` 真正新增证据、删除或变更配置仍按语义正确修订；有效期限不随刷新延长。
+
+定位：[CurrentMetricExtractor](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineBuilder.swift)、[指纹生成](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessEngine.swift)、[ReadinessFixture](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessFixture.swift)。
+
+## 6. M2-R05｜修正 observer 完成回调顺序，作为生命周期接入前置条件
+
+**优先级：接入前必须完成；目前未启用后台投递，不能据此声称真机已经丢失更新。**
+
+### 当前代码路径与官方边界
+
+`ReadinessHealthKitProvider.startObserving` 先调用 `completion()`，随后才在 Task 中 `await onChange()`。
+
+Apple 关于 HealthKit observer 的公开文档要求，在处理新资料之后调用相应完成处理器。这是向系统确认本次后台处理已完成；“及时确认”不能理解成“开始处理之前先确认”。
+
+参考：[Executing Observer Queries](https://developer.apple.com/documentation/healthkit/executing-observer-queries)、[HKObserverQueryCompletionHandler](https://developer.apple.com/documentation/healthkit/hkobserverquerycompletionhandler)。本轮查询日期：2026-09-18。
+
+### 修复要求
+
+明确每个回调的所有者与结束路径。在一次有界的读取/处理/持久化工作结束后再确认；错误和取消同样要有可靠收尾，不能忘记回调，也不能重复回调。
+
+结合 R03 的 pending/dirty 机制处理合并事件：不能仅等待一轮早于新事件的旧查询，就声称新事件已处理。无法完成时保留可恢复进度和失败状态，不无界占用后台。
+
+本任务不要求擅自新增后台权限或保证唤醒。生命周期、正式授权和后台交付配置仍按原阶段进行；真实系统行为继续标注待真机。
+
+### 验收
+
+`R05a` 用可控制的处理器验证事件顺序：收到事件→处理/持久化结束→确认。  
+`R05b` 正常、错误、取消、多个合并回调均恰当收尾，且每个 completion 最多调用一次。  
+`R05c` 在已经读过某一指标后又收到该指标变化，能通过补刷新处理，不靠提前确认掩盖遗漏。
+
+定位：[ReadinessHealthKitProvider.startObserving](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessHealthKitProvider.swift)。
+
+## 7. 三项既有 App 失败的处理方式
+
+核验报告已经说明这些失败在 M2 前提交也存在。不能把它们说成 M2 引入，也不能用“原来就失败”代替后续修复。
+
+- `approvedPaperPalette` 中的旧版棕色色值预期，应与当前已确认蓝色视觉契约逐一核对；不得退回旧主题。
+- 其中浅色次级文字对比度 4.4631 低于当前测试 4.5，属于真实可访问性问题。可在 M3 前置的独立维护提交中作最小 token 修正，保留原风格并补看实际截图。不得降低测试门槛换绿灯。
+- `paperAppearanceDoesNotInvertAtNight` 的固定浅色模式预期，应改成当前用户偏好/系统适配的行为测试，不能删除测试或强制禁用深色模式。
+- `finishDialogCopyMatchesTheNextStep` 应测试操作语义及稳定标识，并保留文案目录契约检查，不锁死已经计划人工调整的整段旧文案。
+
+本轮 M2-R 不顺带开展整体 UI 改版。若上述维护未执行，继续如实报告全量 App 的已知失败，不把局部通过写成全仓全绿。
+
+依据：[完整核验报告](https://github.com/yvain57-afk/fangcun/blob/b69b4cc26520bc42e9c742ba67ed26e81714a84d/docs/plans/fangcun-v1/VERIFICATION.md)。
+
+## 8. 实施与交付要求
+
+1. 先读取当前工作区、AGENTS 与本审阅版本差异。工作区若已有新修复，逐项核对，不能回退到旧 HEAD 或重复覆盖。
+2. 保留原任务书与 golden fixtures；将本文件保存为 `docs/plans/fangcun-v1/M2-GPT-REVIEW-R1.md`。
+3. 每条 M2-R 先写回归/重现，再作最小修复。测试不能只注入最终结论，涉及 pipeline/store 的必须经过实际领域链路。
+4. 不重写算法、不改现有 UI、不删除用户资料、不修改其他应用的 HealthKit 数据、不增加在线 AI 或后端。
+5. 使用独立提交，写清 M2-R01～R05 对应文件、测试和结果。新增状态或存储字段涉及 schema 时处理旧文件读取、备份和故障恢复，不清库。
+6. 更新 TASKS、DECISIONS、VERIFICATION、CAPABILITIES，区分实现完成、合成测试通过、SDK 编译通过和真机验证。
+7. 运行 Core 全量、新增回归、App 全量、现有首页/练习 UI 回归及 Watch 模拟器编译。现有失败与新增失败分开列出；不要求为了 M2-R 伪造 Watch 真机验收。
+8. 将明确属于本轮的提交推送到原开发分支，不强推、不合并 main，不上传健康值、设备标识、签名、凭证或真实健康截图。
+9. 返回最终 HEAD、各 M2-R 的证据、未验证项和是否满足 M3 前置条件。**完成后停止，暂不实施 M3–M6。**
+
+### 建议的交付摘要格式
+
+| 项目 | 重现/反证 | 修复提交 | 测试名称 | 实际结果 | 未验证部分 |
+| --- | --- | --- | --- | --- | --- |
+| M2-R01 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
+| M2-R02 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
+| M2-R03 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
+| M2-R04 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
+| M2-R05 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
+
+## 9. 补修通过后的下一阶段边界（仅用于导航，不是本轮启动指令）
+
+M3 再完成安全迁移、手机首页/详情/7与28天历史、建议/轻活动/反馈，以及 DTO、outbox/ACK 和本机摘要接口。继续保留原视觉，先让手机消费统一评估结果，不同时重做 Watch 和小组件。
+
+Watch 的新界面与离线会话仍属于 M4，系统提醒/组件属于 M5，Live Activity 和整体交付属于 M6。
+
+当前新数据服务未接入首页是按计划实施，并非漏做；修复数据层边界后再接入，可以避免把同一种错误扩散到多个端。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M2-R1-RESULTS.md =====
+# M2-R1 补修交付
+
+范围：仅 M2-R01～M2-R05；M3–M6 未启动。2026-09-18。
+
+## 基线与工作区
+
+- 审阅基线：`b69b4cc26520bc42e9c742ba67ed26e81714a84d`。开始时本地 HEAD 与该基线相同，工作区干净，无后续或无关修改需要回退。
+- 原开发分支：[codex/fangcun-v1-m0-m1](https://github.com/yvain57-afk/fangcun/tree/codex/fangcun-v1-m0-m1)。main 基准保持 `905626c6e08dc7a36ddd4e219abf6945795ac62f`。不合并、不强推。
+- 原任务书及原 golden fixtures 保持原样；原审阅文件原样存为 [M2-GPT-REVIEW-R1.md](M2-GPT-REVIEW-R1.md)。
+- 没有修改 UI、练习、饮品、原用户记录、模型参数或健康权限；没有清库、后端或在线 AI。新准备度服务仍未接入首页。
+
+## 逐项审阅结果
+
+五项均在原工程重现后修复，没有更换模型。每项修复前/后命令输出及中间失败见 [VERIFICATION](VERIFICATION.md)。输入均为合成样本，日志脱敏；本机 xcresult 和真机标识不入库。
+
+| 编号 | 复现与修复 | 提交 | 测试与证据 |
+|---|---|---|---|
+| R01 | 删除历史睡眠未撤销旧评估；补齐历史、冲突和排除记录依赖，旧文件无依赖元数据时保守失效 | `7c7e232` | `M2ReviewR01Tests`：历史睡眠删除、20→19 日重算、supersedes、重启/损坏恢复/失败缓存、旧文件兼容；[red](evidence/m2-r01-red.txt) / [green](evidence/m2-r01-green.txt) |
+| R02 | 首次分页失败固化 A 源；按指标保存初始化进度，全部读完才默认选源 | `dee4fa8` | `M2ReviewR02Tests`：恢复后选 B、手动 A 不覆盖、100 页预算续读；[red](evidence/m2-r02-red.txt) / [green](evidence/m2-r02-green.txt) |
+| R03 | 配置及事件共享旧请求；按配置、Calendar、区间、generation 比较，串行有界补读；失败缓存也核对上下文 | `c4d77b4`、`a01860a` | `M2ReviewR03Tests` + 原 `InsightsStoreTests`：同输入合并、设置/时区/区间、读后新睡眠事件、切源/清除保护；[red](evidence/m2-r03-red.txt) / [green](evidence/m2-r03-green-recheck.txt)；缓存补验 [red](evidence/m2-r03-cache-red.txt) / [green](evidence/m2-r03-cache-green.txt) |
+| R04 | 醒后两小时空增量随时钟创建 revision；指纹仅固定逻辑窗口，真实抽取仍受当前时刻限制 | `1a94809` | `M2ReviewR04Tests`：2/3 小时边界、18/24 小时 freshness、新样本/配置修订、不延长有效期；[red](evidence/m2-r04-red-recheck.txt) / [green](evidence/m2-r04-green-recheck.txt) |
+| R05 | observer 提前确认；处理与持久化结束后由一次性 owner 确认，合并事件等待补读 | `b780466` | App `ReadinessObserverTests` 6 项：顺序、错误、真实取消、并发一次性确认、合并补读与重启；[red](evidence/m2-r05-red-order.txt) / [green](evidence/m2-r05-green-final.txt) |
+
+## 最终验证
+
+| 范围 | 实际结果 | 证据 |
+|---|---|---|
+| Core 全量 | 103/103 通过，含 10 项本轮新增回归及原 golden | [完整输出](evidence/m2-r1-core-final.txt) |
+| App 全量 | 166/169 通过；3 项既有失败、23 issues；R05 六项全部通过 | [完整输出](evidence/m2-r1-app-final.txt) |
+| 首页及交互 UI | 原验收的 HomeEvidencePipeline 与 FangcunRedesign 共 8/8 通过 | [完整输出](evidence/m2-r1-ui-final.txt) |
+| 扩大练习 UI | PracticeReturnHome 两项均在旧按钮定位失败；审阅基准上独立复现同一失败 | [基准结果](evidence/m2-r1-baseline-ui.txt) |
+| Watch 模拟器 | BUILD SUCCEEDED | [完整输出](evidence/m2-r1-watch-final.txt) |
+
+本轮新增回归最终无失败。既有 App 失败为 `approvedPaperPalette`、`paperAppearanceDoesNotInvertAtNight`、`finishDialogCopyMatchesTheNextStep`，保留原断言。新增发现的两项既有 UI 失败发生在返回首页验证之前，不能声称这两项行为已验收。原 UI 命令全部测试结束后卡在 Xcode 收集诊断，停止后退出 143；上述 UI 计数来自完整控制台输出，未冒充完整 xcresult。基准命令关闭额外诊断收集后正常退出 65。命令、失败分类与定位见 [VERIFICATION](VERIFICATION.md)。
+
+## 文件与存储影响
+
+生产修改集中在 Core 的 `ReadinessEngine.swift`、`ReadinessPipeline.swift`、`InsightsStore.swift`，以及 App 的 `ReadinessHealthKitProvider.swift` 和新 `ReadinessObserverCompletion.swift`。测试新增 `M2ReviewProvider`、`M2ReviewR01Tests`～`R04Tests` 与 App `ReadinessObserverTests`。
+
+继续使用独立 Insights schema 1；新字段全部可选：assessment 的 `dependencyVersion`、`evidenceContextVersion`，snapshot 的逐指标 `initialization`、`lastRefreshAttemptAt`、`lastSuccessfulRefreshAt`。旧文件缺字段可解码，不迁移清库，不触碰原 SwiftData 用户记录。已选或手动来源保持权威；缺数据不自动换源；初次发现未完成保存 cursor 与进度，保留失败/无等级状态。
+
+旧评估未知完整依赖时遇删除保守撤销；未知上下文的失败缓存不作为新请求有效结果。正常新评估仍可由剩余充分数据重新得到等级。沿用删除屏障、原子发布、备份恢复与 generation 校验。测量、评估证据读取、刷新检查、计算时间分别保存。
+
+## 未验证与停止点
+
+合成数据重放不代表医学效度；默认阈值继续待校准。真实 HealthKit 增量/删除/锁屏/后台回调、系统终止与文件保护仍 `implemented_unverified`。Watch 后台、触感和跨设备送达/恢复仍 `blocked`，缺物理配对验证条件。没有通过本次模拟器测试声称后台真实可靠，见 [CAPABILITIES](CAPABILITIES.md)。
+
+M2-R 的五项数据层前置修复已完成，可供 M3 开工前审阅；不等于全仓无失败或真机验收完成。审阅第 7 节的三项 App 既有失败及本轮扩大核验发现的两项既有 UI 失败继续作为独立维护事项，其中次级文字对比度问题确实存在。本轮停止在 M2-R，不实施 M3。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M2-REVIEW.md =====
+# M2 远程审阅入口
+
+本轮仅 M2-01 至 M2-04。分支 `codex/fangcun-v1-m0-m1`；基准 `905626c6e08dc7a36ddd4e219abf6945795ac62f`。原 M0/M1 审核补证提交 `0062d4a7c4830b81937013c279154271737dee18`。main 不合并。
+
+读取顺序：
+
+1. [TASKS](TASKS.md)、[VERIFICATION](VERIFICATION.md)、[CAPABILITIES](CAPABILITIES.md)
+2. [原始任务书](FANGCUN_CODEX_SPEC_v1.0.md)、[原始 golden fixtures](READINESS_GOLDEN_FIXTURES.json)
+3. [DECISIONS](DECISIONS.md)、[ADR-002](ADR-002-insights-store.md)
+4. [Core Readiness 源码](../../../InnerBalanceCore/Sources/InnerBalanceCore/Readiness)、[Core 测试](../../../InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness)
+5. [HealthKit adapter 与 service 工厂](../../../InnerBalance/InnerBalanceApp/Health/Readiness)、[真实 HK 对象测试](../../../InnerBalance/InnerBalanceTests/Features/ReadinessHealthKitProviderTests.swift)
+6. [脱敏日志](evidence)
+
+主链路：`ReadinessServices.make()` → `ReadinessHealthKitProvider` → `ReadinessPipeline.refresh()` → 标准化 / 选源 / 主睡眠 / 当前指标 / 基线 → `ReadinessEngine` → `InsightsStore.commit()`。所有时钟和日历可注入。Service 未接入 RootView，不改变现有 UI 或健康授权。
+
+GPT 可直接通过此开发分支的 raw 地址读取文件，例如：
+
+- [M2 任务状态 raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/docs/plans/fangcun-v1/TASKS.md)
+- [M2 验证 raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/docs/plans/fangcun-v1/VERIFICATION.md)
+- [ReadinessEngine raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessEngine.swift)
+- [InsightsStore raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift)
+
+`ai/` 分卷和旧 FILE_INDEX 仍对应此前公开基线，本轮不将其当作 M2 源码副本。通过上述开发分支目录或 raw 路径审阅最新原文件。仓库仅纳入合成或已脱敏核验材料；真实健康数据、设备标识、签名、凭证和原始 xcresult 均不上传。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-01-VERIFICATION.md =====
+# M3-01：饮品与旧历史迁移
+
+采用独立 `FangcunDiaryStorage`，保留 SwiftData schema、原练习/健康写入队列与原 UserDefaults 字节。先保存 v1 和 preM1 的受保护原始备份，读回校验，再解码导入；目标 envelope 包含 schema 2、payload 校验和、导入源摘要，与记录同一次原子替换。没有单独提前写“已迁移”标志。
+
+当前 v1 的饮品集合为权威；preM1 只补充旧快照，不复活后来删除的饮品。快照保留原文字、semanticsVersion 和 legacy 标记，不转换为准备度。ID 与旧固定杯量/咖啡因估值保持；consumedAt 来自原 date，未知 recordedAt 和糖克数保持 nil。新增成分仍为估算。容量编辑仅缩放该条记录，未知酒精仍 nil；汇总对部分未知酒精另有提示。
+
+写入失败不发布内存成功状态；可重新读取并重试。损坏源、损坏目标和未知 schema 保持原字节，明确只读错误，不自动清空。没有卸载 App。生产存档在 App Application Support 的受保护目录，测试使用独立 defaults / 临时目录。
+
+UI 保留快捷复合记录，新增“补记或编辑”入口：今天及前 6 天、时间/容量、编辑和撤销。新记录含录入时间；旧记录不伪造录入时间。时间/容量校验不改变准备度模型。
+
+验证：
+
+- 原 4 个 FangcunDiaryTests 继续通过：[首次回归](evidence/m3-m301-existing.txt)。
+- 最终 **9 App tests + 1 UI test，退出 0**：[日志](evidence/m3-m301-final.txt)、[可读取结果包摘要](evidence/m3-m301-final-summary.json)。`FangcunDiaryMigrationTests` 覆盖稳定 ID、2 条记录合计 630 ml / 170 mg / 10 g / 1 糖饮份、原文和备份摘要、三处中断重启、损坏源/目标、写失败重试、7 天/未来边界、容量编辑、撤销、未知量和 preM1 不复活删除。
+- `DrinkEditorUITests.testCapacityEditingUndoAndQuickLogShareTheSameRecords` 实际从首页快捷记 250 ml，再进入编辑新增 500 ml，编辑为 750 ml 后撤销，回弹层验证总量 750 ml。
+- 命令是 `xcodebuild test`，项目/方案/工具链与 M3-PRE 相同；选择 `InnerBalanceTests/FangcunDiaryTests`、`InnerBalanceTests/FangcunDiaryMigrationTests`、`InnerBalanceUITests/DrinkEditorUITests`。完整脱敏命令在日志首行。中间新增 8 项 App 回归也通过，最终补入防复活用例后为 9 项。
+
+目前未操作真实用户记录，也未把本机存档上传。现有旧档从升级前版本读取仍可保留；本轮功能回退使用同一 v2 存档，不用旧模型重写历史。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-02-VERIFICATION.md =====
+# M3-02 手机统一准备度
+
+范围：App 生命周期唯一 `ReadinessCoordinator`，复用原 factory / pipeline / store。未改准备度算法、配置常数或 golden fixtures。原页面结构、角色和五分钟主入口保留。
+
+- App 初始化持有服务；首页重绘不会重建数据库。回前台、下拉刷新、授权完成、来源/睡眠/目标变更和真实 observer 触发刷新。observer 从 owner 取最新上下文并从已提交 store 接收结果，不用 `.processed` 推导查询成功。
+- 请求版本约束；选源过程隔离 observer 的迟到结果；Core pipeline `retire()` 拒绝旧、排队和未来请求。停止读取撤销 current，清除额外清除专用评估库，保留饮品、SwiftData 和 HealthKit。恢复读取必须显式选择。
+- 前台时钟更新 freshness；18/24 小时语义沿用原参数。等级存在也必须当前有效才显示整体结论。失败缓存保留原证据锚点。
+- HRV 显示 `displayValue` 毫秒；两类基线日数独立展示。详情分别列测量、证据查询、刷新尝试/成功、计算、睡眠结束。所有新增文案入 catalog / COPY_REVIEW。
+- 7/28 天等尺寸图标区分完整、初步、有限、等待、失败、无资料与旧记录；点击日期查看所有已存周期/修订。没有安装前补算。
+- 设置支持真实已读来源、近48小时主睡眠、7–10小时目标、停止/清除。`readiness.enabled=false` 是明确的 M1 回退；数据不足不会自动回退。回退保留评估历史且不启用 Mock。
+
+## 验证入口
+
+- Core `ReadinessLifecycleTests.retiringRejectsInFlightQueuedAndFutureRefreshes`：挂起查询、排队健康事件、retire、迟到返回和后续调用；无落盘结果。
+- App `ReadinessCoordinatorTests.rawProviderThroughPipelineStoreAndOwner`：6组原始合成样本经真实 pipeline/store/owner；HRV显示值不同于内部对数。
+- 同套 `failedRefreshKeepsAnchorAndIndependentCheckTimes`：无新资料检查和失败缓存。
+- `clockBoundariesStopAndExplicitResumeDoNotRewardPractices`：注入时钟跨18/24小时；停止/明确恢复/清除。
+- `settingsVersionAndSourcesPersistWithoutChangingGoldenParameters`、`latestIntentWinsAndStopIsolatesLateOwnerResults`：目标、来源、主睡眠、存储重开、慢旧请求。
+- UI `ReadinessHomeUITests`：同一原始 fixture provider 经真实 service 到现行首页及详情，未注入展示状态。历史及大字检查另列最终证据。
+
+首轮 `m302-tests`：App 4/4通过，UI一个含6场景的测试在详情列表尚未滚动至时间字段处失败。保留断言，补滚动并拆为6个独立场景；不把首次失败计通过。Core `m302-core` 正常退出0，1/1通过。最终结果见阶段证据和 M3-REVIEW。
+
+## 验证边界
+
+fixture 仅 DEBUG 显式启动参数启用，并使用独立临时 store。既有 M1 UI 套件显式传 `--readiness-disabled`；新准备度验收单独运行。合成测试不证明真机 HealthKit、锁屏或后台查询。
+
+阶段复验：`m302-recheck` 5项App（含6个参数场景）+6项UI通过；`m302-history` App 5项通过，历史UI首次因凌晨的主睡眠属于前一天而错误查找今日行失败。保留空白日语义，测试显式选择有记录的日期，`m302-history-recheck` 1/1通过。所有运行正常结束、结果包可读。实际命令见 evidence 日志，原始 xcresult 留本机 scratch。
+
+最终集成核对补齐详情：实际睡眠/该次目标、主睡眠内SDNN中位数与RHR最近值口径、样本数/覆盖、窗口、基线中心及中心上下一个稳健尺度。HRV基线由内部对数还原到ms；明确不是医学正常范围，不更改计算模型。历史等尺寸标记区分等级，保留资料资格；当天背景记录列训练、饮品、已保存行动/反馈，未读到不等于没有活动。App实测验证HRV基线还原，UI保留睡眠、参考与时间字段断言。最终结果见M3-REVIEW。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-03-VERIFICATION.md =====
+# M3-03 建议、行动与反馈
+
+- Core 独立 `RecoveryActionKind` 将原 PracticeKind 以稳定字符串包装；原枚举未修改。3个本地协议为120/60/120秒、内容版本1、准备说明/两段文字/安全提示；阶段按计划时间二等分。使用既有静态猫狗，无新角色原画。
+- 纯函数建议接受主观目标、环境、时长、偏好与明确不适集合；驾驶/不方便不启动，座位替代可选。不从 HRV 推断心理状态。首页保留五分钟主按钮，只有一个次级建议及更换入口。
+- `RecoveryStore` 原子带校验文件保存本地行动与反馈，不依赖 HealthKit/准备度模型。原 SwiftData 保存链路保留；旧练习用原 sessionID 幂等投影到行动记录，结束原因未知标 legacyUnknown，不补造反馈。
+- 暂停不计时，进后台暂停；定期及退后台保存已知 checkpoint。重启只保留已知有效时长，未知间隔不补算。首次本地保存成功才出现“已记录”；失败重试沿用同一 ID。
+- 反馈未回答为nil；可在行动记录编辑，保留 revision/history。不适优先过滤主动建议；5次以上同类明确回答才显示描述性计数，不含未回答，不写疗效，不改变准备度。
+
+## 实测
+
+`m303-core-recheck`：3项Core测试（其中3种行动参数化）通过。
+`m303-tests`：2项App测试（含3种行动）+1项真实UI全流程通过，正常退出0、xcresult可读。
+- `pauseEndRetryAndRestart`、`localSaveFailureRetryAndPauseHaveOneIdentity`：驾驶拒绝启动、暂停、提前结束、写失败/重试、重复结束、进程重开中断。
+- `optionalFeedbackRevisionsAndDenominator`：nil、revision、4到5份明确回答门槛。
+- `recommendationsRespectExplicitSafetyAndDiscomfortFirst`：走动/座位、驾驶与不适优先。
+- `legacyPracticeIdentitySurvivesReconciliationAndFeedbackEdit`：旧会话稳定ID、重复导入不覆盖反馈。
+- `RecoveryActionUITests.testLocalActionPauseEarlyEndSkipThenEditFeedback`：真实首页建议→准备→暂停继续→提前结束→本地保存→跳过→返回→编辑为不舒服。
+
+初次Core编译暴露原PracticeKind并不Codable，已用新包装自己的字符串编解码解决，未更改原枚举。
+`m303-build` 的旧 PracticePresentation 套件发生音频真实图启动RPC超时/测试进程重启，随后2项声音状态测试失败；本阶段未改音频实现。与M3-PRE正常通过区分记录，最终全量复验须再次确认，不能据此称全量通过。
+
+内容初稿仍需发布前人工运动安全/措辞审查。本轮未发布、未创建HealthKit训练/正念/热量记录。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-04-VERIFICATION.md =====
+# M3-04 跨端记录与摘要基础
+
+## 实现
+
+Core `SyncModels / SyncStore / SyncService / WatchConnectivityTransport / SummaryCache`；手机 `PhoneSyncCoordinator`；Watch `WatchSyncLifecycle`。仅最小生命周期与接收持久化，未改 Watch 首页、计时器、后台模式或增加 Widgets。
+
+- schema v1 packet/event/summary；稳定 eventID/entityID、安装 epoch、实体 revision、tombstone、显式撤销恢复。
+- 本地事件与实体一起原子落盘后进入 outbox；接收端在同一事务保存实体、去重表、receipt，投影成功才 ACK。ACK 校验原始事件摘要，源端收到后才释放。
+- updateApplicationContext 只发布手机权威的最新摘要；事件走 sendMessageData 加速/transferUserInfo 回退。系统安排传输不代表业务收到。出队以应用 ACK 为准。
+- 失败保留队列；持久化有界退避（最多8次自动机会，每次最多20条），由激活/可达变化/业务操作触发，另有手动重试；没有保活轮询。
+- 重复、乱序、较低修订不能覆盖新事实。删除阻断旧事件；用户明确撤销删除以更高 revision 和 explicitRestore 表示，与网络重放区分。
+- 新安装握手退役旧 peer epoch、撤销旧接收摘要；旧 epoch 重放被拒绝。未知协议原字节进入隔离区，未 ACK，源 outbox 保留。
+- 反馈备注仅本机；DTO 去除当前与历次 localNote。摘要小于4KB，不含原始体征、来源、健康 UUID 或个人文字。
+
+## 业务接线与健康写入归属
+
+- iPhone 原 SwiftData 与新本地行动仍是各自保存入口；SyncStore 持久化事件事实，Diary/RecoveryStore 为可重试投影。接收路径没有 HealthKit 写入调用。
+- 手机用既有 mindful read 权限读取本 App 已有稳定 sessionID 的会话，按同一 ID 与 WC 合并；先 HealthKit 后 WC、重复 WC、删除后再读 HealthKit均有测试。缺失计划时长标 unknown，结束原因 legacyUnknown，不猜测反馈。
+- Watch 完成本地保存后排队，不替代其原 HealthKit 写入链路。旧 Watch 表新增两个可选字段保留已知开始与计划时长；老记录仍可解码、未知明确标记。不改原运行时钟。
+- Diary v2 新增默认空的 syncRevisions；Recovery v1 新增可选同步修订和 tombstone。原字节不清除；存储损坏报错保留，旧归档无新字段的兼容与损坏字节保留有回归。
+- 停止读取/清除/选源/目标变化撤销外部摘要；收到过期摘要读取为 neutral，不沿用旧等级。
+
+## 验证
+
+- Core `SyncReliabilityTests` 4项：离线重启/丢ACK/重复/投影重试；写失败不ACK/删除先到/乱序/显式撤销；epoch/未知协议/损坏/过期/未配置共享容器；摘要写失败仍发送撤销。
+- App `PhoneSyncIntegrationTests` 2项：实际 diary/recovery store 投影、未知酒精/录入时间保持nil、HK与WC稳定ID合并、停止后摘要撤销、删除防复活、撤销编辑使用新的传输revision。
+- M3-04 targeted App 9项通过（含既有迁移及行动回归）。Core全量与App全量、完整UI及Watch结果汇总在 M3-REVIEW。
+
+## 尚未验证
+
+- 真实 Watch 配对送达、锁屏后台与平台传输调度：implemented_unverified，当前物理 Watch 不可用。模拟 ACK 不等于真实送达。
+- 工程未配置真实 App Group；factory只读取已有 `FangcunAppGroupIdentifier` 并解析系统容器，不使用假组名。不配置时共享缓存 unavailable，本机缓存可用；正式共享/签名与 Widget验收留待实际条件和M5。
+- M0/M2未验证的能力保持原级别，未因本阶段编译成功升级。
+
+阶段全量：Core `m3-core-delivery` 112/112；App `m3-app-final` 185/185；Watch `m3-watch-final` BUILD SUCCEEDED。初次扩大UI为26/45，19项旧约定失败保留，固定基准复现与当前可达入口复验结果见最终 M3-REVIEW。Release签名构建/校验已通过；阶段初期物理iPhone不可达，交付末尾恢复可达后，覆盖安装、启动、版本回读及真实首次前台查询/评估持久化通过。其余授权交互、锁屏/后台与实际增删仍未验证，见M3-REVIEW。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-CHANGED-FILES.txt =====
+Baseline: b80f81c9f4ad68381b68f6ade30c02e6848718e6
+Paths relative to repository root
+
+InnerBalance/InnerBalanceApp/App/InnerBalanceApp.swift
+InnerBalance/InnerBalanceApp/App/RootView.swift
+InnerBalance/InnerBalanceApp/Assets.xcassets/FangcunSecondaryText.colorset/Contents.json
+InnerBalance/InnerBalanceApp/DesignSystem/FangcunCopy.swift
+InnerBalance/InnerBalanceApp/DesignSystem/FangcunDisplayPreferences.swift
+InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkEditor.swift
+InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkSheet.swift
+InnerBalance/InnerBalanceApp/Features/Home/FangcunTodayView.swift
+InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionDialogs.swift
+InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionScreens.swift
+InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessCoordinator.swift
+InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessDemoProvider.swift
+InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessViews.swift
+InnerBalance/InnerBalanceApp/Features/Recovery/RecoveryCoordinator.swift
+InnerBalance/InnerBalanceApp/Features/Recovery/RecoveryViews.swift
+InnerBalance/InnerBalanceApp/Features/Settings/SettingsView.swift
+InnerBalance/InnerBalanceApp/Health/HealthKitRepository.swift
+InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessHealthKitProvider.swift
+InnerBalance/InnerBalanceApp/Persistence/FangcunDiary.swift
+InnerBalance/InnerBalanceApp/Persistence/FangcunDiaryStorage.swift
+InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings
+InnerBalance/InnerBalanceApp/Sync/PhoneSyncCoordinator.swift
+InnerBalance/InnerBalanceTests/Features/FangcunDesignSystemTests.swift
+InnerBalance/InnerBalanceTests/Features/PhoneSyncIntegrationTests.swift
+InnerBalance/InnerBalanceTests/Features/PracticePresentationTests.swift
+InnerBalance/InnerBalanceTests/Features/ReadinessCoordinatorTests.swift
+InnerBalance/InnerBalanceTests/Features/RecoverySessionTests.swift
+InnerBalance/InnerBalanceTests/Persistence/FangcunDiaryMigrationTests.swift
+InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift
+InnerBalance/InnerBalanceUITests/DrinkEditorUITests.swift
+InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift
+InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift
+InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift
+InnerBalance/InnerBalanceUITests/HomeEvidencePipelineUITests.swift
+InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift
+InnerBalance/InnerBalanceUITests/ReadinessHomeUITests.swift
+InnerBalance/InnerBalanceUITests/RecoveryActionUITests.swift
+InnerBalance/InnerBalanceWatch/App/InnerBalanceWatchApp.swift
+InnerBalance/InnerBalanceWatch/Features/Practice/WatchPracticeView.swift
+InnerBalance/InnerBalanceWatch/Persistence/WatchPracticeCompletion.swift
+InnerBalance/InnerBalanceWatch/Sync/WatchSyncLifecycle.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Recovery/RecoveryAction.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Recovery/RecoveryStore.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Sync/SummaryCache.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncModels.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncService.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncStore.swift
+InnerBalanceCore/Sources/InnerBalanceCore/Sync/WatchConnectivityTransport.swift
+InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessLifecycleTests.swift
+InnerBalanceCore/Tests/InnerBalanceCoreTests/Recovery/RecoveryActionTests.swift
+InnerBalanceCore/Tests/InnerBalanceCoreTests/Sync/SyncReliabilityTests.swift
+docs/plans/fangcun-v1/CAPABILITIES.md
+docs/plans/fangcun-v1/COPY_REVIEW.csv
+docs/plans/fangcun-v1/DECISIONS.md
+docs/plans/fangcun-v1/FANGCUN_M3_START_AFTER_M2R1.md
+docs/plans/fangcun-v1/M3-01-VERIFICATION.md
+docs/plans/fangcun-v1/M3-02-VERIFICATION.md
+docs/plans/fangcun-v1/M3-03-VERIFICATION.md
+docs/plans/fangcun-v1/M3-04-VERIFICATION.md
+docs/plans/fangcun-v1/M3-CHANGED-FILES.txt
+docs/plans/fangcun-v1/M3-LEGACY-UI.md
+docs/plans/fangcun-v1/M3-PRE-CONTRACT.md
+docs/plans/fangcun-v1/M3-PRE-VERIFICATION.md
+docs/plans/fangcun-v1/M3-REVIEW.md
+docs/plans/fangcun-v1/TASKS.md
+docs/plans/fangcun-v1/VERIFICATION.md
+docs/plans/fangcun-v1/evidence/m3-baseline-ui-summary.json
+docs/plans/fangcun-v1/evidence/m3-baseline-ui.txt
+docs/plans/fangcun-v1/evidence/m3-device-receipt.json
+docs/plans/fangcun-v1/evidence/m3-m3-app-accepted-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-app-accepted.txt
+docs/plans/fangcun-v1/evidence/m3-m3-app-delivery-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-app-delivery.txt
+docs/plans/fangcun-v1/evidence/m3-m3-app-final-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-app-final.txt
+docs/plans/fangcun-v1/evidence/m3-m3-app-full-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-app-full.txt
+docs/plans/fangcun-v1/evidence/m3-m3-copy-final-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-copy-final.txt
+docs/plans/fangcun-v1/evidence/m3-m3-core-delivery.txt
+docs/plans/fangcun-v1/evidence/m3-m3-detail-delivery-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-detail-delivery.txt
+docs/plans/fangcun-v1/evidence/m3-m3-ui-delivery-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-ui-delivery.txt
+docs/plans/fangcun-v1/evidence/m3-m3-ui-full-summary.json
+docs/plans/fangcun-v1/evidence/m3-m3-ui-full.txt
+docs/plans/fangcun-v1/evidence/m3-m3-watch-final.txt
+docs/plans/fangcun-v1/evidence/m3-m301-existing-summary.json
+docs/plans/fangcun-v1/evidence/m3-m301-existing.txt
+docs/plans/fangcun-v1/evidence/m3-m301-final-summary.json
+docs/plans/fangcun-v1/evidence/m3-m301-final.txt
+docs/plans/fangcun-v1/evidence/m3-m301-regression-summary.json
+docs/plans/fangcun-v1/evidence/m3-m301-regression.txt
+docs/plans/fangcun-v1/evidence/m3-m302-core.txt
+docs/plans/fangcun-v1/evidence/m3-m302-history-recheck-summary.json
+docs/plans/fangcun-v1/evidence/m3-m302-history-recheck.txt
+docs/plans/fangcun-v1/evidence/m3-m302-history-summary.json
+docs/plans/fangcun-v1/evidence/m3-m302-history.txt
+docs/plans/fangcun-v1/evidence/m3-m302-recheck-summary.json
+docs/plans/fangcun-v1/evidence/m3-m302-recheck.txt
+docs/plans/fangcun-v1/evidence/m3-m302-tests-summary.json
+docs/plans/fangcun-v1/evidence/m3-m302-tests.txt
+docs/plans/fangcun-v1/evidence/m3-m303-build-summary.json
+docs/plans/fangcun-v1/evidence/m3-m303-build.txt
+docs/plans/fangcun-v1/evidence/m3-m303-core-recheck.txt
+docs/plans/fangcun-v1/evidence/m3-m303-core.txt
+docs/plans/fangcun-v1/evidence/m3-m303-tests-summary.json
+docs/plans/fangcun-v1/evidence/m3-m303-tests.txt
+docs/plans/fangcun-v1/evidence/m3-m304-app-tests-summary.json
+docs/plans/fangcun-v1/evidence/m3-m304-app-tests.txt
+docs/plans/fangcun-v1/evidence/m3-m304-core-recheck.txt
+docs/plans/fangcun-v1/evidence/m3-pre-app-final-summary.json
+docs/plans/fangcun-v1/evidence/m3-pre-app-final.txt
+docs/plans/fangcun-v1/evidence/m3-pre-app-summary.json
+docs/plans/fangcun-v1/evidence/m3-pre-app.txt
+docs/plans/fangcun-v1/evidence/m3-pre-ui-recheck-summary.json
+docs/plans/fangcun-v1/evidence/m3-pre-ui-recheck.txt
+docs/plans/fangcun-v1/evidence/m3-pre-ui-summary.json
+docs/plans/fangcun-v1/evidence/m3-pre-ui.txt
+docs/plans/fangcun-v1/screenshots/m3-pre/dark.png
+docs/plans/fangcun-v1/screenshots/m3-pre/large.png
+docs/plans/fangcun-v1/screenshots/m3-pre/light.png
+docs/plans/fangcun-v1/screenshots/m3-pre/practice-return.png
+docs/plans/fangcun-v1/screenshots/m3/README.md
+docs/plans/fangcun-v1/screenshots/m3/action-feedback-after-edit.png
+docs/plans/fangcun-v1/screenshots/m3/action-feedback.png
+docs/plans/fangcun-v1/screenshots/m3/breathing-paused.png
+docs/plans/fangcun-v1/screenshots/m3/home-light.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-dark-large-detail.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-dark-large-home.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-detail-times.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-home-assessable.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-home-awaitingData.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-home-failed.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-home-insufficient.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-home-limited.png
+docs/plans/fangcun-v1/screenshots/m3/readiness-home-provisional.png
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-LEGACY-UI.md =====
+# M3 旧 UI 基准对照
+
+固定基准 `b80f81c9f4ad68381b68f6ade30c02e6848718e6` 使用独立 detached worktree 和 DerivedData 编译；无生产文件修改。选择扩大 UI 中失败的同一 19 个方法，19/19 再现失败，xcodebuild 正常退出 65，结果包可读取。当前扩大 UI 26/45，通过项含本轮全部新增 UI。
+
+当前补回 `home.checkIn` 标识后，下列4个完整感受记录流程通过；没有删除、跳过或放宽旧断言。其余15项保留为基准遗留失败，不能称全仓UI通过。
+
+| 测试 | b80 基准 | 当前扩大运行 | 补标识复验 |
+|---|---|---|---|
+| `CheckInFlowUITests.testBottomChromeDoesNotInterceptHomeScroll` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testEchoImmediatelyPersonalizesTheSentenceAndRecoveryAction` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testEmotionCompassDragCommitsItsEndpoint` | failed | failed | passed |
+| `CheckInFlowUITests.testEmotionFieldRemainsUsableAtAccessibilityTextSizes` | failed | failed | passed |
+| `CheckInFlowUITests.testFangcunNavigationUsesProductLanguage` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testHomeLeadsWithOneStressDecision` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testHomeResponseRemainsReachableAtAccessibilityTextSizes` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testPracticeLibraryOpensARealSession` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testPracticeLibraryStartsFromTheOutcomeInsteadOfAPlainCatalog` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testSelectingSuggestedWordImmediatelySavesPrimaryRecord` | failed | failed | passed |
+| `CheckInFlowUITests.testStatusNeedsNoWritingAndDoesNotCreateAChoreList` | failed | failed | 未重跑，旧界面契约未改 |
+| `CheckInFlowUITests.testUnclassifiedStillSavesSelectedValence` | failed | failed | passed |
+| `FangcunAppearanceUITests.testCriticalScreensInCurrentAppearance` | failed | failed | 未重跑，旧界面契约未改 |
+| `FangcunResponseLoopUITests.testDetailedThenQuickImmediatelyShowsOnlyTheQuickState` | failed | failed | 未重跑，旧界面契约未改 |
+| `FangcunResponseLoopUITests.testFinishThenSkipFeedbackReturnsHomeWithCompletedOnly` | failed | failed | 未重跑，旧界面契约未改 |
+| `FangcunResponseLoopUITests.testQuickThenDetailedImmediatelyShowsOnlyTheDetailedState` | failed | failed | 未重跑，旧界面契约未改 |
+| `FangcunResponseLoopUITests.testSavedPostPracticeFeelingImmediatelyUpdatesHome` | failed | failed | 未重跑，旧界面契约未改 |
+| `FangcunResponseLoopUITests.testSelectedPressureSourceImmediatelyUpdatesTheWholeHomeResponse` | failed | failed | 未重跑，旧界面契约未改 |
+| `FangcunResponseLoopUITests.testStateChoicesStayInPlaceAfterResponding` | failed | failed | 未重跑，旧界面契约未改 |
+
+证据：[基准日志](evidence/m3-baseline-ui.txt)、[基准结果包摘要](evidence/m3-baseline-ui-summary.json)、[扩大运行](evidence/m3-m3-ui-full.txt)。最终20项复验结果见 M3-REVIEW。
+
+遗留原因：旧首页 home.echo.state 预设、home.stressConclusion、旧品牌 AX 类型、“此刻”导航与旧练习库文案不再对应已接受的界面。部分旧响应测试还期望主观状态直接改写首页结论，不能借本轮将其恢复到准备度模型。另有当前可选感受表单的4项定位问题已修复并走到原最终断言。
+
+这些测试继续存在且完整扩大运行过；未将它们作为永久排除名单。后续若要更新其产品契约，应单独审阅，不能将本报告当作通过证明。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-PRE-CONTRACT.md =====
+# M3-PRE 契约依据
+
+基线 b80f81c，工作区干净；Xcode 27 beta / Swift 6，既有 iOS 18 与 watchOS 11 targets 不变。工程运行于 Code/fangcun；测试/构建/结果包位于 Code scratch。设备初查中的可达 iPhone 后经 hardwareProperties.reality 复核为 simulated；当时物理 iPhone 不可达，Watch 连接不可用。交付末尾物理iPhone恢复可达后的分层实测见 M3-REVIEW。
+
+品牌依据：`docs/CURRENT_DESIGN.md`、`web/docs/用户提供的完整设计规格.md` 1.1 和深色章节、`web/docs/方寸品牌使用规范-v1.md`。这些材料确认版画蓝 1B355A、暖纸白 FAF9F5、独立深色和局部柔橙，不支持原测试棕色契约。当前已接受原生深色/文字/橙色语义映射与网页版精确值不同，本轮保留原生选择，不整套重刷回网页颜色。
+
+仅修改浅色次级文字：687584 → 677483（三通道各降低一级）；以 >=4.5 的原断言核验，不四舍五入通过。其他 19 个浅/深语义值仅在测试中修正为已接受的原生蓝色契约。截图使用合成模拟器状态核对浅色、深色、大字。
+
+显示：当前 App 提供显式深色开关，未提供“跟随系统颜色”选项；测试其 light/dark 映射，不恢复强制浅色。系统无障碍字号不被 App 大字选项缩小，系统减少动态与 App 偏好取并集；真实偏好重启由既有 UI 测试覆盖。
+
+提前结束：文案转入 String Catalog/CSV，稳定按钮标识 practice.finish.confirm。结束只转入保存/可跳过反馈流程，不能提前显示已经保存；旧精确整句断言改为 key 解析完整性、动作身份和非误导语义检查，真实保存路径由 UI 和既有持久化测试验收。
+
+旧练习 UI：使用 practice.physiologicalSigh.60 → practice.prepare.start → practice.finish.confirm → 本地完成 → 今日真实 session ID 标记。未开始关闭则留在练习页、今日无新记录、重新进入仍为准备阶段；App 回归另确认无会话、无音频准备或残留激活。不缩短或跳过保存步骤。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-PRE-VERIFICATION.md =====
+# M3-PRE 验证（2026-09-19）
+
+基线 b80f81c，初始工作区干净。Xcode 27 beta，使用既有 scheme/部署版本。一个 iPhone 连接可见，Watch 未连接；未据此宣称签名或真实查询已验收。
+
+- App 最终全量 **170/170、退出 0**：[日志](evidence/m3-pre-app-final.txt)、[结果包摘要](evidence/m3-pre-app-final-summary.json)。含新增未开始无会话/无音频测试，原 3 项失败已修复。此前运行 169 通过，新增测试后完整重跑为 170。
+- UI 最终 **6/6、退出 0**：[日志](evidence/m3-pre-ui-recheck.txt)、[结果包摘要](evidence/m3-pre-ui-recheck-summary.json)。旧练习两项走完最终行为，另 4 项为原改版交互与偏好。
+- 第一次定位调整 **2/6、退出 65**：[失败日志](evidence/m3-pre-ui.txt)。容器标识覆盖开始按钮、系统确认弹层两层辅助功能包装导致失败；调整标识作用范围及稳定 ID firstMatch，未改变行为断言。混合运行中的 Swift Testing 单函数选择器没有匹配，日志为 0 tests；最终通过 App 全量补验，不将空选择器计为通过。
+
+使用 `xcodebuild test`，project `InnerBalance/InnerBalance.xcodeproj`、scheme `InnerBalance`，模拟器和 DerivedData 沿用前轮。完整脱敏命令在日志首行。选项为 `-parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 -collect-test-diagnostics never CODE_SIGNING_ALLOWED=NO`。App 选择 `InnerBalanceTests`；UI 选择 `PracticeReturnHomeUITests` 与 `FangcunRedesignUITests`。两次最终运行正常结束，未被终止；`xcrun xcresulttool get test-results summary --path <bundle>` 实际读取成功，摘要去掉设备标识。
+
+已查看模拟器合成截图：[浅色](screenshots/m3-pre/light.png)、[深色](screenshots/m3-pre/dark.png)、[大字](screenshots/m3-pre/large.png)、[保存返回](screenshots/m3-pre/practice-return.png)。前 3 张是既有 UI 情景注入，只作为视觉证据，不冒充 M3 服务链路。主动作可达、原画与风格保持。颜色和偏好依据见 [契约](M3-PRE-CONTRACT.md)。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/M3-REVIEW.md =====
+# M3 阶段审阅入口
+
+本轮限定 M3-PRE、M3-01～M3-04；未进入 M4–M6。以原任务书和 `FANGCUN_M3_START_AFTER_M2R1.md` 为准。工程默认阈值仍待校准，测试通过不代表医学效度。
+
+## 版本与工作区
+
+- 审阅基准：`b80f81c9f4ad68381b68f6ade30c02e6848718e6`。
+- 本轮开始时规范工作区 `/Users/yvainair/Code/fangcun` 为该 HEAD、无未提交修改；旧 Developer 路径未迁移、未覆盖。
+- 开发分支：[codex/fangcun-v1-m0-m1](https://github.com/yvain57-afk/fangcun/tree/codex/fangcun-v1-m0-m1)。无强推、无 main 合并、无发布。
+- main 核对值：`905626c6e08dc7a36ddd4e219abf6945795ac62f`。
+- 最终代码 HEAD：`70deab454e21194ee4c8a1a545d417eb300c9fd0`；包含验收发现的详情展示补齐。最终交付 HEAD 由报告所在提交及交付回复给出，避免在提交内伪造自引用 SHA。
+
+| 阶段 | 提交 | 内容与文件入口 |
+|---|---|---|
+| M3-PRE | `e825da5`、`3b22606` | 次级文字 token、显示策略、练习对话框/准备页标识、原测试修正；[契约依据](M3-PRE-CONTRACT.md)、[结果](M3-PRE-VERIFICATION.md) |
+| M3-01 | `b535d4609cdc9c8f5ab6f5accd999ce21fb632ae` | `FangcunDiaryStorage`、Diary v2、饮品编辑；[迁移验收](M3-01-VERIFICATION.md) |
+| M3-02 | `9b9dfee` | App 唯一 owner、Home/ReadinessViews、provider 回调、pipeline retire；[接线验收](M3-02-VERIFICATION.md) |
+| M3-03 | `b2ff751` | Core Recovery、RecoveryCoordinator/Views、Root 原会话投影；[行动验收](M3-03-VERIFICATION.md) |
+| M3-04 | `c8d26eb` | Core Sync、PhoneSyncCoordinator、WatchSyncLifecycle、旧档可选字段；[同步验收](M3-04-VERIFICATION.md) |
+| M3 集成补齐 | `70deab4` | 详情统计口径/个人基线/当日背景、历史等级与legacy标签；不改模型 |
+
+完整修改文件清单见 [M3-CHANGED-FILES.txt](M3-CHANGED-FILES.txt)。未修改原 ReadinessConfiguration、ReadinessEngine、golden fixtures、entitlements 或 Xcode project 配置；没有新增网络后端、遥测、在线 AI 或健康权限类型。角色原画、首页主结构与五分钟主入口保留。
+
+## M3-PRE 与历史失败
+
+原 3 项 App 失败对应 4 件处理事项：
+
+1. 调色契约以已确认设计资料为依据修正，不按当前代码随意生成预期。
+2. 浅色次级文字 `#687584 → #677483`；保留原 `>=4.5` 对比度断言，其他已接受语义色保留。
+3. `FangcunDisplayPolicy` 测试显式深浅色、系统大字/减少动态与 App 偏好的组合，保留偏好重启 UI 验证，不恢复强制浅色。
+4. 提前结束用稳定 key/按钮标识及实际动作检查；本地保存前不声称已保存。文案目录检查保留。
+
+`PracticeReturnHomeUITests` 两项走完整流程：真实当前练习库→准备→开始→提前结束→保存/跳过反馈→返回今日并核对会话 ID；未开始关闭→仍在练习页、没有新完成记录，再进入仍为准备阶段。不是仅修首个定位。
+
+M3-PRE App 全量 170/170、目标 UI 6/6，正常退出 0，结果包可读。本阶段最初 UI 定位失败与复验日志均保留。
+
+扩大到全部45项 UI 后，26通过、19失败。固定 b80 独立编译并复跑同19项，19/19复现失败、退出65、结果包可读。现行可选感受入口缺少 `home.checkIn` 标识的4项已补标识并走到原最终断言；其余15项旧界面契约仍失败，未删测试或恢复旧UI。[逐项对照](M3-LEGACY-UI.md)。因此不宣称全仓UI全绿。
+
+## 当前实现和存储影响
+
+**迁移：** 原 v1/preM1 字节先备份并读回校验；目标数据、schema与迁移摘要同一次原子提交。v1饮品为权威，不从preM1复活删除。合成例迁移前后均2条，稳定ID相同，630ml/170mg咖啡因/10g酒精估值/1份糖饮；重复启动不重复。未知录入时间、糖克数保留nil。旧快照原文字、旧口径保留，不生成准备度。
+
+**准备度：** 唯一应用级服务 owner，复用真实 pipeline/store/provider。原始样本→服务→owner→当前首页/详情/历史均有测试。六种资格、freshness和刷新失败分别呈现；HRV显示毫秒，不把对数当读数。详情展示实际睡眠/目标、取样口径与窗口、逐指标基线、来源及独立时间。历史保留空白、legacy、周期与revision，展示当天背景及行动反馈，不按新配置重算过去。停止/清除隔离旧生命周期，撤销外部摘要；明确恢复才重新读取。
+
+**行动：** 保留原练习；增加120秒轻活动、60秒座位调整、120秒安静休息。暂停/中断不补算未知时长，保存失败可重试且ID不变。反馈可跳过、编辑留revision；明确不适优先过滤推荐，未回答不进分母，至少5个同类明确回答才显示描述性统计。没有完成奖励准备度或伪造健康记录。
+
+**同步：** schema/epoch/eventID/entityID/revision/tombstone；本地落盘后排队，接收事务与可重试业务投影完成才ACK，收到ACK才出队。重复/乱序/离线重启/ACK丢失/未知版本/删除重放均有合成回归。即时传输失败保留outbox，有界退避、没有保活轮询。HK与WC按稳定sessionID合并；只有源端保留原HealthKit写入职责，接收端不写健康。
+
+新增Diary v2、Recovery v1、Sync v1文件分仓；原SwiftData记录和健康写入队列继续使用。新增同步字段兼容缺失字段，损坏原字节保留报错，不清库。Watch表新增两个可选字段只通过编译，真实升级迁移未验收。
+
+## 集成验收索引
+
+| ID | 实际测试 / 验证层级 | 结果或边界 |
+|---|---|---|
+| I01 | `FangcunDiaryMigrationTests.migrationKeepsIDsTotalsWordsAndVerifiedOriginalBytes` | 合成文件重开、ID/总量/原文/备份digest一致 |
+| I02 | `interruptedMigrationResumesWithoutDuplication` 三种故障；`damagedInputAndTargetNeverBecomeAnEmptyArchive`；`writeFailureRetryEditingAndUndoKeepEstimatesAndUnknowns` | 原字节保留、失败不假成功、重试幂等 |
+| I03 | `ReadinessCoordinatorTests.rawProviderThroughPipelineStoreAndOwner` 六参数；`ReadinessHomeUITests.testAssessable/Provisional/Limited/Insufficient/Awaiting/Failed` | service到真实当前首页及详情；非最终标签注入 |
+| I04 | `failedRefreshKeepsAnchorAndIndependentCheckTimes`；保留M2-R04移动窗口回归 | 锚点、有效期、证据时间不因查询重试延长 |
+| I05 | `clockBoundariesStopAndExplicitResumeDoNotRewardPractices`；既有 freshness / 新睡眠 Core 回归 | 注入时钟owner与引擎验证18/24小时；实际UI使用前台时钟刷新，未做24小时墙钟人工驻留 |
+| I06 | `latestIntentWinsAndStopIsolatesLateOwnerResults`；`changingSelectionOrStoppingDuringAQueryRejectsLateState`（source/sleep/stop/clear）；`M2ReviewR03Tests.healthEventAfterSleepReadSchedulesOneCatchup`；`ReadinessObserverTests.mergedObserverCallbacksWaitForCatchupPersistence` | 目标/来源/主睡眠最新意图与补读通过；真实系统后台到达未验证 |
+| I07 | `ReadinessLifecycleTests.retiringRejectsInFlightQueuedAndFutureRefreshes`；M2-R01删除全回归；`PhoneSyncIntegrationTests`；`revocationStillReplacesTransportContextWhenDiskWriteFails` | 旧任务不复活current，摘要撤销；真机隐私传播未验证 |
+| I08 | `testHistoryIdentityAndAccessibleLargeDarkLayout`，InsightsStore既有周期/修订回归 | 同ID、28天切换、非今日记录选择；legacy不补造 |
+| I09–10 | `PracticeReturnHomeUITests` 两个完整流程；`testBreathingRoundTripKeepsCurrentAssessmentWithoutReward` | 实际保存返回当前今日，未开始关闭不造记录，准备度不奖励 |
+| I11 | Core `pauseEndRetryAndRestart`；App `localSaveFailureRetryAndPauseHaveOneIdentity` 各3种行动；行动UI | 暂停、提前结束、重复结束、保存重试、中断重开；纯本地无健康写入 |
+| I12 | `optionalFeedbackRevisionsAndDenominator`；`recommendationsRespectExplicitSafetyAndDiscomfortFirst`；`legacyPracticeIdentitySurvivesReconciliationAndFeedbackEdit`；`RecoveryActionUITests.testLocalActionPauseEarlyEndSkipThenEditFeedback` | 跳过nil、不适过滤、反馈修订与原练习ID保留 |
+| I13 | `SyncReliabilityTests.durableACKLostOfflineRestartDuplicatesAndProjectionRetry` | 可控transport与真实文件，不等于实际设备送达 |
+| I14 | `failedReceiverCannotACKAndDeletePrecedesStaleReplay`、`epochUnknownProtocolSummaryAndCorruptionRemainNeutral` | tombstone、旧epoch、未知协议与源队列保留 |
+| I15 | 同上summary损坏/过期/未配置；App `receiverProjectsUnknownDrinkValuesAndDeduplicatesHealthSession` | 中性回退、unknown保持、HK/WC去重；App Group配置blocked |
+| I16 | `FangcunDesignSystemTests`；`FangcunRedesignUITests`；大字深色历史/详情、英文长来源fixture、4项感受表单UI | 自动化AX标签/可达性和合成截图；实际VoiceOver连续朗读未人工验收，不计通过 |
+
+## 实际命令和结果
+
+工具链 Xcode 27 beta（27A5252f）。命令以规范仓库为工作目录，测试选择与完整脱敏输出见 `evidence/m3-*.txt`。本机原始 `.xcresult` 留在 `/Users/yvainair/Code/Codex/2026-09-19/fangcun-m3`，未上传设备标识；提交的JSON由 `xcresulttool get test-results summary` 读取成功后摘取计数。
+
+```sh
+export DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer
+swift test --package-path InnerBalanceCore
+xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -derivedDataPath "$DERIVED_DATA" \
+  -resultBundlePath "$RESULT_PATH" -parallel-testing-enabled NO \
+  -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 \
+  -collect-test-diagnostics never -only-testing:InnerBalanceTests CODE_SIGNING_ALLOWED=NO
+# 完整 UI 将选择项替换为 -only-testing:InnerBalanceUITests。
+# 目标复验选择项逐项列于相应日志的命令首行；没有 -skip-testing。
+xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' \
+  -destination 'generic/platform=watchOS Simulator' -derivedDataPath "$WATCH_DERIVED_DATA" CODE_SIGNING_ALLOWED=NO
+```
+
+`SIMULATOR_ID` 取本机可用模拟器，不将设备标识写入仓库。`-collect-test-diagnostics never` 仅关闭Xcode诊断收集，不改测试断言；本轮取得正常退出与可读结果包。
+
+| 运行 | 结果 | 证据 |
+|---|---|---|
+| M3-PRE App全量 | 170/170，exit0 | [摘要](evidence/m3-pre-app-final-summary.json) |
+| M3-PRE现行首页及两旧练习UI | 6/6，exit0 | [摘要](evidence/m3-pre-ui-recheck-summary.json) |
+| Core全量 | 112/112，exit0 | [日志](evidence/m3-m3-core-delivery.txt) |
+| App全量 | 185/185，exit0 | [摘要](evidence/m3-m3-app-final-summary.json) |
+| 全部UI扩大运行 | 26/45，19失败，exit65 | [摘要](evidence/m3-m3-ui-full-summary.json) |
+| b80相同19项基准复现 | 0/19，19失败，exit65 | [摘要](evidence/m3-baseline-ui-summary.json) |
+| Watch模拟器 | BUILD SUCCEEDED，exit0 | [日志](evidence/m3-m3-watch-final.txt) |
+| 当前交互复验 | 20/20，exit0 | [摘要](evidence/m3-m3-ui-delivery-summary.json) |
+| 补齐详情/历史后复验 | 8/8，exit0；与上一行部分重叠，不相加当独立测试数 | [摘要](evidence/m3-m3-detail-delivery-summary.json) |
+| 补齐后的App全量 | 185/185，exit0 | [摘要](evidence/m3-m3-app-accepted-summary.json) |
+| 最后文案复验 | App185 + 首页UI1 = 186/186，exit0 | [摘要](evidence/m3-m3-copy-final-summary.json) |
+| Release签名构建 | 构建/签名校验通过 | [脱敏收据](evidence/m3-device-receipt.json) |
+
+中途失败单列：M3-02首次详情时间字段未滚动到、历史测试把凌晨前一日主睡眠错误当作今日，已保留业务语义修正定位复验；M3-03首次全量运行出现真实音频RPC超时/进程重启、3项失败，后续两轮App全量184/184与185/185包含同套测试通过。保留原日志，不把失败运行改记成功。所有初次Core编译/新增回归问题已修复，不修改golden或算法参数。
+
+## 视觉与设备边界
+
+合成截图目录 [screenshots/m3](screenshots/m3)：深色大字首页/详情、行动反馈前后、呼吸暂停；`home-light.png` 是明确关闭readiness的原M1视觉回归，不作新准备度证据。新增六场景截图从真实UI fixture链路采集。没有真实健康截图。
+
+| 能力 | 本轮状态 |
+|---|---|
+| Release签名/本机构建 | passed；沿用本机已有签名资源，团队/证书不入Git |
+| 物理iPhone覆盖安装/启动/版本回读 | passed；交付末尾经本地网络恢复可达，确认reality=physical；1.0.0 / 2026091903 |
+| 真实HealthKit首次前台读取与评估落盘 | passed（本次实机）；本地核验查询成功、有实际样本、评估及独立刷新记录落盘；原始内容不入Git |
+| 授权弹窗重走、来源/主睡眠/目标操作、手动刷新与回前台全流程 | implemented_unverified；首次冷启动成功不能替代这些人工交互 |
+| 真实增量/删除、锁屏读取、后台事件 | implemented_unverified；保留M0/M2能力边界 |
+| 物理Watch送达/锁屏/后台/旧SwiftData升级 | implemented_unverified / blocked，缺少可用配对Watch |
+| 真实App Group共享与签名 | blocked，工程没有真实组配置；未配置中性回退已测 |
+| 模拟ACK/事务重放 | verified，仅Core/App可控transport层 |
+
+交付末尾物理iPhone从不可达变为已配对本地网络可达；详情探测成功后先备份本App存档，再覆盖安装并启动Release（不卸载）。回读版本1.0.0 / 2026091903。只在本机比较：原v1/preM1字节未改，迁移checksum和源digest正确、记录ID保留；旧SwiftData练习/感受/每日记录行保留、显示偏好未改。真实Insights文件checksum正确、查询尝试和成功时间存在、有实际样本、评估已保存且无refreshFailure。未输出或上传健康值、记录ID、来源设备信息或数据库。首次launch命令选项位置错误退出64，按devicectl帮助修正后正常退出0，不是App运行失败。后续仍需逐项人工检查授权弹窗、来源/主睡眠/测量时间显示、反复刷新/回前台/改来源和目标。真实增删只操作合成自有测试数据，不删用户或其他App健康记录。配对Watch送达另行验收。
+
+真机命令（设备标识与签名资源仅在本机变量中）：
+
+```sh
+xcrun devicectl device copy from --device "$IPHONE_ID" --domain-type appDataContainer \
+  --domain-identifier com.yvainair.InnerBalance --source 'Library/Application Support' \
+  --destination "$PRIVATE_BACKUP"
+xcrun devicectl device install app --device "$IPHONE_ID" "$SIGNED_APP"
+xcrun devicectl device process launch --device "$IPHONE_ID" --terminate-existing com.yvainair.InnerBalance
+xcrun devicectl device info apps --device "$IPHONE_ID" --filter "bundleIdentifier == 'com.yvainair.InnerBalance'"
+```
+
+各命令使用 `--json-output` 写本机私有结果；以上成功命令退出0。偏好plist单独备份/回读，SQLite只读比较原行、Diary/Insights解码校验只在本机完成。Git收据只含布尔核验、版本与状态，无真实记录计数、健康值、标识或存档。
+
+## 回退和停止点
+
+设置中明确关闭准备度功能开关回到修正M1链路；不启用Mock、不清除评估历史。停止读取撤销current和摘要，重新启用须用户明确选择。专用评估清除不删除饮品、原SwiftData或HealthKit。不要把降级安装旧二进制当作安全数据迁移回退：本轮继续在兼容v2的代码中使用功能开关，原备份只作审计/恢复依据，不盲目覆盖新记录。
+
+本轮开发范围止于M3。真机和遗留UI未验证/未通过项如上保留；不以这些条件阻塞已可测试的独立实现，也不把它们写为通过。没有上架、TestFlight、main合并或上传健康资料。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/MIGRATION_ROLLBACK.md =====
+# M1 数据影响与回退
+
+- 未改 HealthKit 类型/授权、SwiftData 模型、练习写入与去重、Watch 传输、饮品单位或旧条目。
+- `fangcun.native.diary.v1` 的日快照新增可选 `semanticsVersion`；旧 JSON 缺少该字段仍可解码，阅读本身不重写 archive。
+- 旧版 steady / elevated / insufficient 原始值保留；旧标题、summary、sleep、training 不回算。当天已有 legacy 时，新版另存 M1 快照，并保留旧版供查看。
+- 第一次改写已有 archive 前，原数据写到本机 `fangcun.native.diary.preM1`，后续不覆盖备份；备份和健康数据都不会上传 Git。
+- 新增 watch / limited 原始值旧 App 不认识，因此**不能只退二进制并继续读取新版 archive**。需要回退时先导出当前完整 archive 留存新增饮品/快照，再在单独受控步骤恢复 preM1 字节；这会回到备份时点，不能无提示丢弃期间新记录。优先采用向前修复。
+- 本轮不自动执行恢复/清库。M3 再做完整版本化存储及显式迁移工具。
+- 回归覆盖：原 v1 读取不修改字节、legacy 原语义、同日新旧共存、原始备份不被第二次写覆盖、复合饮品撤销与跨日行为、损坏数据不覆盖。
+- 代码按 M0、M1 独立提交；`main` 保持基线。未 reset/stash/clean 原 Developer 工作区。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/PRIVACY_RELEASE.md =====
+# M0–M1 隐私与发布检查
+
+- 无新网络调用、账号、遥测、联网 AI 或付费依赖。
+- 无新增 HealthKit 读取/写入类型、后台模式、App Groups 或通知授权。能力探针不加入正式 App。
+- 测试截图全部为空数据或 Synthetic Watch 合成数据；不上传真机健康截图。
+- 不提交证书、描述文件、设备唯一标识、签名团队、本机配置或本地 archive。
+- DEBUG fixture 与 preview 参数不会进入 Release；真机运行使用现有 HealthKit provider。
+- 本轮没有 App Store / TestFlight 上传；M2–M6 未实施部分保持未完成。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/READINESS_GOLDEN_FIXTURES.json =====
+{
+  "schemaVersion": 1,
+  "purpose": "Golden examples for proposed deterministic rules; not a medically validated model or complete test suite.",
+  "preconditions": {
+    "hrvBaselineDays": 20,
+    "rhrBaselineDays": 20,
+    "nightHRVSampleCount": 4,
+    "nightHRVCoveredAbsoluteHours": 3,
+    "sleepSourceComparable": true,
+    "freshness": "current"
+  },
+  "cases": [
+    {
+      "id": "G01",
+      "input": {
+        "hrvDeviation": 0,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 0,
+        "level": "usual"
+      }
+    },
+    {
+      "id": "G02",
+      "input": {
+        "hrvDeviation": 0.99,
+        "rhrDeviation": 0.99,
+        "sleepDeficitMinutes": 59
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 0,
+        "level": "usual"
+      }
+    },
+    {
+      "id": "G03",
+      "input": {
+        "hrvDeviation": 1,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 1,
+        "sleepSeverity": 0,
+        "level": "reduced"
+      }
+    },
+    {
+      "id": "G04",
+      "input": {
+        "hrvDeviation": 1,
+        "rhrDeviation": 1,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 2,
+        "sleepSeverity": 0,
+        "level": "reduced"
+      }
+    },
+    {
+      "id": "G05",
+      "input": {
+        "hrvDeviation": 2,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 60
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 2,
+        "sleepSeverity": 1,
+        "level": "low"
+      }
+    },
+    {
+      "id": "G06",
+      "input": {
+        "hrvDeviation": 1,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 120
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 1,
+        "sleepSeverity": 2,
+        "level": "low"
+      }
+    },
+    {
+      "id": "G07",
+      "input": {
+        "hrvDeviation": 0,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 120
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 2,
+        "level": "reduced"
+      }
+    },
+    {
+      "id": "G08",
+      "input": {
+        "hrvDeviation": 0,
+        "rhrDeviation": 2,
+        "sleepDeficitMinutes": 119
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 2,
+        "sleepSeverity": 1,
+        "level": "low"
+      }
+    },
+    {
+      "id": "G09",
+      "input": {
+        "hrvDeviation": -0.5,
+        "rhrDeviation": -0.5,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "assessable",
+        "autonomicSeverity": 0,
+        "sleepSeverity": 0,
+        "level": "usual"
+      }
+    },
+    {
+      "id": "G10",
+      "input": {
+        "hrvDeviation": -2.1,
+        "rhrDeviation": 0,
+        "sleepDeficitMinutes": 0
+      },
+      "expected": {
+        "availability": "limited",
+        "autonomicSeverity": null,
+        "sleepSeverity": null,
+        "level": null
+      }
+    }
+  ]
+}
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/SCREENSHOTS.md =====
+# M0 截图基线
+
+以下为模拟器合成/空数据；场景切换仅验证原有视觉，不作为 M1 数据链路证据。
+
+- [redesign-insufficient.png](screenshots/baseline/redesign-insufficient.png) — `FangcunRedesignUITests/testAcceptedSoloAndDuoScenesInDarkAndLargeType()`
+- [redesign-elevated.png](screenshots/baseline/redesign-elevated.png) — `FangcunRedesignUITests/testAcceptedSoloAndDuoScenesInDarkAndLargeType()`
+- [redesign-steady.png](screenshots/baseline/redesign-steady.png) — `FangcunRedesignUITests/testAcceptedSoloAndDuoScenesInDarkAndLargeType()`
+- [redesign-breathing-paused.png](screenshots/baseline/redesign-breathing-paused.png) — `FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit()`
+- [redesign-breathing-live.png](screenshots/baseline/redesign-breathing-live.png) — `FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit()`
+- [redesign-settings.png](screenshots/baseline/redesign-settings.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-completion.png](screenshots/baseline/redesign-completion.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-breathing.png](screenshots/baseline/redesign-breathing.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-trends.png](screenshots/baseline/redesign-trends.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-drinks.png](screenshots/baseline/redesign-drinks.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-home.png](screenshots/baseline/redesign-home.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+
+## M1 最新 UI 回归截图
+
+原始 provider fixture → HomeViewModel → Core → 首页，覆盖 12 种输入。下列 m1-* 图片没有注入最终 UI 状态；Synthetic Watch 是合成记录。
+
+- [redesign-insufficient.png](screenshots/m1/redesign-insufficient.png) — `FangcunRedesignUITests/testAcceptedSoloAndDuoScenesInDarkAndLargeType()`
+- [redesign-elevated.png](screenshots/m1/redesign-elevated.png) — `FangcunRedesignUITests/testAcceptedSoloAndDuoScenesInDarkAndLargeType()`
+- [redesign-steady.png](screenshots/m1/redesign-steady.png) — `FangcunRedesignUITests/testAcceptedSoloAndDuoScenesInDarkAndLargeType()`
+- [redesign-breathing-paused.png](screenshots/m1/redesign-breathing-paused.png) — `FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit()`
+- [redesign-breathing-live.png](screenshots/m1/redesign-breathing-live.png) — `FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit()`
+- [redesign-settings.png](screenshots/m1/redesign-settings.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-completion.png](screenshots/m1/redesign-completion.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-breathing.png](screenshots/m1/redesign-breathing.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-trends.png](screenshots/m1/redesign-trends.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-drinks.png](screenshots/m1/redesign-drinks.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [redesign-home.png](screenshots/m1/redesign-home.png) — `FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings()`
+- [m1-oneCardio.png](screenshots/m1/m1-oneCardio.png) — `HomeEvidencePipelineUITests/testHistoryFailureAndLimitedEvidence()`
+- [m1-sleepOnly.png](screenshots/m1/m1-sleepOnly.png) — `HomeEvidencePipelineUITests/testHistoryFailureAndLimitedEvidence()`
+- [m1-failed.png](screenshots/m1/m1-failed.png) — `HomeEvidencePipelineUITests/testHistoryFailureAndLimitedEvidence()`
+- [m1-noCurrentHistory.png](screenshots/m1/m1-noCurrentHistory.png) — `HomeEvidencePipelineUITests/testHistoryFailureAndLimitedEvidence()`
+- [m1-time-detail.png](screenshots/m1/m1-time-detail.png) — `HomeEvidencePipelineUITests/testMeasurementTimeDoesNotBecomeQueryTime()`
+- [m1-stale-measurement.png](screenshots/m1/m1-stale-measurement.png) — `HomeEvidencePipelineUITests/testMeasurementTimeDoesNotBecomeQueryTime()`
+- [m1-unreliablePair.png](screenshots/m1/m1-unreliablePair.png) — `HomeEvidencePipelineUITests/testPreviousSleepAndIncompleteBaselines()`
+- [m1-baselineBuilding.png](screenshots/m1/m1-baselineBuilding.png) — `HomeEvidencePipelineUITests/testPreviousSleepAndIncompleteBaselines()`
+- [m1-previousSleep.png](screenshots/m1/m1-previousSleep.png) — `HomeEvidencePipelineUITests/testPreviousSleepAndIncompleteBaselines()`
+- [m1-workoutProtected.png](screenshots/m1/m1-workoutProtected.png) — `HomeEvidencePipelineUITests/testQualifiedEvidenceAndWorkoutProtection()`
+- [m1-elevated.png](screenshots/m1/m1-elevated.png) — `HomeEvidencePipelineUITests/testQualifiedEvidenceAndWorkoutProtection()`
+- [m1-watch.png](screenshots/m1/m1-watch.png) — `HomeEvidencePipelineUITests/testQualifiedEvidenceAndWorkoutProtection()`
+- [m1-steady.png](screenshots/m1/m1-steady.png) — `HomeEvidencePipelineUITests/testQualifiedEvidenceAndWorkoutProtection()`
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/START_CODEX.md =====
+# 方寸 Fangcun｜Codex 开始执行
+
+把 `FANGCUN_CODEX_SPEC_v1.0.md` 放在当前方寸项目可读取的位置，然后把下面正文交给 Codex。
+
+这一轮先检查工作区、建立基线并完成 M0—M1；后续按任务书逐阶段继续。Markdown 是开发主文件，Word 为同内容阅读／批注版。
+
+请在当前方寸 Fangcun 原生项目中执行 FANGCUN_CODEX_SPEC_v1.0.md。
+先读 AGENTS.md、AI_CONTEXT.md、当前设计和验证文档，确认实际 HEAD、
+未提交改动和当前入口。不要回退我的工作区，不要修改已确认的 UI 风格、
+猫狗原画、品牌色或现有用户数据，不要重新设计整套 App。
+
+首先完成 M0 和 M1：建立真实基线，修复当前证据不足仍显示平稳、
+时间新鲜度混淆、观察与偏高混合的问题。用真实 provider→模型→UI 测试验证。
+不要在第一轮同时实施全部大重构。
+
+随后按任务书 M2–M6 的依赖分阶段实现：可解释准备度、版本化存储、
+腕上离线练习与反馈、跨端幂等同步、活动间歇提醒、主屏与锁屏组件，
+以及独立验收的练习 Live Activity。M7 暂不实施。
+
+算法阈值是待校准工程默认值，不得写成医学结论，不得编造总分或改善。
+久坐相关采用方寸自己的自主定时活动提醒，不监听苹果系统站立通知。
+健康数据、后台机会、锁屏刷新或真机能力不可用时，诚实降级并记录阻塞。
+
+所有新增文案集中为稳定 key，生成 COPY_REVIEW.csv 供我人工修改。
+每阶段留下测试、截图、迁移影响和未验证事项；不能只说“已完成”。
+不要自动上架、上传 TestFlight、引入联网 AI、账户、遥测或新的付费依赖。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/TASKS.md =====
+# 执行状态
+
+最新授权（2026-09-19）：M3-PRE 已完成，M3-01 进入实施，M3-02～04 按顺序进入；M4–M6 不展开。下方 M2 停止点为历史记录。
+
+M3-PRE：verified，提交 e825da5；App 170/170，UI 6/6，退出 0 且结果包可读取，见 VERIFICATION。
+
+M0–M1 已补核验；按用户本轮边界仅推进 M2-01 至 M2-04。M2 数据链路完成后停止，M3–M6 不展开，M7 暂缓。
+
+| 任务 | 状态 | 证据/下一步 |
+|---|---|---|
+| M0-01 | verified | BASELINE.md |
+| M0-02 | verified | 64 Core + 27 App + 3 UI；SCREENSHOTS.md |
+| M0-03 | implemented_unverified | CAPABILITIES.md；SDK/Widget build 通过，物理 Watch blocked |
+| M1-01 | verified | 67 Core + 31 App；12 个原始数据输入情景 |
+| M1-02 | verified | 时间分离、观察状态、legacy 保留及备份回归 |
+| M1-03 | verified | 7 UI tests；原始 provider 输入至首页，真机已安装启动 |
+| M2-01 | verified（合成数据链路） | 标准化、选源、去重、增量/删除与事务锚点联测通过；真实 HK 增量/后台仍 implemented_unverified |
+| M2-02 | verified | ReadinessFeatureTests；78 Core 测试通过，原始合成输入 |
+| M2-03 | verified | 86 Core；原文件 G01–G10 从原始样本重放 |
+| M2-04 | verified（本机重放） | 独立存储、版本修订、事务恢复与并发保护；见 ADR-002 / VERIFICATION |
+| M3 | implemented；分层验证见 M3-REVIEW | M3-PRE与01～04完成；真机安装/初始读取通过，其余设备条件及共享容器未验收；15项旧UI契约失败保留 |
+| M4 | not_started | 腕上会话、反馈及幂等同步 |
+| M5 | not_started | 活动提醒及 Widgets |
+| M6 | not_started | 端到端验收、独立 Live Activity 验收 |
+| M7 | not_started | 按规格明确暂缓 |
+
+注意：verified 表示所列范围的定向验证，不表示全仓库无失败。最终 Core 93、UI 8 通过；App 全量 163 中 3 个既有测试失败，在 M2 前提交独立复现，见 VERIFICATION。Watch/HealthKit 真机未验证能力不计入已通过。
+
+## M2-R 补修
+
+- R01：已重现并修复；历史及间接依赖删除回归通过，兼容旧评估。
+仅本轮 M2-R，不进入 M3。
+- R02：已重现并修复，分页失败/重启/预算续读及手动来源测试通过。
+- R03：已重现并修复；语义变化串行补读、同语义共享、旧请求保护及跨上下文失败缓存隔离通过。
+- R04：已重现并修复；移动截止时间不新增修订，新增证据仍可修订。
+- R05：已重现并修复，6 项 App 回调/取消/合并补读测试通过；系统后台仍未真机验证。
+
+M2-R1 最终：Core 103/103，App 166/169（原 3 项失败），原首页/交互 UI 8/8，扩大练习 UI 2 项失败且已在审阅基准独立复现，Watch 模拟器编译通过。新增回归最终无失败；详见 [补修交付报告](M2-R1-RESULTS.md)。M2-R 停止，M3–M6 仍 not_started。
+
+M3-01阶段记录：verified（合成数据与模拟器），9 App / 1 UI，通过证据见 M3-01-VERIFICATION.md。以下M3-02～04为后续顺序实施记录，最终状态以M3-REVIEW为准。
+
+### M3-02
+- 接入应用级准备度 owner、现行首页/详情/7与28天历史及来源设置。
+- 生命周期停止隔离与慢请求版本回归见 M3-02-VERIFICATION.md；最终实测结果登记到 M3-REVIEW.md。
+
+### M3-03
+- 完成纯函数建议、3种本地轻行动、统一sessionID投影和可编辑可跳过反馈。
+- Core/App/UI证据见 M3-03-VERIFICATION.md。真实音频运行环境中断单列，最终全量再核验。
+
+### M3-04
+- 实现两端WC适配、事务outbox/ACK、重复/乱序/tombstone/安装epoch、手机权威摘要和中性缓存回退。
+- 业务投影、HK/WC稳定ID合并与来源写入单一归属已接线；参见 M3-04-VERIFICATION.md。
+- 真机 HealthKit/Watch/App Group分别登记，不推导为已验收；停止点仍为M3，不进入M4。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/VERIFICATION.md =====
+# M0–M2 核验与交付 — 2026-09-18
+
+## 已交付
+
+M0 基线提交 `cf5c87d`；M1 在 `codex/fangcun-v1-m0-m1` 分支提交。初次 M1 交付时未推送；本轮按用户授权推送同一独立开发分支，保持 `main` 不变。未上架或上传 TestFlight。
+
+- 当前证据资格门控：历史充分但近期为空、读取失败、全部过期不能显示 steady；一项体征/只有睡眠/不够可靠显示 limited。
+- watch / elevated 分开；运动保护不伪装正常；主卡用测量日期，详情区分查询/计算/测量；睡眠标“最近主睡眠”与结束日期。
+- 第二条身体线索显示实际 HRV/RHR 及测量时间；新文案 40 个稳定 key，与 COPY_REVIEW.csv 一一对应。
+- legacy 快照保留原内容和旧标题，同日刷新不会删除旧记录；首写前保留已有 archive 原始备份。
+- 原猫狗图像、动效、主题 token 和练习流程未改。未扩大健康权限或添加产品网络请求。
+
+## 实际验证
+
+| 检查 | 结果 | 证据 |
+|---|---|---|
+| Core | 67 tests / 13 suites passed | evidence/m1-core.txt |
+| App 最终代码 | 31 tests / 4 suites passed，含 12 个 provider fixture 参数案例 | evidence/m1-final-unit.txt |
+| UI | 7 tests passed，12 个原始输入情景；深浅色、大字、时戳分离与原练习保存链路通过 | evidence/m1-final.txt |
+| Watch scheme | Debug watchOS Simulator 构建通过 | evidence/m1-watch.txt |
+| iOS + 嵌入 Watch | 最终 Release 真机构建通过 | evidence/device-receipt.json；含签名的完整日志只留本机 |
+| Release mock 排除 | 二进制没有 health-fixture、preview-state、UI-testing 内存模式入口；HealthKit entitlement 存在 | 构建后检查及 device-receipt.json |
+| 文案 | Catalog 40 个 body.* key 和 CSV 完全匹配；代码静态 key 均存在 | 构建前后脚本检查 |
+| 差异 | git diff --check cf5c87d 通过（M1 改动） | 提交前检查 |
+| 真机安装 | iPhone 16 Pro 覆盖安装、启动成功，版本回读 1.0.0 (2026091802) | evidence/device-receipt.json |
+
+UI 最终截图使用最终界面源代码；随后仅补齐 Release 的持久化测试入口隔离，并把文案 helper 移入既有 DesignSystem 目录。最终 Debug App 单元测试及 Release iOS/Watch 构建再次通过；无需因此重复全部 UI 场景。
+
+## 重放测试
+
+先设置实际 `DEVELOPER_DIR`，用 `xcrun simctl list devices available` 选择本机真实存在的设备，把 ID 放入 `IOS_SIMULATOR_ID`。不要复制他人的设备标识。
+
+```sh
+swift test --package-path InnerBalanceCore
+xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -configuration Debug -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/m1-final.xcresult" \
+  -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 \
+  -only-testing:InnerBalanceTests/HomeViewModelTests \
+  -only-testing:InnerBalanceTests/HomeEvidencePipelineTests \
+  -only-testing:InnerBalanceTests/FangcunDiaryTests \
+  -only-testing:InnerBalanceTests/PracticeSessionViewModelTests \
+  -only-testing:InnerBalanceUITests/FangcunRedesignUITests \
+  -only-testing:InnerBalanceUITests/HomeEvidencePipelineUITests CODE_SIGNING_ALLOWED=NO
+xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' \
+  -configuration Debug -destination 'generic/platform=watchOS Simulator' \
+  -derivedDataPath "$WATCH_DERIVED_DATA" CODE_SIGNING_ALLOWED=NO
+xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -configuration Release -destination 'generic/platform=iOS' -derivedDataPath "$DEVICE_DERIVED_DATA" \
+  -allowProvisioningUpdates DEVELOPMENT_TEAM="$LOCAL_TEAM" CURRENT_PROJECT_VERSION=2026091802
+xcrun devicectl device install app --device "$IPHONE_ID" "$DEVICE_DERIVED_DATA/Build/Products/Release-iphoneos/InnerBalance.app"
+xcrun devicectl device process launch --device "$IPHONE_ID" com.yvainair.InnerBalance
+xcrun devicectl device info apps --device "$IPHONE_ID" --bundle-id com.yvainair.InnerBalance
+```
+
+最终补测使用相同 App 四个 suite，去掉两个 UI selector，结果包为 `m1-final-unit.xcresult`。原始日志、签名产物、设备回执及 xcresult 留在本机 `/Users/yvainair/Code/Codex/2026-09-18/fangcun-v1/`；公开可提交证据经过路径/设备标识删减、行尾空白规范化，所有截图均为模拟器合成数据。
+
+## 已知验证边界
+
+- 基线与本轮无签名模拟器测试宿主都出现 HealthKit entitlement 的环境日志；fixture 用注入的原始记录，不把这种运行当成真实 HealthKit 授权验证。最终签名真机产物另行核验 HealthKit entitlement 存在。
+- Xcode beta 既有 deprecation、调试器与模拟器系统服务告警未导致测试失败；没有删除测试或放宽断言换取通过。
+- 真机安装/启动及版本回读，不等同真机逐屏人工验收或健康数据准确性验证。
+- 物理 Watch 的腕下运行、触感、系统失效和跨端送达仍 blocked；Widget/通知仅完成独立编译实验。
+- M2 新准备度、M3 全量存储迁移/28 天趋势及取消分类柱高、M4 Watch 离线会话与同步、M5 系统入口、M6 完整验收与 Live Activity 尚未实施；M7 暂缓。
+
+## M0–M1 逐项复核（M2 前置，2026-09-18）
+
+| 用户核验项 | 现有测试名称及结果 | 证据 |
+|---|---|---|
+| 历史充分，当前无可靠资料不平稳 | BodyLoadEngineTests.historyWithoutCurrentEvidence(0/4/5/14)、HomeEvidencePipelineTests.rawInput(noCurrentHistory/stale/failed)、HomeEvidencePipelineUITests.testHistoryFailureAndLimitedEvidence 均通过 | m1-core.txt、m1-final-unit.txt、m1-final.txt |
+| 睡眠单项、体征单项为有限 | currentEvidenceGate、rawInput(sleepOnly/oneCardio/unreliablePair)、testHistoryFailureAndLimitedEvidence 通过 | 同上 |
+| 运动保护不表达正常 | recentWorkoutSuppressesElevatedConclusion、rawInput(workoutProtected) 通过；本次给 testQualifiedEvidenceAndWorkoutProtection 增加首页保护说明断言，通过 | m1-audit.txt：该 test passed（同次其他测试有失败，未混算） |
+| 非最近一夜不叫昨晚 | rawInput(previousSleep) 验证 stale；本次在 testPreviousSleepAndIncompleteBaselines 验证真实首页卡片包含“最近主睡眠”和 9月16日，且不含“昨晚”，通过 | m1-audit.txt |
+| 测量/查询/计算分离 | timeSeparation、testMeasurementTimeDoesNotBecomeQueryTime 通过，验证原时间不随刷新延长 | m1-final-unit.txt、m1-final.txt |
+| provider→VM→当前首页 | HomeEvidencePipelineUITests 四个 test，共 12 种 raw fixture；入口为 --health-fixture，未使用 --preview-state | m1-final.txt；HomeHealthFixture.swift 与 RootView.swift |
+| 练习无回归 | PracticeSessionViewModelTests 全套；testNativeTodayDrinksTrendsPracticeAndSettings；testBreathingWithMotionEnabledCanPauseAndExit 通过 | m1-final-unit.txt、m1-final.txt |
+| 饮品/记录无回归 | compositeDrinkUndoAndReload、dayBoundariesAndUnknownHistory、unreadableArchiveIsNotOverwritten、legacySnapshotKeepsItsMeaningAndSurvivesSameDayRefresh 通过 | m1-final-unit.txt |
+| 显示偏好 | 原 testAcceptedSoloAndDuoScenesInDarkAndLargeType 通过；新增 testDisplayPreferencesSurviveRelaunch 验证三个开关即时值及重启保留，通过 | m1-preferences.txt |
+
+补测命令使用相同 InnerBalance scheme、Debug、专用 iPhone 模拟器及 CODE_SIGNING_ALLOWED=NO，仅选择上述两个 HomeEvidencePipelineUITests test 和新偏好 test（完整参数见日志）。第一次偏好测试点到 SwiftUI Switch 行中央，未实际切换；修正为控件右侧，并增加即时值断言后单独重跑通过。保留首次失败日志，不把整次失败的 test run 标成通过。未修改 App 行为。
+
+原 M0–M1 的代码验收成立；平台能力验收仅按 CAPABILITIES 的具体层级登记，不包含 Watch 后台或跨端送达的真机成功。
+
+## M2-01 初步证据
+
+`ReadinessSourceTests.sourceDefinitionsAndRevisions / noSilentSwitchAndManualRebaseline / uuidSyncVersionAndExplicitMirrors / deletionWinsAndCacheIsBounded` 通过，Core 共 71 项。`ReadinessHealthKitProviderTests.actualHKObjectsNormalizeWithoutWritingHealthStore` 通过，覆盖实际 HKQuantitySample 单位换算、原 UUID/时间/同步元数据及 inBed 类别保留，不写 HealthKit。SDK 适配器和观察器编译通过。
+
+首次 adapter 测试错误假定“未保存的 HKSample 已有来源 bundle”，SDK 实际为空。改为断言原样保留来源并且不能被选择为合格主源，重跑通过；没有给未保存对象编造来源。失败与复验日志均保留在 evidence/m2-01-*.txt。真机 HealthKit 增量、后台回调尚未验证，事务/锚点提交验收在 M2-04 完成。
+
+## M2-02 核验
+
+命令：`swift test --package-path InnerBalanceCore`。最终 78 tests / 15 suites 通过，证据 [m2-02-core-recheck.txt](evidence/m2-02-core-recheck.txt)。
+
+新增 `ReadinessFeatureTests`：`sleepUnionDoesNotMixSourcesOrCountAwake`、`lateSleepKeepsCycleAndAmbiguousMatchesRequireReview`、`shiftWorkNapManualChoiceAndArrival`、`excessiveFutureAndConflictingSleep`、`sparseCoverageInterventionAndRestingReuse`、`baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors`、`daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent`。最后一项当前覆盖换时区与绝对桶，实际夏令时重复小时在 M2-03 补充。
+
+首轮同小时 fixture 误放在整点边界两侧，实际属于两个绝对小时；测试失败如实保留 [m2-02-core.txt](evidence/m2-02-core.txt)。调整合成采样时刻，使 3 样本确实在同一小时，未放宽生产规则。
+
+## M2-03 verification
+
+Command: `swift test --package-path InnerBalanceCore`. 86 tests / 16 suites passed: [log](evidence/m2-03-core-recheck.txt).
+
+`ReadinessEngineTests.originalGoldenFileThroughRawSamples` reads the original G01-G10 JSON, generates 20 days of source-specific history and four current HRV samples across three absolute hours, then compares all ten results.
+
+Other tests: `independentBaselineBoundariesAndCurrentCoverage` (6/7/8/13/14/28 days, 1/2/3 samples, independent 8/20-day eligibility); `enoughHistoryCannotInventCurrentAndPartialDataStayLimited`; `nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual`; `noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory`; `queryFailureCacheInvalidationAndFreshnessBoundaries` (18/24 hours, original cached timestamps); `trainingAndBackgroundEventsDoNotSuppressOrReward`; `arrivalBufferAndRealDSTRepeatedHour` (New York repeated 01:00 hour on 2026-11-01).
+
+The first run matched every golden level but failed ten coverage-count assertions: the fourth synthetic timestamp was in the wrong hour bucket. The fixture was corrected, without relaxing production rules. [Initial log retained](evidence/m2-03-core.txt).
+
+## M2 最终交付核验 — 2026-09-18
+
+### 结果与边界
+
+| 检查 | 真实结果 | 证据 |
+|---|---|---|
+| Core 最终版本 | 93 tests / 17 suites 全通过 | [m2-core-delivery](evidence/m2-core-delivery.txt) |
+| App 全量单元测试 | 163 项，160 通过，3 失败（23 个断言）；不能称全绿 | [m2-app-acceptance](evidence/m2-app-acceptance.txt) |
+| M2 前基线独立复验 | 在 `0062d4a` 隔离 worktree 运行涉及的两个 suite：54 项，51 通过，同样 3 失败、23 个断言 | [pre-m2-regression](evidence/pre-m2-regression.txt) |
+| 首页及界面回归 | 8 UI tests / 0 failures；包含原始 provider → ViewModel → 当前真实首页、复合饮品/撤销、趋势、练习、显示偏好跨重启 | [m2-ui-acceptance](evidence/m2-ui-acceptance.txt) |
+| iOS SDK / App | 全量 App 测试已编译并运行新 adapter、service 工厂以及 Core | 同 App log；无签名模拟器 |
+| Watch scheme | Debug watchOS Simulator build succeeded | [m2-watch](evidence/m2-watch.txt) |
+| 真机 / 平台后台 | 本轮未验证，不计入通过 | CAPABILITIES.md |
+
+M2 增量只涉及 Readiness 领域、新 adapter/service、测试和文档。既有 App Features、DesignSystem、Persistence、资源/权限均无差异。原始任务书及 golden 文件未修改。
+
+### 基线失败，未掩盖或修改断言
+
+- `FangcunDesignSystemTests.approvedPaperPalette`：旧版棕色 palette 预期与既有新版蓝色资产不符（20 个色值断言）；另有浅色次级文字对比度 4.4631，低于该测试 4.5 门槛。这一项是真实既有可访问性不足，不只是测试过期。
+- `FangcunDesignSystemTests.paperAppearanceDoesNotInvertAtNight`：测试仍要求源码固定 `.preferredColorScheme(.light)`，与既有可切换深色模式不符。
+- `PracticePresentationTests.finishDialogCopyMatchesTheNextStep`：固定旧字符串预期与既有提前结束文案不符。
+
+以上在本轮 M2 开发前提交上同样失败；相关源码及测试与本轮无差异。保留这些失败，不为追求绿灯放宽测试，也不在“保留现有 UI”的 M2 任务中重写配色/文案。M0–M1 和 M2 的定向功能核验已通过，**并不表示仓库全量 App 测试通过**。后续 UI 维护应明确修复对比度并统一已确认设计与测试契约。
+
+开发中曾出现 Swift 6 actor 初始化的 `&&` autoclosure 隔离编译错误，已将隔离属性先读为局部值修复。保留 [Core 首次编译失败](evidence/m2-04-core-final.txt) 与 [App 首次编译失败](evidence/m2-app-final.txt)，修复后 Core、iOS 和 Watch 均完成编译；未放宽 Swift 并发检查。
+
+### 任务书用例映射
+
+| 样例 | 实际覆盖 |
+|---|---|
+| G01–G10 | `ReadinessEngineTests.originalGoldenFileThroughRawSamples`，读取原 JSON，经规范化样本、选源、睡眠、逐源基线与 Engine 全链路 |
+| D01–D05 | `enoughHistoryCannotInventCurrentAndPartialDataStayLimited`、`independentBaselineBoundariesAndCurrentCoverage`，包括独立 8/20、20/3 日、7/13/14 日、2/3 样本 |
+| D06–D08 | `ReadinessSourceTests.sourceDefinitionsAndRevisions`、`noSilentSwitchAndManualRebaseline`、`uuidSyncVersionAndExplicitMirrors`；手动切源加 `noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory` |
+| D09–D10 | `ReadinessFeatureTests.sleepUnionDoesNotMixSourcesOrCountAwake` |
+| D11 | `shiftWorkNapManualChoiceAndArrival`，非夜间候选、两个长段歧义、人工短睡与缓冲 |
+| D12 | `lateSleepKeepsCycleAndAmbiguousMatchesRequireReview`、`InsightsStoreTests.providerToStorePaginationRevisionsAndDeletion`；同周期 revision 2 / supersedes；M2 没有通知发送代码 |
+| D13 | `excessiveFutureAndConflictingSleep` |
+| D14 | `sparseCoverageInterventionAndRestingReuse`；Pipeline 对前周期已用 UUID 传递排除集合 |
+| D15–D16 | `baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors`、`nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual` |
+| D17 | G10 及 `nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual` |
+| D18–D19 | `trainingAndBackgroundEventsDoNotSuppressOrReward`；45 分钟训练不移除观测；评估没有饮品或完成次数加减分参数 |
+| D20 | `deletionWinsAndCacheIsBounded`、`deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary`、`providerToStorePaginationRevisionsAndDeletion` |
+| D21 | `daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent`、`arrivalBufferAndRealDSTRepeatedHour`（真实重复本地小时，绝对时长 3 小时） |
+| D22 | `failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial`、`queryFailureCacheInvalidationAndFreshnessBoundaries`；保护状态是合成错误重放，非实际锁屏验证 |
+| D23 | `sourceChangeAndClearRejectLateRequests`、`concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence` |
+| D24 | `queryFailureCacheInvalidationAndFreshnessBoundaries`、`providerToStorePaginationRevisionsAndDeletion`；重刷不延长 validUntil，不重复增加 revision |
+
+其他存储测试：`transactionFaultsKeepCursorsAndAssessmentTogether`、`corruptedJournalAndUnknownSchemaFailClosedWithoutWiping`。故障恢复实际操作临时文件，数据全合成。没有断电硬件实验、真实授权撤销或 HealthKit 后台到达验证。
+
+### 最终实际命令
+
+以下仅把本机路径和模拟器标识替换为变量；使用 Xcode 27 beta、已有 schemes。`EVIDENCE` 和 `DERIVED_DATA` 都在 Code scratch，未入库。App 全量及基线复验预期结果如上，不能把命令可运行当作测试全通过。
+
+```sh
+swift test --package-path InnerBalanceCore
+xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/m2-app-acceptance.xcresult" \
+  -parallel-testing-enabled NO -only-testing:InnerBalanceTests CODE_SIGNING_ALLOWED=NO
+xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/m2-ui-acceptance.xcresult" \
+  -parallel-testing-enabled NO -only-testing:InnerBalanceUITests/HomeEvidencePipelineUITests \
+  -only-testing:InnerBalanceUITests/FangcunRedesignUITests CODE_SIGNING_ALLOWED=NO
+xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' \
+  -destination 'generic/platform=watchOS Simulator' -derivedDataPath "$DERIVED_DATA" CODE_SIGNING_ALLOWED=NO
+# In the detached 0062d4a worktree, with a separate BASELINE_DERIVED_DATA:
+xcodebuild build-for-testing -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" -derivedDataPath "$BASELINE_DERIVED_DATA" \
+  -only-testing:InnerBalanceTests/FangcunDesignSystemTests \
+  -only-testing:InnerBalanceTests/PracticePresentationTests CODE_SIGNING_ALLOWED=NO
+xcodebuild test-without-building -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" -derivedDataPath "$BASELINE_DERIVED_DATA" \
+  -resultBundlePath "$EVIDENCE/pre-m2-regression.xcresult" -parallel-testing-enabled NO \
+  -only-testing:InnerBalanceTests/FangcunDesignSystemTests \
+  -only-testing:InnerBalanceTests/PracticePresentationTests CODE_SIGNING_ALLOWED=NO
+```
+
+分阶段提交：M1 补证 `0062d4a`，M2-01 `9157b8d`，M2-02 `058a3e8`，M2-03 `1906270`；M2-04 `4a0916e`；随后仅整理脱敏日志空白。最终 HEAD 在交付回复提供。main 基准保持 `905626c6e08dc7a36ddd4e219abf6945795ac62f`。
+
+## M2-R01
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR01Tests`。修复前 3 tests / 8 issues（一个参数化测试含两种数据）：[red](evidence/m2-r01-red.txt)；修复后见 [green](evidence/m2-r01-green.txt)。测试覆盖历史睡眠删除立即撤销、20→19 日重算仍 usual 且正确 supersedes、重启/损坏恢复/失败读取、睡眠冲突与被过滤 NaN 的间接依赖，以及缺少新字段的旧文件兼容。首份测试的嵌套 #require 宏编译错误单独留存 [测试编写修正](evidence/m2-r01-before.txt)，不计为生产问题重现。
+
+## M2-R02
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR02Tests`。修复前 2 tests / 7 issues：[red](evidence/m2-r02-red.txt)；修复后 [green](evidence/m2-r02-green.txt)。覆盖第一页 A / 第二页 B 失败、进度落盘重启续读后选完整 20 日 B、期间无等级、手动 A 保持优先、后续新来源不自动切换，以及 100 页预算中断后续读。原失效锚点/缺主源回归将在最终 Core 全量继续核验。
+
+## M2-R03
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR03Tests` 修复前 3 tests / 7 issues：[red](evidence/m2-r03-red.txt)。为事件复现场景先加入默认关闭、尚不改变行为的 healthDataChanged 参数，再执行 red。
+
+修复后执行 `swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests|InsightsStoreTests'`：[最终结果](evidence/m2-r03-green-recheck.txt)。覆盖 8→10 小时、时区/练习上下文变化、睡眠读完后的新事件自动补读；并复用同输入单飞与切源/清除拒绝迟到请求回归。初版 pending 可选值在同一表达式中读写触发 Swift 独占访问冲突，改为局部值修改后赋回；[中间失败](evidence/m2-r03-green.txt) 保留，未关闭检查。
+
+## M2-R04
+
+`swift test --package-path InnerBalanceCore --filter M2ReviewR04Tests`。[修复前 1 test / 14 issues](evidence/m2-r04-red-recheck.txt)，[修复后通过](evidence/m2-r04-green-recheck.txt)。测试通过完整 provider→pipeline→store，主睡眠距 now 两小时，在 +60 秒及 3 小时边界前后身份不变；18/24 小时独立更新 freshness；新增 RHR 和目标配置变化产生修订；有效期不延长；空增量更新检查时间但不伪造证据读取时间。第一版测试数组被 Swift 推断成 Any 的编译失败已纠正，另存 [编写日志](evidence/m2-r04-red.txt)，不当作问题重现。
+
+## M2-R05
+
+真实 HK callback 与测试共用 `handleObserverUpdate`，先仅抽取原先提前 completion 的顺序，运行 `-only-testing:InnerBalanceTests/ReadinessObserverTests`：[red](evidence/m2-r05-red-order.txt)，3 tests 中 2 项失败、3 issues。Swift 6 外部 block 的 Sendable/region 转移编译失败单独留存 [第一次](evidence/m2-r05-red.txt)、[第二次](evidence/m2-r05-red-recheck.txt)，不冒充行为重现。
+
+最终 [green](evidence/m2-r05-green-final.txt)：6 tests 全通过。包括收到→处理→落盘→ACK；错误、实际 Task.cancel 后的协作清理；20 个并发调用一次性确认；两个合并 observer 回调在睡眠已查完后追加事件，经过真实 pipeline/store 的补读取到新样本、落盘重启可读，然后分别一次 ACK。未申请真实健康授权。
+
+中间测试的并发计数 closure 被默认推断为 MainActor，测试把它用于后台 task group 后触发 executor 断言；崩溃栈定位到测试 closure。将该合成计数 closure 明确为 @Sendable 后通过，未禁用隔离检查。[中间失败](evidence/m2-r05-green.txt) 保留，Xcode 在重启测试后未退出，停止了本次卡住的测试进程，随后干净重跑成功；不计作真机问题。
+
+
+### M2-R03 失败缓存补验
+
+`swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests.changedContext'`：[red](evidence/m2-r03-cache-red.txt)，1 test / 2 issues；区间变更加查询失败返回了旧等级和计算时间。修复后 `swift test --package-path InnerBalanceCore --filter 'M2ReviewR03Tests|ReadinessEngineTests'`：[green](evidence/m2-r03-cache-green.txt)，12 tests 通过，包含原 golden 重放和同上下文失败缓存回归。
+
+## M2-R1 最终验证命令
+
+以下是最后代码提交 `a01860a` 上实际执行的命令，路径及模拟器标识使用变量脱敏。Xcode 为 27 beta；`DERIVED_DATA` 使用已有本机模拟器目录，`WATCH_DERIVED_DATA` 是独立 scratch 目录。Core 和 App 测试目标分开执行，UI 测试使用既有合成数据启动入口。
+
+```sh
+swift test --package-path InnerBalanceCore
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/app-final.xcresult" \
+  -parallel-testing-enabled NO -test-timeouts-enabled YES \
+  -maximum-test-execution-time-allowance 90 \
+  -only-testing:InnerBalanceTests CODE_SIGNING_ALLOWED=NO
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$DERIVED_DATA" -resultBundlePath "$EVIDENCE/ui-final.xcresult" \
+  -parallel-testing-enabled NO -test-timeouts-enabled YES \
+  -maximum-test-execution-time-allowance 90 \
+  -only-testing:InnerBalanceUITests/HomeEvidencePipelineUITests \
+  -only-testing:InnerBalanceUITests/FangcunRedesignUITests \
+  -only-testing:InnerBalanceUITests/PracticeReturnHomeUITests CODE_SIGNING_ALLOWED=NO
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild build \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' \
+  -destination 'generic/platform=watchOS Simulator' \
+  -derivedDataPath "$WATCH_DERIVED_DATA" CODE_SIGNING_ALLOWED=NO
+```
+
+Core：[103 tests / 21 suites 通过](evidence/m2-r1-core-final.txt)，含本轮 10 个 Core 回归和原 golden 文件重放。App：[169 tests / 23 suites，166 通过、3 失败 / 23 issues](evidence/m2-r1-app-final.txt)，包含 R05 六项全部通过。三项失败与此前独立基线复验相同：`approvedPaperPalette`（20 个旧色值断言及次级文字对比度 4.4631 < 4.5）、`paperAppearanceDoesNotInvertAtNight`、`finishDialogCopyMatchesTheNextStep`。没有放宽断言、删测试或回退 UI；本轮新增回归最终无失败。Watch：[BUILD SUCCEEDED](evidence/m2-r1-watch-final.txt)，只证明 SDK 编译，不代表真机后台或同步验收。
+
+
+UI 最终扩大到 10 项：[运行输出](evidence/m2-r1-ui-final.txt)。原验收使用的 `HomeEvidencePipelineUITests` 4 项与 `FangcunRedesignUITests` 4 项全通过，覆盖真实首页提供层、时间标签、运动保护、饮品/趋势、呼吸暂停退出、显示偏好。额外的 `PracticeReturnHomeUITests` 2 项均在公共 launch helper 第 53 行找不到旧按钮“开始生理性叹息，1 分钟”而失败，尚未执行其返回首页断言。
+
+该运行全部 10 项已执行结束并输出汇总后，Xcode 卡在 `XCTHRunDestinationAllocator.collectSimulatorDiagnostics`；进程采样确认等待诊断信号量。仅停止本次 xcodebuild（SIGINT 无效后 SIGTERM，退出 143）。因此上面报告的是完整测试控制台结果，不冒充有效的最终 xcresult；未完成的 result bundle 留在本机。基线复跑使用官方 `-collect-test-diagnostics never` 跳过 sysdiagnose 收集，不跳过测试、不改变断言。
+
+在独立 detached worktree `b69b4cc26520bc42e9c742ba67ed26e81714a84d` 和独立 DerivedData 中复跑同一 `PracticeReturnHomeUITests`，2 项同样在第 53 行旧按钮定位失败：[基线编译](evidence/m2-r1-baseline-ui-build.txt)、[基线测试](evidence/m2-r1-baseline-ui.txt)。退出 65，xcresult 正常生成。结论：这两项是本轮扩大 UI 核验后新发现的既有失败，非本轮引入；不能称所有 UI 已通过，也不能据这两项声称返回首页行为已被验证。保持旧测试原样，列入独立维护。
+
+基线真实命令（工作目录为上述 detached worktree）：
+
+```sh
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild build-for-testing \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$BASELINE_DERIVED_DATA" \
+  -only-testing:InnerBalanceUITests/PracticeReturnHomeUITests CODE_SIGNING_ALLOWED=NO
+DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test-without-building \
+  -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance \
+  -destination "platform=iOS Simulator,id=$IOS_SIMULATOR_ID" \
+  -derivedDataPath "$BASELINE_DERIVED_DATA" -resultBundlePath "$EVIDENCE/baseline-ui.xcresult" \
+  -parallel-testing-enabled NO -test-timeouts-enabled YES \
+  -maximum-test-execution-time-allowance 90 -collect-test-diagnostics never \
+  -only-testing:InnerBalanceUITests/PracticeReturnHomeUITests CODE_SIGNING_ALLOWED=NO
+```
+
+
+## M3-PRE
+
+本轮结果、完整命令与失败修正见 [M3-PRE-VERIFICATION](M3-PRE-VERIFICATION.md)。App 170/170，UI 6/6，均退出 0 且结果包可读取。
+
+
+## M3-01
+
+迁移、编辑和故障恢复已核验：9 App + 1 UI，正常退出及可读结果包，见 [M3-01-VERIFICATION](M3-01-VERIFICATION.md)。
+
+## M3-02
+见 [M3-02-VERIFICATION](M3-02-VERIFICATION.md)。Core 生命周期1项、App owner5项（含6场景）、首页详情UI6项与28天历史大字UI1项最终通过。两次首次 UI 定位/日期选择失败及正常重跑分别保留于 evidence。
+
+## M3-03
+见 [M3-03-VERIFICATION](M3-03-VERIFICATION.md)：Core3、App2、UI1项通过；音频套件一次RPC超时与后续失败另存，最终全量结果尚待汇总。
+
+## M3-04 与阶段全量
+见 [M3-04-VERIFICATION](M3-04-VERIFICATION.md)。Core112、App185通过；Watch模拟器编译通过。扩展UI 26/45，19项旧约定失败保留，固定基准与接线复验单独登记。Release签名构建通过不等于真机安装/HealthKit验收。
+
+## M3 统一交付入口
+
+见 [M3-REVIEW.md](M3-REVIEW.md)：M3-PRE、01～04的提交、文件、实际命令、I01～I16证据和真机边界。Core112/112、App185/185、Watch模拟器编译通过；20项现行UI/感受入口完整复验通过。扩大UI26/45，19项在固定b80复现；修复4项定位后仍有15项旧契约失败，未删除断言、不称全仓全绿。新增详情展示的最后复验在统一报告登记。所有测试结果包可读取、正常退出；真实HealthKit/Watch/AppGroup与签名分别登记。
+
+M3交付末尾设备补验：物理iPhone通过本地网络恢复可达，覆盖安装/启动/版本回读1.0.0(2026091903)通过；原饮品字节/迁移ID、旧SwiftData用户记录行和显示偏好本机核验保留。首次真实前台查询和评估持久化通过，未启用Mock。授权弹窗及来源/目标操作、增删、锁屏、后台、Watch仍分别未验证。只提交布尔验证结果，不提交真实资料和设备标识。最终代码仍为70deab4，本次仅更新设备证据。
+
+===== END FILE =====

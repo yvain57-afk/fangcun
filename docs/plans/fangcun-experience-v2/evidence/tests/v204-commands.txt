@@ -1,0 +1,35 @@
+Synthetic test output excerpt. Complete logs and result bundle remain local.
+Test Suite 'Selected tests' started at 2026-09-19 16:08:29.329.
+Test Suite 'InnerBalanceTests.xctest' started at 2026-09-19 16:08:29.330.
+Test Suite 'InnerBalanceTests.xctest' passed at 2026-09-19 16:08:29.330.
+Test Suite 'Selected tests' passed at 2026-09-19 16:08:29.330.
+◇ Test run started.
+◇ Test acknowledgeAndMuteNeverWriteDiaryAndSurviveRestart() started.
+✔ Test acknowledgeAndMuteNeverWriteDiaryAndSurviveRestart() passed after 0.002 seconds.
+✔ Suite BeverageCareCoordinatorTests passed after 0.003 seconds.
+◇ Test testDilutingPerServingCoffeeKeepsDose() started.
+✔ Test testDilutingPerServingCoffeeKeepsDose() passed after 0.007 seconds.
+◇ Test testNewBeerUsesVolumeAndABV() started.
+✔ Test testNewBeerUsesVolumeAndABV() passed after 0.003 seconds.
+◇ Test committedCommandsAreDurableAndUndoIsANewRevision() started.
+✔ Test committedCommandsAreDurableAndUndoIsANewRevision() passed after 0.002 seconds.
+◇ Test unknownDoseProjectionAndLegacyBeerNeverBecomeZeroOrRecalculated() started.
+✔ Test unknownDoseProjectionAndLegacyBeerNeverBecomeZeroOrRecalculated() passed after 0.023 seconds.
+✔ Suite BeverageV2Tests passed after 0.036 seconds.
+◇ Test migrationKeepsIDsTotalsWordsAndVerifiedOriginalBytes() started.
+✔ Test migrationKeepsIDsTotalsWordsAndVerifiedOriginalBytes() passed after 0.004 seconds.
+◇ Test interruptedMigrationResumesWithoutDuplication(_:) started.
+◇ Test case passing 1 argument fault → .afterBackup to interruptedMigrationResumesWithoutDuplication(_:) started.
+​◇ Test case passing 1 argument fault → .beforePublish to interruptedMigrationResumesWithoutDuplication(_:) started.
+​◇ Test case passing 1 argument fault → .afterPublish to interruptedMigrationResumesWithoutDuplication(_:) started.
+​✔ Test interruptedMigrationResumesWithoutDuplication(_:) with 3 test cases passed after 0.010 seconds.
+◇ Test preM1BackupCannotResurrectRemovedDrinks() started.
+✔ Test preM1BackupCannotResurrectRemovedDrinks() passed after 0.003 seconds.
+◇ Test damagedInputAndTargetNeverBecomeAnEmptyArchive() started.
+✔ Test damagedInputAndTargetNeverBecomeAnEmptyArchive() passed after 0.002 seconds.
+◇ Test writeFailureRetryEditingAndUndoKeepEstimatesAndUnknowns() started.
+✔ Test writeFailureRetryEditingAndUndoKeepEstimatesAndUnknowns() passed after 0.002 seconds.
+✔ Suite "M3-01 safe diary migration" passed after 0.025 seconds.
+✔ Test run with 10 tests in 3 suites passed after 0.065 seconds.
+Test session results, code coverage, and logs:
+** TEST SUCCEEDED **

@@ -1,0 +1,39 @@
+Synthetic test output excerpt. Complete logs and result bundle remain local.
+Test Suite 'Selected tests' started at 2026-09-19 17:57:51.340.
+Test Suite 'InnerBalanceUITests.xctest' started at 2026-09-19 17:57:51.341.
+Test Suite 'DrinkEditorUITests' started at 2026-09-19 17:57:51.341.
+Test Case '-[InnerBalanceUITests.DrinkEditorUITests testCapacityEditingUndoAndQuickLogShareTheSameRecords]' started.
+Test Case '-[InnerBalanceUITests.DrinkEditorUITests testCapacityEditingUndoAndQuickLogShareTheSameRecords]' passed (29.299 seconds).
+Test Suite 'DrinkEditorUITests' passed at 2026-09-19 17:58:20.645.
+Test Suite 'ExperienceV2SceneUITests' started at 2026-09-19 17:58:20.649.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testActualMinuteCompletesBeforePawTouchSaveScreen]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testActualMinuteCompletesBeforePawTouchSaveScreen]' passed (78.066 seconds).
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testDistinctCurrentConclusionsAndSceneEntry]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testDistinctCurrentConclusionsAndSceneEntry]' passed (39.030 seconds).
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange]' passed (23.938 seconds).
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testWaterCoffeeAlcoholAndUndoShowCommittedFeedback]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testWaterCoffeeAlcoholAndUndoShowCommittedFeedback]' passed (20.646 seconds).
+Test Suite 'ExperienceV2SceneUITests' passed at 2026-09-19 18:01:02.333.
+Test Suite 'ExperienceV2UITests' started at 2026-09-19 18:01:02.341.
+Test Case '-[InnerBalanceUITests.ExperienceV2UITests testFirstExperienceDelivery]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2UITests testFirstExperienceDelivery]' passed (34.189 seconds).
+Test Suite 'ExperienceV2UITests' passed at 2026-09-19 18:01:36.531.
+Test Suite 'FangcunRedesignUITests' started at 2026-09-19 18:01:36.531.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' started.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' passed (16.704 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' started.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' passed (29.713 seconds).
+Test Suite 'FangcunRedesignUITests' passed at 2026-09-19 18:02:22.949.
+Test Suite 'HomeEvidencePipelineUITests' started at 2026-09-19 18:02:22.950.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testQualifiedEvidenceAndWorkoutProtection]' started.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testQualifiedEvidenceAndWorkoutProtection]' passed (29.231 seconds).
+Test Suite 'HomeEvidencePipelineUITests' passed at 2026-09-19 18:02:52.183.
+Test Suite 'ReadinessHomeUITests' started at 2026-09-19 18:02:52.184.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testAssessable]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testAssessable]' passed (21.698 seconds).
+Test Suite 'ReadinessHomeUITests' passed at 2026-09-19 18:03:13.884.
+Test Suite 'InnerBalanceUITests.xctest' passed at 2026-09-19 18:03:13.884.
+Test Suite 'Selected tests' passed at 2026-09-19 18:03:13.885.
+Test session results, code coverage, and logs:
+** TEST SUCCEEDED **

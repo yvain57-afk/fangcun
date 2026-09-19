@@ -1,10 +1,10 @@
 # 方寸：给 GPT / AI 的项目入口
 
-> 开发分支 `codex/fangcun-v1-m0-m1` 已接收用户的 v1.0 开发交付包。本轮范围与真实进展见 [任务状态](docs/plans/fangcun-v1/TASKS.md)、[决策记录](docs/plans/fangcun-v1/DECISIONS.md) 和 [验收](docs/plans/fangcun-v1/VERIFICATION.md)。M2-01 至 M2-04 数据链路及 M2-R01～R05 补修已实施；最新入口为 [M2-R1 补修报告](docs/plans/fangcun-v1/M2-R1-RESULTS.md)。原阶段证据见 [M2 审阅入口](docs/plans/fangcun-v1/M2-REVIEW.md)；M3–M6 未开始。新准备度尚未接入首页，保留 M1 UI。本分支应优先阅读实际源文件；`ai/` 分卷和下方 `main` raw 链接仍是先前公开基线，不能据此推断 M1/M2 代码。
+> 当前开发分支 `codex/fangcun-v1-m0-m1` 已完成 M2-R、M3，并实施体验与饮品关怀 v2。最新审阅入口为 [V2 REVIEW](docs/plans/fangcun-experience-v2/REVIEW.md)、[验收](docs/plans/fangcun-experience-v2/VERIFICATION.md) 和 [任务状态](docs/plans/fangcun-experience-v2/TASKS.md)。首页已经接入真实准备度及限定范围建议，饮品有独立关怀与主动开启的本地提醒。M4–M6 仍未展开。测试、真机安装、通知实际送达与人工体验验收分别登记；不要把实现或排程当成实测通过。
 
 仓库：<https://github.com/yvain57-afk/fangcun>
 
-本文 raw 地址：<https://raw.githubusercontent.com/yvain57-afk/fangcun/main/AI_CONTEXT.md>
+本文 raw 地址：<https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/AI_CONTEXT.md>
 
 ## 阅读顺序
 
@@ -16,7 +16,7 @@
 6. [所有文件索引](FILE_INDEX.md)：每个源文件及图片的可点击链接。
 7. [分卷源码](ai/README.md)：原生代码、Core、网页与设计文字的纯文本分卷，适合无法递归遍历仓库的阅读工具。
 
-所有文件均可通过 `https://raw.githubusercontent.com/yvain57-afk/fangcun/main/<文件路径>` 读取。中文和空格路径需要 URL 编码。分卷文件使用 ASCII 文件名；文件索引同时提供原文件和 raw 链接。
+所有文件均可通过 `https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/<文件路径>` 读取。中文和空格路径需要 URL 编码。分卷文件使用 ASCII 文件名；文件索引同时提供原文件和 raw 链接。
 
 ## 目标与明确偏好
 
@@ -28,7 +28,9 @@
 
 - `InnerBalance/InnerBalanceApp/App/RootView.swift`：今日 / 练习 / 设置，真实数据与练习持久化连接。
 - `Features/Home/FangcunTodayView.swift`：新首页与依据详情。旧 `HomeView.swift` 保留但不是根入口。
-- `Features/Home/FangcunDrinkSheet.swift`、`Persistence/FangcunDiary.swift`：饮品、撤销、日快照。
+- `Features/Home/FangcunDrinkSheet.swift`、`FangcunDrinkEditor.swift`、`Persistence/FangcunDiary.swift`：剂量、酒精度、可撤销且幂等的饮品命令与旧档兼容。
+- `Features/Home/BeverageCareCoordinator.swift`、`CareNotificationClient.swift`：本机关怀回执、主动开启的通知、默认锁屏隐私。Core 的 `BeverageCareEngine`、`CareAttentionPolicy`、`CareNotificationPlanner` 不做 IO。
+- `Features/Readiness/DayGuidancePresentation.swift`：普通人结论与工程诊断分层；少量数据保留限定范围。
 - `Features/Home/FangcunTrendsView.swift`：周视图与真实已存记录。
 - `DesignSystem/FangcunCompanion.swift`、同名 Metal shader：确认原画的局部动效。
 - `Features/Practice/PracticeSessionView.swift`：练习完整流程；`PracticeAudioCoordinator.swift` 将可能阻塞的音频 session 准备移出主线程。
@@ -38,7 +40,7 @@
 
 ## 事实边界
 
-- 原生：HealthKit 真实数据查询与本机记录。UI 测试可注入三种演示场景；正式首页不展示演示开关。
+- 原生：HealthKit 真实数据查询与本机记录。UI 测试可注入合成原始数据场景；正式首页不展示演示开关。
 - 网页：Mock 数据、浏览器本地记录，用来讨论设计与交互。
 - 饮品：杯量及成分估算，不等同实测浓度；不会仅凭一杯咖啡把健康压力结论强行改成偏高。
 - 历史：日状态从实际记录开始积累，空白日期不推测过去。

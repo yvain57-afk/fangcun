@@ -158,4 +158,23 @@ import Testing
     var l = CareLedger(); l.requestedAlcoholReminderAt = date(21,40)
     #expect(CareNotificationPlanner.plan(events: [], preferences: p, ledger: l, now: date(21,10), calendar: calendar).isEmpty)
   }
+  @Test func twoAlcoholRecordsAcrossMidnightKeepSixHourTotal() {
+    let rows = [alcohol(at(19,23), grams: 15), alcohol(at(20,1), grams: 15)]
+    #expect(rules(rows, at(20,1,1)).first?.ruleID == "A02")
+    #expect(rules(rows, at(20,5,1)).allSatisfy { $0.ruleID != "A02" })
+  }
+  @Test func twoReservationsAndAlcoholRequestCannotAddAThirdOrDeferIt() {
+    var p = CarePreferences(); p.waterPush = true; p.alcoholPush = true
+    var l = CareLedger(); l.requestedAlcoholReminderAt = date(20,30)
+    let initial = CareNotificationPlanner.plan(events: [], preferences: p, ledger: .init(), now: date(10), calendar: calendar)
+    let todays = initial.filter { calendar.isDate($0.fireAt, inSameDayAs: date(10)) }
+    #expect(todays.count == 2)
+    l.entries = todays.map { .init(candidateID: $0.id, basisIDs: [], channel: "push", scheduledAt: $0.fireAt,
+      expiresAt: $0.expiresAt, requestID: $0.id, category: $0.category) }
+    let replanned = CareNotificationPlanner.plan(events: [], preferences: p, ledger: l, now: date(10), calendar: calendar)
+    #expect(replanned.filter { calendar.isDate($0.fireAt, inSameDayAs: date(10)) }.count == 2)
+    #expect(replanned.allSatisfy { $0.category != .alcohol })
+    let afterTwo = CareNotificationPlanner.plan(events: [], preferences: p, ledger: l, now: date(20), calendar: calendar)
+    #expect(afterTwo.allSatisfy { $0.category != .alcohol })
+  }
 }

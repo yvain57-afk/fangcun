@@ -1,0 +1,13 @@
+{
+  "signedReleaseBuildExit": 0,
+  "overwriteInstallExit": 0,
+  "uninstalled": false,
+  "launch": "blocked_device_locked",
+  "launchExit": 1,
+  "allExistingAppSupportFilesByteIdentical": true,
+  "allExistingPreferencesEqual": true,
+  "postLaunchMigrationVerified": false,
+  "physicalNotificationDeliveryVerified": false,
+  "readbackVersion": "1.0.0",
+  "readbackBuild": "2026091904"
+}

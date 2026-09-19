@@ -1,0 +1,12 @@
+
+===== FILE: docs/plans/fangcun-v1/evidence/m3-m3-app-final-summary.json =====
+{
+  "result": "Passed",
+  "passedTests": 185,
+  "failedTests": 0,
+  "skippedTests": 0,
+  "expectedFailures": 0,
+  "totalTestCount": 185
+}
+
+===== END FILE =====

@@ -1,0 +1,16 @@
+Synthetic test output excerpt. Complete logs and result bundle remain local.
+Test Suite 'Selected tests' started at 2026-09-19 15:52:36.543.
+Test Suite 'InnerBalanceTests.xctest' started at 2026-09-19 15:52:36.545.
+Test Suite 'InnerBalanceTests.xctest' passed at 2026-09-19 15:52:36.545.
+Test Suite 'Selected tests' passed at 2026-09-19 15:52:36.547.
+◇ Test run started.
+◇ Test testDilutingPerServingCoffeeKeepsDose() started.
+✘ Test testDilutingPerServingCoffeeKeepsDose() recorded an issue at BeverageV2Tests.swift:11:5: Expectation failed: diary.allEntries.first?.caffeine == 140
+✘ Test testDilutingPerServingCoffeeKeepsDose() failed after 0.030 seconds with 1 issue.
+◇ Test testNewBeerUsesVolumeAndABV() started.
+✘ Test testNewBeerUsesVolumeAndABV() recorded an issue at BeverageV2Tests.swift:19:5: Expectation failed: abs((diary.allEntries.first?.alcoholGrams ?? -1) - 330 * 0.05 * 0.789) < 0.001
+✘ Test testNewBeerUsesVolumeAndABV() failed after 0.006 seconds with 1 issue.
+✘ Suite BeverageV2Tests failed after 0.038 seconds with 2 issues.
+✘ Test run with 2 tests in 1 suite failed after 0.039 seconds with 2 issues.
+Test session results, code coverage, and logs:
+** TEST FAILED **

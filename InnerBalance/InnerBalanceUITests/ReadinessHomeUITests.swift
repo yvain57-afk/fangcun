@@ -15,9 +15,10 @@ final class ReadinessHomeUITests: XCTestCase {
     let home = XCTAttachment(screenshot: app.screenshot()); home.name = "m302-dark-large-home"; home.lifetime = .keepAlways; add(home)
     for _ in 0..<5 where !app.buttons["today.evidence"].isHittable { app.swipeUp() }
     app.buttons["today.evidence"].tap()
-    let identity = app.staticTexts["readiness.identity"]
-    XCTAssertTrue(identity.waitForExistence(timeout: 5))
-    let id = try XCTUnwrap(identity.value as? String)
+    let conclusion = app.staticTexts["readiness.detail.conclusion"]
+    XCTAssertTrue(conclusion.waitForExistence(timeout: 5))
+    let title = conclusion.label
+    XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
     let detail = XCTAttachment(screenshot: app.screenshot()); detail.name = "m302-dark-large-detail"; detail.lifetime = .keepAlways; add(detail)
     app.navigationBars.buttons.firstMatch.tap()
     for _ in 0..<6 where !app.buttons["today.trends"].isHittable { app.swipeUp() }
@@ -29,7 +30,9 @@ final class ReadinessHomeUITests: XCTestCase {
     let row = app.buttons["readiness.history.assessment"].firstMatch
     for _ in 0..<5 where !row.isHittable { app.swipeUp() }
     XCTAssertTrue(row.exists); row.tap()
-    XCTAssertEqual(app.staticTexts["readiness.identity"].value as? String, id)
+    XCTAssertEqual(app.staticTexts["readiness.detail.conclusion"].label, title)
+    openDiagnostics(app)
+    XCTAssertFalse((app.staticTexts["readiness.identity"].value as? String ?? "").isEmpty)
   }
   @MainActor func testBreathingRoundTripKeepsCurrentAssessmentWithoutReward() throws {
     continueAfterFailure = false
@@ -68,15 +71,28 @@ final class ReadinessHomeUITests: XCTestCase {
       app.swipeUp()
       let detail = app.buttons["today.evidence"]
       XCTAssertTrue(detail.waitForExistence(timeout: 5)); detail.tap()
-      XCTAssertTrue(app.staticTexts["readiness.identity"].waitForExistence(timeout: 5))
+      XCTAssertTrue(app.staticTexts["readiness.detail.conclusion"].waitForExistence(timeout: 5))
+      XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
       if scenario == "assessable" {
         XCTAssertTrue(app.staticTexts["readiness.sleep.actual"].exists)
+        let method = app.buttons["readiness.method"]
+        for _ in 0..<4 where !method.isHittable { app.swipeUp() }
+        method.tap()
         for _ in 0..<4 where !app.staticTexts["readiness.baseline.reference"].firstMatch.exists { app.swipeUp() }
         XCTAssertTrue(app.staticTexts["readiness.baseline.reference"].firstMatch.exists)
       }
+      openDiagnostics(app)
+      XCTAssertTrue(app.staticTexts["readiness.identity"].waitForExistence(timeout: 5))
       for _ in 0..<8 where !app.staticTexts["readiness.time.attempt"].exists { app.swipeUp() }
       XCTAssertTrue(app.staticTexts["readiness.time.attempt"].exists)
       let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "m302-" + scenario; shot.lifetime = .keepAlways; add(shot)
       app.terminate()
+  }
+  @MainActor private func openDiagnostics(_ app: XCUIApplication) {
+    app.tabBars.buttons["设置"].tap()
+    let settings = app.buttons["恢复参考与来源"]
+    XCTAssertTrue(settings.waitForExistence(timeout: 5)); settings.tap()
+    let diagnostics = app.buttons["readiness.diagnostics"]
+    XCTAssertTrue(diagnostics.waitForExistence(timeout: 5)); diagnostics.tap()
   }
 }

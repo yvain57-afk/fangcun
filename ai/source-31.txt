@@ -1,0 +1,1122 @@
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-app-final.txt =====
+Command line invocation:
+    /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination "platform=iOS Simulator,id=<UUID>" -derivedDataPath <DERIVED_DATA> -resultBundlePath <EVIDENCE>/m2-app-final.xcresult -parallel-testing-enabled NO "-only-testing:InnerBalanceTests" CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  InnerBalanceCore: <REPO>/InnerBalanceCore @ local
+
+2026-09-18 20:29:15.332 xcodebuild[18123:8480708] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+Writing result bundle at path:
+	<EVIDENCE>/m2-app-final.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (8 targets)
+    Target 'InnerBalanceTests' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance' in project 'InnerBalance'
+    Target 'InnerBalanceUITests' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance' in project 'InnerBalance'
+    Target 'InnerBalance' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalance Watch App' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+        ➜ Explicit dependency on target 'InnerBalanceCore' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore' in project 'InnerBalanceCore' (no dependencies)
+    Target 'InnerBalance Watch App' in project 'InnerBalance'
+        ➜ Explicit dependency on target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore-product' in project 'InnerBalanceCore'
+        ➜ Explicit dependency on target 'InnerBalanceCore' in project 'InnerBalanceCore'
+    Target 'InnerBalanceCore' in project 'InnerBalanceCore' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 <REPO>/InnerBalance/InnerBalanceWatch/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/ibtool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/xcstringstool compile --dry-run --output-directory <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalance.build/Debug-iphonesimulator/InnerBalance.build <REPO>/InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 <REPO>/InnerBalance/InnerBalanceApp/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode-27-beta.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: 93e654fdfdf40a5e25807c076574fb1d
+Build description path: <DERIVED_DATA>/Build/Intermediates.noindex/XCBuildData/93e654fdfdf40a5e25807c076574fb1d.xcbuilddata
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList
+
+ClangStatCache /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -o <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json
+
+WriteAuxiliaryFile <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalanceCore
+    write-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList
+
+ClangStatCache /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache
+
+SwiftDriver InnerBalanceCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name InnerBalanceCore -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -target arm64-apple-watchos11.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-watchsimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-watchsimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name innerbalancecore -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_const_extract_protocols.json -Xcc -I<DERIVED_DATA>/Build/Products/Debug-watchsimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -working-directory <REPO>/InnerBalance/InnerBalance.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver InnerBalanceCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name InnerBalanceCore -Onone @<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path <DERIVED_DATA>/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path <DERIVED_DATA>/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -output-file-map <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <DERIVED_DATA>/ModuleCache.noindex -sdk-module-cache-path <DERIVED_DATA>/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name innerbalancecore -emit-const-values -const-gather-protocols-list <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_const_extract_protocols.json -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -working-directory <REPO>/InnerBalance/InnerBalance.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+<REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift:96:20: error: actor-isolated property 'privacy' can not be referenced from a nonisolated autoclosure
+ 64 |   private let directory: URL
+ 65 |   private var state: InsightsSnapshot
+ 66 |   private var privacy: PrivacyJournal
+    |               `- note: property declared here
+ 67 |   private var nextFault: InsightsStoreFault = .none
+ 68 |
+    :
+ 94 |     if privacy.epoch > state.generation { state = InsightsSnapshot(); state.generation = privacy.epoch; state.requiresResync = true }
+ 95 |     state.redact(privacy.deletedIDs)
+ 96 |     if hasData && !privacy.deletedIDs.isEmpty {
+    |                    `- error: actor-isolated property 'privacy' can not be referenced from a nonisolated autoclosure
+ 97 |       // Complete interrupted deletion cleanup on disk as well as in memory.
+ 98 |       try Self.write(state, to: backup)
+Failed frontend command:
+
+SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+
+
+/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/BodyLoadEngine.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/SleepEpisodeAnalyzer.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Emotion/EmotionCatalog.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Emotion/WatchCompassRegion.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Health/PendingRetryPolicy.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/InnerBalanceCore.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/HeartRateEvidenceAnalyzer.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeBreathGuide.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeCatalog.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeHapticCadence.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeKind.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchMindfulPayload.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchPracticeCompletionFreezer.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineBuilder.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessConfiguration.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessEngine.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessSamples.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/SleepEpisodeBuilder.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/CurrentMomentDecision.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/EchoPersonalization.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/RecommendationEngine.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyEchoState.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyReflection.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Reflection/PublicDomainQuotationLibrary.swift -target arm64-apple-watchos11.0-simulator -disable-cross-import-overlay-search -load-resolved-plugin /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-dependencies-2.json -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk -I <DERIVED_DATA>/Build/Products/Debug-watchsimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-watchsimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator27.0.sdk/Developer/Library/Frameworks -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -profile-generate -profile-coverage-mapping -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc <REPO>/InnerBalance/InnerBalance.xcodeproj -enable-anonymous-context-mangled-names -file-compilation-dir <REPO>/InnerBalance/InnerBalance.xcodeproj -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/watchsimulator27.0-24R5355a-e829b21a6f8c9b70876ba0858053c044c518e88f785953d8c7bec30688e179a7.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I<DERIVED_DATA>/Build/Products/Debug-watchsimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name InnerBalanceCore -package-name innerbalancecore -const-gather-protocols-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-watchos27.0-simulator -target-sdk-version 27.0 -target-sdk-name watchsimulator27.0 -in-process-plugin-server-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -emit-module-doc-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftdoc -emit-module-source-info-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftsourceinfo -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-primary-emit-module.dia -emit-dependencies-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-primary-emit-module.d -parse-as-library -o <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -emit-abi-descriptor-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-watchsimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.abi.json
+SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+<REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift:96:20: error: actor-isolated property 'privacy' can not be referenced from a nonisolated autoclosure
+ 64 |   private let directory: URL
+ 65 |   private var state: InsightsSnapshot
+ 66 |   private var privacy: PrivacyJournal
+    |               `- note: property declared here
+ 67 |   private var nextFault: InsightsStoreFault = .none
+ 68 |
+    :
+ 94 |     if privacy.epoch > state.generation { state = InsightsSnapshot(); state.generation = privacy.epoch; state.requiresResync = true }
+ 95 |     state.redact(privacy.deletedIDs)
+ 96 |     if hasData && !privacy.deletedIDs.isEmpty {
+    |                    `- error: actor-isolated property 'privacy' can not be referenced from a nonisolated autoclosure
+ 97 |       // Complete interrupted deletion cleanup on disk as well as in memory.
+ 98 |       try Self.write(state, to: backup)
+Failed frontend command:
+/Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/BodyLoadEngine.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/SleepEpisodeAnalyzer.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Emotion/EmotionCatalog.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Emotion/WatchCompassRegion.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Health/PendingRetryPolicy.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/InnerBalanceCore.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/HeartRateEvidenceAnalyzer.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeBreathGuide.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeCatalog.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeHapticCadence.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeKind.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchMindfulPayload.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchPracticeCompletionFreezer.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineBuilder.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessConfiguration.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessEngine.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessSamples.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Readiness/SleepEpisodeBuilder.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/CurrentMomentDecision.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/EchoPersonalization.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/RecommendationEngine.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyEchoState.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyReflection.swift <REPO>/InnerBalanceCore/Sources/InnerBalanceCore/Reflection/PublicDomainQuotationLibrary.swift -target arm64-apple-ios18.0-simulator -disable-cross-import-overlay-search -load-resolved-plugin /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -I <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <DERIVED_DATA>/Build/Products/Debug-iphonesimulator -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode-27-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -module-cache-path <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -profile-generate -profile-coverage-mapping -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file <DERIVED_DATA>/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc <REPO>/InnerBalance/InnerBalance.xcodeproj -enable-anonymous-context-mangled-names -file-compilation-dir <REPO>/InnerBalance/InnerBalance.xcodeproj -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc <DERIVED_DATA>/SDKStatCaches.noindex/iphonesimulator27.0-24A5422a-e829b21a6f8c9b70876ba0858053c04496e36862f85a4776cbfa744324b9132f.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I<DERIVED_DATA>/Build/Products/Debug-iphonesimulator/include -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources-normal/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources/arm64 -Xcc -I<DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name InnerBalanceCore -package-name innerbalancecore -const-gather-protocols-file <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-ios27.0-simulator -target-sdk-version 27.0 -target-sdk-name iphonesimulator27.0 -in-process-plugin-server-path /Applications/Xcode-27-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -emit-module-doc-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftdoc -emit-module-source-info-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftsourceinfo -emit-objc-header-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-Swift.h -serialize-diagnostics-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-primary-emit-module.dia -emit-dependencies-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore-primary-emit-module.d -parse-as-library -o <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.swiftmodule -emit-abi-descriptor-path <DERIVED_DATA>/Build/Intermediates.noindex/InnerBalanceCore.build/Debug-iphonesimulator/InnerBalanceCore-t.build/Objects-normal/arm64/InnerBalanceCore.abi.json
+
+SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+    cd <REPO>/InnerBalance/InnerBalance.xcodeproj
+
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules <DERIVED_DATA>/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+
+Test session results, code coverage, and logs:
+	<EVIDENCE>/m2-app-final.xcresult
+
+Testing failed:
+	Actor-isolated property 'privacy' can not be referenced from a nonisolated autoclosure
+	Testing cancelled because the build failed.
+
+** TEST FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+	SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+	SwiftEmitModule normal arm64 Emitting\ module\ for\ InnerBalanceCore (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+	SwiftCompile normal arm64 (in target 'InnerBalanceCore' from project 'InnerBalanceCore')
+	Testing project InnerBalance with scheme InnerBalance
+(5 failures)
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-core-delivery.txt =====
+Building for debugging...
+[1 / 1]
+[2 / 12] InnerBalanceCore
+[4 / 14] InnerBalanceCore
+[7 / 17] InnerBalanceCore
+[9 / 17] InnerBalanceCore
+[11 / 12] InnerBalanceCoreTests-product
+Build complete! (1.40秒)
+Test Suite 'All tests' started at 2026-09-18 20:34:28.445.
+Test Suite 'All tests' passed at 2026-09-18 20:34:28.447.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Heart-rate evidence windows" started.
+◇ Suite "Practice catalog" started.
+◇ Suite "Sleep episode analysis" started.
+◇ Suite "Watch practice completion recovery" started.
+◇ Suite "Current moment stress decision" started.
+◇ Suite "Emotion catalog" started.
+◇ Suite "M2 sleep and baselines" started.
+◇ Suite "Echo personalization" started.
+◇ Suite "Body load baseline" started.
+◇ Suite "Watch compass grid" started.
+◇ Suite "Daily reflection" started.
+◇ Suite "Practice recommendation" started.
+◇ Suite "M2 normalized sources" started.
+◇ Suite "M2 readiness rules and replay" started.
+◇ Suite "Practice haptic cadence" started.
+◇ Suite "Pending write retry policy" started.
+◇ Suite "M2 atomic Insights store and provider pipeline" started.
+◇ Test "Uses valid samples from the first and last minute" started.
+◇ Test "Overlapping windows and implausible samples never create evidence" started.
+◇ Test "An implausibly long episode is excluded from body load" started.
+◇ Test "Detailed state context defaults preserve existing call sites" started.
+◇ Test "A newer quick state replaces the detailed check-in" started.
+◇ Test "Detailed quadrants map to a clear stress level and fallback source" started.
+◇ Test "A daytime nap is not added to the primary sleep" started.
+◇ Test "Build 1 contains the five approved practices and Kegel is never automatic" started.
+◇ Test "All six quick states produce a definite targeted response" started.
+◇ Test "All 38 Apple labels are mapped exactly once" started.
+◇ Test "Compass coordinates resolve to a stable quadrant" started.
+◇ Test "Overlapping sleep samples are counted once" started.
+◇ Test "同一天的不同回声会得到不同的一句" started.
+◇ Test "A current expression owns the level even when body load is higher" started.
+◇ Test "High-pressure and vulnerable emotions set a minimum stress level" started.
+◇ Test "A legacy mindful payload decodes without the request field" started.
+◇ Test "尚未选择状态时也先给一句有作者和作品的名家句" started.
+◇ Test "每种状态至少一个月不重复金句" started.
+◇ Test "Recent summary prefers valid Apple Watch samples" started.
+◇ Test "回声句只回应主观状态，不替身体数据下结论" started.
+◇ Test "每种状态都有一周不重复且有明确出处的名家句" started.
+◇ Test "A newer detailed check-in replaces the quick state" started.
+◇ Test "A detailed check-in wins when timestamps are equal" started.
+◇ Test "Expressions from a previous local day expire before body-only assessment" started.
+◇ Test "Baseline ignores samples older than 14 days" started.
+◇ Test baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors() started.
+◇ Test "Unknown Apple label is left unclassified" started.
+◇ Test "Old payloads infer an evidence request only when evidence exists" started.
+◇ Test "Recent workout keeps non-workout-sensitive evidence" started.
+◇ Test "History alone never permits a steady conclusion" started.
+◇ Test "A delayed retry reuses the first frozen completion window" started.
+◇ Test "身体负荷偏高时会调整没有明确恢复指向的回声推荐" started.
+◇ Test "Watch 情绪罗盘固定提供九个不重复区域" started.
+◇ Test "照顾情绪的金句不出现死亡深渊或怪物意象" started.
+◇ Test "回声会直接得到一个对应的恢复动作" started.
+◇ Test daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent() started.
+◇ Test "开场句和六种状态在一年内每天都各不相同" started.
+◇ Test "Baseline requires five distinct valid days" started.
+◇ Test shiftWorkNapManualChoiceAndArrival() started.
+◇ Test "Two distinct reliable kinds including cardiovascular evidence are required" started.
+◇ Test lateSleepKeepsCycleAndAmbiguousMatchesRequireReview() started.
+◇ Test "Every source routes low, moderate, and high pressure to a targeted practice" started.
+◇ Test "Neutral compass coordinates do not trigger a negative-state practice" started.
+◇ Test "Recent workout suppresses an elevated conclusion" started.
+◇ Test "The last day of a 31-day month does not collide with the next month" started.
+◇ Test "Observation is separate from elevated when enough independent evidence exists" started.
+◇ Test "Elevated body load uses a recovery reflection theme" started.
+◇ Test "每条金句都有可审核的公版来源与方寸自译声明" started.
+◇ Test "No current expression asks for input until body evidence can support a result" started.
+◇ Test "High-activation negative state recommends a physiological sigh" started.
+◇ Test "Pressure reflections stay inside the source and level pool" started.
+◇ Test "Explicit context, sensations, and body signals use a stable source priority" started.
+◇ Test "Latest reading is the newest valid Watch sample, not the recent median" started.
+◇ Test "A drained low-activation state recommends NSDR" started.
+◇ Test "The same pressure profile remains stable throughout one local day" started.
+◇ Test sparseCoverageInterventionAndRestingReuse() started.
+◇ Test "Elevated load requires two independent reliable signals" started.
+◇ Test "Daily copy avoids abstract coaching language" started.
+◇ Test "Consecutive local days reveal different reflections" started.
+◇ Test enoughHistoryCannotInventCurrentAndPartialDataStayLimited() started.
+◇ Test "Pressure level changes the eligible quotation" started.
+◇ Test "Kegel is never returned by automatic recommendations" started.
+◇ Test sleepUnionDoesNotMixSourcesOrCountAwake() started.
+◇ Test "Every body theme offers a week of varied words" started.
+◇ Test "金句库只收录有明确作品的哲学与心理学名家句" started.
+◇ Test excessiveFutureAndConflictingSleep() started.
+◇ Test "Median is resistant to an extreme sample" started.
+◇ Test "Daily selections always carry an author and a work" started.
+◇ Test uuidSyncVersionAndExplicitMirrors() started.
+◇ Test "The reflection remains stable throughout one local day" started.
+◇ Test nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual() started.
+◇ Test arrivalBufferAndRealDSTRepeatedHour() started.
+◇ Test sourceDefinitionsAndRevisions() started.
+◇ Test deletionWinsAndCacheIsBounded() started.
+◇ Test trainingAndBackgroundEventsDoNotSuppressOrReward() started.
+◇ Test "A body-load refresh cannot replace today's quotation" started.
+◇ Test noSilentSwitchAndManualRebaseline() started.
+◇ Test queryFailureCacheInvalidationAndFreshnessBoundaries() started.
+◇ Test "Paced breathing exposes the breath phase instead of a session countdown" started.
+◇ Test "手表仅在启用且运行中的相位边界播放一次触觉" started.
+◇ Test independentBaselineBoundariesAndCurrentCoverage() started.
+◇ Test "Retry delay backs off and is capped at one day" started.
+◇ Test "Slow practices use calm sparse cues" started.
+◇ Test originalGoldenFileThroughRawSamples() started.
+◇ Test "Cue identifiers change only at protocol boundaries" started.
+◇ Test noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory() started.
+◇ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() started.
+◇ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() started.
+◇ Test transactionFaultsKeepCursorsAndAssessmentTogether() started.
+◇ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() started.
+◇ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() started.
+◇ Test sourceChangeAndClearRejectLateRequests() started.
+◇ Test providerToStorePaginationRevisionsAndDeletion() started.
+◇ Test case passing 1 argument days → 0 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 1 argument days → 4 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 1 argument days → 5 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 1 argument days → 14 to "History alone never permits a steady conclusion" started.
+◇ Test case passing 2 arguments source → .none, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .none, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .work, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .none, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .work, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .work, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .tasks, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .tasks, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .tasks, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .health, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .health, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .health, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .family, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .family, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .family, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .relationship, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .none to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .relationship, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .work to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .money, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .relationship, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .money, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .tasks to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 1 argument source → .health to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .money, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .training, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .family to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .training, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .relationship to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .training, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .money to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .sleep, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .training to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .sleep, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .sleep to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .sleep, level → .high to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "Overlapping windows and implausible samples never create evidence" passed after 0.017 seconds.
+◇ Test case passing 2 arguments source → .physicalTension, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .physicalTension to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .physicalTension, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 1 argument source → .mentalLoad to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 1 argument source → .lowEnergy to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .physicalTension, level → .high to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "Uses valid samples from the first and last minute" passed after 0.019 seconds.
+◇ Test case passing 1 argument source → .bodySignals to "Pressure level changes the eligible quotation" started.
+◇ Test case passing 2 arguments source → .mentalLoad, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .mentalLoad, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .mentalLoad, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .lowEnergy, level → .low to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "Compass coordinates resolve to a stable quadrant" passed after 0.020 seconds.
+◇ Test case passing 2 arguments source → .lowEnergy, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .lowEnergy, level → .high to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .bodySignals, level → .low to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .bodySignals, level → .moderate to "Pressure reflections stay inside the source and level pool" started.
+◇ Test case passing 2 arguments source → .bodySignals, level → .high to "Pressure reflections stay inside the source and level pool" started.
+✔ Test "All 38 Apple labels are mapped exactly once" passed after 0.022 seconds.
+✔ Test "Build 1 contains the five approved practices and Kegel is never automatic" passed after 0.113 seconds.
+✔ Test "Detailed state context defaults preserve existing call sites" passed after 0.114 seconds.
+✔ Test "An implausibly long episode is excluded from body load" passed after 0.115 seconds.
+✔ Test "A daytime nap is not added to the primary sleep" passed after 0.115 seconds.
+✔ Test "Overlapping sleep samples are counted once" passed after 0.115 seconds.
+✔ Test "A current expression owns the level even when body load is higher" passed after 0.201 seconds.
+✔ Test "A newer quick state replaces the detailed check-in" passed after 0.201 seconds.
+✔ Test "Detailed quadrants map to a clear stress level and fallback source" passed after 0.203 seconds.
+✔ Test "A detailed check-in wins when timestamps are equal" passed after 0.203 seconds.
+✔ Test "High-pressure and vulnerable emotions set a minimum stress level" passed after 0.203 seconds.
+✔ Test "Expressions from a previous local day expire before body-only assessment" passed after 0.203 seconds.
+✔ Test "All six quick states produce a definite targeted response" passed after 0.225 seconds.
+✔ Test "A newer detailed check-in replaces the quick state" passed after 0.225 seconds.
+✔ Test "Recent summary prefers valid Apple Watch samples" passed after 0.225 seconds.
+✔ Test "Old payloads infer an evidence request only when evidence exists" passed after 0.225 seconds.
+✔ Test "Unknown Apple label is left unclassified" passed after 0.226 seconds.
+✔ Test "A delayed retry reuses the first frozen completion window" passed after 0.226 seconds.
+✔ Test "身体负荷偏高时会调整没有明确恢复指向的回声推荐" passed after 0.226 seconds.
+✔ Test "A legacy mindful payload decodes without the request field" passed after 0.226 seconds.
+✔ Test "Recent workout keeps non-workout-sensitive evidence" passed after 0.226 seconds.
+✔ Test "Watch 情绪罗盘固定提供九个不重复区域" passed after 0.226 seconds.
+✔ Test "回声会直接得到一个对应的恢复动作" passed after 0.227 seconds.
+✔ Test "History alone never permits a steady conclusion" with 4 test cases passed after 0.227 seconds.
+✔ Test "Baseline ignores samples older than 14 days" passed after 0.227 seconds.
+✔ Test "Baseline requires five distinct valid days" passed after 0.226 seconds.
+✔ Test shiftWorkNapManualChoiceAndArrival() passed after 0.227 seconds.
+✔ Test "Two distinct reliable kinds including cardiovascular evidence are required" passed after 0.226 seconds.
+✔ Test "每种状态至少一个月不重复金句" passed after 0.227 seconds.
+✔ Test "Every source routes low, moderate, and high pressure to a targeted practice" passed after 0.227 seconds.
+✔ Test "Neutral compass coordinates do not trigger a negative-state practice" passed after 0.226 seconds.
+✔ Test "Recent workout suppresses an elevated conclusion" passed after 0.227 seconds.
+✔ Test lateSleepKeepsCycleAndAmbiguousMatchesRequireReview() passed after 0.227 seconds.
+✔ Test "The last day of a 31-day month does not collide with the next month" passed after 0.227 seconds.
+✔ Test "Elevated body load uses a recovery reflection theme" passed after 0.226 seconds.
+✔ Test "Observation is separate from elevated when enough independent evidence exists" passed after 0.227 seconds.
+✔ Test "High-activation negative state recommends a physiological sigh" passed after 0.227 seconds.
+✔ Test "No current expression asks for input until body evidence can support a result" passed after 0.227 seconds.
+✔ Test "Explicit context, sensations, and body signals use a stable source priority" passed after 0.227 seconds.
+✔ Test "每条金句都有可审核的公版来源与方寸自译声明" passed after 0.227 seconds.
+✔ Test "同一天的不同回声会得到不同的一句" passed after 0.227 seconds.
+✔ Test "尚未选择状态时也先给一句有作者和作品的名家句" passed after 0.227 seconds.
+✔ Test "Latest reading is the newest valid Watch sample, not the recent median" passed after 0.227 seconds.
+✔ Test "回声句只回应主观状态，不替身体数据下结论" passed after 0.227 seconds.
+✔ Test "每种状态都有一周不重复且有明确出处的名家句" passed after 0.227 seconds.
+✔ Test "A drained low-activation state recommends NSDR" passed after 0.227 seconds.
+✔ Test "Elevated load requires two independent reliable signals" passed after 0.227 seconds.
+✔ Test "Pressure reflections stay inside the source and level pool" with 39 test cases passed after 0.227 seconds.
+✔ Test "The same pressure profile remains stable throughout one local day" passed after 0.227 seconds.
+✔ Test "Consecutive local days reveal different reflections" passed after 0.227 seconds.
+✔ Test "Kegel is never returned by automatic recommendations" passed after 0.227 seconds.
+✔ Test sleepUnionDoesNotMixSourcesOrCountAwake() passed after 0.227 seconds.
+✔ Test "Median is resistant to an extreme sample" passed after 0.227 seconds.
+✔ Test "金句库只收录有明确作品的哲学与心理学名家句" passed after 0.227 seconds.
+✔ Test "Daily copy avoids abstract coaching language" passed after 0.227 seconds.
+✔ Test "Pressure level changes the eligible quotation" with 13 test cases passed after 0.227 seconds.
+✔ Test excessiveFutureAndConflictingSleep() passed after 0.227 seconds.
+✔ Test "Daily selections always carry an author and a work" passed after 0.227 seconds.
+✔ Test "The reflection remains stable throughout one local day" passed after 0.227 seconds.
+✔ Test "Every body theme offers a week of varied words" passed after 0.227 seconds.
+✔ Test deletionWinsAndCacheIsBounded() passed after 0.227 seconds.
+✔ Test uuidSyncVersionAndExplicitMirrors() passed after 0.227 seconds.
+✔ Test sourceDefinitionsAndRevisions() passed after 0.227 seconds.
+✔ Test "A body-load refresh cannot replace today's quotation" passed after 0.227 seconds.
+✔ Test noSilentSwitchAndManualRebaseline() passed after 0.227 seconds.
+✔ Test "Paced breathing exposes the breath phase instead of a session countdown" passed after 0.227 seconds.
+✔ Test "手表仅在启用且运行中的相位边界播放一次触觉" passed after 0.227 seconds.
+✔ Test daylightSavingBucketsAreAbsoluteAndCycleIsTimezoneIndependent() passed after 0.227 seconds.
+✔ Test "照顾情绪的金句不出现死亡深渊或怪物意象" passed after 0.227 seconds.
+✔ Test "开场句和六种状态在一年内每天都各不相同" passed after 0.227 seconds.
+✔ Test "Retry delay backs off and is capped at one day" passed after 0.227 seconds.
+✔ Test "Slow practices use calm sparse cues" passed after 0.227 seconds.
+✔ Test "Cue identifiers change only at protocol boundaries" passed after 0.227 seconds.
+✔ Test sparseCoverageInterventionAndRestingReuse() passed after 0.227 seconds.
+✔ Test baselineHasIndependentDaysNoCurrentOrFutureAndMADFloors() passed after 0.228 seconds.
+✔ Test arrivalBufferAndRealDSTRepeatedHour() passed after 0.227 seconds.
+✔ Test queryFailureCacheInvalidationAndFreshnessBoundaries() passed after 0.227 seconds.
+✔ Test enoughHistoryCannotInventCurrentAndPartialDataStayLimited() passed after 0.228 seconds.
+✔ Suite "Heart-rate evidence windows" passed after 0.433 seconds.
+✔ Suite "Emotion catalog" passed after 0.433 seconds.
+✔ Suite "Practice catalog" passed after 0.433 seconds.
+✔ Suite "Current moment stress decision" passed after 0.433 seconds.
+✔ Suite "Sleep episode analysis" passed after 0.433 seconds.
+✔ Suite "Body load baseline" passed after 0.433 seconds.
+✔ Suite "Watch practice completion recovery" passed after 0.433 seconds.
+✔ Suite "Echo personalization" passed after 0.433 seconds.
+✔ Suite "Watch compass grid" passed after 0.433 seconds.
+✔ Test trainingAndBackgroundEventsDoNotSuppressOrReward() passed after 0.432 seconds.
+✔ Suite "M2 sleep and baselines" passed after 0.433 seconds.
+✔ Suite "Practice recommendation" passed after 0.433 seconds.
+✔ Suite "Daily reflection" passed after 0.433 seconds.
+✔ Suite "M2 normalized sources" passed after 0.433 seconds.
+✔ Suite "Practice haptic cadence" passed after 0.433 seconds.
+✔ Suite "Pending write retry policy" passed after 0.433 seconds.
+✔ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() passed after 0.457 seconds.
+✔ Test noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory() passed after 0.546 seconds.
+✔ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() passed after 0.618 seconds.
+✔ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() passed after 0.644 seconds.
+✔ Test sourceChangeAndClearRejectLateRequests() passed after 0.726 seconds.
+✔ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() passed after 0.743 seconds.
+✔ Test transactionFaultsKeepCursorsAndAssessmentTogether() passed after 0.828 seconds.
+✔ Test providerToStorePaginationRevisionsAndDeletion() passed after 0.897 seconds.
+✔ Suite "M2 atomic Insights store and provider pipeline" passed after 0.898 seconds.
+✔ Test independentBaselineBoundariesAndCurrentCoverage() passed after 1.126 seconds.
+✔ Test nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual() passed after 1.146 seconds.
+✔ Test originalGoldenFileThroughRawSamples() passed after 1.231 seconds.
+✔ Suite "M2 readiness rules and replay" passed after 1.231 seconds.
+✔ Test run with 93 tests in 17 suites passed after 1.232 seconds.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r01-before.txt =====
+Building for debugging...
+[Planning deferred tasks]
+[1 / 5] InnerBalanceCoreTests-product
+[6 / 17] InnerBalanceCoreTests-product
+error: SwiftCompile normal arm64 <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR01Tests.swift failed with a nonzero exit code. Command line:     cd <REPO>
+    builtin-SwiftPerFileCompile M2ReviewR01Tests.swift
+macro expansion #require:1:46: error: recursive expansion of macro 'require(_:_:sourceLocation:)'
+`- <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR01Tests.swift:54:98: note: expanded code originates here
+52 |     let url = dir.appendingPathComponent("insights-v1.json")
+53 |     var envelope = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+54 |     let payload = try #require(Data(base64Encoded: try #require(envelope["payload"] as? String)))
+   |                       `- note: in expansion of macro 'require' here
+   +--- macro expansion #require ---------------------------------------
+   |1 | Testing.__checkValue(Data(base64Encoded: try #require(envelope["payload"] as? String)),expression: .__fromSyntaxNode(#"Data(base64Encoded: try #require(envelope["payload"] as? String))"#),comments: [],isRequired: true,sourceLocation: Testing.SourceLocation.__here()).__required()
+   |  |                                              `- error: recursive expansion of macro 'require(_:_:sourceLocation:)'
+   +--------------------------------------------------------------------
+55 |     var value = try #require(JSONSerialization.jsonObject(with: payload) as? [String: Any])
+56 |     var assessments = try #require(value["assessments"] as? [[String: Any]])
+
+macro expansion #require:1:42: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+`- <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR01Tests.swift:54:98: note: expanded code originates here
+52 |     let url = dir.appendingPathComponent("insights-v1.json")
+53 |     var envelope = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+54 |     let payload = try #require(Data(base64Encoded: try #require(envelope["payload"] as? String)))
+   |                       `- note: in expansion of macro 'require' here
+   +--- macro expansion #require ---------------------------------------
+   |1 | Testing.__checkValue(Data(base64Encoded: try #require(envelope["payload"] as? String)),expression: .__fromSyntaxNode(#"Data(base64Encoded: try #require(envelope["payload"] as? String))"#),comments: [],isRequired: true,sourceLocation: Testing.SourceLocation.__here()).__required()
+   |  |                                          `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+   +--------------------------------------------------------------------
+55 |     var value = try #require(JSONSerialization.jsonObject(with: payload) as? [String: Any])
+56 |     var assessments = try #require(value["assessments"] as? [[String: Any]])
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources/test_entry_point.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/BodyLoadEngineTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/CurrentMomentDecisionTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/DailyReflectionTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/EchoPersonalizationTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/EmotionCatalogTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/HeartRateEvidenceAnalyzerTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/PendingRetryPolicyTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/PracticeCatalogTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/PracticeHapticCadenceTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/InsightsStoreTests.swift -primary-file <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR01Tests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessEngineTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessFeatureTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessFixture.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessSourceTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/RecommendationEngineTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchCompassGridTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchPracticeCompletionTests.swift -emit-dependencies-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR01Tests.d -emit-const-values-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR01Tests.swiftconstvalues -emit-reference-dependencies-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR01Tests.swiftdeps -serialize-diagnostics-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR01Tests.dia -target arm64-apple-macos15.0 -module-can-import-version Testing 2084 0 -module-can-import-version XCTest 25228 0 -disable-cross-import-overlay-search -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/AppKit.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreGraphics.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreImage.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreTransferable.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/Foundation.swiftoverlay -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib\#\#TestingMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/InnerBalanceCoreTests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -I <REPO>/InnerBalanceCore/.build/out/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F <REPO>/InnerBalanceCore/.build/out/Products/Debug/PackageFrameworks -F <REPO>/InnerBalanceCore/.build/out/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -module-cache-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file <REPO>/InnerBalanceCore/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc <REPO> -enable-anonymous-context-mangled-names -file-compilation-dir <REPO> -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc <REPO>/InnerBalanceCore/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-a0facfad118c1a7a18f0aad9463f65497231f6df4def33e022ae2eb8f782df1a.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I<REPO>/InnerBalanceCore/.build/out/Products/Debug/include -Xcc -I<REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources-normal/arm64 -Xcc -I<REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources/arm64 -Xcc -I<REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name InnerBalanceCoreTests -package-name innerbalancecore -const-gather-protocols-file <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/InnerBalanceCoreTests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-macos27.0 -target-sdk-version 27.0 -target-sdk-name macosx27.0 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -parse-as-library -o <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR01Tests.o -debug-module-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/InnerBalanceCoreTests.swiftmodule -index-unit-output-path /InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR01Tests.o -index-store-path <REPO>/InnerBalanceCore/.build/out -index-system-modules
+error: Build failed
+error: fatalError
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r01-green.txt =====
+Building for debugging...
+[2 / 11] InnerBalanceCore
+[5 / 14] InnerBalanceCore
+[10 / 19] InnerBalanceCore
+[14 / 19] InnerBalanceCoreTests-product
+[25 / 30] InnerBalanceCoreTests-product
+[27 / 30] InnerBalanceCoreTests-product
+[29 / 33] InnerBalanceCoreTests-product
+Build complete! (2.22秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R01 dependency invalidation" started.
+◇ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() started.
+◇ Test legacyAssessmentWithoutDependencyMetadataLoadsButDeletionFailsClosed() started.
+◇ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+◇ Test case passing 1 argument conflict → true to rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+◇ Test case passing 1 argument conflict → false to rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+✔ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) with 2 test cases passed after 0.340 seconds.
+✔ Test legacyAssessmentWithoutDependencyMetadataLoadsButDeletionFailsClosed() passed after 0.342 seconds.
+✔ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() passed after 0.343 seconds.
+✔ Suite "M2-R01 dependency invalidation" passed after 0.343 seconds.
+✔ Test run with 3 tests in 1 suite passed after 0.343 seconds.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r01-red.txt =====
+Building for debugging...
+[2 / 13] InnerBalanceCoreTests-product
+[4 / 15] InnerBalanceCoreTests-product
+[10 / 14] InnerBalanceCoreTests-product
+Build complete! (1.06秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R01 dependency invalidation" started.
+◇ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() started.
+◇ Test legacyAssessmentWithoutDependencyMetadataLoadsButDeletionFailsClosed() started.
+◇ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+◇ Test case passing 1 argument conflict → false to rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+◇ Test case passing 1 argument conflict → true to rejectedSamplesAndSleepConflictAreDependencies(conflict:) started.
+✘ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) recorded an issue with 1 argument conflict → true at M2ReviewR01Tests.swift:43:5: Expectation failed: await store.snapshot().current == nil
+↳ await store.snapshot().current == nil → <not evaluated>
+✘ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) recorded an issue with 1 argument conflict → false at M2ReviewR01Tests.swift:43:5: Expectation failed: await store.snapshot().current == nil
+↳ await store.snapshot().current == nil → <not evaluated>
+✘ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() recorded an issue at M2ReviewR01Tests.swift:16:5: Expectation failed: removed.current == nil
+↳ removed.current == nil → false
+↳   removed.current → ReadinessAssessment(assessmentID: "961e92f0d20008da5105f564a88bd9ecbc6a9996ac4e22c53fb60baa3a2793f5", recoveryCycleID: Optional("sleep-a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"), revision: 1, supersedesID: nil, configuration: InnerBalanceCore.ReadinessConfiguration(algorithmVersion: "readiness-v1-engineering", featureSchemaVersion: 1, sleepTargetHours: 8.0, episodeGapMinutes: 90.0, minimumSleepHours: 2.0, reviewSleepHours: 14.0, arrivalBufferMinutes: 30.0, interventionBufferMinutes: 30.0, minimumHRVSamples: 3, minimumHRVHours: 2, baselineDays: 28, provisionalDays: 7, matureDays: 14, madMultiplier: 1.4826, hrvScaleFloor: 0.1, rhrScaleFloor: 3.0, currentHours: 18.0, historicalHours: 24.0, mildDeviation: 1.0, severeDeviation: 2.0, highHRVDeviation: 2.0, mildSleepDeficitMinutes: 60.0, severeSleepDeficitMinutes: 120.0, ambiguousSleepHours: 4.0, ambiguousEndGapHours: 6.0, revisionOverlapFraction: 0.5, revisionEndGapHours: 3.0, maximumHRVMS: 10000.0, maximumRestingBPM: 1000.0), inputFingerprint: "e6830bb1d55e7494f3ca4731df3c415dc9318e0c3ca32d31e2c6de79a3bf6d79", sleepEpisodeID: Optional("a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"), sleepStartAt: Optional(2026-09-17 16:00:00 +0000), sleepEndAt: Optional(2026-09-18 00:00:00 +0000), actualSleepSeconds: Optional(28800.0), evidenceWindowStart: Optional(2026-09-17 00:00:00 +0000), evidenceWindowEnd: Optional(2026-09-18 03:00:00 +0000), computedAt: 2026-09-18 04:00:00 +0000, queriedAt: Optional(2026-09-18 04:00:00 +0000), latestMeasuredAt: Optional(2026-09-18 01:00:00 +0000), currentUntil: Optional(2026-09-18 18:00:00 +0000), validUntil: Optional(2026-09-19 00:00:00 +0000), timeZoneID: "GMT", availability: InnerBalanceCore.ReadinessAvailability.assessable, level: Optional(InnerBalanceCore.ReadinessLevel.usual), freshness: InnerBalanceCore.ReadinessFreshness.current, syncState: InnerBalanceCore.ReadinessSyncState.local, evidence: [InnerBalanceCore.ReadinessMetricEvidence(feature: InnerBalanceCore.ReadinessMetricFeature(metric: InnerBalanceCore.ReadinessMetric.hrvSDNN, sourceKey: Optional("24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"), value: Optional(3.912023005428146), displayValue: Optional(50.0), unit: "ms", window: InnerBalanceCore.ReadinessInterval(start: 2026-09-17 16:00:00 +0000, end: 2026-09-18 00:00:00 +0000), latestMeasuredAt: Optional(2026-09-17 23:00:00 +0000), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>], coveredHours: 4, reliable: true, reasons: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete]), baseline: Optional(InnerBalanceCore.ReadinessMetricBaseline(metric: InnerBalanceCore.ReadinessMetric.hrvSDNN, sourceKey: Optional("24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"), validDays: 20, center: Optional(3.912023005428146), scale: Optional(0.1), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])), deviation: Optional(0.0)), InnerBalanceCore.ReadinessMetricEvidence(feature: InnerBalanceCore.ReadinessMetricFeature(metric: InnerBalanceCore.ReadinessMetric.restingHeartRate, sourceKey: Optional("cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72"), value: Optional(60.0), displayValue: Optional(60.0), unit: "count/min", window: InnerBalanceCore.ReadinessInterval(start: 2026-09-17 00:00:00 +0000, end: 2026-09-18 03:00:00 +0000), latestMeasuredAt: Optional(2026-09-18 01:00:00 +0000), sampleIDs: [<UUID>], coveredHours: 1, reliable: true, reasons: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete]), baseline: Optional(InnerBalanceCore.ReadinessMetricBaseline(metric: InnerBalanceCore.ReadinessMetric.restingHeartRate, sourceKey: Optional("cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72"), validDays: 20, center: Optional(60.0), scale: Optional(3.0), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])), deviation: Optional(0.0))], missingReasons: [], qualityFlags: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete], sourceDetails: ["sleep": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false), "hrvSDNN": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false), "restingHeartRate": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false)], sources: ["sleep": InnerBalanceCore.SelectedReadinessSource(sourceKey: "58cf1d08653be04d7d587986e924dd02c0071713e55bef2fd261e3c9b13c1f4c", segmentID: "e640947a2ce44f3d7765b774332694ebf671b2f302574ec871e5eb1de783dafb", manuallySelected: false), "hrvSDNN": InnerBalanceCore.SelectedReadinessSource(sourceKey: "24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d", segmentID: "e5bd40454c7bce5237fdde065ecbf51ea20582e95fcce4149e2b85cbcdba3734", manuallySelected: false), "restingHeartRate": InnerBalanceCore.SelectedReadinessSource(sourceKey: "cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72", segmentID: "e4c795760f6d8898cc35e24558d25d63c649626720e8505837fc7be156dee27a", manuallySelected: false)], manuallySelectedSleep: false, autonomicSeverity: Optional(0), sleepSeverity: Optional(0), refreshFailure: nil, contributingSampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])
+↳     some → ReadinessAssessment(assessmentID: "961e92f0d20008da5105f564a88bd9ecbc6a9996ac4e22c53fb60baa3a2793f5", recoveryCycleID: Optional("sleep-a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"), revision: 1, supersedesID: nil, configuration: InnerBalanceCore.ReadinessConfiguration(algorithmVersion: "readiness-v1-engineering", featureSchemaVersion: 1, sleepTargetHours: 8.0, episodeGapMinutes: 90.0, minimumSleepHours: 2.0, reviewSleepHours: 14.0, arrivalBufferMinutes: 30.0, interventionBufferMinutes: 30.0, minimumHRVSamples: 3, minimumHRVHours: 2, baselineDays: 28, provisionalDays: 7, matureDays: 14, madMultiplier: 1.4826, hrvScaleFloor: 0.1, rhrScaleFloor: 3.0, currentHours: 18.0, historicalHours: 24.0, mildDeviation: 1.0, severeDeviation: 2.0, highHRVDeviation: 2.0, mildSleepDeficitMinutes: 60.0, severeSleepDeficitMinutes: 120.0, ambiguousSleepHours: 4.0, ambiguousEndGapHours: 6.0, revisionOverlapFraction: 0.5, revisionEndGapHours: 3.0, maximumHRVMS: 10000.0, maximumRestingBPM: 1000.0), inputFingerprint: "e6830bb1d55e7494f3ca4731df3c415dc9318e0c3ca32d31e2c6de79a3bf6d79", sleepEpisodeID: Optional("a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"), sleepStartAt: Optional(2026-09-17 16:00:00 +0000), sleepEndAt: Optional(2026-09-18 00:00:00 +0000), actualSleepSeconds: Optional(28800.0), evidenceWindowStart: Optional(2026-09-17 00:00:00 +0000), evidenceWindowEnd: Optional(2026-09-18 03:00:00 +0000), computedAt: 2026-09-18 04:00:00 +0000, queriedAt: Optional(2026-09-18 04:00:00 +0000), latestMeasuredAt: Optional(2026-09-18 01:00:00 +0000), currentUntil: Optional(2026-09-18 18:00:00 +0000), validUntil: Optional(2026-09-19 00:00:00 +0000), timeZoneID: "GMT", availability: InnerBalanceCore.ReadinessAvailability.assessable, level: Optional(InnerBalanceCore.ReadinessLevel.usual), freshness: InnerBalanceCore.ReadinessFreshness.current, syncState: InnerBalanceCore.ReadinessSyncState.local, evidence: [InnerBalanceCore.ReadinessMetricEvidence(feature: InnerBalanceCore.ReadinessMetricFeature(metric: InnerBalanceCore.ReadinessMetric.hrvSDNN, sourceKey: Optional("24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"), value: Optional(3.912023005428146), displayValue: Optional(50.0), unit: "ms", window: InnerBalanceCore.ReadinessInterval(start: 2026-09-17 16:00:00 +0000, end: 2026-09-18 00:00:00 +0000), latestMeasuredAt: Optional(2026-09-17 23:00:00 +0000), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>], coveredHours: 4, reliable: true, reasons: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete]), baseline: Optional(InnerBalanceCore.ReadinessMetricBaseline(metric: InnerBalanceCore.ReadinessMetric.hrvSDNN, sourceKey: Optional("24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"), validDays: 20, center: Optional(3.912023005428146), scale: Optional(0.1), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])), deviation: Optional(0.0)), InnerBalanceCore.ReadinessMetricEvidence(feature: InnerBalanceCore.ReadinessMetricFeature(metric: InnerBalanceCore.ReadinessMetric.restingHeartRate, sourceKey: Optional("cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72"), value: Optional(60.0), displayValue: Optional(60.0), unit: "count/min", window: InnerBalanceCore.ReadinessInterval(start: 2026-09-17 00:00:00 +0000, end: 2026-09-18 03:00:00 +0000), latestMeasuredAt: Optional(2026-09-18 01:00:00 +0000), sampleIDs: [<UUID>], coveredHours: 1, reliable: true, reasons: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete]), baseline: Optional(InnerBalanceCore.ReadinessMetricBaseline(metric: InnerBalanceCore.ReadinessMetric.restingHeartRate, sourceKey: Optional("cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72"), validDays: 20, center: Optional(60.0), scale: Optional(3.0), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])), deviation: Optional(0.0))], missingReasons: [], qualityFlags: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete], sourceDetails: ["sleep": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false), "hrvSDNN": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false), "restingHeartRate": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false)], sources: ["sleep": InnerBalanceCore.SelectedReadinessSource(sourceKey: "58cf1d08653be04d7d587986e924dd02c0071713e55bef2fd261e3c9b13c1f4c", segmentID: "e640947a2ce44f3d7765b774332694ebf671b2f302574ec871e5eb1de783dafb", manuallySelected: false), "hrvSDNN": InnerBalanceCore.SelectedReadinessSource(sourceKey: "24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d", segmentID: "e5bd40454c7bce5237fdde065ecbf51ea20582e95fcce4149e2b85cbcdba3734", manuallySelected: false), "restingHeartRate": InnerBalanceCore.SelectedReadinessSource(sourceKey: "cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72", segmentID: "e4c795760f6d8898cc35e24558d25d63c649626720e8505837fc7be156dee27a", manuallySelected: false)], manuallySelectedSleep: false, autonomicSeverity: Optional(0), sleepSeverity: Optional(0), refreshFailure: nil, contributingSampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])
+↳       assessmentID → "961e92f0d20008da5105f564a88bd9ecbc6a9996ac4e22c53fb60baa3a2793f5"
+↳       recoveryCycleID → "sleep-a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"
+↳         some → "sleep-a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"
+↳       revision → 1
+↳       supersedesID → nil
+↳       configuration → ReadinessConfiguration(algorithmVersion: "readiness-v1-engineering", featureSchemaVersion: 1, sleepTargetHours: 8.0, episodeGapMinutes: 90.0, minimumSleepHours: 2.0, reviewSleepHours: 14.0, arrivalBufferMinutes: 30.0, interventionBufferMinutes: 30.0, minimumHRVSamples: 3, minimumHRVHours: 2, baselineDays: 28, provisionalDays: 7, matureDays: 14, madMultiplier: 1.4826, hrvScaleFloor: 0.1, rhrScaleFloor: 3.0, currentHours: 18.0, historicalHours: 24.0, mildDeviation: 1.0, severeDeviation: 2.0, highHRVDeviation: 2.0, mildSleepDeficitMinutes: 60.0, severeSleepDeficitMinutes: 120.0, ambiguousSleepHours: 4.0, ambiguousEndGapHours: 6.0, revisionOverlapFraction: 0.5, revisionEndGapHours: 3.0, maximumHRVMS: 10000.0, maximumRestingBPM: 1000.0)
+↳         algorithmVersion → "readiness-v1-engineering"
+↳         featureSchemaVersion → 1
+↳         sleepTargetHours → 8.0
+↳         episodeGapMinutes → 90.0
+↳         minimumSleepHours → 2.0
+↳         reviewSleepHours → 14.0
+↳         arrivalBufferMinutes → 30.0
+↳         interventionBufferMinutes → 30.0
+↳         minimumHRVSamples → 3
+↳         minimumHRVHours → 2
+↳         baselineDays → 28
+↳         provisionalDays → 7
+↳         matureDays → 14
+↳         madMultiplier → 1.4826
+↳         hrvScaleFloor → 0.1
+↳         rhrScaleFloor → 3.0
+↳         currentHours → 18.0
+↳         historicalHours → 24.0
+↳         mildDeviation → 1.0
+↳         severeDeviation → 2.0
+↳         highHRVDeviation → 2.0
+↳         mildSleepDeficitMinutes → 60.0
+↳         severeSleepDeficitMinutes → 120.0
+↳         ambiguousSleepHours → 4.0
+↳         ambiguousEndGapHours → 6.0
+↳         revisionOverlapFraction → 0.5
+↳         revisionEndGapHours → 3.0
+↳         maximumHRVMS → 10000.0
+↳         maximumRestingBPM → 1000.0
+↳       inputFingerprint → "e6830bb1d55e7494f3ca4731df3c415dc9318e0c3ca32d31e2c6de79a3bf6d79"
+↳       sleepEpisodeID → "a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"
+↳         some → "a1e634214aa2a82bd4ab48e78d022e3e173d964de1a8725dc9695f33aac94150"
+↳       sleepStartAt → 2026-09-17 16:00:00 +0000
+↳         some → 2026-09-17 16:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811353600.0
+↳       sleepEndAt → 2026-09-18 00:00:00 +0000
+↳         some → 2026-09-18 00:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811382400.0
+↳       actualSleepSeconds → 28800.0
+↳         some → 28800.0
+↳       evidenceWindowStart → 2026-09-17 00:00:00 +0000
+↳         some → 2026-09-17 00:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811296000.0
+↳       evidenceWindowEnd → 2026-09-18 03:00:00 +0000
+↳         some → 2026-09-18 03:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811393200.0
+↳       computedAt → 2026-09-18 04:00:00 +0000
+↳         timeIntervalSinceReferenceDate → 811396800.0
+↳       queriedAt → 2026-09-18 04:00:00 +0000
+↳         some → 2026-09-18 04:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811396800.0
+↳       latestMeasuredAt → 2026-09-18 01:00:00 +0000
+↳         some → 2026-09-18 01:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811386000.0
+↳       currentUntil → 2026-09-18 18:00:00 +0000
+↳         some → 2026-09-18 18:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811447200.0
+↳       validUntil → 2026-09-19 00:00:00 +0000
+↳         some → 2026-09-19 00:00:00 +0000
+↳           timeIntervalSinceReferenceDate → 811468800.0
+↳       timeZoneID → "GMT"
+↳       availability → .assessable
+↳       level → .usual
+↳         some → .usual
+↳       freshness → .current
+↳       syncState → .local
+↳       evidence → [InnerBalanceCore.ReadinessMetricEvidence(feature: InnerBalanceCore.ReadinessMetricFeature(metric: InnerBalanceCore.ReadinessMetric.hrvSDNN, sourceKey: Optional("24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"), value: Optional(3.912023005428146), displayValue: Optional(50.0), unit: "ms", window: InnerBalanceCore.ReadinessInterval(start: 2026-09-17 16:00:00 +0000, end: 2026-09-18 00:00:00 +0000), latestMeasuredAt: Optional(2026-09-17 23:00:00 +0000), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>], coveredHours: 4, reliable: true, reasons: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete]), baseline: Optional(InnerBalanceCore.ReadinessMetricBaseline(metric: InnerBalanceCore.ReadinessMetric.hrvSDNN, sourceKey: Optional("24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"), validDays: 20, center: Optional(3.912023005428146), scale: Optional(0.1), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])), deviation: Optional(0.0)), InnerBalanceCore.ReadinessMetricEvidence(feature: InnerBalanceCore.ReadinessMetricFeature(metric: InnerBalanceCore.ReadinessMetric.restingHeartRate, sourceKey: Optional("cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72"), value: Optional(60.0), displayValue: Optional(60.0), unit: "count/min", window: InnerBalanceCore.ReadinessInterval(start: 2026-09-17 00:00:00 +0000, end: 2026-09-18 03:00:00 +0000), latestMeasuredAt: Optional(2026-09-18 01:00:00 +0000), sampleIDs: [<UUID>], coveredHours: 1, reliable: true, reasons: [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete]), baseline: Optional(InnerBalanceCore.ReadinessMetricBaseline(metric: InnerBalanceCore.ReadinessMetric.restingHeartRate, sourceKey: Optional("cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72"), validDays: 20, center: Optional(60.0), scale: Optional(3.0), sampleIDs: [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>])), deviation: Optional(0.0))]
+↳       missingReasons → []
+↳       qualityFlags → [InnerBalanceCore.ReadinessReason.sourceIdentityIncomplete]
+↳       sourceDetails → ["sleep": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false), "hrvSDNN": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false), "restingHeartRate": InnerBalanceCore.ReadinessSource(bundleID: "org.example.synthetic", name: "", productType: Optional("SyntheticDevice"), deviceModel: nil, deviceIdentity: nil, revision: "", samplingMethod: "system", compatibilitySegment: "v1", isOriginalDeviceRecord: false, identityAmbiguous: false)]
+↳       sources → ["sleep": InnerBalanceCore.SelectedReadinessSource(sourceKey: "58cf1d08653be04d7d587986e924dd02c0071713e55bef2fd261e3c9b13c1f4c", segmentID: "e640947a2ce44f3d7765b774332694ebf671b2f302574ec871e5eb1de783dafb", manuallySelected: false), "hrvSDNN": InnerBalanceCore.SelectedReadinessSource(sourceKey: "24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d", segmentID: "e5bd40454c7bce5237fdde065ecbf51ea20582e95fcce4149e2b85cbcdba3734", manuallySelected: false), "restingHeartRate": InnerBalanceCore.SelectedReadinessSource(sourceKey: "cc90bde234a1a79b97273c9e9a5cf11ffcb3d30939236766a3c067224a5ece72", segmentID: "e4c795760f6d8898cc35e24558d25d63c649626720e8505837fc7be156dee27a", manuallySelected: false)]
+↳       manuallySelectedSleep → false
+↳       autonomicSeverity → 0
+↳         some → 0
+↳       sleepSeverity → 0
+↳         some → 0
+↳       refreshFailure → nil
+↳       contributingSampleIDs → [<UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>, <UUID>]
+✘ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() recorded an issue at M2ReviewR01Tests.swift:17:5: Expectation failed: !removed.assessments.contains { $0.assessmentID == original.assessmentID }
+↳ !removed.assessments.contains { $0.assessmentID == original.assessmentID } → <not evaluated>
+↳   removed.assessments.contains { $0.assessmentID == original.assessmentID } → <not evaluated>
+✘ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() recorded an issue at M2ReviewR01Tests.swift:18:5: Expectation failed: removed.deletionAudit.contains { $0.assessmentID == original.assessmentID }
+↳ removed.deletionAudit.contains { $0.assessmentID == original.assessmentID } → <not evaluated>
+✘ Test legacyAssessmentWithoutDependencyMetadataLoadsButDeletionFailsClosed() recorded an issue at M2ReviewR01Tests.swift:66:5: Expectation failed: await legacy.snapshot().current == nil
+↳ await legacy.snapshot().current == nil → <not evaluated>
+✘ Test legacyAssessmentWithoutDependencyMetadataLoadsButDeletionFailsClosed() failed after 0.190 seconds with 1 issue.
+✘ Test rejectedSamplesAndSleepConflictAreDependencies(conflict:) with 2 test cases failed after 0.191 seconds with 2 issues.
+✘ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() recorded an issue at M2ReviewR01Tests.swift:24:5: Expectation failed: await restarted.snapshot().assessments.allSatisfy { $0.assessmentID != original.assessmentID }
+↳ await restarted.snapshot().assessments.allSatisfy { $0.assessmentID != original.assessmentID } → <not evaluated>
+✘ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() recorded an issue at M2ReviewR01Tests.swift:30:5: Expectation failed: !failed.assessments.contains { $0.assessmentID == original.assessmentID }
+↳ !failed.assessments.contains { $0.assessmentID == original.assessmentID } → <not evaluated>
+↳   failed.assessments.contains { $0.assessmentID == original.assessmentID } → <not evaluated>
+✘ Test historicalSleepDeletionInvalidatesThenRecomputesAndCannotRecoverOldCache() failed after 0.211 seconds with 5 issues.
+✘ Suite "M2-R01 dependency invalidation" failed after 0.211 seconds with 8 issues.
+✘ Test run with 3 tests in 1 suite failed after 0.211 seconds with 8 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r02-green.txt =====
+Building for debugging...
+[2 / 11] InnerBalanceCore
+[5 / 14] InnerBalanceCore
+[10 / 19] InnerBalanceCore
+[14 / 19] InnerBalanceCoreTests-product
+[25 / 30] InnerBalanceCoreTests-product
+[27 / 30] InnerBalanceCoreTests-product
+[29 / 33] InnerBalanceCoreTests-product
+Build complete! (2.53秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R02 paged source discovery" started.
+◇ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+◇ Test workBudgetDoesNotFreezeIncompleteDiscovery() started.
+◇ Test case passing 1 argument manual → false to incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+◇ Test case passing 1 argument manual → true to incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+✔ Test workBudgetDoesNotFreezeIncompleteDiscovery() passed after 0.190 seconds.
+✔ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) with 2 test cases passed after 0.310 seconds.
+✔ Suite "M2-R02 paged source discovery" passed after 0.310 seconds.
+✔ Test run with 2 tests in 1 suite passed after 0.310 seconds.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r02-red.txt =====
+Building for debugging...
+[Planning deferred tasks]
+[6 / 17] InnerBalanceCoreTests-product
+[9 / 20] InnerBalanceCoreTests-product
+[15 / 19] InnerBalanceCoreTests-product
+Build complete! (1.41秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R02 paged source discovery" started.
+◇ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+◇ Test workBudgetDoesNotFreezeIncompleteDiscovery() started.
+◇ Test case passing 1 argument manual → true to incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+◇ Test case passing 1 argument manual → false to incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) started.
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() recorded an issue at M2ReviewR02Tests.swift:36:5: Expectation failed: partial.current?.level == nil && partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil
+↳ partial.current?.level == nil && partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+↳   partial.current?.level == nil → true
+↳   partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → false at M2ReviewR02Tests.swift:17:5: Expectation failed: partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil
+↳ partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+↳   partial.sources[ReadinessMetric.hrvSDNN.rawValue] → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳     some → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳       sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳       segmentID → "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d"
+↳       manuallySelected → false
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → true at M2ReviewR02Tests.swift:17:5: Expectation failed: partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil
+↳ partial.sources[ReadinessMetric.hrvSDNN.rawValue] == nil → false
+↳   partial.sources[ReadinessMetric.hrvSDNN.rawValue] → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳     some → SelectedReadinessSource(sourceKey: "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88", segmentID: "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d", manuallySelected: false)
+↳       sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳       segmentID → "9655b9d84a3afb3a784f9ff838b5b4047f79ade8362ad21e65c1624da77d468d"
+↳       manuallySelected → false
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() recorded an issue at M2ReviewR02Tests.swift:38:5: Expectation failed: completed.current?.level == .usual
+↳ completed.current?.level == .usual → false
+↳   completed.current?.level → nil
+↳     some → .usual
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() recorded an issue at M2ReviewR02Tests.swift:39:5: Expectation failed: completed.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == f.source.key(for: .hrvSDNN)
+↳ completed.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == f.source.key(for: .hrvSDNN) → false
+↳   completed.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳     some → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳   f.source.key(for: .hrvSDNN) → "24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"
+✘ Test workBudgetDoesNotFreezeIncompleteDiscovery() failed after 0.164 seconds with 3 issues.
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → false at M2ReviewR02Tests.swift:22:5: Expectation failed: finished.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == (manual ? a.sourceKey : f.source.key(for: .hrvSDNN))
+↳ finished.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == (manual ? a.sourceKey : f.source.key(for: .hrvSDNN)) → false
+↳   finished.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳     some → "056194138987c486a982c221d8805e4b1e493f0c8c1c2d87b9578036c09aac88"
+↳   (manual ? a.sourceKey : f.source.key(for: .hrvSDNN)) → "24589639c6f5b338cabd6e915acfbf190921619bd2a4177ce5e7c5a4cc9f499d"
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) recorded an issue with 1 argument manual → false at M2ReviewR02Tests.swift:23:5: Expectation failed: finished.current?.level == (manual ? nil : .usual)
+↳ finished.current?.level == (manual ? nil : .usual) → false
+↳   finished.current?.level → nil
+↳   (manual ? nil : .usual) → .usual
+↳     some → .usual
+✘ Test incompleteDiscoveryResumesWithoutFreezingFirstSource(manual:) with 2 test cases failed after 0.277 seconds with 4 issues.
+✘ Suite "M2-R02 paged source discovery" failed after 0.277 seconds with 7 issues.
+✘ Test run with 2 tests in 1 suite failed after 0.277 seconds with 7 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r03-cache-green.txt =====
+Building for debugging...
+[2 / 12] InnerBalanceCore
+[4 / 14] InnerBalanceCore
+[8 / 18] InnerBalanceCore
+[10 / 20] InnerBalanceCore
+[14 / 19] InnerBalanceCoreTests-product
+[21 / 26] InnerBalanceCoreTests-product
+[23 / 26] InnerBalanceCoreTests-product
+[25 / 29] InnerBalanceCoreTests-product
+Build complete! (2.26秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Suite "M2 readiness rules and replay" started.
+◇ Test changedConfigurationRunsAfterOldFlight() started.
+◇ Test healthEventAfterSleepReadSchedulesOneCatchup() started.
+◇ Test contextAndTimezoneChangeAreNotOldResult() started.
+◇ Test nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual() started.
+◇ Test queryFailureCacheInvalidationAndFreshnessBoundaries() started.
+◇ Test arrivalBufferAndRealDSTRepeatedHour() started.
+◇ Test noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory() started.
+◇ Test changedContextCannotReturnCachedOldSemanticsOnFailure() started.
+◇ Test originalGoldenFileThroughRawSamples() started.
+◇ Test independentBaselineBoundariesAndCurrentCoverage() started.
+◇ Test enoughHistoryCannotInventCurrentAndPartialDataStayLimited() started.
+◇ Test trainingAndBackgroundEventsDoNotSuppressOrReward() started.
+✔ Test arrivalBufferAndRealDSTRepeatedHour() passed after 0.186 seconds.
+✔ Test queryFailureCacheInvalidationAndFreshnessBoundaries() passed after 0.186 seconds.
+✔ Test enoughHistoryCannotInventCurrentAndPartialDataStayLimited() passed after 0.236 seconds.
+✔ Test changedConfigurationRunsAfterOldFlight() passed after 0.340 seconds.
+✔ Test contextAndTimezoneChangeAreNotOldResult() passed after 0.348 seconds.
+✔ Test trainingAndBackgroundEventsDoNotSuppressOrReward() passed after 0.360 seconds.
+✔ Test noSilentFallbackAndSourceSwitchRebuildsOnlyNewSourceHistory() passed after 0.443 seconds.
+✔ Test changedContextCannotReturnCachedOldSemanticsOnFailure() passed after 0.467 seconds.
+✔ Test healthEventAfterSleepReadSchedulesOneCatchup() passed after 0.484 seconds.
+✔ Suite "M2-R03 semantic single flight" passed after 0.484 seconds.
+✔ Test independentBaselineBoundariesAndCurrentCoverage() passed after 0.944 seconds.
+✔ Test nonFiniteNegativeManualAmbiguousAndExtremeValuesDoNotBecomeUsual() passed after 0.967 seconds.
+✔ Test originalGoldenFileThroughRawSamples() passed after 1.034 seconds.
+✔ Suite "M2 readiness rules and replay" passed after 1.034 seconds.
+✔ Test run with 12 tests in 2 suites passed after 1.034 seconds.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r03-cache-red.txt =====
+Building for debugging...
+[1 / 12] InnerBalanceCore
+[2 / 7] InnerBalanceCoreTests-product
+[4 / 9] InnerBalanceCoreTests-product
+[10 / 14] InnerBalanceCoreTests-product
+Build complete! (1.77秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Test changedContextCannotReturnCachedOldSemanticsOnFailure() started.
+✘ Test changedContextCannotReturnCachedOldSemanticsOnFailure() recorded an issue at M2ReviewR03Tests.swift:67:5: Expectation failed: changed.current?.level == nil && changed.current?.availability == .failed
+↳ changed.current?.level == nil && changed.current?.availability == .failed → false
+↳   changed.current?.level == nil → false
+↳   changed.current?.availability == .failed → <not evaluated>
+✘ Test changedContextCannotReturnCachedOldSemanticsOnFailure() recorded an issue at M2ReviewR03Tests.swift:68:5: Expectation failed: changed.current?.computedAt != first.current?.computedAt
+↳ changed.current?.computedAt != first.current?.computedAt → false
+↳   changed.current?.computedAt → 2026-09-18 04:00:00 +0000
+↳     some → 2026-09-18 04:00:00 +0000
+↳       timeIntervalSinceReferenceDate → 811396800.0
+↳   first.current?.computedAt → 2026-09-18 04:00:00 +0000
+↳     some → 2026-09-18 04:00:00 +0000
+↳       timeIntervalSinceReferenceDate → 811396800.0
+✘ Test changedContextCannotReturnCachedOldSemanticsOnFailure() failed after 0.166 seconds with 2 issues.
+✘ Suite "M2-R03 semantic single flight" failed after 0.166 seconds with 2 issues.
+✘ Test run with 1 test in 1 suite failed after 0.166 seconds with 2 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r03-green-recheck.txt =====
+Building for debugging...
+[2 / 12] InnerBalanceCore
+[4 / 14] InnerBalanceCore
+[11 / 12] InnerBalanceCoreTests-product
+Build complete! (0.69秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Suite "M2 atomic Insights store and provider pipeline" started.
+◇ Test contextAndTimezoneChangeAreNotOldResult() started.
+◇ Test changedConfigurationRunsAfterOldFlight() started.
+◇ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() started.
+◇ Test healthEventAfterSleepReadSchedulesOneCatchup() started.
+◇ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() started.
+◇ Test providerToStorePaginationRevisionsAndDeletion() started.
+◇ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() started.
+◇ Test sourceChangeAndClearRejectLateRequests() started.
+◇ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() started.
+◇ Test transactionFaultsKeepCursorsAndAssessmentTogether() started.
+✔ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() passed after 0.324 seconds.
+✔ Test healthEventAfterSleepReadSchedulesOneCatchup() passed after 0.349 seconds.
+✔ Test changedConfigurationRunsAfterOldFlight() passed after 0.349 seconds.
+✔ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() passed after 0.358 seconds.
+✔ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() passed after 0.364 seconds.
+✔ Test contextAndTimezoneChangeAreNotOldResult() passed after 0.373 seconds.
+✔ Suite "M2-R03 semantic single flight" passed after 0.373 seconds.
+✔ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() passed after 0.383 seconds.
+✔ Test sourceChangeAndClearRejectLateRequests() passed after 0.441 seconds.
+✔ Test transactionFaultsKeepCursorsAndAssessmentTogether() passed after 0.527 seconds.
+✔ Test providerToStorePaginationRevisionsAndDeletion() passed after 0.536 seconds.
+✔ Suite "M2 atomic Insights store and provider pipeline" passed after 0.536 seconds.
+✔ Test run with 10 tests in 2 suites passed after 0.536 seconds.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r03-green.txt =====
+Building for debugging...
+[2 / 11] InnerBalanceCore
+[4 / 13] InnerBalanceCore
+[12 / 17] InnerBalanceCoreTests-product
+[17 / 22] InnerBalanceCoreTests-product
+[19 / 22] InnerBalanceCoreTests-product
+[21 / 25] InnerBalanceCoreTests-product
+Build complete! (1.68秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2 atomic Insights store and provider pipeline" started.
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Test failureKeepsOriginalCacheButEmptyInitialReadIsNotPermissionDenial() started.
+◇ Test corruptedJournalAndUnknownSchemaFailClosedWithoutWiping() started.
+◇ Test deletionBarrierSurvivesInterruptedPublishAndCorruptPrimary() started.
+◇ Test providerToStorePaginationRevisionsAndDeletion() started.
+◇ Test sourceChangeAndClearRejectLateRequests() started.
+◇ Test healthEventAfterSleepReadSchedulesOneCatchup() started.
+◇ Test concurrentRefreshCoalescesAndInvalidAnchorRebuildsCurrentEvidence() started.
+◇ Test transactionFaultsKeepCursorsAndAssessmentTogether() started.
+◇ Test contextAndTimezoneChangeAreNotOldResult() started.
+◇ Test changedConfigurationRunsAfterOldFlight() started.
+Simultaneous accesses to 0x1030a3188, but modification requires exclusive access.
+Previous access (a modification) started at InnerBalanceCoreTests`ReadinessPipeline.pending.modify + 48 (0x107b5c554).
+Current access (a read) started at:
+0    libswiftCore.dylib                 0x000000019fe9b69c _swift_reportExclusivityConflict + 332
+Simultaneous accesses to 0x1030a4108, but modification requires exclusive access.
+Previous access (a modification) started at InnerBalanceCoreTests`ReadinessPipeline.pending.modify + 48 (0x107b5c554).
+Current access (a read) started at:
+0    libswiftCore.dylib                 0x000000019fe9b69c _swift_reportExclusivityConflict + 332
+1    libswiftCore.dylib                 0x000000019fe32f34 swift_beginAccess + 192
+1    libswiftCore.dylib                 0x000000019fe32f34 swift_beginAccess + 192
+2    InnerBalanceCoreTests              0x0000000107b5df7c closure #2 in ReadinessPipeline.refresh(now:calendar:configuration:interventions:healthDataChanged:) + 2136
+2    InnerBalanceCoreTests              0x0000000107b5df7c closure #2 in ReadinessPipeline.refresh(now:calendar:configuration:interventions:healthDataChanged:) + 2136
+Simultaneous accesses to 0x7c28e681d8, but modification requires exclusive access.
+Previous access (a modification) started at 3    InnerBalanceCoreTests              0x0000000107b6f3d0 closure #1 in withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 244
+4    InnerBalanceCoreTests              0x0000000107b5ec08 withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 192
+InnerBalanceCoreTests`ReadinessPipeline.pending.modify + 48 (0x107b5c554).
+Current access (a read) started at:
+0    libswiftCore.dylib                 0x000000019fe9b69c _swift_reportExclusivityConflict + 332
+1    libswiftCore.dylib                 0x000000019fe32f34 swift_beginAccess + 192
+2    InnerBalanceCoreTests              0x0000000107b5df7c closure #2 in ReadinessPipeline.refresh(now:calendar:configuration:interventions:healthDataChanged:) + 2136
+3    InnerBalanceCoreTests              0x0000000107b6f3d0 closure #1 in withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 244
+4    InnerBalanceCoreTests              0x0000000107b5ec08 withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 192
+3    InnerBalanceCoreTests              0x0000000107b6f3d0 closure #1 in withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 244
+4    InnerBalanceCoreTests              0x0000000107b5ec08 withCheckedThrowingContinuationNonisolatedNonsending<A>(function:_:) + 192
+5    libswift_Concurrency.dylib         0x00000002b81b7b08 swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 328
+6    libswift_Concurrency.dylib         0x00000002b81b9938 swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+7    libdispatch.dylib                  0x000000018b716944 _dispatch_root_queue_drain + 360
+8    libdispatch.dylib                  0x000000018b717190 _dispatch_worker_thread2 + 184
+9    libsystem_pthread.dylib            0x000000018b8c1e78 _pthread_wqthread + 232
+10   libsysterror: Process '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/swiftpm-testing-helper --test-bundle-path <REPO>/InnerBalanceCore/.build/out/Products/Debug/InnerBalanceCoreTests.xctest/Contents/MacOS/InnerBalanceCoreTests --package-path InnerBalanceCore --filter M2ReviewR03Tests|InsightsStoreTests <REPO>/InnerBalanceCore/.build/out/Products/Debug/InnerBalanceCoreTests.xctest/Contents/MacOS/InnerBalanceCoreTests --testing-library swift-testing' exited with unexpected signal code 6
+em_pthread.dylib            0x000000018b8c0cd8 start_wqthread + 8
+Fatal access conflict detected.
+5    libswift_Concurrency.dylib         0x00000002b81b7b08 swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 328
+6    libswift_Concurrency.dylib         0x00000002b81b9938 swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+7    libdispatch.dylib                  0x000000018b716944 _dispatch_root_queue_drain + 360
+8    libdispatch.dylib                  0x000000018b717190 _dispatch_worker_thread2 + 184
+9    libsystem_pthread.dylib            0x000000018b8c1e78 _pthread_wqthread + 232
+10   libsystem_pthread.dylib            0x000000018b8c0cd8 start_wqthread + 8
+Fatal access conflict detected.
+5    libswift_Concurrency.dylib         0x00000002b81b7b08 swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) + 328
+6    libswift_Concurrency.dylib         0x00000002b81b9938 swift_job_runImpl(swift::Job*, swift::SerialExecutorRef) + 156
+7    libdispatch.dylib                  0x000000018b716944 _dispatch_root_queue_drain + 360
+8    libdispatch.dylib                  0x000000018b717190 _dispatch_worker_thread2 + 184
+9    libsystem_pthread.dylib            0x000000018b8c1e78 _pthread_wqthread + 232
+10   libsystem_pthread.dylib            0x000000018b8c0cd8 start_wqthread + 8
+Fatal access conflict detected.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r03-red.txt =====
+Building for debugging...
+[Planning deferred tasks]
+[5 / 25] InnerBalanceCore
+[7 / 27] InnerBalanceCore
+[16 / 27] InnerBalanceCoreTests-product
+[21 / 32] InnerBalanceCoreTests-product
+[25 / 31] InnerBalanceCoreTests-product
+[27 / 31] InnerBalanceCoreTests-product
+Build complete! (1.81秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R03 semantic single flight" started.
+◇ Test healthEventAfterSleepReadSchedulesOneCatchup() started.
+◇ Test changedConfigurationRunsAfterOldFlight() started.
+◇ Test contextAndTimezoneChangeAreNotOldResult() started.
+✘ Test contextAndTimezoneChangeAreNotOldResult() recorded an issue at M2ReviewR03Tests.swift:39:5: Expectation failed: result.current?.timeZoneID == "Asia/Tokyo" && result.current?.level == nil
+↳ result.current?.timeZoneID == "Asia/Tokyo" && result.current?.level == nil → false
+↳   result.current?.timeZoneID == "Asia/Tokyo" → false
+↳   result.current?.level == nil → <not evaluated>
+✘ Test changedConfigurationRunsAfterOldFlight() recorded an issue at M2ReviewR03Tests.swift:23:5: Expectation failed: second.current?.configuration.sleepTargetHours == 10 && second.current?.sleepSeverity == 2
+↳ second.current?.configuration.sleepTargetHours == 10 && second.current?.sleepSeverity == 2 → false
+↳   second.current?.configuration.sleepTargetHours == 10 → false
+↳   second.current?.sleepSeverity == 2 → <not evaluated>
+✘ Test changedConfigurationRunsAfterOldFlight() recorded an issue at M2ReviewR03Tests.swift:24:5: Expectation failed: await store.snapshot().current?.configuration.sleepTargetHours == 10
+↳ await store.snapshot().current?.configuration.sleepTargetHours == 10 → <not evaluated>
+✘ Test contextAndTimezoneChangeAreNotOldResult() recorded an issue at M2ReviewR03Tests.swift:40:5: Expectation failed: result.current?.qualityFlags.contains(.interventionExcluded) == true
+↳ result.current?.qualityFlags.contains(.interventionExcluded) == true → false
+↳   result.current?.qualityFlags.contains(.interventionExcluded) → false
+↳     some → false
+↳     some → true
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() recorded an issue at M2ReviewR03Tests.swift:54:5: Expectation failed: result.ledger.samples[f.id(9000).uuidString] != nil
+↳ result.ledger.samples[f.id(9000).uuidString] != nil → false
+↳   result.ledger.samples[f.id(9000).uuidString] → nil
+✘ Test changedConfigurationRunsAfterOldFlight() failed after 0.138 seconds with 2 issues.
+✘ Test contextAndTimezoneChangeAreNotOldResult() failed after 0.138 seconds with 2 issues.
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() recorded an issue at M2ReviewR03Tests.swift:55:5: Expectation failed: result.current?.sleepEndAt == f.date(3.5)
+↳ result.current?.sleepEndAt == f.date(3.5) → false
+↳   result.current?.sleepEndAt → 2026-09-18 00:00:00 +0000
+↳     some → 2026-09-18 00:00:00 +0000
+↳       timeIntervalSinceReferenceDate → 811382400.0
+↳   f.date(3.5) → 2026-09-18 00:30:00 +0000
+↳     timeIntervalSinceReferenceDate → 811384200.0
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() recorded an issue at M2ReviewR03Tests.swift:56:5: Expectation failed: await provider.calls == 8
+↳ await provider.calls == 8 → <not evaluated>
+✘ Test healthEventAfterSleepReadSchedulesOneCatchup() failed after 0.140 seconds with 3 issues.
+✘ Suite "M2-R03 semantic single flight" failed after 0.140 seconds with 7 issues.
+✘ Test run with 3 tests in 1 suite failed after 0.140 seconds with 7 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r04-green-recheck.txt =====
+Building for debugging...
+[2 / 11] InnerBalanceCore
+[4 / 13] InnerBalanceCore
+[7 / 16] InnerBalanceCore
+[11 / 12] InnerBalanceCoreTests-product
+Build complete! (0.82秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R04 stable evidence revision" started.
+◇ Test movingCutoffDoesNotReviseButNewEvidenceDoes() started.
+✔ Test movingCutoffDoesNotReviseButNewEvidenceDoes() passed after 0.706 seconds.
+✔ Suite "M2-R04 stable evidence revision" passed after 0.706 seconds.
+✔ Test run with 1 test in 1 suite passed after 0.706 seconds.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r04-red-recheck.txt =====
+Building for debugging...
+[2 / 22] InnerBalanceCore
+[4 / 24] InnerBalanceCore
+[8 / 23] InnerBalanceCore
+[11 / 22] InnerBalanceCoreTests-product
+[17 / 28] InnerBalanceCoreTests-product
+[21 / 27] InnerBalanceCoreTests-product
+[23 / 27] InnerBalanceCoreTests-product
+Build complete! (1.98秒)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "M2-R04 stable evidence revision" started.
+◇ Test movingCutoffDoesNotReviseButNewEvidenceDoes() started.
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:21:7: Expectation failed: next.assessmentID == first.assessmentID && next.revision == first.revision
+↳ next.assessmentID == first.assessmentID && next.revision == first.revision → false
+↳   next.assessmentID == first.assessmentID → false
+↳   next.revision == first.revision → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() recorded an issue at M2ReviewR04Tests.swift:22:7: Expectation failed: next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil
+↳ next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil → false
+↳   next.inputFingerprint == first.inputFingerprint → false
+↳   next.validUntil == first.validUntil → <not evaluated>
+✘ Test movingCutoffDoesNotReviseButNewEvidenceDoes() failed after 0.712 seconds with 14 issues.
+✘ Suite "M2-R04 stable evidence revision" failed after 0.712 seconds with 14 issues.
+✘ Test run with 1 test in 1 suite failed after 0.712 seconds with 14 issues.
+Note: Some test targets reported failures:
+  - InnerBalanceCoreTests (Swift Testing)
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-v1/evidence/m2-r04-red.txt =====
+Building for debugging...
+[Planning deferred tasks]
+[6 / 17] InnerBalanceCoreTests-product
+error: SwiftCompile normal arm64 <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR04Tests.swift failed with a nonzero exit code. Command line:     cd <REPO>
+    builtin-SwiftPerFileCompile M2ReviewR04Tests.swift
+<REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR04Tests.swift:16:69: error: cannot convert value of type 'Any' to expected argument type 'TimeInterval' (aka 'Double')
+14 |     let first = try #require(try await pipeline.refresh(now: f.now,calendar: f.calendar).current)
+15 |     for delta in [60.0,3599,3600,3601,16*3600,22*3600] {
+16 |       let next = try #require(try await pipeline.refresh(now: f.now+delta,calendar: f.calendar).current)
+   |                                                                     `- error: cannot convert value of type 'Any' to expected argument type 'TimeInterval' (aka 'Double')
+17 |       #expect(next.assessmentID == first.assessmentID && next.revision == first.revision)
+18 |       #expect(next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil)
+
+<REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR04Tests.swift:16:18: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+14 |     let first = try #require(try await pipeline.refresh(now: f.now,calendar: f.calendar).current)
+15 |     for delta in [60.0,3599,3600,3601,16*3600,22*3600] {
+16 |       let next = try #require(try await pipeline.refresh(now: f.now+delta,calendar: f.calendar).current)
+   |                  `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+17 |       #expect(next.assessmentID == first.assessmentID && next.revision == first.revision)
+18 |       #expect(next.inputFingerprint == first.inputFingerprint && next.validUntil == first.validUntil)
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources/test_entry_point.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/BodyLoadEngineTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/CurrentMomentDecisionTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/DailyReflectionTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/EchoPersonalizationTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/EmotionCatalogTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/HeartRateEvidenceAnalyzerTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/PendingRetryPolicyTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/PracticeCatalogTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/PracticeHapticCadenceTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/InsightsStoreTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewProvider.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR01Tests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR02Tests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR03Tests.swift -primary-file <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/M2ReviewR04Tests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessEngineTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessFeatureTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessFixture.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/Readiness/ReadinessSourceTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/RecommendationEngineTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchCompassGridTests.swift <REPO>/InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchPracticeCompletionTests.swift -emit-dependencies-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR04Tests.d -emit-const-values-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR04Tests.swiftconstvalues -emit-reference-dependencies-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR04Tests.swiftdeps -serialize-diagnostics-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR04Tests.dia -target arm64-apple-macos15.0 -module-can-import-version Testing 2084 0 -module-can-import-version XCTest 25228 0 -disable-cross-import-overlay-search -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/AppKit.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreGraphics.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreImage.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/CoreTransferable.swiftoverlay -swift-module-cross-import Testing /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework/Modules/Testing.swiftcrossimport/Foundation.swiftoverlay -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib\#\#TestingMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/InnerBalanceCoreTests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -I <REPO>/InnerBalanceCore/.build/out/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F <REPO>/InnerBalanceCore/.build/out/Products/Debug/PackageFrameworks -F <REPO>/InnerBalanceCore/.build/out/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -module-cache-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file <REPO>/InnerBalanceCore/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc <REPO> -enable-anonymous-context-mangled-names -file-compilation-dir <REPO> -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc <REPO>/InnerBalanceCore/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-a0facfad118c1a7a18f0aad9463f65497231f6df4def33e022ae2eb8f782df1a.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I<REPO>/InnerBalanceCore/.build/out/Products/Debug/include -Xcc -I<REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources-normal/arm64 -Xcc -I<REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources/arm64 -Xcc -I<REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name InnerBalanceCoreTests -package-name innerbalancecore -const-gather-protocols-file <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/InnerBalanceCoreTests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-macos27.0 -target-sdk-version 27.0 -target-sdk-name macosx27.0 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -parse-as-library -o <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR04Tests.o -debug-module-path <REPO>/InnerBalanceCore/.build/out/Intermediates.noindex/InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/InnerBalanceCoreTests.swiftmodule -index-unit-output-path /InnerBalanceCore.build/Debug/InnerBalanceCoreTests-p.build/Objects-normal/arm64/M2ReviewR04Tests.o -index-store-path <REPO>/InnerBalanceCore/.build/out -index-system-modules
+error: Build failed
+error: fatalError
+
+===== END FILE =====

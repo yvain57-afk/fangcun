@@ -9,4 +9,8 @@ V2-03 reuses the six existing source images. No artwork regeneration or anatomy 
 - Breathing uses the existing session's expansion only, and pausing preserves that value. Removed saved-screen whole-character scale animation.
 - Existing flattened images cannot support a real new blink or detached paw articulation. Mask-based ear/head follow and the existing paw-touch pose are the supported scope; not claimed as new skeletal animation.
 
-Evidence so far: first native clips under `evidence/first-native/`; `CompanionMotionPolicyTests` three tests pass in Core 139 test run. Final scene/large-type/dark captures and physical power/performance validation are tracked separately in VERIFICATION.md. Human cuteness review remains pending.
+Evidence: [six scene recordings and drink variants](evidence/final-native/README.md), with the first three recordings retained under `evidence/first-native/`. `CompanionMotionPolicyTests` five tests pass in the final 145-test Core run. Simulator evidence includes a real 60-second completion, a five-minute session's live/paused phase, dark appearance and maximum text size. No real health values appear in these captures.
+
+The original recording has simulator startup latency; final clips are aligned to actual video frames rather than using xcresult attachment wall time as frame time. Sampled water, breathing and completion frames were inspected. Completion shows transition to the saved screen, not an injected “finished” state.
+
+Physical Reduce Motion/Low Power/VoiceOver and long-run energy are unverified. Dark-mode blue ink remains the approved original rather than an inverted palette; its subjective visibility and naturalness remain for human review. No physical/user aesthetic acceptance is inferred from shader compilation or test counts.

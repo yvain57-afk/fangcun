@@ -1,0 +1,2897 @@
+
+===== FILE: docs/plans/2026-08-10-inner-balance-testflight-plan.md =====
+# 内衡：双波 TestFlight 最终实施规划
+
+**状态：** 产品与技术方案已收敛，等待实施确认  
+**产品名：** 内衡（Inner Balance）  
+**目标：** 为必须拥有 Apple Watch 的资深苹果用户，用尽量少的主动输入识别身体负荷、当下情绪与可能来源，并给出短而可执行的调节方案以及克制、可解释的前后变化证据。  
+**最低系统：** iOS 18、watchOS 11  
+**iOS Bundle ID：** `com.yvainair.InnerBalance`  
+**发布路径：** 先做两波 TestFlight，不直接提交正式版。
+
+---
+
+## 1. 最终结论
+
+本方案采纳评估中的四项核心修订：
+
+1. Watch 上需要“身体证据”的练习使用 `HKWorkoutSession + HKLiveWorkoutBuilder` 获取高频心率；即时证据只谈心率变化，不把稀疏 HRV 当作练习前后证据。
+2. 首版取消 WatchConnectivity 业务同步。结构化情绪数据随 `HKStateOfMind` metadata 写入 HealthKit；练习摘要随 `mindfulSession` metadata 写入。
+3. 默认情绪登记压缩为“定位光球 + 选一个词”即完成，身体感受和来源改为提交后的可选补充。
+4. TestFlight 拆为 Build 1 和 Build 2，先验证输入、解释、推荐和练习闭环，再加入提醒、趋势与生活背景。
+
+同时修正评估中的三处过度表述：
+
+- 不宣称 Apple 自带呼吸/正念 App 使用相同技术实现，因为公开文档没有作出该保证。
+- HealthKit 会在用户的苹果设备间同步，但不保证即时到达；Watch 必须有本地待写队列和明确的“等待同步”状态。
+- 样本 UUID 本身不足以解决离线重试幂等；所有本 App 写入的 HealthKit 样本使用 `HKMetadataKeySyncIdentifier` 与 `HKMetadataKeySyncVersion` 去重。
+
+Apple 官方说明：所有 Watch workout session 都会生成高频心率样本；workout builder 可以丢弃而不保存 workout；HealthKit 允许自定义 metadata，并会在用户设备间同步健康数据。参考 [Running workout sessions](https://developer.apple.com/documentation/healthkit/running-workout-sessions)、[HKWorkoutBuilder](https://developer.apple.com/documentation/healthkit/hkworkoutbuilder)、[Metadata Keys](https://developer.apple.com/documentation/healthkit/metadata-keys) 与 [HealthKit updates](https://developer.apple.com/documentation/updates/healthkit)。
+
+---
+
+## 2. 产品边界
+
+### 2.1 定位
+
+内衡不是“压力诊断器”，也不输出一个看似精确的总压力分。它把状态分为三个可解释层面：
+
+| 层面 | 回答的问题 | 数据来源 |
+|---|---|---|
+| 身体负荷 | 身体今天是否出现偏离个人基线的信号？ | Apple Watch、HealthKit |
+| 主观状态 | 我现在愉快还是不愉快、激活还是低能量？ | 用户两步输入 |
+| 可能来源 | 这种状态可能和什么有关？ | 用户可选补充，Build 2 加入最小化生活背景 |
+
+推荐引擎可以组合三层信息，但 UI 始终保留原始证据和置信度，不把“身体负荷高”直接等同于“心理压力大”。
+
+### 2.2 目标用户
+
+- 必须拥有并已配对 Apple Watch；不要求最新型号。
+- AirPods 可用于更私密、沉浸的语音练习，但 Build 1 不把 AirPods 传感器当成评估数据源。
+- 用户愿意授权必要的 HealthKit 数据，并重视本地处理、可解释性和苹果原生体验。
+- iPad 不做原生适配；允许系统以 iPhone 兼容模式运行，但不承诺布局体验。
+
+### 2.3 明确不做
+
+- 不做医疗诊断、心理治疗、疾病风险预测或“治疗有效”承诺。
+- 不做账号、服务器、CloudKit、广告、第三方分析 SDK 或后台上传。
+- 不做聊天机器人、自由文本日记、语音情绪识别或 AI 心理咨询。
+- 不读取日历标题、参与人、地点、备注；不使用私有 API 打开或控制 Apple 正念 App。
+- 不在首版使用 AirPods 头部运动或特定新型号才具备的生理传感能力。
+
+---
+
+## 3. 核心体验
+
+### 3.1 首页：今天的状态
+
+首页只呈现四件事：
+
+1. **身体负荷**：平稳 / 留意 / 偏高 / 建立基线中，并显示置信度与 2–3 条原因。
+2. **此刻感受**：最近一次情绪罗盘结果；没有记录时显示一个明确入口。
+3. **建议动作**：只推荐一个最适合当下的动作，并允许展开替代选项。
+4. **证据回看**：最近一次练习的主观变化；符合条件时再显示 Watch 心率变化。
+
+不把大量图表放在首页，不用红色制造焦虑，不用“你压力过大”这类诊断式文案。
+
+### 3.2 默认 10 秒情绪登记
+
+默认路径只有两步：
+
+1. 在二维罗盘上拖动光球：横轴为愉快度（HealthKit valence），纵轴为激活度（自定义 arousal）。
+2. 从当前象限推荐的 4–6 个情绪词中选一个，点击后立即保存并结束。
+
+提交后出现不阻塞的补充卡片：
+
+- 身体感受：肩颈紧、胸口紧、胃部不适、呼吸浅、头沉、疲惫、无明显感觉等，可多选。
+- 影响来源：工作、任务、健康、家庭、关系、金钱、训练、睡眠等，最多选两个。
+- 用户可点“先这样”直接离开。
+
+“都不像 / 不知道”的规则：仍写入用户已选的 valence，`labels` 为空；metadata 标记 `unclassified = true`，不能因缺少标签而跳过 HealthKit 写入。
+
+### 3.3 Watch 最小流程
+
+- 主页只保留“记录此刻”“开始调节”“同步状态”三个入口。
+- 情绪输入使用 3×3 状态区域代替复杂二维拖动：先点区域，再点一个词，两次点击完成。
+- Watch 可以独立完成记录和练习；iPhone 不在线时写入本地待处理队列，成功保存至 HealthKit 后再清理。
+- Watch 上不能因为同步延迟重复弹出同一条记录。
+
+### 3.4 冷启动第一周
+
+从第 0 天开始即可使用：
+
+- 情绪罗盘、练习、主观前后对比立即可用。
+- 身体卡片显示“个人基线 2/5 天”这类进度，而不是只显示“数据不足”。
+- 未满 5 个有效日时，可以展示原始数据和趋势方向，但不下“身体负荷偏高”结论，也不触发智能压力提醒。
+- 每增加一个有效日，说明新增了哪类可用证据。
+
+---
+
+## 4. 身体负荷与睡眠可靠性
+
+### 4.1 基线逻辑
+
+从旧 App 复制纯计算逻辑到新建的 `InnerBalanceCore`，不移动、不引用旧 target 源文件：
+
+- 14 天窗口。
+- 每日先取中位数，再计算个人基线中位数。
+- 至少 5 个有效日才形成基线。
+- 核心信号：HRV、静息心率、主睡眠、近期训练；呼吸频率延后到 Build 2。
+- 最近训练用于解释短期 HRV/心率波动，避免把正常训练反应误报为心理压力。
+- 只有两项以上相互独立且可靠的信号一致偏离时，才允许显示“偏高”；否则显示“留意”或“证据不足”。
+
+旧 App 中的逻辑位于：
+
+- `iOSWatchApp/iOSWatchApp/HealthKitRecoveryManager.swift`
+- `iOSWatchApp/iOSWatchApp/CoreLogic.swift`
+
+复制时只带走纯模型与算法，并用测试固化现有行为；旧 App 文件不因内衡而修改。
+
+### 4.2 睡眠纠错
+
+为避免再次出现十几个小时的错误睡眠：
+
+1. 只统计 `.asleepUnspecified`、`.asleepCore`、`.asleepDeep`、`.asleepREM`，不把 `.inBed` 计入睡眠。
+2. 对重叠睡眠阶段做区间并集，不能简单累加各来源或各阶段。
+3. 按睡眠间隔聚类为独立 episode；相隔超过 90 分钟的记录不合并，午睡不叠加到主睡眠。
+4. 从最近 48 小时中选取结束时间合理、实际睡眠最长的主 episode；来源优先展示 Apple Watch，但不能用来源名替代区间去重。
+5. 主睡眠少于 2 小时或超过 12 小时只显示“数据需要确认”，不进入负荷判断，不做截断伪装成正常值。
+6. 数据详情页展示开始/结束时间、去重后时长、样本数、数据源与是否来自 Watch，方便用户核对健康 App。
+
+---
+
+## 5. 调节方案与效果证据
+
+### 5.1 Build 1 练习库
+
+| 练习 | 默认时长 | 是否自动推荐 | 身体证据策略 |
+|---|---:|---|---|
+| 生理性叹息 | 1 分钟 | 是，适合高激活、需要快速复位 | 默认只做主观前后对比；时间太短不强行解释心率 |
+| 节律呼吸 | 3 / 5 分钟 | 是 | 5 分钟版本可开启 Watch 证据模式 |
+| 冥想放松 | 5 / 10 分钟 | 是 | Watch 证据模式 |
+| NSDR | 10 / 20 分钟 | 是，适合疲惫、低能量或恢复 | Watch 证据模式 |
+| 凯格尔 | 3 分钟 | 否，单独位于“身体练习” | 只记录完成，不把它包装成减压证据 |
+
+凯格尔必须附安全说明：疼痛、盆底持续紧张、排尿排便异常、产后或术后恢复中的用户先咨询专业人员；出现不适立即停止。它不能进入压力自动推荐规则。
+
+### 5.2 Watch 身体证据模式
+
+仅当练习时长和权限足够时启用：
+
+1. 用户在 Watch 上明确点击“开始测量”，UI 持续显示正在测量。
+2. 检查是否已有其他 workout session；若冲突，退化为主观模式，不抢占用户正在进行的训练。
+3. 使用 `.mindAndBody` 配置启动 `HKWorkoutSession` 与 `HKLiveWorkoutBuilder`，采集高频心率。
+4. 前 60 秒形成初始窗口，练习后最后 60 秒形成结束窗口；任一窗口有效样本不足则不输出身体结论。
+5. 结束时调用 `discardWorkout()`，不生成一条训练记录；单独写入 `mindfulSession`。
+6. 需要在授权说明和练习页明确告知：workout session 会提高传感器采样频率，HealthKit 可能保存由此产生的心率等样本；丢弃 builder 只保证不保存 workout 本身。
+7. 发布前必须在真机核对健康 App：不能出现意外 workout 记录，并记录是否产生额外活动能量样本。若无法做到足够透明或审核风险不可接受，Build 1 降级为“保存 `.mindAndBody` workout 并明确展示”或关闭身体证据模式，不能偷偷运行。
+
+### 5.3 证据文案边界
+
+允许显示：
+
+- “主观紧张从 7 降到 4。”
+- “本次有效心率窗口：开始 78，结束 69 次/分。”
+- “这只是本次练习中的变化，不能单独证明压力水平或治疗效果。”
+
+禁止显示：
+
+- “压力下降 35%。”
+- “HRV 已恢复。”
+- “焦虑得到治疗。”
+
+HRV 只用于按天的身体负荷基线，不进入 3–20 分钟练习的即时前后对比。
+
+---
+
+## 6. 技术架构
+
+### 6.1 方案比较
+
+| 方案 | 优点 | 缺点 | 结论 |
+|---|---|---|---|
+| 独立 Xcode 工程 + 本地纯 Swift Package | 真正独立发布；旧 App 零耦合；iOS/Watch 共用可测试核心 | 初始工程配置稍多 | **采用** |
+| 在旧 `iOSWatchApp.xcodeproj` 中加两个 target | 建立较快 | 项目继续膨胀；现有 `project.pbxproj` 已有用户改动；容易误伤旧 App | 不采用 |
+| 直接从旧 App 拆页面 | 复用最多 | 继续携带行情、训练等无关依赖，无法形成清晰独立产品 | 排除 |
+
+### 6.2 工程结构
+
+新工程放在旧 App 同级目录，不修改旧 target：
+
+```text
+InnerBalance/
+├── InnerBalance.xcodeproj
+├── InnerBalanceApp/
+│   ├── App/
+│   ├── DesignSystem/
+│   ├── Features/CheckIn/
+│   ├── Features/Home/
+│   ├── Features/Practice/
+│   ├── Features/Diagnostics/
+│   ├── Health/
+│   ├── Persistence/
+│   ├── Resources/
+│   └── Assets.xcassets/
+├── InnerBalanceWatch/
+│   ├── App/
+│   ├── CheckIn/
+│   ├── Practice/
+│   ├── Health/
+│   └── Persistence/
+├── InnerBalanceTests/
+└── InnerBalanceUITests/
+
+InnerBalanceCore/
+├── Package.swift
+├── Sources/InnerBalanceCore/
+│   ├── BodyLoad/
+│   ├── Emotion/
+│   ├── Practice/
+│   └── Recommendation/
+└── Tests/InnerBalanceCoreTests/
+```
+
+### 6.3 职责边界
+
+- `InnerBalanceCore`：纯 Foundation 算法、映射、规则与测试；不导入 HealthKit、SwiftUI、SwiftData。
+- iPhone App：HealthKit 查询、首页、完整登记、推荐、趋势、本地诊断与导出。
+- Watch App：快速登记、练习、实时心率、本地待写队列。
+- HealthKit：跨设备事实来源；保存 State of Mind、Mindful Session 及必要 metadata。
+- SwiftData：保存纯本地推荐结果、提示决策、诊断统计与尚未成功写入 HealthKit 的 pending records。
+
+---
+
+## 7. HealthKit 数据设计
+
+### 7.1 授权分层
+
+**Build 1 初始身体状态授权：**
+
+- 读取：HRV、静息心率、睡眠、workout、State of Mind、Mindful Session。
+- 写入：State of Mind、Mindful Session。
+
+**用户首次开启 Watch 身体证据时再请求：**
+
+- 读取：心率。
+- 写入：workout 类型；这是启动 Watch workout session 的必要授权，即使最终选择丢弃 workout。
+
+**Build 2 可选授权：**
+
+- 呼吸频率。
+- 日历读取、Focus 状态与通知。
+
+每组授权都要先展示用途说明；拒绝任何一项都必须可降级，不重复骚扰。
+
+### 7.2 State of Mind
+
+- 默认即时登记写 `.momentaryEmotion`。
+- Build 2 的晚间回顾写 `.dailyMood`。
+- valence 直接来自横轴，范围 `-1...1`。
+- labels 使用 Apple 的 `HKStateOfMind.Label`；允许空数组。
+- 来源优先映射为 Apple 的 `HKStateOfMind.Association`，最多两个。
+- arousal、身体感受、输入来源和关联练习 ID 使用自定义 metadata。
+
+自定义 metadata 只使用字符串、数字和日期，key 使用反向域名前缀：
+
+| Key | 类型 | 用途 |
+|---|---|---|
+| `HKMetadataKeySyncIdentifier` | String | 客户端稳定 ID，离线重试幂等 |
+| `HKMetadataKeySyncVersion` | Number | 样本版本 |
+| `com.yvainair.innerbalance.schemaVersion` | Number | metadata schema 版本 |
+| `com.yvainair.innerbalance.arousal` | Number | `-1...1` 激活度 |
+| `com.yvainair.innerbalance.bodySensationCodes` | String | 逗号分隔的稳定代码，不写自然语言 |
+| `com.yvainair.innerbalance.unclassified` | Number | 是否选择“都不像” |
+| `com.yvainair.innerbalance.origin` | String | `iphone` 或 `watch` |
+| `com.yvainair.innerbalance.sessionID` | String | 关联练习 |
+| `com.yvainair.innerbalance.phase` | String | `pre`、`post` 或 `standalone` |
+
+隐私页必须说明：这些字段随 State of Mind 样本进入 HealthKit，其他获得相应读取权限的健康类 App 理论上也可能读取。用户若不接受，可关闭 HealthKit 心境写入并仅保存在本机，但将失去跨设备记录同步。
+
+### 7.3 Mindful Session
+
+每次呼吸、冥想或 NSDR 完成后写入 Mindful Session，并在 metadata 中保存：
+
+- `sessionID`
+- `practiceType`
+- `protocolVersion`
+- `origin`
+- `evidenceMode`
+- `heartRateStart`、`heartRateEnd`、`heartRateSampleCount`、`evidenceQuality`（仅有足够样本时）
+
+只保存汇总，不复制原始逐拍心率。凯格尔不写 Mindful Session，避免把盆底训练伪装成正念分钟；它只保存在本机完成记录中。
+
+### 7.4 同步与幂等
+
+- Watch 每次创建记录时先生成稳定 `syncIdentifier`，再尝试保存 HealthKit。
+- 保存失败则进入本地 `PendingHealthWrite`；按退避策略重试，成功后删除 pending。
+- iPhone 通过 anchored query 增量读取由本 App 创建的样本，并以 sync identifier 去重构建本地缓存。
+- UI 允许显示“已保存在手表，等待同步”；不能把未到达 iPhone 解释成数据丢失。
+- HealthKit 同步是最终一致，不承诺秒级到达。
+
+---
+
+## 8. 情绪标签映射测试夹具
+
+二维罗盘的建议词按 arousal 分组；最终 valence 始终由光球位置决定，标签不反推数值。
+
+| 象限 | Apple labels |
+|---|---|
+| 高激活 / 正向 | amazed, amused, brave, excited, happy, joyful, passionate, proud, confident, hopeful, surprised |
+| 低激活 / 正向 | calm, content, grateful, peaceful, relieved, satisfied |
+| 高激活 / 负向 | angry, anxious, ashamed, disgusted, embarrassed, frustrated, guilty, irritated, jealous, scared, stressed, worried, annoyed, overwhelmed |
+| 低激活 / 负向 | disappointed, discouraged, hopeless, lonely, sad, drained |
+| 中性 / 需用户确认 | indifferent |
+
+要求：Apple 当前公开的 38 个 label 必须在夹具中恰好出现一次；`surprised` 和 `indifferent` 这类语义可能跨象限的词，只用于候选排序，不能覆盖用户已选择的 valence/arousal。
+
+---
+
+## 9. 智能提醒与生活背景（Build 2）
+
+### 9.1 触发策略
+
+- 主触发窗为起床后：检测到新的主睡眠、夜间 HRV/静息心率已经到达且基线有效时重新计算。
+- app 进入前台时必定刷新一次。
+- HealthKit observer query + background delivery 只作为尽力而为的补充，不能设计成实时压力报警器。Apple 仅保证系统在有新样本时按设定频率“至多”唤醒，并不保证具体时刻；见 [Executing Observer Queries](https://developer.apple.com/documentation/healthkit/executing-observer-queries)。
+- 每天最多一条身体负荷智能提醒；训练结束后的保护窗口、静默时段和置信度门槛必须生效。
+- 用户可另行开启固定晚间回顾，它不是身体负荷报警；两类通知间隔不足 4 小时时合并或取消其中一条。
+- 通知权限只在用户完成至少一次登记或练习、已经看到价值后再请求。
+
+### 9.2 Calendar 与 Focus
+
+- Calendar 只在内存中计算未来/过去数小时的忙碌分钟数、连续会议段和空档；不保存标题、地点、参与人、备注。
+- Focus 只使用系统授权可提供的“当前是否处于 Focus”状态，不推断具体专注模式名称。
+- 这些背景只能改变解释和提醒时机，不能直接给用户贴“工作压力”标签。
+- 用户拒绝授权时，推荐系统继续使用身体与主观数据。
+
+### 9.3 Apple 原生引导
+
+Build 2 提供 App Intents / Shortcuts：
+
+- “记录我此刻的状态”
+- “开始一次生理性叹息”
+- “开始 NSDR”
+
+可以引导用户把入口放到快捷指令、控制中心或操作按钮，但不假设 Apple 正念 App 存在可公开调用的深链。
+
+---
+
+## 10. 本地诊断页
+
+为同时满足“无遥测”和可验证性，设置页隐藏一个“TestFlight 诊断”入口，仅在测试构建显示：
+
+- 默认登记完成时长的中位数与 P90。
+- 光球完成率、情绪词完成率、可选补充完成率。
+- 推荐被接受、练习开始、练习完成的本地计数。
+- 主观前后对比可用率。
+- 符合资格的 Watch 练习中心率窗口可用率。
+- 通知已计划数与用户点击/操作数。这里的“响应率”是 `responded / scheduled` 的保守近似，不能宣称系统一定展示了每条本地通知。
+- HealthKit 授权状态、最近同步时间、pending 数量与错误类别，不显示原始情绪或健康值。
+
+支持用户主动导出聚合 JSON；详细记录默认不导出，必须再次确认。导出通过系统分享表完成，App 自己不上传。
+
+---
+
+## 11. 两波 TestFlight
+
+### Build 1：验证核心闭环
+
+范围：
+
+- 独立 iPhone + Watch 工程、品牌与本地化骨架。
+- HealthKit 分层授权与隐私说明。
+- 身体负荷、睡眠纠错、5 天基线进度。
+- iPhone/Watch 情绪快速登记与 metadata 同步。
+- 生理性叹息、节律呼吸、冥想、NSDR、独立凯格尔。
+- 主观前后对比；符合资格时提供 Watch 心率证据。
+- Watch pending queue、HealthKit 幂等与 iPhone 增量读取。
+- TestFlight 本地诊断页。
+
+不包含：智能通知、趋势高级统计、Calendar、Focus、App Intents。
+
+### Build 2：验证自动化与留存
+
+范围：
+
+- 起床后主触发、白天尽力而为触发和晚间回顾。
+- 7/14/28 天趋势、同类练习至少 3 次后的主观效果汇总。
+- 呼吸频率可选纳入身体基线。
+- Calendar/Focus 最小化背景。
+- App Intents、快捷指令入口。
+- 根据 Build 1 诊断结果调整词表、步骤和推荐规则。
+
+---
+
+## 12. 实施任务与文件
+
+以下路径均相对于仓库根目录 `.`。
+
+### Task 1：建立独立工程与品牌骨架
+
+**创建：**
+
+- `InnerBalance/InnerBalance.xcodeproj/project.pbxproj`
+- `InnerBalance/InnerBalanceApp/App/InnerBalanceApp.swift`
+- `InnerBalance/InnerBalanceWatch/App/InnerBalanceWatchApp.swift`
+- `InnerBalance/InnerBalanceApp/DesignSystem/InnerBalanceTheme.swift`
+- `InnerBalance/InnerBalanceApp/Assets.xcassets/AppIcon.appiconset/Contents.json`
+- `InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings`
+
+**步骤：**
+
+1. 新建 iPhone 与配套 watchOS target，部署版本设为 iOS 18 / watchOS 11。
+2. iPhone display name 设为“内衡”；Watch 使用同一产品名。
+3. 采用深石墨背景、暖白正文、低饱和青绿色状态光，不使用医疗红绿灯风格。
+4. 图标概念固定为“两个偏离后重新趋于平衡的弧面/光点”，不使用心电图、十字或大脑图标。
+5. 只设置 iPhone device family；在隐私/帮助页说明 iPad 兼容模式不保证。
+
+**验证：**
+
+```bash
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO build
+```
+
+### Task 2：建立纯计算 Core 与测试
+
+**创建：**
+
+- `InnerBalanceCore/Package.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/BodyLoadEngine.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/BodyLoad/SleepEpisodeAnalyzer.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Emotion/EmotionCatalog.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Recommendation/RecommendationEngine.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/BodyLoadEngineTests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/EmotionCatalogTests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/RecommendationEngineTests.swift`
+
+**步骤：**
+
+1. 先复制旧逻辑的行为测试，再复制最小纯算法；不修改旧文件。
+2. 为 14 天日中位数、5 有效日、近期训练保护和部分数据缺失写失败测试。
+3. 为睡眠重叠、多来源、跨午夜、午睡、>12 小时异常写失败测试。
+4. 为 38 个情绪 label 恰好映射一次、未知标签降级写测试。
+5. 为“凯格尔永不自动推荐”和推荐解释可追溯写测试。
+
+**验证：**
+
+```bash
+swift test --package-path InnerBalanceCore
+```
+
+### Task 3：HealthKit 仓储、授权与幂等
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Health/HealthAuthorizationCoordinator.swift`
+- `InnerBalance/InnerBalanceApp/Health/HealthKitRepository.swift`
+- `InnerBalance/InnerBalanceApp/Health/StateOfMindMapper.swift`
+- `InnerBalance/InnerBalanceApp/Health/HealthMetadataKeys.swift`
+- `InnerBalance/InnerBalanceApp/Health/HealthSyncCursorStore.swift`
+- `InnerBalance/InnerBalanceTests/Health/StateOfMindMapperTests.swift`
+- `InnerBalance/InnerBalanceTests/Health/HealthMetadataTests.swift`
+
+**步骤：**
+
+1. 先测试 valence、空 labels、association 与 metadata round-trip。
+2. 实现分层授权和逐项降级状态。
+3. 使用 sync identifier/version 写入，并用 anchored query 增量读取。
+4. 过滤来源，只把本 App 写入的样本重建为本地记录；Apple 健康中的其他 State of Mind 只用于用户明确开启的趋势汇总。
+5. 禁止在日志中输出 health values 或 metadata 内容。
+
+**验证：**
+
+```bash
+swift test --package-path InnerBalanceCore
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+```
+
+### Task 4：身体负荷与冷启动首页
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Features/Home/HomeView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/HomeViewModel.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/BodyLoadCard.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/BaselineProgressView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/HealthEvidenceView.swift`
+- `InnerBalance/InnerBalanceTests/Features/HomeViewModelTests.swift`
+
+**步骤：**
+
+1. 先测试 0–4 天只显示进度、不触发偏高结论。
+2. 接入 HRV、静息心率、睡眠和 workout 查询。
+3. 展示数据源、最新时间、置信度与训练保护原因。
+4. 加入睡眠数据核对入口。
+
+**验证：** `swift test --package-path InnerBalanceCore`，并用含真实历史数据的 iPhone + Watch 真机核对至少三晚。
+
+### Task 5：两步情绪罗盘
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/EmotionCompassView.swift`
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/EmotionWordPicker.swift`
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/OptionalContextSheet.swift`
+- `InnerBalance/InnerBalanceApp/Features/CheckIn/CheckInViewModel.swift`
+- `InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift`
+
+**步骤：**
+
+1. 先写 UI 测试覆盖正常词与“都不像”。
+2. 完成光球拖动、动态词表、触感与 Dynamic Type。
+3. 选择情绪词后立即提交；补充页失败不能回滚主记录。
+4. 从打开到主记录成功计时，写入本地诊断事件。
+
+**验证：** 在已安装的 iOS 模拟器上运行 UI tests，并用 VoiceOver、最大 Dynamic Type 和 Reduce Motion 人工核对。
+
+### Task 6：练习与主观前后对比
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Features/Practice/PracticeLibrary.swift`
+- `InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionViewModel.swift`
+- `InnerBalance/InnerBalanceApp/Features/Practice/SubjectiveComparisonView.swift`
+- `InnerBalance/InnerBalanceApp/Resources/PracticeScripts.xcstrings`
+- `InnerBalance/InnerBalanceTests/Features/PracticeSessionViewModelTests.swift`
+
+**步骤：**
+
+1. 先测试暂停、恢复、退后台、结束和中断后的状态机。
+2. 加入本地脚本、音频控制、触觉节奏和 AirPods/扬声器系统路由。
+3. 练习计时使用绝对开始/暂停时间计算，切换页面后不得重新开始。
+4. 完成后写 Mindful Session 和主观 post 状态；写入失败进入 pending。
+5. 凯格尔采用独立记录类型和安全文案。
+
+**验证：** 锁屏、切 App、断开 AirPods、来电/音频中断后分别恢复一次；计时误差不超过 1 秒。
+
+### Task 7：Watch 快速登记与身体证据
+
+**创建：**
+
+- `InnerBalance/InnerBalanceWatch/CheckIn/WatchCheckInView.swift`
+- `InnerBalance/InnerBalanceWatch/Practice/WatchPracticeView.swift`
+- `InnerBalance/InnerBalanceWatch/Practice/LiveHeartRateSession.swift`
+- `InnerBalance/InnerBalanceWatch/Health/WatchHealthKitRepository.swift`
+- `InnerBalance/InnerBalanceWatch/Persistence/PendingHealthWrite.swift`
+- `InnerBalance/InnerBalanceWatch/Persistence/PendingWriteProcessor.swift`
+
+**步骤：**
+
+1. 先用 Core tests 固化前后窗口、样本不足和异常心率过滤规则。
+2. 实现 3×3 区域 + 单词的两点击登记。
+3. 实现 workout session 生命周期、冲突退化、后台继续和明确停止。
+4. 结束时丢弃 workout builder，另写 Mindful Session 汇总。
+5. 在断网、iPhone 不在附近、锁屏、已有 workout 四种场景真机验证。
+
+**验证：** 必须使用真实 Apple Watch；Simulator 只用于布局。健康 App 中不得出现意外 workout 记录。
+
+### Task 8：本地诊断与隐私页
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Persistence/DiagnosticEvent.swift`
+- `InnerBalance/InnerBalanceApp/Features/Diagnostics/DiagnosticsView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Diagnostics/DiagnosticsExporter.swift`
+- `InnerBalance/InnerBalanceApp/Features/Settings/PrivacyView.swift`
+- `InnerBalance/InnerBalanceTests/Diagnostics/DiagnosticsExporterTests.swift`
+
+**步骤：**
+
+1. 先测试聚合导出不包含 health values、情绪词、日历内容或稳定设备标识。
+2. 实现本地时长、漏斗、练习与同步错误统计。
+3. 仅 TestFlight/Debug 展示诊断入口。
+4. 用户主动确认后调用系统分享表；不加入网络客户端。
+
+**验证：** 解压导出内容并人工搜索健康值、情绪、日历与设备标识，结果必须为空。
+
+### Task 9：Build 1 真机验收与 TestFlight 材料
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Resources/PrivacyInfo.xcprivacy`
+- `InnerBalance/TestFlight/BetaReviewNotes.zh-Hans.md`
+- `InnerBalance/TestFlight/TestChecklist.zh-Hans.md`
+- `InnerBalance/TestFlight/PrivacyPolicy.zh-Hans.md`
+
+**步骤：**
+
+1. 配置 HealthKit、Workout Processing、必要后台能力和两端 purpose strings。
+2. 完成隐私政策 URL 准备、非医疗声明和审核说明。
+3. 用空数据、部分授权、完整授权、Watch 不佩戴、同步延迟五种状态走查。
+4. Archive 前运行所有 Core tests、App tests 与两端 Release build。
+5. 第一版外部 TestFlight 提交 Beta App Review；Apple 要求外部测试的首个构建经过审核，见 [TestFlight](https://developer.apple.com/testflight/)。
+
+**验证：**
+
+```bash
+swift test --package-path InnerBalanceCore
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -configuration Release -destination 'generic/platform=iOS' build
+xcodebuild -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -configuration Release -destination 'generic/platform=watchOS' build
+```
+
+### Task 10：Build 2 提醒、趋势与背景
+
+**创建：**
+
+- `InnerBalance/InnerBalanceApp/Notifications/MorningPromptCoordinator.swift`
+- `InnerBalance/InnerBalanceApp/Features/Trends/TrendsView.swift`
+- `InnerBalance/InnerBalanceApp/Context/CalendarLoadProvider.swift`
+- `InnerBalance/InnerBalanceApp/Context/FocusStatusProvider.swift`
+- `InnerBalance/InnerBalanceApp/AppIntents/InnerBalanceShortcuts.swift`
+- `InnerBalance/InnerBalanceTests/Notifications/MorningPromptCoordinatorTests.swift`
+
+**步骤：**
+
+1. 先测试每天一次、静默时段、训练保护、基线不足和通知合并。
+2. 接入 observer query 与前台刷新，后台未唤醒时不伪造实时提醒。
+3. 只保存 Calendar 聚合量，不保存事件内容。
+4. 同类练习少于 3 次不展示效果趋势。
+5. 加入三个 App Intents，并为无权限/Watch 不可用提供明确退化。
+
+**验证：** Core/App tests 全通过；检查 SwiftData store 中不存在 Calendar 原文。
+
+---
+
+## 13. 验收闸门
+
+### Build 1 必须满足
+
+- 至少 5 名测试者完成首次使用；80% 无需解释即可完成第一条登记。
+- 默认登记中位时长 ≤10 秒，P90 ≤15 秒；若不达标，先减词和减动画，不增加教程。
+- 0–4 个有效日不会出现“偏高”结论或智能提醒。
+- 多来源重叠睡眠不会重复累计；异常 >12 小时不进入负荷判断。
+- 所有 HealthKit 重试无重复样本；Watch pending 最终可清零或显示可操作错误。
+- 凯格尔自动推荐次数必须为 0。
+- 符合资格的 5 分钟以上 Watch 证据练习中，前后心率窗口可用率目标 ≥80%；达不到时仍发布主观证据，但隐藏身体证据卖点。
+- 丢弃 evidence session 后，健康 App 中意外 workout 记录为 0。
+- 旧 `iOSWatchApp` 能保持原状构建；内衡开发不修改其业务源文件。
+
+### Build 2 必须满足
+
+- 身体负荷智能提醒每天不超过 1 条，晚间回顾遵守 4 小时间隔规则。
+- 基线不足、近期训练、静默时段和通知拒绝均正确降级。
+- Calendar 标题、参与人、地点、备注落盘数量为 0。
+- 同类练习不足 3 次不显示趋势性效果结论。
+- 诊断页可以给出登记耗时和提醒点击的本地聚合数据，导出不含健康原始值。
+
+---
+
+## 14. 审核、隐私与安全文案
+
+- iPhone 和 Watch target 都配置准确、具体的 `NSHealthShareUsageDescription` 与 `NSHealthUpdateUsageDescription`。
+- App 内与 App Store Connect 都提供隐私政策入口，说明数据类型、用途、本地保存、HealthKit metadata、撤销授权和删除方式。Apple 要求所有 App 提供隐私政策，并对健康测量与医学声称进行更严格审查；见 [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)。
+- 首页解释统一使用“状态参考”“身体负荷信号”“本次变化”，不使用“检测焦虑”“治疗压力”。
+- 对“绝望”等高风险词只显示静态、非诊断式支持入口：建议联系可信任的人和当地专业/紧急支持；不建立隐藏风险分，不自动通知第三方。
+- 用户可以在设置中删除本地数据；HealthKit 样本的删除需清楚区分“本 App 写入的记录”和“其他来源记录”，绝不批量删除非本 App 数据。
+
+---
+
+## 15. 最终推荐的实施顺序
+
+1. 先完成 Task 1–2，让独立工程和纯算法可构建、可测试。
+2. 完成 Task 3–5，尽早把“两步登记 + HealthKit 写入 + 冷启动首页”交给测试者体验。
+3. 完成 Task 6–8，闭合练习、Watch 证据和本地诊断。
+4. 完成 Task 9，发布 Build 1，至少观察 3–7 天后再冻结交互。
+5. 只有 Build 1 的登记耗时、练习完成率和数据可靠性达到闸门，才开始 Task 10 的 Build 2。
+
+这个顺序优先验证产品真正的核心：用户是否愿意持续输入、是否信任解释、是否愿意执行建议，以及能否看懂练习后的变化。提醒、趋势和生活背景都不能早于这个闭环。
+
+===== END FILE =====
+
+===== FILE: docs/plans/2026-08-11-fangcun-chenhun-design.md =====
+# 方寸「晨昏纸境」改版设计
+
+**日期：** 2026-08-11  
+**状态：** 已批准  
+**方案：** A「晨昏纸境」
+
+## 问题定义
+
+当前版本已经具备 HealthKit、情绪登记、调节练习与 Watch 证据闭环，但首屏以同权重深色卡片呈现权限、指标和功能，用户首先感受到的是“阅读报告”，而不是“每天打开就有所得”。练习播放器还默认使用系统合成语音，与品牌的安静、克制气质不一致。
+
+## 产品承诺
+
+方寸每天给用户三样东西：一句值得读的话、一次对今天状态的理解、一个做得完的动作。数据退到幕后，证据仍可解释；用户不需要为了使用产品而先理解 HRV、静息心率或基线算法。
+
+品牌工作名称为「方寸」，品牌句为“照料方寸之间的自己”。本次只修改面向用户的名称；Bundle ID、HealthKit metadata key、sync identifier 前缀与本地模型保持不变。
+
+## 设计
+
+### 架构
+
+1. 在 `InnerBalanceCore` 增加纯 Swift 的每日内容选择器。句库随 App 本地发布，同一个本地自然日与同一状态主题返回稳定内容，不使用网络或生成式服务。
+2. iPhone 首页改为四段叙事：今日之言、身体来信、今日一事、今日回声。健康原始证据通过按需展开继续可见。
+3. 设计系统从强制深色改为跟随系统明暗模式的“晨昏纸境”：日间为温暖纸白与墨色文字，夜间为蓝黑墨色与暖白文字，统一使用低饱和玉绿色作为动作色。
+4. 练习继续以绝对时间、视觉节奏与可关闭触觉工作；移除系统合成语音、语音开关和音频会话。
+5. Watch 保持黑底以符合 watchOS 使用环境，但改用方寸品牌、当天短句和玉色动作入口。
+
+### 核心组件
+
+- `DailyReflection`：句子、简短注解、内容主题与可选署名。
+- `DailyReflectionSelector`：根据本地日期和身体负荷主题稳定选择内容。
+- `DailyWordHero`：首页第一视觉层，呈现日期、方寸与今日之言。
+- `BodyLetterSection`：先给自然语言结论，再允许查看来源、时间、可靠性和基线进度。
+- `TodayActionSection`：只突出记录此刻或一个推荐练习。
+- `TodayEchoSection`：合并最近情绪与练习后的主观变化。
+- `FangcunTheme` 的现有兼容入口：保留 `InnerBalanceTheme` 类型名以控制 diff，但替换为自适应语义色与纸面组件。
+
+### 数据流
+
+1. 首页刷新真实 HealthKit 数据并形成现有 `BodyLoadAssessment`。
+2. 内容选择器把评估层级映射为平稳、留意、恢复、通用四类内容主题。
+3. 当天日期决定主题内的稳定索引；当天多次打开不会通过刷新更换句子。
+4. 首页把同一份评估转译为“身体来信”，用户展开时仍读取原来的证据数组。
+5. 情绪记录与练习完成沿用现有 SwiftData + HealthKit 写入路径，并更新“今日回声”。
+
+### 异常与降级
+
+- 未授权 HealthKit：仍先显示今日之言，身体来信显示“方寸还在认识你”，并提供次级授权入口。
+- 建立基线中：显示 X/5 天，不生成偏高结论。
+- 睡眠需要确认：在身体来信中明确提示，不把异常样本用于结论。
+- 无情绪记录：今日一事为“记录此刻”。
+- 内容选择异常：使用内置通用句，不出现空白首屏。
+- Reduce Motion：关闭呼吸缩放和大幅过渡，保留静态层次；触觉可独立关闭。
+- Dynamic Type：内容允许纵向增长和滚动，不锁定正文高度。
+
+### 内容边界
+
+- 首批内容使用方寸原创短句，不伪造名人署名。
+- 句子不诊断、不说教、不把痛苦浪漫化，也不把正常状态描述成问题。
+- “绝望”等高风险记录继续优先展示静态现实支持入口，不用励志句替代支持。
+- 每日内容全部在本地选择，不新增网络、账号、分析或遥测。
+
+## 本次非目标
+
+- 不在本批实现小组件、通知、句册长期收藏和 28 天趋势。
+- 不更换 App Icon；先验证首页与练习气质。
+- 不修改旧工程 `iOSWatchApp`。
+- 不验证「方寸」商标或 App Store 名称可用性；发布前另行查重。
+
+## 验收体验
+
+- 启动后第一屏先看到方寸、日期和今日之言，不先看到权限说明或健康数值。
+- 10 秒内能理解今天最重要的一句话和一个动作。
+- 健康证据仍能找到，且来源、时间、可靠性不丢失。
+- 练习页面不存在语音开关，也不会发起系统合成语音或播放音频会话。
+- 浅色、深色、Dynamic Type、VoiceOver 与 Reduce Motion 均可使用。
+
+
+===== END FILE =====
+
+===== FILE: docs/plans/2026-08-11-fangcun-chenhun-implementation.md =====
+# 方寸「晨昏纸境」实施计划
+
+**目标：** 在保留现有健康数据与练习闭环的前提下，把 iPhone + Watch 的可见产品改为「方寸」，让首页先提供每日获得感，并撤掉系统合成语音。
+
+**架构：** 每日内容选择逻辑放入 `InnerBalanceCore`，SwiftUI 负责自适应主题和叙事层级；现有 HealthKit repository、SwiftData 模型、同步标识与推荐引擎不改。行为变化严格按 RED–GREEN–REFACTOR 实施。
+
+**方案：** 采用已批准的 A「晨昏纸境」。不推倒工程，不新增第三方依赖，不接入网络。
+
+---
+
+### Task 1：每日之言纯 Swift 核心
+
+**文件：**
+- 新建：`InnerBalanceCore/Sources/InnerBalanceCore/Reflection/DailyReflection.swift`
+- 新建：`InnerBalanceCore/Tests/InnerBalanceCoreTests/DailyReflectionTests.swift`
+
+**步骤：**
+1. RED：添加“同一自然日结果稳定”的单个失败测试并运行。
+2. GREEN：实现最小模型、主题和稳定选择器，使测试通过。
+3. RED：逐个添加状态主题映射、跨日变化、通用降级与署名边界测试。
+4. GREEN：逐个补齐本地句库和选择逻辑。
+5. REFACTOR：消除选择器重复，保持全部 Core 测试通过。
+
+**验证：** `swift test --package-path InnerBalanceCore`
+
+### Task 2：首页新体验与晨昏主题
+
+**文件：**
+- 修改：`InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift`
+- 修改：`InnerBalance/InnerBalanceApp/DesignSystem/InnerBalanceTheme.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Home/HomeView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Home/BodyLoadCard.swift`
+
+**步骤：**
+1. RED：先添加首页必须出现“今日之言”“身体来信”“今日一事”的 UI 断言并运行，确认失败。
+2. GREEN：加入自适应纸白/墨黑语义色和四段首页结构，使断言通过。
+3. 保留基线 X/5、睡眠核对、证据来源/时间/可靠性与权限安全降级。
+4. REFACTOR：提取小型 SwiftUI section，保证 44pt 点击区、Dynamic Type 与 VoiceOver 顺序。
+
+**验证：** `xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -only-testing:InnerBalanceUITests`
+
+### Task 3：品牌、导航与产品语言
+
+**文件：**
+- 修改：`InnerBalance/InnerBalance.xcodeproj/project.pbxproj`
+- 修改：`InnerBalance/InnerBalanceApp/App/RootView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Settings/SettingsView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/CheckIn/OptionalContextSheet.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Resources/Localizable.xcstrings`
+- 修改：`InnerBalance/InnerBalanceWatch/App/WatchRootView.swift`
+- 修改：`InnerBalance/InnerBalanceWatch/Features/Practice/WatchPracticeView.swift`
+- 修改：`InnerBalance/InnerBalanceWatch/Features/Sync/WatchSyncStatusView.swift`
+
+**步骤：**
+1. RED：更新 UI 测试，要求“今日 / 调节 / 我的”导航和“方寸”品牌，确认旧版失败。
+2. GREEN：修改 iPhone/Watch 显示名、可见文案和导航标签，Bundle ID 与内部 target 名不变。
+3. Watch 首页加入当天短句，但仍保留记录、调节、同步三个独立入口。
+4. REFACTOR：检查所有用户可见“内衡”残留，只保留代码模块与兼容标识。
+
+**验证：** `rg -n '内衡' InnerBalance/InnerBalanceApp InnerBalance/InnerBalanceWatch InnerBalance/InnerBalance.xcodeproj/project.pbxproj`
+
+### Task 4：无语音调节体验
+
+**文件：**
+- 修改：`InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Practice/PracticeLibraryView.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionView.swift`
+- 删除：`InnerBalance/InnerBalanceApp/Features/Practice/PracticeVoiceGuide.swift`
+- 修改：`InnerBalance/InnerBalanceApp/Features/CheckIn/CheckInFlowView.swift`
+
+**步骤：**
+1. RED：添加进入真实练习后不存在“语音引导”、仍存在“触觉节奏”的 UI 测试，确认失败。
+2. GREEN：删除语音状态、开关、播报、音频中断监听和音频会话代码。
+3. 使用视觉提示、呼吸光晕和可关闭触觉维持节奏；Reduce Motion 时停止缩放动画。
+4. 调节库、情绪登记和播放器移除强制深色并跟随晨昏主题。
+5. REFACTOR：清除未使用的 AVFoundation 引用与失效清理路径。
+
+**验证：** `rg -n 'PracticeVoiceGuide|AVSpeech|语音引导|AVAudioSession' InnerBalance/InnerBalanceApp`
+
+### Task 5：回归、构建与真机前闸门
+
+**文件：**
+- 按测试失败最小修复上述文件；不修改 `iOSWatchApp`。
+
+**步骤：**
+1. 运行 Core 全套测试。
+2. 运行 iPhone App 单元测试与 UI 测试。
+3. 严格运行 Swift Format。
+4. 构建 iPhone Debug/Release 与 Watch Debug/Release。
+5. 在浅色、深色和大号 Dynamic Type 下采集首页截图做人工核对。
+6. 独立代码审查，修复全部 Critical/Important 后重跑受影响验证。
+
+**验证：**
+- `swift test --package-path InnerBalanceCore`
+- `swift format lint --recursive --strict InnerBalanceCore/Sources InnerBalanceCore/Tests InnerBalance/InnerBalanceApp InnerBalance/InnerBalanceWatch InnerBalance/InnerBalanceTests InnerBalance/InnerBalanceUITests`
+- `xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'platform=iOS Simulator,name=iPhone 16 Pro'`
+- `xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -configuration Release -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO`
+- `xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -configuration Release -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO`
+
+
+===== END FILE =====
+
+===== FILE: docs/plans/2026-08-12-fangcun-personalized-home-design.md =====
+# 方寸：状态驱动的个性化首页设计
+
+**日期：** 2026-08-12  
+**状态：** 用户已要求实施  
+**范围：** 当前 iPhone Build 1；Watch 罗盘延期，不引入网络、账号或 AI 在线生成
+
+## 目标
+
+用户选择当下状态后，首页立即用一句有明确作者和作品的哲学或心理学名家句回应，并结合身体指标给出一个可执行的练习。记录全部由交互自动形成，不留下需要填写的空白任务。
+
+## 方案比较
+
+### A. 状态驱动（采用）
+
+“现在怎样”是主观状态入口。每日名家句和恢复动作由状态决定，身体负荷调整当天安排与动作优先级。响应直接，且身体与情绪仍分开呈现。
+
+### B. 身体数据驱动
+
+句子和动作主要由 HRV、静息心率、睡眠、训练决定。自动化程度高，但容易替用户判断感受，也会让无数据用户体验变弱。
+
+### C. 在线生成
+
+每次用模型生成文案和建议。变化最多，但违背本地优先、无网络和无账号边界，也难以稳定控制医疗措辞，因此不采用。
+
+## 交互
+
+1. 打开首页先看到“今天读这句”，每句都显示作者和作品。
+2. 用户在“现在怎样”选择：平静、清醒、有触动、绷着、有点累、说不清。
+3. 点击即保存，不出现文字输入框。
+4. “今天读这句”柔和切换到该状态当天的名家句。
+5. “今天怎么安排”同时显示清晰的身体行动判断、唯一推荐练习和训练背景。
+6. 删除“今日足迹”；最近一次练习的主观变化并入“今天怎么安排”。
+7. 完整情绪登记使用一屏直触罗盘：点选位置后原地出现 4–6 个词，点词立即保存，不再出现预设按钮、滑杆或“继续”。
+
+## 个性化规则
+
+| 回声 | 句子主题 | 默认动作 |
+|---|---|---|
+| 平静 | 留住空间、不过度占满 | 冥想放松 |
+| 清醒 | 从看清走向行动 | 节律呼吸 |
+| 有触动 | 允许感受停留 | 冥想放松 |
+| 绷着 | 先解除生理紧绷 | 生理性叹息 |
+| 有点累 | 停止透支、恢复能量 | NSDR |
+| 说不清 | 不强求命名、先回身体 | 节律呼吸 |
+
+若身体负荷达到“偏高”，且回声没有更明确地指向“绷着”或“有点累”，优先推荐节律呼吸。凯格尔保留在练习库自主选择，不进入自动推荐，也不展示与压力关系的解释文案。
+
+## 今天怎么安排
+
+行动结论固定为：建立基线或无可靠数据时“照常安排”；可靠指标稳定时“可以推进”；一项独立可靠偏离时“今天收着一点”；两项及以上独立可靠偏离时“优先恢复”；较长训练仅保护 HRV/静息心率且整体结论为平稳时显示“训练后先恢复”。
+
+### 训练背景
+
+在现有训练保护逻辑之外，显示近 24 小时：
+
+- 训练次数和总时长；
+- 最近一次训练类型、时长、结束时间和来源；
+- 没有记录或没有授权时给出中性状态。
+
+训练仍只用于解释 HRV 与静息心率；它不能过滤睡眠等独立异常。
+
+## Watch
+
+本批不修改 Watch。Watch 罗盘与表盘形态单独设计、单独验收。
+
+## 数据与迁移
+
+- 继续使用 SwiftData 保存每日回声；旧文字补充保留在历史数据中，但新流程不再要求或提供文字输入。
+- 句子和推荐规则位于 `InnerBalanceCore`。句库只收录有作者和作品的名家句；旧版 `echo-*` 生成句在展示时换成同日同状态的名家句。
+- 不增加新的 HealthKit 权限；训练读取使用已有 workout 授权。
+
+## 验收
+
+- 六种状态各有一周不重复的有出处名家句和正确动作。
+- 状态点击后句子与动作立即变化，重启后保持。
+- 首页没有文本输入框，也没有空的“待完成记录”。
+- 首页只有“今天读这句”“现在怎样”“今天怎么安排”三段主内容，没有“今日足迹”。
+- 训练摘要正确区分有记录、无记录和不可用。
+- 情绪罗盘在同一屏完成位置和词语选择。
+- Dynamic Type、VoiceOver 和 Reduce Motion 可用。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/ACCEPTANCE_CASES.json =====
+{
+  "schemaVersion": 1,
+  "status": "acceptance_catalog_not_executed_tests",
+  "sourceOfTruth": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+  "syntheticOnly": true,
+  "referenceCommit": "99ebe69f30a2a502225e913a9dfd35f54101dabd",
+  "cases": [
+    {
+      "id": "T01",
+      "scenario": "无记录且前台过11点",
+      "expected": "可见轻邀请，不能说没喝水/脱水",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "now": "2026-09-19T11:30:00+08:00",
+        "events": [],
+        "foreground": true
+      }
+    },
+    {
+      "id": "T02",
+      "scenario": "仅有咖啡300ml",
+      "expected": "非酒精记录300ml；不说今日饮水为0",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "events": [
+          {
+            "category": "coffee",
+            "volumeML": 300,
+            "caffeineMG": 140,
+            "alcoholPresence": "no"
+          }
+        ]
+      }
+    },
+    {
+      "id": "T03",
+      "scenario": "点“喝过，先不记”",
+      "expected": "总量不变；关怀暂停3小时",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "action": "acknowledgeDrankWithoutLogging",
+        "suppressionHours": 3,
+        "expectedNewEntries": 0
+      }
+    },
+    {
+      "id": "T04",
+      "scenario": "1500ml参考已达到",
+      "expected": "停止当天目标推动；不禁用继续记录",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "referenceML": 1500,
+        "referenceAccepted": true,
+        "nonAlcoholBeverageML": 1500
+      }
+    },
+    {
+      "id": "T05",
+      "scenario": "限液开关",
+      "expected": "无定量/喝水push；酒精卡也不催喝水",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "fluidRestriction": true,
+        "alcoholCareAlsoActive": true
+      }
+    },
+    {
+      "id": "T06",
+      "scenario": "300ml咖啡140mg改500ml，按每杯剂量",
+      "expected": "咖啡因仍140mg",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "before": {
+          "volumeML": 300,
+          "caffeineMG": 140,
+          "doseBasis": "perServing"
+        },
+        "afterVolumeML": 500,
+        "expectedCaffeineMG": 140
+      }
+    },
+    {
+      "id": "T07",
+      "scenario": "标签每100ml含32mg，250ml改500ml",
+      "expected": "80mg变160mg，估值方法保留",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "caffeineMGPer100ML": 32,
+        "beforeVolumeML": 250,
+        "afterVolumeML": 500,
+        "expectedBeforeMG": 80,
+        "expectedAfterMG": 160
+      }
+    },
+    {
+      "id": "T08",
+      "scenario": "上午咖啡晚上补记",
+      "expected": "不产生“刚刚喝晚了”，不补发过期通知",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedAt": "2026-09-19T09:00:00+08:00",
+        "recordedAt": "2026-09-19T22:00:00+08:00",
+        "sleepTimeLocal": "23:30"
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "23:30睡眠、16:00消费140mg",
+      "expected": "进入晚咖啡范围，一条应用内建议",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedAt": "2026-09-19T16:00:00+08:00",
+        "sleepStart": "2026-09-19T23:30:00+08:00",
+        "sleepEnd": "2026-09-20T07:30:00+08:00",
+        "caffeineMG": 140
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "23:30睡眠、00:30消费",
+      "expected": "关联正在进行的睡眠区间，不能归次日白天",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedAt": "2026-09-20T00:30:00+08:00",
+        "sleepStart": "2026-09-19T23:30:00+08:00",
+        "sleepEnd": "2026-09-20T07:30:00+08:00",
+        "caffeineMG": 140
+      }
+    },
+    {
+      "id": "T11",
+      "scenario": "20:00低因10mg且其他晚窗0mg",
+      "expected": "不触发50mg晚咖啡策略，不称绝对无影响",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "consumedLocal": "20:00",
+        "sleepTimeLocal": "23:30",
+        "lateWindowTotalMG": 10,
+        "unknownCaffeinatedDrinks": 0
+      }
+    },
+    {
+      "id": "T12",
+      "scenario": "咖啡因未知",
+      "expected": "不填0，不伪造累计精确值",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "caffeineMG": null,
+        "caffeinePresence": "yes"
+      }
+    },
+    {
+      "id": "T13",
+      "scenario": "咖啡晚且滚动24h达到400mg",
+      "expected": "合并一条，未激活push不通知",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "late": true,
+        "rolling24hKnownMG": 400,
+        "pushEnabled": false,
+        "expectedMaxVisibleCards": 1
+      }
+    },
+    {
+      "id": "T14",
+      "scenario": "酒330ml/5%",
+      "expected": "新估算约13.0g；旧历史10g不重算",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "newRecord": {
+          "volumeML": 330,
+          "ABVPercent": 5
+        },
+        "approxNewGrams": 13.0185,
+        "oldLegacyGramsPreserved": 10
+      }
+    },
+    {
+      "id": "T15",
+      "scenario": "两条15g酒记录跨午夜且相距2h",
+      "expected": "6h累计30g，不因换日漏掉关怀",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "events": [
+          {
+            "at": "2026-09-19T23:00:00+08:00",
+            "alcoholGrams": 15
+          },
+          {
+            "at": "2026-09-20T01:00:00+08:00",
+            "alcoholGrams": 15
+          }
+        ]
+      }
+    },
+    {
+      "id": "T16",
+      "scenario": "酒精未知",
+      "expected": "一般建议，无“已超量”数字结论",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "category": "alcoholCustom",
+        "alcoholPresence": "yes",
+        "alcoholGrams": null,
+        "ABVPercent": null
+      }
+    },
+    {
+      "id": "T17",
+      "scenario": "酒后又记一杯水",
+      "expected": "不移除酒精事实、不奖励恢复、不显示解酒成功",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "alcoholGramsRecent": 30,
+        "newWaterML": 250,
+        "readinessMayChangeFromThisEvent": false
+      }
+    },
+    {
+      "id": "T18",
+      "scenario": "酒后明确严重症状",
+      "expected": "静态安全出口，不推荐呼吸/走动/睡一觉",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "explicitUserSignal": "difficult_to_wake",
+        "expectedMotion": "static",
+        "ordinaryRecoveryActionAllowed": false
+      }
+    },
+    {
+      "id": "T19",
+      "scenario": "本机饮品保存失败/重试",
+      "expected": "失败不演成功；成功一次事件、一次动效",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "commandID": "synthetic-command-19",
+        "attempts": [
+          "diskFailure",
+          "success",
+          "duplicateRetry"
+        ],
+        "expectedSuccessfulEvents": 1
+      }
+    },
+    {
+      "id": "T20",
+      "scenario": "Watch重复/乱序/删除后旧事件",
+      "expected": "事实幂等、不复活、不重播不重发",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T21",
+      "scenario": "水/咖啡/酒候选同时出现",
+      "expected": "应用内最高优先一条，关闭不立即换下一条",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "candidateTypes": [
+          "water",
+          "caffeine",
+          "alcohol"
+        ],
+        "expectedSelected": "alcohol"
+      }
+    },
+    {
+      "id": "T22",
+      "scenario": "无数据授权但饮品功能可用",
+      "expected": "记录/建议继续，准备度不被编造",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "healthDataAvailable": false,
+        "drinkStorageAvailable": true
+      }
+    },
+    {
+      "id": "T23",
+      "scenario": "拒绝通知权限",
+      "expected": "无排程、无循环索权；应用内正常",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "notificationPermission": "denied",
+        "requestPermissionLoopAllowed": false
+      }
+    },
+    {
+      "id": "T24",
+      "scenario": "前台记录同时到通知时间",
+      "expected": "原页一条，无第二横幅声音",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "foreground": true,
+        "sameCandidateInApp": true,
+        "expectedSystemBanner": false,
+        "expectedSound": false
+      }
+    },
+    {
+      "id": "T25",
+      "scenario": "队列2条已占预算，再有酒后请求",
+      "expected": "不超过预算；不悄悄深夜延后",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "reservedLocalDayPushCount": 2,
+        "requestedAlcoholReminder": true,
+        "expectedAdditionalRequests": 0
+      }
+    },
+    {
+      "id": "T26",
+      "scenario": "饮水记录后取消近2h排程",
+      "expected": "不相关通知保留，不能removeAll误删其他模块",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "newWaterRecordAt": "2026-09-19T11:00:00+08:00",
+        "waterReminderAt": "2026-09-19T12:00:00+08:00",
+        "cancelWater": true,
+        "cancelOtherModules": false
+      }
+    },
+    {
+      "id": "T27",
+      "scenario": "旧计划到点但应用被终止",
+      "expected": "通知只能是通用邀请，无实时无记录断言",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T28",
+      "scenario": "默认锁屏隐私",
+      "expected": "看不出饮酒/剂量/身体状态；点开才读",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "lockScreenPrivacy": "generic",
+        "expectedTitleKey": "care.push.generic.title",
+        "expectedBodyKey": "care.push.generic.body"
+      }
+    },
+    {
+      "id": "T29",
+      "scenario": "暂停今天提醒、重启、改时区",
+      "expected": "指定类别仍受抑制；新日预算不翻倍",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T30",
+      "scenario": "修改/撤销触发条件、已送达提醒",
+      "expected": "撤销待发；能移除的旧通知移除；不能撤回已看内容需如实记录",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T31",
+      "scenario": "首页点击/朗读猫狗",
+      "expected": "无观看sheet、无重播按钮；不抢业务点击",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T32",
+      "scenario": "主状态刷新10次/切tab返回",
+      "expected": "入场不连播，无10份动画队列",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "refreshCount": 10,
+        "expectedNewPlaybackQueueCount": 0
+      }
+    },
+    {
+      "id": "T33",
+      "scenario": "白水、咖啡、酒、撤销各一次",
+      "expected": "水有可爱确认；咖啡酒中性；撤销不演喝水",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T34",
+      "scenario": "呼吸暂停/继续/提前结束",
+      "expected": "共用相位、暂停冻结、不补发迟到节拍",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T35",
+      "scenario": "系统Reduce Motion、轻柔、静态、低电量",
+      "expected": "优先级正确，无常驻装饰时钟",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T36",
+      "scenario": "原画合成、暗色、大字",
+      "expected": "无换脸、撕裂、白底硬框、裁耳尾或压正文",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "human_visual"
+    },
+    {
+      "id": "T37",
+      "scenario": "当前资料合格usual/reduced/low",
+      "expected": "明确不同结论与真实原因，无技术枚举标题",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T38",
+      "scenario": "一日基线",
+      "expected": "不展示个人区间；仍有明确限定范围建议",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "baselineValidDays": 1,
+        "expectedPersonalRangeVisible": false
+      }
+    },
+    {
+      "id": "T39",
+      "scenario": "阶段重叠与awake/asleep冲突",
+      "expected": "两类分开；前者不重复累计，后者不捏造时长",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T40",
+      "scenario": "当前与历史质量处理",
+      "expected": "相同规则；基线审计与纳入样本一致",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T41",
+      "scenario": "sourceIdentityIncomplete但来源可比",
+      "expected": "不产生普通故障警告",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit",
+      "input": {
+        "sourceIdentityIncomplete": true,
+        "comparisonValid": true,
+        "expectedUserWarningVisible": false
+      }
+    },
+    {
+      "id": "T42",
+      "scenario": "删除、修订、并发与旧缓存",
+      "expected": "M2-R01～R05回归继续通过",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T43",
+      "scenario": "最大字号、VoiceOver解释页",
+      "expected": "正确顺序，按钮可达，无技术内容堆叠",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "integration_or_unit"
+    },
+    {
+      "id": "T44",
+      "scenario": "三段真实录屏",
+      "expected": "明确看到相关动作差异；“可爱/自然”由用户人工确认",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "human_visual"
+    },
+    {
+      "id": "T45",
+      "scenario": "普通人看合成页面",
+      "expected": "说得出结论、理由、动作，不把一般建议当完整评估",
+      "validationStatus": "not_run",
+      "testName": null,
+      "evidencePath": null,
+      "type": "human_visual"
+    }
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/ACCEPTANCE_RESULTS.md =====
+# V2 验收目录逐项结果
+
+原始 `ACCEPTANCE_CASES.json` 保持原样，它是要求目录。以下才是本次运行记录。自动化通过只针对写明的层级；“待真机/待人工”不计作验收通过。
+
+证据简称：C = [Core 145 项](evidence/tests/core-v2-acceptance.txt)，A = [App 195 项](evidence/tests/v2-app-final.txt)，U = [最终 10 项 UI](evidence/tests/v2-ui-final.txt)，L = [最大字号修复后 3 项 UI](evidence/tests/v2-ui-accessible.txt)。所有测试方法名均可在源码中搜索。
+
+| ID | 状态与证据 | 实际覆盖 / 未覆盖 |
+|---|---|---|
+| T01 | 自动化通过 C `noRecordsMeansInvitationNotDehydration` | 无记录 11:30 给 W01 邀请；文案 key 对应记录范围，不诊断脱水 |
+| T02 | 自动化通过 C `coffeeCountsFluidAndUnknownAlcoholDoesNot` | 咖啡 300 ml 计非酒精饮品，白水仍为 0；未知酒精不冒充补水 |
+| T03 | 自动化通过 A `acknowledgeAndMuteNeverWriteDiaryAndSurviveRestart`；C `restrictionAndAcknowledgementSuppressWaterWithoutChangingFacts` | 确认喝过只写关怀状态，抑制 3 小时，重启保留 |
+| T04 | 自动化通过 C `referenceRequiresAcceptanceAndNeverCreatesDebt`、`recentFluidAndReferenceMetCancelWaterAndRestrictionWins` | 明确接受参考才用目标；达量停止当天推动，记录按钮不受目标禁用 |
+| T05 | 自动化通过 C `restrictionAndAcknowledgementSuppressWaterWithoutChangingFacts`、`recentFluidAndReferenceMetCancelWaterAndRestrictionWins` | 限液跨水/酒关怀适用；无定量饮水 push |
+| T06 | 自动化通过 C `doseMethodsAndABVAreExplicit`；A `testDilutingPerServingCoffeeKeepsDose` | 300/500 ml 每杯咖啡因均 140 mg；有红灯回归 |
+| T07 | 自动化通过 C `doseMethodsAndABVAreExplicit` | 浓度 32 mg/100 ml：250→500 ml 时 80→160 mg |
+| T08 | 自动化通过 C `lateCaffeineUsesConsumedTimeAndConfirmedSleep`、`amountAndLateMergeUnknownQualifiedAndBackfillPassive` | 使用 consumedAt；上午消费晚补记不称刚喝晚咖啡；补记被动提示 |
+| T09 | 自动化通过 C `lateCaffeineUsesConsumedTimeAndConfirmedSleep` | 16:00 140 mg 与已确认 23:30 睡眠关联，只一条晚咖啡候选 |
+| T10 | 自动化通过 C `midnightBelongsToOngoingSleepAndExpires` | 00:30 关联进行中的睡眠周期；醒后过期 |
+| T11 | 自动化通过 C `lateCaffeineUsesConsumedTimeAndConfirmedSleep` | 晚窗 10 mg 不触发 50 mg 工程阈值；未作零影响承诺 |
+| T12 | 自动化通过 C `amountAndLateMergeUnknownQualifiedAndBackfillPassive`；A `unknownDoseProjectionAndLegacyBeerNeverBecomeZeroOrRecalculated` | unknown 保留 nil，累计带未知部分说明 |
+| T13 | 自动化通过 C `amountAndLateMergeUnknownQualifiedAndBackfillPassive`；A `noPromptAtStartupAndDeniedNeverRequestsAgain` | 量多且晚合并 C03；未主动开启无通知 |
+| T14 | 自动化通过 C `doseMethodsAndABVAreExplicit`；A `testNewBeerUsesVolumeAndABV`、`unknownDoseProjectionAndLegacyBeerNeverBecomeZeroOrRecalculated` | 新酒 13.0185 g；旧 10 g 不重算 |
+| T15 | 自动化通过 C `twoAlcoholRecordsAcrossMidnightKeepSixHourTotal` | 23:00/01:00 各 15 g，6h 合计 30；过窗不保留超量判断 |
+| T16 | 自动化通过 C `alcoholUnknownNotExcessWaterCannotCancelAndSafetyWins` | 未知酒精为一般建议，不声称精确超量 |
+| T17 | 自动化通过同上；原 readiness golden 不变 | 后记水不移除酒精事实；无准备度加分接口 |
+| T18 | Core 通过；真实安全卡人工检查待验 | 同上验证 A05 优先；代码静态安全出口并禁用普通建议/首页呼吸入口；未做真机严重症状交互验收 |
+| T19 | 自动化通过 A `committedCommandsAreDurableAndUndoIsANewRevision`；C `commitsDeduplicateAndBackgroundDoesNotQueue` | 原子发布前失败不新增，重试同命令一次提交；同事件不重播 |
+| T20 | 模拟自动化通过；配对 Watch 待验 | C `failedReceiverCannotACKAndDeletePrecedesStaleReplay`、`durableACKLostOfflineRestartDuplicatesAndProjectionRetry`、`unknownOldWatchKeepsNewBeverageQueuedThenCapabilityUnlocks`；不复活、不降级、不远端庆祝 |
+| T21 | 自动化通过 C `priorityDismissAndSameBasisDoNotReplay` | 酒优先于咖啡/水，一条；关闭不马上轮播下一条 |
+| T22 | 分层自动化通过；真实拒绝授权组合待验 | A 饮品/关怀测试不依赖 HealthKit；`rawProviderToOwnerProducesScopedLanguage` 的 insufficient 不捏造评估；未实际更改用户健康权限 |
+| T23 | 注入客户端通过 A `noPromptAtStartupAndDeniedNeverRequestsAgain`；真机待验 | 拒绝后无排程/循环索权；首次仅明确开启时请求 |
+| T24 | 注入客户端通过 A `foregroundCareIsSilentAndSchedulingIsNotDelivery`；真机待验 | 本功能前台空 presentation options；其他模块保持原行为 |
+| T25 | 自动化通过 C `twoReservationsAndAlcoholRequestCannotAddAThirdOrDeferIt`、`threeDayOneShotPlansReserveBothBudgetsAndCooldown` | 已有两次预算、滚动 24h、4h 冷却及静默时段；不能深夜延后补发 |
+| T26 | 自动化通过 C `recentFluidAndReferenceMetCancelWaterAndRestrictionWins`；A `plansCancelOnlyOwnedRequestsAndClearRetainsOtherFeatures` | 新非酒精饮品抑制近 2h；取消仅 own prefix，其他模块保留 |
+| T27 | 文案与排程自动化通过；App 终止后系统送达待验 | C planner 默认 generic 文案，无实时无记录断言；未证明系统会按时投递 |
+| T28 | 客户端/文案通过；真实锁屏待验 | A `plansCancelOnlyOwnedRequestsAndClearRetainsOtherFeatures`；默认无剂量/饮酒/身体状态 |
+| T29 | 自动化通过 C `muteSurvivesRestartAndTimezoneChange`、`threeDayOneShotPlansReserveBothBudgetsAndCooldown` | 绝对时间抑制保存，滚动预算不随日界重置翻倍；物理改时区未做 |
+| T30 | 分层覆盖，真机撤回待验 | 编辑/撤销事实与重新排程分别由 A 饮品命令、C planner、A own-only 清理测试覆盖；已读无法撤回，不能把取消当未曝光；未声称端到端锁屏撤回通过 |
+| T31 | UI 通过 U `testFirstExperienceDelivery`、`testDistinctCurrentConclusionsAndSceneEntry` | 删除观看/重播入口；装饰角色 AX hidden。真实 VoiceOver 朗读待验 |
+| T32 | 自动化通过 C `tenRefreshesDoNotQueueAndRapidCommitsReplace` | 同事件十次只启动一次，快速提交替换当前，无十份队列 |
+| T33 | U/L `testWaterCoffeeAlcoholAndUndoShowCommittedFeedback`；C `distinctDrinkGesturesAndBreathPriority` | 提交/反馈/撤销真实链路；动作自然可爱仍待人工 |
+| T34 | 自动化通过 U `testBreathingWithMotionEnabledCanPauseAndExit` 及现有 session 测试 | 呼吸共用练习 expansion，暂停冻结；正常/提前退出均走真实保存链路 |
+| T35 | Core 通过；物理设置待验 | C `accessibilityFailureAndRemoteNeverCelebrate`、`staticLowPowerCoveredOffscreenAndGentleAreExplicit`；静态/呼吸无装饰 Timeline；真实低电量/耗能未测 |
+| T36 | 原画未改；截图已检查，用户视觉验收待定 | [深色大字](evidence/final-native/README.md)。已修复发现的弹层挤压；未把视觉舒服/蓝色夜间可见性判作用户通过 |
+| T37 | 自动化通过 A `rawProviderToOwnerProducesScopedLanguage`；U `testDistinctCurrentConclusionsAndSceneEntry` | 原始 provider→coordinator→真实首页有 usual/reduced/low 三个结论 |
+| T38 | 自动化通过 A 同上 oneDay；L `testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange` | 一日无个人范围，仍给限定的睡眠建议；大字实际记水/汇总/撤销通过 |
+| T39 | 自动化通过 C `onlyStageOverlapPreservesCurrentAndHistoricalEvidence`、`unresolvedAwakeConflictCannotPublishPreciseDuration` | 阶段并集保时长；awake/asleep 真冲突不捏造精确时长 |
+| T40 | 自动化通过 C `onlyStageOverlapPreservesCurrentAndHistoricalEvidence`、`auditDistinguishesUnreadMissingSourceMismatchAndRuleExcluded` | 当前/历史共用质量过滤，另有本机只读真实样本回放，公开版仅脱敏结论 |
+| T41 | 自动化通过 C `incompleteSourceIdentityIsDiagnosticNotAComparisonFailure` | 可比较来源的 incomplete identity 留内部诊断 |
+| T42 | 自动化通过 C 原 M2-R01～R05 全套、`oldArchivesDecodeWithoutClearingAndNewPolicyCreatesRelatedRevision` | 删除/修订/并发/旧缓存回归继续通过；原 golden 未改 |
+| T43 | 最大字号自动化通过 L；VoiceOver 真人朗读待验 | 默认详情不堆技术字段，按钮能滚动到；未用 AX 查询代替听读验收 |
+| T44 | 真实录屏已交付；用户可爱/自然验收待定 | [六场景及饮品变体](evidence/final-native/README.md)，包含真实计时完成；不能用测试数量代替认可 |
+| T45 | 待用户/普通用户人工验收 | 需复述“结论、理由、现在可做什么”，并能分清睡眠建议与完整评估；未开展用户实验 |
+
+停止于 V2-07。缺失的物理与人工验收明确保留，不将其自动转为通过，也未扩展到新后端、远程推送或后续阶段。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/ASSET_MAP.md =====
+# Asset map
+
+| Scene | Existing asset | Intended event |
+|---|---|---|
+| calm duo | Companion-duo-calm | current usual assessment, bounded greeting |
+| resting dog | Companion-dog-rest | reduced/low, early end |
+| curious cat | Companion-cat-curious | limited facts/onboarding, single look |
+| cup companion | Companion-dog-drink | opening and confirmed local drink commit |
+| breathing cat | Companion-breathing | authoritative session expansion only |
+| paw touch | Companion-duo-complete | confirmed saved completion |
+
+All assets live under `InnerBalance/InnerBalanceApp/Assets.xcassets`. No source artwork modified. A near-neutral paper color shader removes the white rectangle while retaining colored print; both themes use identical ink. Local mask motion cannot invent a blink or an anatomical limb hidden by the source: such motions are intentionally unsupported, not faked through full-sprite warping.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/BASELINE_COVERAGE_FINDINGS.md =====
+# V2-02 基线覆盖追查（脱敏）
+
+## 核验对象与边界
+
+对本机已授权复制的 M3 真机 Insights 存储作只读回放。读取前核对原封包 checksum；没有修改原文件、HealthKit、游标、权限或个人记录。完整 `BaselineCoverageAudit.json` 和旧/新政策回放对比仅保存在本机私有诊断目录，不进入仓库。本报告不包含健康数值、逐日样本、来源/设备标识或评估 ID。
+
+## 已确认根因
+
+- 数据初始化已完成，原始记录覆盖多个日期。不能将“有效日很少”解释为用户只佩戴一天，或未经核验就让用户再等两周。
+- 当前保存的稳定选源与原始记录相符，本次未发现来源不匹配是主要原因。
+- 旧代码将 core/deep/rem 的阶段交叠和 awake/asleep 的真假睡眠冲突合并为 `conflictingSleep`；历史 `episode.flags.isEmpty` 进一步将这些整晚排除。只有阶段细分不一致的有效睡眠因此被误删出基线。
+- 新政策只降级阶段细分，总时长使用睡着区间并集。对同一批原始记录回放后，HRV 和 RHR 的有效基线覆盖都增加，证实修复作用于实际遗漏，而不是改门槛凑结果。
+- 当前夜的阶段交叠与不完整设备身份仅需内部诊断，不阻断可比较睡眠时长。
+
+## 仍须保留的限制
+
+部分历史确有同源 awake/asleep 交叠，且没有共享替换标识和版本依据足以自动消解；不能因为同源或记录较新，就猜测某条为正确记录。另有 HRV 稀疏的真实过滤。修正后仍不能将所有指标宣称达到成熟个人比较条件，7/14 日门槛保持不变。
+
+`BaselineCoverageAudit.build(snapshot:now:calendar:configuration:interventions:)` 使用与评估相同的睡眠构建器、每日主睡眠选取、当前指标提取与历史过滤路径。逐指标、逐日输出初始化状态、原始/去重/选源覆盖、睡眠候选和选中记录、质量分类、纳入样本、小时覆盖、过滤原因和主排除分类。分类区分未读取、读取未完成、旧档初始化状态未知、原本缺失、未选源、来源不匹配、无睡眠候选、睡眠规则排除与指标规则排除。
+
+该审计是本机诊断对象，不属于跨端同步、普通用户文案或公开验证附件。本轮没有新增网络发送或日志自动上传。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/CARE_POLICY_DEFAULTS.json =====
+{
+  "schemaVersion": 1,
+  "policyVersion": "care-v2.0-engineering-20260919",
+  "status": "proposed_for_implementation_not_validated_medical_thresholds",
+  "sourceOfTruth": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+  "referenceCommit": "99ebe69f30a2a502225e913a9dfd35f54101dabd",
+  "defaults": {
+    "inAppCareEnabled": true,
+    "pushEnabled": false,
+    "requestPermissionOnlyAfterExplicitUserEnable": true,
+    "newHealthKitDietaryPermissions": false,
+    "notificationOwner": "iPhone",
+    "lockScreenPrivacy": "generic",
+    "sound": false,
+    "badge": false,
+    "criticalAlert": false,
+    "timeSensitive": false
+  },
+  "water": {
+    "referenceML": 1500,
+    "referenceActiveUntilUserAccepts": false,
+    "referenceMeaning": "recorded_non_alcohol_beverage_volume_not_total_body_water_or_additional_plain_water",
+    "referenceRangeML": {
+      "min": 500,
+      "max": 3500,
+      "step": 250,
+      "isMedicalSafeRange": false
+    },
+    "cupML": 250,
+    "cupOptionsML": [
+      150,
+      250,
+      350,
+      500
+    ],
+    "waterCounts": true,
+    "teaCoffeeMilkCounts": true,
+    "knownAlcoholExcluded": true,
+    "unknownAlcoholExcludedUntilClarified": true,
+    "fluidRestrictionDisablesVolumePrompts": true,
+    "fluidRestrictionAppliesToAllCareCategories": true,
+    "targetMetCancelsRemainingWaterPushForLocalDay": true,
+    "noRecordWindow": {
+      "startLocal": "11:00",
+      "endLocal": "19:30"
+    },
+    "recordGapHours": 3,
+    "acknowledgeWithoutLoggingSuppressHours": 3,
+    "snoozeMinutes": 60,
+    "newNonAlcoholLogCancelUpcomingWaterMinutes": 120,
+    "noRecordDoesNotMeanNoIntake": true,
+    "fatigueCauseMayNotBeInferred": true
+  },
+  "caffeine": {
+    "lateWindowHoursBeforePlannedSleep": 8,
+    "lateWindowUserRangeHours": {
+      "min": 6,
+      "max": 12
+    },
+    "requiresConfirmedSleepPlanOrExplicitCutoff": true,
+    "duringPlannedSleepCountsAsLateForOngoingCycle": true,
+    "lateKnownAmountMinimumMG": 50,
+    "knownCaffeineUnknownDoseCanTriggerLateCare": true,
+    "rollingAmountHours": 24,
+    "rollingAmountReferenceMG": 400,
+    "userLowerReferenceAllowed": true,
+    "lateCandidateMaxAgeHours": 12,
+    "lateCandidateExpiresAtSleepEnd": true,
+    "manualCutoffOnlyExpiresAtLocalDayEnd": true,
+    "manualCutoffDoesNotInferSleepTime": true,
+    "consumeTimeAuthority": "consumedAt",
+    "mergeLateAndAmount": true,
+    "unknownDoseIsZero": false,
+    "preemptiveReminderMinutesBeforeCutoff": 15,
+    "preemptiveReminderOptIn": true,
+    "perServingDoseDoesNotScaleWithDilution": true,
+    "labelMGPer100MLScalesWithVolume": true,
+    "calculateExactBodyCaffeineOrSleepPrediction": false
+  },
+  "alcohol": {
+    "densityApproximateGramsPerML": 0.789,
+    "calculation": "volumeML * ABVPercent / 100 * 0.789",
+    "preserveLegacyEstimateGrams": true,
+    "rollingCareHours": 6,
+    "careTriggerKnownGrams": 30,
+    "careTriggerIsSafeAllowance": false,
+    "explicitDrankTooMuchAlsoTriggers": true,
+    "nearSleepHours": 3,
+    "nextMorningMaximumAgeHours": 18,
+    "nextMorningRequiresConfirmedCycle": true,
+    "unknownDoseIsZero": false,
+    "scheduledCareDefault": false,
+    "userRequestedLaterMinutes": 30,
+    "noBACOrDrivingClearanceCalculation": true,
+    "waterCoffeeBreathingDoNotUndoAlcohol": true,
+    "explicitSevereSymptomsUseStaticSafetyExit": true,
+    "autoCallEmergency": false
+  },
+  "attention": {
+    "maxVisibleOrdinaryCareCards": 1,
+    "priority": [
+      "explicitDanger",
+      "alcohol",
+      "combinedLateOrHighCaffeine",
+      "water"
+    ],
+    "replayOnRemoteOrHistoricalChange": false,
+    "dismissDoesNotImmediatelyRevealNextCandidate": true,
+    "ordinaryDismissCooldownHours": 4,
+    "sameEventForegroundBanner": false,
+    "maxScheduledPushPerLocalDay": 2,
+    "maxScheduledPushPerRolling24Hours": 2,
+    "crossCategoryPushCooldownHours": 4,
+    "quietStartLocal": "21:30",
+    "quietEndLocal": "09:00",
+    "alsoHonorConfirmedSleepAndStricterGlobalQuiet": true,
+    "proposedWaterTimesLocal": [
+      "11:30",
+      "16:00"
+    ],
+    "oneShotPlanningHorizonLocalDays": 3,
+    "scheduleBudgetBeforeRegisteringRequests": true,
+    "genericScheduledWaterCopyMustNotAssertCurrentRecords": true,
+    "deferIntoQuietHours": false,
+    "muteEndStoredAsAbsoluteDate": true,
+    "timezoneChangeMayNotShortenMute": true,
+    "receiptStates": [
+      "scheduled",
+      "responseReceived",
+      "systemConfirmedDelivered"
+    ],
+    "scheduleDoesNotProveDeliveredOrRead": true
+  },
+  "safety": {
+    "generalAdultReferenceOnly": true,
+    "noUniversalMedicalPrescription": true,
+    "noReadinessRewardsOrDeductions": true,
+    "preserveSymptomsAndScopeNotFalseReassurance": true
+  },
+  "ruleIds": [
+    "W01",
+    "W02",
+    "W03",
+    "W04",
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05"
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/CARE_SOURCES.md =====
+# Copy evidence and limits
+
+Reviewed 2026-09-19. Source text is paraphrased, not copied into product UI. No network access is added to the App.
+
+- [NHS water and drinks](https://www.nhs.uk/live-well/eat-well/food-guidelines-and-food-labels/water-drinks-nutrition/): general fluid guidance includes tea/coffee and varies by person. 250 ml cup and 1500 ml draft are explicit product assumptions.
+- [FDA caffeine](https://www.fda.gov/consumers/consumer-updates/spilling-beans-how-much-caffeine-too-much): adult general reference and individual variability; decaf can still contain caffeine. No personal safe allowance is inferred.
+- [NIAAA standard drink](https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink): volume and ABV matter; 14 g is a US reference, not a universal serving or safety allowance.
+- [NIAAA hangovers](https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/hangovers): no claim that water, coffee or breathing removes alcohol effects or guarantees recovery.
+- [NIAAA alcohol overdose](https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/understanding-dangers-of-alcohol-overdose): explicit severe symptoms lead to static emergency-help guidance, not another exercise.
+- [Apple notification support](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SupportingNotificationsinYourApp.html) and [scheduling](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SchedulingandHandlingLocalNotifications.html): permission follows an explicit setting, categories register on launch, own requests can be cancelled, and asynchronous action handling persists before returning. Implementation also compiles against the installed Xcode 27 SDK.
+
+50 mg/8 hours/30 g/6 hours and all frequency limits remain product engineering defaults, not validated individual physiology. COPY_REVIEW.csv records human editorial review as pending.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/COMPANION_MOTION_SPEC.json =====
+{
+  "schemaVersion": 1,
+  "status": "animation_requirements_not_finished_assets",
+  "policyVersion": "companion-v2.0",
+  "referenceCommit": "99ebe69f30a2a502225e913a9dfd35f54101dabd",
+  "removeUserRoutes": [
+    "lookAtCompanion",
+    "replayCompanion",
+    "companionViewingSheet"
+  ],
+  "interaction": "decorative_no_independent_button_or_gesture",
+  "scenes": [
+    {
+      "scene": "calm",
+      "asset": "Companion-duo-calm",
+      "durationSeconds": 1.8,
+      "event": "screenEntered",
+      "choreography": [
+        "dog_head_small_tilt",
+        "ear_follow_through_if_mask_supported",
+        "tail_tip_two_small_wags",
+        "settle"
+      ],
+      "idleIntervalSeconds": [
+        60,
+        90
+      ],
+      "maxNoticeableIdlePerMinute": 1
+    },
+    {
+      "scene": "rest",
+      "asset": "Companion-dog-rest",
+      "durationSeconds": 1.6,
+      "event": "guidanceChanged",
+      "choreography": [
+        "settle_head_down",
+        "small_local_torso_motion",
+        "settle"
+      ],
+      "idle": "mostly_static"
+    },
+    {
+      "scene": "curious",
+      "asset": "Companion-cat-curious",
+      "durationSeconds": 1.6,
+      "event": "screenEntered",
+      "choreography": [
+        "small_head_tilt",
+        "ear_tip_motion_if_supported",
+        "return_to_rest"
+      ],
+      "infiniteLoadingLoop": false
+    },
+    {
+      "scene": "drink",
+      "asset": "Companion-dog-drink",
+      "durationSeconds": 1.1,
+      "event": "drinkCommitted",
+      "openDurationSeconds": 0.8,
+      "water": [
+        "masked_waterline_change",
+        "small_nod",
+        "short_tail_motion",
+        "settle"
+      ],
+      "coffeeAlcoholDurationSeconds": 0.6,
+      "coffeeAlcohol": [
+        "neutral_small_nod",
+        "settle"
+      ],
+      "undoDurationSeconds": 0.25,
+      "undo": [
+        "reverse_waterline_or_local_confirmation_state"
+      ],
+      "requiresCommitted": true,
+      "celebrateAlcohol": false,
+      "animalConsumesCoffeeOrAlcohol": false
+    },
+    {
+      "scene": "breathe",
+      "asset": "Companion-breathing",
+      "event": "practicePhaseChanged",
+      "clock": "existing_authoritative_practice_clock",
+      "secondBreathingOscillator": false,
+      "pause": "freeze_pose",
+      "offscreen": "no_decorative_clock",
+      "timingChangedByMotionPreference": false
+    },
+    {
+      "scene": "complete",
+      "asset": "Companion-duo-complete",
+      "event": "practiceCompleted",
+      "durationSeconds": 1.3,
+      "requiresCommitted": true,
+      "choreography": [
+        "small_paw_touch_in_existing_pose",
+        "settle"
+      ],
+      "earlyEndAsset": "Companion-dog-rest",
+      "earlyEndDurationSeconds": 0.8,
+      "earlyEnd": [
+        "small_reassuring_nod",
+        "settle"
+      ],
+      "showFailureForEarlyEnd": false
+    }
+  ],
+  "artworkConstraints": {
+    "preserveOriginalFeatures": true,
+    "nonDestructiveMasksOnly": true,
+    "noFullImageSquashStretch": true,
+    "noUnsupportedBlinkOrRedrawnFace": true,
+    "maximumGroundAnchorDriftPT": 1,
+    "initialHeadRotationDegrees": [
+      2,
+      4
+    ],
+    "initialLocalDisplacementPT": [
+      1,
+      3
+    ],
+    "darkModeWhiteRectangle": false
+  },
+  "scheduler": {
+    "maxSimultaneousNoticeableActions": 1,
+    "priority": [
+      "practicePhase",
+      "committedFeedback",
+      "entry",
+      "idle"
+    ],
+    "dedupKey": [
+      "eventID",
+      "origin",
+      "entityID",
+      "revision"
+    ],
+    "discardBackgroundBacklog": true,
+    "remoteHistoryDoesNotAnimateSuccess": true,
+    "maxActiveDecorativeFPS": 30,
+    "staticConstantTimeline": false
+  },
+  "accessibility": {
+    "modes": [
+      "standard",
+      "gentle",
+      "static"
+    ],
+    "systemReduceMotionWins": true,
+    "lowPowerStopsDecorativeLoop": true,
+    "decorativeVoiceOverHidden": true,
+    "confirmationInformationAlsoInText": true
+  },
+  "requiredEvidence": [
+    "synthetic_home_recording",
+    "synthetic_water_recording",
+    "synthetic_breathing_pause_resume_recording",
+    "all_six_scene_recordings",
+    "static_artwork_comparison",
+    "dark_large_type",
+    "human_cuteness_review"
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/COPY_CATALOG.zh-Hans.json =====
+{
+  "schemaVersion": 1,
+  "locale": "zh-Hans",
+  "status": "draft_human_editorial_and_safety_review_required",
+  "tokensAreTemplateParametersNotFinalLocalizationFormat": true,
+  "entries": [
+    {
+      "key": "guidance.usual.title",
+      "text": "今天恢复接近平常",
+      "condition": "仅合格当前评估usual",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.reduced.title",
+      "text": "今天建议放缓一点",
+      "condition": "仅合格当前评估reduced",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.low.title",
+      "text": "今天优先安排恢复",
+      "condition": "仅合格当前评估low",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.sleepScoped.title",
+      "text": "昨夜睡眠少于你的目标",
+      "condition": "可靠实际睡眠且最近一夜；否则替换日期",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.sleepScoped.note",
+      "text": "这是基于睡眠记录的今日建议。",
+      "condition": "局部事实；不能伪装综合评估",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "guidance.notReady.note",
+      "text": "今天的恢复评估还未形成。你仍然可以先休息片刻。",
+      "condition": "确实没有当前合格评估",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.noRecord",
+      "text": "今天还没记饮品。喝过了可以顺手补一下。",
+      "condition": "W01；前台记录空",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.gap",
+      "text": "忙了一阵，给水杯续一点？",
+      "condition": "W03",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.invitation",
+      "text": "歇一口气，也喝几口水。",
+      "condition": "通用邀请；无当前摄入断言",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.nextCup",
+      "text": "下一杯，换成水也不错。",
+      "condition": "W02被动",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.saved",
+      "text": "这杯记下了。",
+      "condition": "本地实际保存成功",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.ackNoLog",
+      "text": "喝过了，先不记",
+      "condition": "不创建摄入事件，只暂停提示",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.reference",
+      "text": "分散喝，今天参考{referenceML}ml。",
+      "condition": "用户接受的普通成人记录参考",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": [
+        "referenceML"
+      ]
+    },
+    {
+      "key": "water.referenceDetail",
+      "text": "水、茶、咖啡和奶等无酒精饮品都计入这里。参考量可按自己的安排调整。",
+      "condition": "记录范围非体内水分",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.referenceMet",
+      "text": "今天已记录到你的参考量。",
+      "condition": "W04",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.fatigueInfo",
+      "text": "缺水时，人可能更容易觉得疲倦。忙了一阵，可以先喝几口水。",
+      "condition": "知识展开；不能诊断疲劳原因",
+      "reviewCategory": "education",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "water.medicalRestriction",
+      "text": "饮水按医嘱",
+      "condition": "停止各类催喝水和定量目标，保留记录",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "caffeine.late",
+      "text": "这杯离休息有些近了，下一杯可以换成无咖啡因的。",
+      "condition": "C01已确认睡眠计划",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "caffeine.cutoffOnly",
+      "text": "已经过了你设定的咖啡时间，下一杯可以换个选择。",
+      "condition": "仅手动截止，不能推断睡眠",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "caffeine.amount",
+      "text": "近24小时记录的咖啡因已有约{knownMG}mg，接下来换个不含咖啡因的选择。",
+      "condition": "C02",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": [
+        "knownMG"
+      ]
+    },
+    {
+      "key": "caffeine.combined",
+      "text": "这杯离休息较近，近24小时也记录了约{knownMG}mg咖啡因。下一杯可以换成无咖啡因的。",
+      "condition": "C03合并一条",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": [
+        "knownMG"
+      ]
+    },
+    {
+      "key": "caffeine.unknown",
+      "text": "已知约{knownMG}mg，另有{unknownCount}杯未估量。",
+      "condition": "C04确有已知项",
+      "reviewCategory": "scope",
+      "reviewed": false,
+      "parameters": [
+        "knownMG",
+        "unknownCount"
+      ]
+    },
+    {
+      "key": "caffeine.cutoffSoon",
+      "text": "咖啡可以慢慢收尾了，给晚些时候的休息留点余地。",
+      "condition": "用户订阅的预先截止通知",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.nearSleep",
+      "text": "今晚喝过酒，后面的酒先停在这里，给休息留点时间。",
+      "condition": "A01当晚，其他周期用中性时间",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.care",
+      "text": "酒先到这里。安排好回程，今晚别开车。",
+      "condition": "A02；不是可驾驶判定",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.careAnyTime",
+      "text": "后面的酒先停一下，安排好安全回程。不要自己开车。",
+      "condition": "跨日或轮班，避免错误今晚",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.unknown",
+      "text": "这杯已记下。需要时可以补充杯量和度数。",
+      "condition": "A03不显示已超量",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.nextDay",
+      "text": "上次休息前有饮酒记录。今天给休息多留一点时间。",
+      "condition": "A04确认关联",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.waterOptional",
+      "text": "口渴时小口喝水，给自己留时间休息。",
+      "condition": "仅清醒可吞咽，无限液；不是解酒承诺",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "alcohol.notDetox",
+      "text": "喝水、咖啡或练习都不能保证解酒，也不能用来判断何时可以开车。",
+      "condition": "按需知识/安全说明",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "safety.severe",
+      "text": "难以唤醒、意识混乱或呼吸异常时，请立即联系当地急救，让清醒的人留在身边。",
+      "condition": "用户明确报告严重信号；静态，不自动拨号",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.mute",
+      "text": "好，今天安静陪你。",
+      "condition": "保存今日静音成功",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.enable",
+      "text": "轻轻提醒我",
+      "condition": "主动请求通知权限",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.generic.title",
+      "text": "方寸",
+      "condition": "默认隐私标题",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.generic.body",
+      "text": "给自己留一点缓冲。",
+      "condition": "默认锁屏，无喝酒/具体摄入信息",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.water.body",
+      "text": "喝几口水，歇一会儿。",
+      "condition": "仅具体建议隐私开启；无实时条件断言",
+      "reviewCategory": "ordinary",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "care.push.alcohol.body",
+      "text": "给休息留一点时间，也安排好安全回程。",
+      "condition": "用户明确要求稍后，仍过频控",
+      "reviewCategory": "safety",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.logCup",
+      "text": "记一杯{volumeML}ml",
+      "condition": "用户明确确认饮用事实",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": [
+        "volumeML"
+      ]
+    },
+    {
+      "key": "action.getWater",
+      "text": "去倒杯水",
+      "condition": "只导航、不入账",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.openLog",
+      "text": "去记录",
+      "condition": "打开弹层，尚未入账",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.openAdvice",
+      "text": "看看建议",
+      "condition": "进入相关建议，不是角色观看",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.snooze",
+      "text": "稍后",
+      "condition": "延后仍受预算/静音/有效期约束",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.muteToday",
+      "text": "今天不提醒",
+      "condition": "类别静音持久化",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.startRest",
+      "text": "开始休息",
+      "condition": "进入已有实际休息流程",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "action.undo",
+      "text": "撤销",
+      "condition": "真实反向事务，失败不假成功",
+      "reviewCategory": "action",
+      "reviewed": false,
+      "parameters": []
+    },
+    {
+      "key": "save.failed",
+      "text": "这次没能保存，再试一次。",
+      "condition": "持久化失败，无成功动效",
+      "reviewCategory": "error",
+      "reviewed": false,
+      "parameters": []
+    }
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/DECISIONS.md =====
+# Decisions
+
+- V2 requirements apply as a delta to the accepted M3 baseline. No checkout replacement.
+- Keep v4 character images and existing v3 breathing assets. Animate local masks, never whole-body stretching or regenerated anatomy.
+- DayGuidancePresentation owns user-facing conclusions. The engine's availability, identity, quality flags and timestamps remain intact for diagnostics.
+- Diagnostics retain exact measurement/query/calculation meanings. Default views show the one relevant measurement time.
+- Sleep quality is dimension-specific. Stage overlap does not destroy a reliable union duration; unresolved awake/asleep conflicts still block whole-sleep conclusions. See V2-02 evidence.
+- Drinking remains one authoritative diary, atomic writes and legacy estimates preserved. Coffee is a serving dose unless explicitly entered as concentration. No new HealthKit permissions.
+- Local care thresholds are engineering defaults, not validated medical boundaries. External reference material informs wording only; no product network calls.
+- A capture demonstrates rendered behavior, not user approval of aesthetics or comprehension. Physical notification delivery is distinct from scheduling.
+- V2-01 and V2-02 share the first development commit because the presentation depends directly on the new explicit sleep-quality API. That commit includes real SwiftUI screenshots and three recordings; it is a buildable state. Later motion, dose, policy and notification commits remain separated by responsibility.
+- Optional beverage details extend the existing diary envelope. Unknown caffeine is omitted in storage and sent as optional in v2 sync; legacy integer access is a compatibility bridge only. New categories are never downcast. Incoming sync retains the wire payload's origin; a separate local origin mark suppresses replay without an echo revision.
+- Care thresholds and notification reservation logic are deterministic pure policies. The system adapter is injected for denial, retry, cancellation and cold-start tests. A mock receipt is never described as physical delivery.
+- Explicit severe-symptom safety stays until the user says help has been obtained; no timer silently declares the situation resolved.
+- Maximum Dynamic Type uses one scrollable sheet with vertically arranged controls and totals. A screenshot exposed clipping that the initial hittability test missed; the regression now performs record, scroll-to-total and undo. Normal sizes retain the compact sheet.
+- Current history groups assessments by recovery cycle and initially displays the latest revision; older revisions remain expandable and stored. Default detail hides technical identities, while the existing diagnostic route retains them.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md =====
+# 方寸 Fangcun｜体验、角色动效与饮品关怀
+
+**Codex 开发主任务书 v2.0 · 2026-09-19**  
+固定审阅基准：`99ebe69f30a2a502225e913a9dfd35f54101dabd`  
+开发分支：`codex/fangcun-v1-m0-m1`  
+状态：可执行的产品与工程规格；本文件交付不代表代码已修改、动效已制作或真机已验收。
+
+## 0. 执行摘要与取代关系
+
+用户要求三个结果同时成立：看得懂身体状态；猫狗在相关功能中自然、可爱地回应；饮水、晚咖啡和饮酒获得具体而不说教的关怀。只把警告藏起来、只换几句温柔文案、只播放一张整体缩放的图片，都不算完成。
+
+本文件完整承接并取代 `FANGCUN_M3_EXPERIENCE_CORRECTION_v1.0.md` 的本轮执行地位，纳入其首页解释、睡眠质量分类和基线追查要求，不另留一份可能冲突的待执行清单。旧主任务书的数据真实性、记录保护、权限、同步及测试要求继续生效。优先级为最新用户明确要求 → 本 v2.0 → 原主任务书。已有正确代码增量保留，不能回退工作区。
+
+**这次必须交付：** 手机今日页与解释页纠偏；删除角色观看/重播功能；六类功能场景的可运行角色动效；饮品成分与时间记录修正；水、咖啡、酒精的应用内建议；用户主动开启后的 iPhone 本地饮品提醒；基线与睡眠冲突根因修复；统一注意力、隐私与可读性验收。
+
+**这次不展开：** Watch 新首页和腕上后台重构、Widget、Live Activity、联网 AI、账户、遥测、健康分数加减、精确久坐检测、全天实时压力监测。原“暂停 M4–M6”仅为本轮饮品所需的 iPhone 本地通知基础做窄范围例外；其余保持暂停。既有同步代码只做必要的兼容和饮品事件去重，不宣称真实 Watch 送达已通过。
+
+### 0.1 开发开始前
+
+读取仓库 `AGENTS.md`、`AI_CONTEXT.md`、当前设计规范、原主任务书、M3-REVIEW 和本文件。输出 HEAD、分支、未提交改动及与审阅基准的差异。保留用户未提交修改，不擅自提交无关文件。将本文件和同包配置、样例复制到 `docs/plans/fangcun-experience-v2/`。
+
+本轮沿用 iOS 18 / watchOS 11 下限和本地优先结构。保留 v4 猫狗、v3 呼吸猫、暖纸白、版画蓝、克制橙色、字号与深浅色体系、三栏导航、原五分钟呼吸入口。不得更换角色、重新生成不同画风、恢复旧 UI 或引入竞技分数环。
+
+### 0.2 先看见产品，再宣布工程完成
+
+首个开发提交就输出真实 SwiftUI 的合成首页、解释页与饮品弹层截图，以及首页/记水/呼吸三段短录屏。图片不能代替运行画面，测试数量不能代替可爱和可理解的人工验收。首轮视觉证据形成后可继续同范围实现；用户已否定的体验不能自动标为通过。
+
+## 1. 已读实现与必要修改位置
+
+以下为审阅基准中的实际实现，不保证开发时 HEAD 未发生变化。[R1–R6]
+
+| 现有位置 | 已核对现状 | 本轮处理 |
+| --- | --- | --- |
+| `Features/Home/FangcunTodayView.swift` | 角色被包在 Button 内，出现“看看它/它们”；弹层可“再看一次动作” | 删除观看/重播路由、状态与按钮；角色回到业务卡片 |
+| `DesignSystem/FangcunCompanion.swift` | 六场景、原画、30fps Timeline；reaction 驱动有限动作；有静止回退 | 保留资产与呼吸输入，增加业务事件调度和场景差异；按需停止时钟 |
+| `DesignSystem/FangcunCompanion.metal` | 局部采样变形，平稳与好奇存在周期动作 | 校准原画局部蒙版、脚底固定；不把所有反应做成统一抖动 |
+| `Features/Home/FangcunDrinkSheet.swift` | 加减、撤销都会 reaction；记录后显示通用成功文案 | 用实际持久化结果触发不同反馈；酒精不庆祝，撤销不演喝水 |
+| `Persistence/FangcunDiary.swift` | v2 已有 consumedAt、recordedAt、容量、估值、revision；咖啡量随容量比例缩放；caffeine 为非可空 Int | 保留记录迁移，分开“每杯剂量”与“浓度”；支持未知成分，不伪装为零 |
+| `Features/Readiness/ReadinessViews.swift` | 用户详情直接显示统计口径、基线区间、质量标记、ID 与多种时间 | 新建用户呈现模型，内部诊断分层；解释页真正回答原因与动作 |
+| Core `SleepEpisodeBuilder` / `BaselineBuilder` | 阶段重叠与睡醒冲突合并；flags.isEmpty 门控整晚 | 按实际影响拆分质量，当前与历史统一；追查基线为何只剩1日 |
+
+iPhone 路径统一前缀为 `InnerBalance/InnerBalanceApp/`；Core 为 `InnerBalanceCore/Sources/InnerBalanceCore/`。当前未从远程看到用户完整实际健康样本或动画播放效果，因此本地根因、蒙版贴合和可爱度必须由实际开发验证。
+
+## 2. 先把用户得到的答案改清楚
+
+### 2.1 统一呈现，不让页面翻译内部枚举
+
+新增或完善 `DayGuidancePresentation`。至少包含 `kind`（recoveryAssessment/scopedAdvice/onboarding/serviceIssue）、标题 key、最多两条依据 key 及参数、一个主动作、至多一条必要提示、依据 ID、真实 asOf、角色场景。View 不再遍历 qualityFlags，也不将 availability.rawValue 直译为标题。建议不写入 ReadinessLevel，不制造另一套恢复评分。
+
+完整资料时明确表达“恢复接近平常”“今天建议放缓一点”“今天优先安排恢复”，并说明真正支持该结论的一两个因素。初步等级可保留，但只用邻近的一条“初步比较”提示，不叠加多种未知标签。
+
+综合资料不足时仍要有价值：可靠睡眠确实少于个人目标，可给“基于睡眠的今日建议”；只有读数、没有个人历史时，显示读数或一般恢复入口，不冒充正常比较。真正无当前数据时明确说今天的恢复评估尚未形成，继续提供可用动作。不能把所有状态都改成“休息一下”，也不能用一般建议伪装测得的健康结论。
+
+### 2.2 今日页与解释页
+
+保留今日页现有结构。主卡为一句结论、最多两行解释、一处日期/时间和猫狗。原五分钟呼吸按钮保持；上下文建议最多一条。饮品关怀放在饮品卡内部，不再加第三排通用警告。
+
+“为什么这样判断”默认内容为：本次结论、最多两条人话原因、一个动作、最多三项简明数据、一处数据时间，以及按需展开的来源/方法。评估 ID、revision、MAD、小时桶、稳健尺度、个人中心、全量时间流水、全量质控原因进入设置内诊断。
+
+个人历史不足7个有效日时不展示“个人正常/平常范围”；7–13日只在展开层显示初步比较；14日起沿用正常个人比较措辞。不得调低原7/14日门槛以凑结论。睡眠实际时长不能由起止时间相减代替。历史默认每个周期只展示一个用户结论，修订按需展开，原始记录和版本仍保存。
+
+### 2.3 睡眠与基线必须真的修正
+
+将 `sleepDurationUsable`、`asleepIntervalsUsableForHRV`、`sleepStageBreakdownUsable`、内部原因与用户阻断原因分开。仅 core/deep/rem 重叠且仍一致指向睡着时，保留阶段诊断，总时长按并集计算，确定睡眠窗口可继续使用；inBed 不计为睡眠。
+
+awake/asleep 的真实重叠需要先核对同源替换、版本和重复导出。有明确依据才自动消解。无法消解的区段不能算作确定睡着，也不能取不确定区间中点冒充精确时长；暂停依赖它的综合结论，保留其他可靠事实。负时长、未来样本、不可分来源继续质控。当前和历史应用相同规则，删除依赖覆盖参与纳入和排除的记录。
+
+生成本机 `BaselineCoverageAudit`：逐指标/逐日记录原始覆盖、初始化状态、选源、睡眠候选、各项过滤及主要排除原因，区分未读取、原本缺失、规则排除和来源不匹配。先查清真实原因，再修复。不猜测用户只戴了一天表，不直接让用户再等两周。实际确实仅一日就保留事实，同时停止展示不成熟个人区间。
+
+新睡眠质量政策更新 feature/qualityPolicyVersion，保留旧评估关系；原模型系数、目标范围、golden fixtures 不变。`sourceIdentityIncomplete` 若不影响可比较性，仅作内部记录，不给普通用户故障警告。
+
+## 3. 猫狗重新成为功能中的陪伴
+
+### 3.1 必须删除的东西
+
+删除今日页“看看它”“看看它们”“看一下”“再看一次动作”、角色观看 sheet、仅用于观看的 replay 计数与路由。角色没有独立点击热区，不伪装按钮，不截获滚动或卡片操作。内部动效调试台可以保留在 DEBUG，Release 用户路径不可达。
+
+角色参与“用户正在做的事情”。它们不会催促、哭泣、变红、翻白眼或因为用户喝酒/没记录而失望。可爱是本轮设计目标和人工验收项，不在宣传中承诺临床降压或焦虑治疗效果。
+
+### 3.2 六类必做动作与时序
+
+以下时长、角度和节奏为工程初值，必须按原画调整；不可为了达到数值而牺牲自然感。一次反馈一般采用“注意到 → 小动作 → 慢慢停住”，结束回到自然静态。
+
+| 场景 / 原资产 | 触发与动作 | 时长 / 收尾 | 不能发生 |
+| --- | --- | --- | --- |
+| 平稳首页 / duo-calm | 首次进入：小狗轻歪头，垂耳稍滞后；尾尖两次小摆；猫保持安静 | 约1.8秒，之后静态；可间隔60–90秒一次极轻微动作 | 每次刷新重播、整张图上下浮动、持续摇晃 |
+| 需要休息 / dog-rest | 进入休息状态时头部轻轻下沉安顿；身体细微起伏 | 入场1.6秒；静止为主，短周期起伏仅可见且普通动态模式 | 把身体做成泄气气球、用悲伤表情暗示健康危险 |
+| 正在认识用户 / cat-curious | 一次轻歪头、耳尖轻动后回正 | 约1.6秒；读取完成停止；无数据也不无穷“思考” | 问号风暴、反复摇头、焦虑表情 |
+| 饮品弹层 / dog-drink | 打开时小狗看向杯子；白水落盘后杯内水线轻起、小狗点头，尾尖短摆 | 打开0.8秒；水记录成功1.1秒；杯水线不能超过杯口 | 未保存就庆祝、狗喝咖啡/酒、点击“去喝水”就自动加记录 |
+| 呼吸练习 / breathing | 胸腹随原协议共用时钟起伏；头、五官和接地点稳定 | 与吸、补吸、呼阶段严格同源；暂停冻结，继续无相位跳跃 | 为“更萌”另造呼吸频率、每秒随机眨眼干扰节拍 |
+| 完成 / duo-complete；提前结束 / dog-rest | 完整结束后猫狗轻碰爪；提前结束是小狗轻点头安顿 | 完成1.3秒一次；提前结束0.8秒一次；保存成功才触发 | 把提前结束当失败、给未完成的时长庆祝、彩带/积分 |
+
+咖啡与酒精记录成功使用同一中性的“记下了”小点头（约0.6秒），不比水记录更热闹；酒精建议出现时，小狗安静靠近清水杯的构图或使用 dog-rest，不展示碰杯、醉态、兴奋庆祝。撤销仅让水线/记录状态回退约0.25秒，不能再演一次喝水。失败无成功动作，保留可重试的文字反馈。
+
+阶段互动要有差异：开始呼吸体现节拍，保存饮品体现确认，休息体现陪伴，完成体现结束。不能全部复用一种图片缩放或旋转。
+
+### 3.3 资产与实现方法
+
+先检查现有六张原画和 Metal 的实际局部区域。保留轮廓、耳朵、五官、花纹、圆润比例和版画纹理。已有 shader 用于胸腹、头部、尾巴的微位移；杯内水线可用与杯内轮廓精确贴合的矢量 mask，并沿用品牌色。
+
+不对单张 PNG 强行做眨眼、抬爪、端杯等原素材不能支撑的动作。确需分层时，可从原图制作非破坏性局部蒙版/图层，静止合成必须与原稿一致；不直接重画脸。无法无痕拆分时先交付该场景可实现的局部动作，未实现细节在资产表中说明，不能用全身拉伸冒充。
+
+推荐 `CompanionPresentation`（baseScene、semanticContext、eventID、motionIntensity）＋应用/页面级 `CompanionMotionCoordinator`。业务只发送事件，View 渲染 Pose；可用 SwiftUI keyframe/phase 动画做有限动作，Metal 保留呼吸形变。[A3]
+
+事件至少包含 `screenEntered`、`guidanceChanged`、`drinkCommitted`、`drinkUndone`、`practicePhaseChanged`、`practicePaused`、`practiceCompleted`、`practiceEndedEarly`、`saveFailed`、`becameInactive`。关键字段为 eventID、origin、entityID、revision、committedAt。只有本地提交成功且当前操作可见，才触发成功反应；远端同步、历史导入和重试去重不重播。
+
+一次页面最多一个明显角色动作。优先级：正在进行的呼吸相位 > 当前保存反馈 > 进入状态 > 轻闲置。保存连续连点按短批次合并，最后一次值准确，动作不堆积；新业务结果替换旧动画，过期动画丢弃，恢复前台不补播后台积压动作。
+
+### 3.4 动态、无障碍与性能门槛
+
+默认“标准动态”：完成上述有限动作，非练习页面最多每分钟一次闲置动作。设置支持标准/轻柔/静态；系统 Reduce Motion 永远优先，不被应用设置覆盖。静态模式使用语义姿势与稳定文字，功能信息不依赖动画。
+
+脚底或身体接地点误差控制在1pt以内；装饰头部旋转初值2–4度，局部位移1–3pt；胸腹幅度沿用原协议映射。动效不改变卡片高度、不造成文字跳动、不裁掉耳朵尾巴。暗色背景不出现突兀纯白硬方块；禁止直接反相角色颜色。
+
+不可见、进入后台、低电量模式或被弹层遮住时停止装饰时钟；减弱动态无常驻 Timeline。呼吸的实际计时与既有会话保持，不因减少动画而少记时长。装饰最高30fps，静态画面不保持30fps刷新。没有必要的循环音效或振动。
+
+角色作为装饰时从 VoiceOver 读序排除，业务卡片仍有描述；若需说明角色引导，合并为一次标签，不让每次小动作打断朗读。最大字号下优先保留内容，将角色移动到次行或缩到合理尺寸，不压正文。
+
+## 4. 饮品模块：从记账升级为贴近生活的反馈
+
+### 4.1 默认入口仍然轻
+
+首页保留饮品入口，显示“今日已记录”及一条最相关建议。半屏弹层保留水、咖啡、酒、其他饮品快捷项，先快记，再可编辑。不增加每杯都要回答的问卷；分类、容量、时间与成分只有需要时展开。
+
+一键记水默认250ml，可将常用杯量设置为150/250/350/500ml或自定义。按钮写“记一杯250ml”，明确这是记录已发生的饮用。点“去倒杯水”“看看建议”只导航，不生成已饮用事实。保存返回明确成功/失败结果，不再只用 void＋全局错误字符串猜测成功。
+
+### 4.2 三种量各自保持正确含义
+
+`allBeverageML` 保留所有饮品总容量，供历史兼容；`nonAlcoholBeverageML` 是已记录的、明确无酒精的饮品容量；`plainWaterML` 只包含白水。首页饮水参考使用非酒精饮品记录总量，展开可看白水和其他饮品。酒精容量不计入饮水参考，不做“负补水”扣分。
+
+水、茶、咖啡和奶等也提供液体，不因含咖啡因就把整杯按零补水；其咖啡因另行提醒。含糖饮料的容量同样记录，但不因计入容量就推荐多喝。所有数值写“已记录”，不声称全天实际总摄入、体内水分或脱水程度。[H1]
+
+本轮默认只读方寸已有本机/配对事件记录，不新增 HealthKit dietaryWater 或 caffeine 授权。其他应用或离线设备尚未同步的饮品可能缺失，提醒语义要承认记录的边界。
+
+### 4.3 成分与历史兼容
+
+规范化对象 `BeverageEvent` 至少包含：稳定 ID/revision、categoryCode、displayName、consumedAt、recordedAt、volumeML、caffeineMG（可空）、caffeinePresence（yes/no/unknown）、alcoholGrams（可空）、alcoholABV（可空）、alcoholPresence、sugarServings、可选 sugarGrams、estimateMethod/version、origin、deleted。
+
+保留既有五种类别与旧记录解码，扩展茶/低因咖啡/红酒/烈酒/自定义应采用稳定类别代码和版本化 payload，不把红酒伪装成旧 beer、不把未知新饮品降级成白水。最低本轮必须能记录现有五种饮品，以及自定义酒类的名称/容量/度数；其余可用“其他饮品”展开处理。
+
+未知成分为 nil。不能把未知咖啡因、酒精含量直接写成0。旧文件中的既有估值原样保留并标记 legacyEstimate，不把它重新宣传为实测值；原历史容量、咖啡因、酒精估值和 ID 不静默改变。
+
+**咖啡容量与剂量分开：** 用浓缩份数/每杯剂量估算的咖啡，加水加奶或把300ml改成500ml，咖啡因默认不自动乘5/3；明确“按每100ml标签浓度”的饮品才随容量换算。设置每杯估值的修改仅影响未来记录。编辑应显示它是改容量、改剂量还是改浓度，避免用户不知情地重写所有成分。
+
+**酒精：** 新记录优先用容量与标示 ABV，近似克数 `volumeML × ABV/100 × 0.789`；或直接输入已知克数。该系数为近似换算，标签和杯量仍有误差，不显示小数制造精度。例：330ml/5%约13g；150ml/12%约14g。旧330ml啤酒10g的历史估值保留，不能迁移重算。换算对象是纯酒精量，不能按“杯数一样”认定摄入一样。[H5]
+
+## 5. 饮水建议与每日参考
+
+### 5.1 每天喝多少，如何在产品里给答案
+
+饮品页有“每日饮水参考”，默认提供**1500ml 的可调整记录参考草案**，用户接受后启用目标进度。不是自动算出的个人生理需水量，也不是白水之外再额外喝1500ml。普通页面可写“分散喝，今天参考1500ml”；展开说明使用“非酒精饮品容量”的记录口径。
+
+依据：NHS 给出一般每日6–8杯/杯具的液体指导，且需求随环境、活动、孕哺或疾病变化；本产品用250ml杯具换算为约1500–2000ml，选1500ml作为低摩擦界面起点。250ml是产品杯量假设，NHS没有在该页面规定统一杯具大小，也没有给所有人相同毫升处方。[H1]
+
+普通设置可在500–3500ml、250ml步长调整或关闭数字目标；这是软件输入范围，不是医学安全上下限。医生要求限液者选择“饮水按医嘱”，关闭定量建议和催喝水提示，保留记录；不要求填写诊断。儿童、孕哺或其他特殊情况不套用普通成人定量建议。不能按体重或运动分钟粗算大量补水，也不能为了补齐目标要求短时间喝完差额。
+
+达到参考量后停止目标推动，仅保留平静“今天已记录到你的参考量”，不出现奖杯/连击，也不暗示以后不能按口渴喝水。晚上默认不催补齐，不跨日追债。
+
+### 5.2 疲劳文案边界
+
+脱水可以伴随疲倦；规则允许一般知识卡“缺水时，人可能更容易觉得疲倦。忙了一阵，可以先喝几口水。”[H2] 不能从没记录水、低HRV或低准备度推断用户疲劳源于缺水，也不能承诺1500ml消除疲劳、喝250ml提高准备度或补水后必定改善。
+
+知识说明放在按需展开处。日常卡片只需“歇一口气，也喝几口水。”不把每次提醒写成健康讲座。高温或长时间运动只在用户主动选择了相应场景或有已验证上下文时补充“出汗多时，可分次补充”，不新增天气定位权限、不伪称监测到缺水。
+
+### 5.3 应用内无记录/间隔提醒
+
+应用内规则是条件判断；系统定时通知另见第8章，不能混为一谈。
+
+| 规则 ID | 条件 | 应用内呈现 | 消失/抑制 |
+| --- | --- | --- | --- |
+| W01 noDrinkRecord | 当地11:00后、19:30前；今日没有任何饮品记录；非睡眠/限制饮水/静音时段 | “今天还没记饮品。喝过了可以顺手补一下。”按钮“记一杯” | 任意饮品落盘后取消；同一天不反复弹 |
+| W02 noPlainWater | 有咖啡等非酒精饮品，但无白水记录 | 不说“没喝水”；必要时“下一杯，换成水也不错。”仅饮品页被动显示 | 不创建额外 push，不否定咖啡的液体贡献 |
+| W03 longGap | 在用户启用关怀后，距离最近一次非酒精饮品记录至少3小时；处于清醒设置时段，未达参考且非限液 | “忙了一阵，给水杯续一点？” | 新记录、喝过但不记、稍后60分钟、今天静音 |
+| W04 reachedReference | 已记录非酒精饮品达到用户接受的参考 | 中性完成状态，不追加饮水任务 | 重新编辑低于目标也不立刻追赶提醒 |
+
+“喝过了，先不记”是确认/暂时关闭提示，不创建毫升、时间或饮品类别。用户只说喝过时，可以暂停饮水关怀3小时；统计总量仍不变。整日未录入只是记录状态，不是0ml真实摄入。
+
+## 6. 咖啡：帮助安排下一杯，不评价上一杯
+
+### 6.1 时间与量
+
+晚咖啡规则使用 `consumedAt`，不使用录入时间。午前喝的咖啡晚上补记，不作为“刚刚喝晚了”。新记录可默认现在，编辑时间一步可达。
+
+首次启用晚咖啡提醒时，用户可选通常入睡/起床时间，或只选每天的停止咖啡提醒时刻。没有确认作息时不猜个人睡觉时间，也不显示“距离你睡觉还剩3小时”。默认晚咖啡窗口为预计主睡眠前8小时，用户可调6–12小时；这是可调整的关怀策略，不是人人必定受影响的医学截止线。剂量、时间和个体差异都影响睡眠，现有试验不能支持“一杯咖啡必然失眠”的结论。[H3,H4]
+
+睡眠计划支持跨午夜。对消费时刻处在用户设置的睡眠区间内的记录，直接归该睡眠周期的 late 场景，不能把00:30误判为距离明晚睡眠还有23小时。轮班可选择本次睡眠时间覆盖；未确认计划保持一般建议。计划改变重算卡片，不制造新饮品事件。
+
+### 6.2 触发规则
+
+- C01 late：同一计划睡眠周期的晚窗口内，已知咖啡因累计至少50mg；或明确含咖啡因但剂量未知的饮品。给一次“这杯离休息有些近了，下一杯可以换成无咖啡因的。”50mg是减少低因饮品误提醒的产品触发初值，不是安全阈值。
+- C02 amount：滚动24小时已知咖啡因累计至少400mg，或用户自己设定的更低提醒线。文案为“近24小时记录的咖啡因已有约Xmg，接下来换个不含咖啡因的选择。”400mg仅是多数成人的参考，不能表示线下人人安全；个体、药物和孕哺情况不同。[H3]
+- C03 combined：同时满足时间与量，只展示一条整合建议；不先“喝晚了”再“喝多了”连续弹出。
+- C04 unknown：含量未知不编造精确总量；有已知项时显示“已知约Xmg，另有1杯未估量”。若仅类别未知，先允许补充成分，不强行断定含咖啡因。
+- C05 historical：超过事件时效的补记只更新历史与当前仍相关的汇总，不重播“刚刚喝”的提醒；既有明确的24小时摄入建议可以被动呈现，不能重复 push。
+
+默认保存后在原弹层呈现一句，不发系统通知打断正在使用 App 的人。用户另外启用的“咖啡收尾提醒”在计划截止前15分钟发一次，作为前瞻性选择，不能说已喝咖啡。已喝的记录不安排一晚反复复盘。
+
+时效采用明确规则：C01只在本次已确认睡眠周期结束前、且最后相关饮用距现在不超过12小时存在；C02仅使用当前滚动24小时内的记录。睡眠周期结束后不再用“这杯离休息近”重播昨晚建议。只有手动截止时刻、没有睡眠计划时，文案改为“已经过了你设定的咖啡时间”，当天截止之后的记录到该本地日结束有效；不假装知道睡眠距离。
+
+不显示精确体内剩余咖啡因、清零倒计时或“几点保证睡着”。不开自动扣准备度，不通过猫狗惊醒/发抖制造焦虑。可以提供现有安静休息入口，但明确它不抵消咖啡因。
+
+## 7. 酒精：具体、体贴，遇到真正风险要清楚
+
+### 7.1 分级依据与输出
+
+酒类记录默认先中性确认。根据事实提供建议，不按一杯固定酒精含量处理所有酒，不以体征倒推喝酒。
+
+| 规则 ID | 条件 | 呈现与下一步 |
+| --- | --- | --- |
+| A01 nearSleep | 最近6小时存在明确酒精记录，且距用户计划睡眠不超过3小时/已进入该睡眠区间 | “今晚喝过酒，后面的酒先停在这里，给休息留点时间。”不把酒当助眠 |
+| A02 amount | 滚动6小时已知酒精至少30g；或用户主动选择“今天喝得有点多” | 一条较明确关怀：“酒先到这里。安排好回程，今晚别开车。”可看两条后续建议 |
+| A03 unknown | 明确酒类但容量/度数未知 | 不显示已超量；提供一般酒后建议和“补充杯量”可选入口 |
+| A04 nextMorning | 前一晚有记录，用户次日打开且该关联仍在18小时内 | 被动说明酒后可能影响睡眠；提供按口渴少量补充、休息安排；不宣称实际宿醉 |
+| A05 explicitDanger | 用户明确报告难唤醒、意识混乱、呼吸困难/异常等严重信号 | 立即停止普通练习建议与可爱动效，清楚提示联系当地急救、不要独处；不自动拨号 |
+
+30g/6小时是提前关怀的工程策略，不是“喝多”的诊断线、无风险额度或驾驶判断；其下也不显示“可以继续喝”。不强制收集性别、体重或计算血液酒精浓度。不输出“多久能开车”“喝几杯安全”。相关公式只处理记录估值。[H5,H6]
+
+A01/A02的普通即时建议在最后相关饮用或明确自报后6小时到期，仍有新饮酒事实时按新事实重算；A04仅在用户下一次主动打开、最近饮酒距现在不超过18小时且与上一睡眠周期关联时被动出现，不自动推送宿醉提醒。没有确认作息时不使用“次晨/昨晚”推断，改用带日期的记录解释。用户没有主动报告严重症状时，不为取得更多资料先弹出症状问卷。
+
+### 7.2 后续建议的内容
+
+普通关怀层最多两条：停止继续喝酒、安排安全回程；有需要时按口渴小口饮水并留时间休息。限液设置优先，不再加“多喝水”。没有清醒安全吞咽条件、持续呕吐等情况不能用灌水和睡一觉替代求助。
+
+咖啡、冷水澡、运动出汗不能作为解酒或加快清醒的方法；饮水不能保证消除宿醉，普通呼吸/NSDR也不能抵消酒精。酒精可能影响睡眠，但不把每一次低准备度都归因于昨晚的酒。[H6,H7]
+
+酒后关怀不使用猫狗碰杯、醉态卖萌或庆祝；普通场景可以安静可爱，严重不适场景改用静态明确提示。用户说“今天先别提醒”，停止该类非紧急提示；不会因此改变或删除饮酒事实。
+
+## 8. 提醒与注意力：一次说一件事
+
+### 8.1 首版默认与开关
+
+应用内饮品建议默认可见但可关闭，不弹系统权限。系统提醒默认关闭；用户在饮品卡“轻轻提醒我”主动启用后才请求通知权限。饮水、咖啡收尾、酒后提醒分别控制，拒绝通知不影响记录和应用内建议。
+
+初始饮水时点草案为11:30、16:00（本地时间，可改）；咖啡收尾为计划截止前15分钟，只有确认作息才创建。默认饮品 push 合计最多2次/本地日，类别间最小间隔4小时，静音21:30–09:00，并额外避开用户明确计划睡眠。全局安静时段有更严格设置时服从其约束。用户可调时刻，但首版不提供无限频率。
+
+酒精默认只在记录后原页给建议。用户明确选择“过一会儿提醒我”才安排30分钟后的一次本地通知，仍占2次配额和4小时冷却；若不满足，则不悄悄延到半夜，说明本次仅保留应用内建议。安全出口不受应用内普通卡片频控限制，但不擅自申请 Critical Alert 或主动呼叫。
+
+### 8.2 不假装本地通知能在到点时重新运行全部逻辑
+
+iOS 可在应用不运行时投递已经安排好的本地通知；它不会因此保证应用在该时刻醒来重新检查“有没有喝水”。[A1] 因而，应用内 W01/W03可以准确依当前记录判断；预先安排的饮水通知只能是“喝几口水，歇一会儿”这种通用邀请，不能写“你今天没有喝水”或“连续3小时没喝水”。
+
+前台读取、保存/编辑/撤销、接收到配对事件、改作息、改提醒、清除数据时重算并取消不再适用的待发通知。非酒精饮品新记录后取消未来2小时内的饮水请求；达到参考量取消当天剩余饮水请求。远端离线晚到导致无法及时撤回时，中性措辞仍必须成立。
+
+滚动安排未来3个本地日的一次性通知，每天总预算先统一分配、再注册系统请求；App长期未打开时不承诺无限持续服务，不靠后台保活刷新。设置显示当前已安排到哪一天，普通首页不展示技术预算。
+
+### 8.3 同一事件的渠道去重
+
+一个 `CareCandidate` 具有稳定 candidateID、规则版本、依据ID/revision、有效期、优先级、已呈现渠道和动作。当前前台保存饮品：只用原页内反馈，不再发同一条横幅/声音。普通页面最多一张饮品关怀卡；展开查看更多时才看其他内容。
+
+优先级：明确严重不适 > 酒精关怀 > 晚咖啡与高摄入合并 > 饮水邀请。低优先级不排队轮播，不因为用户关闭上一条而立即补下一条。原主卡的恢复结论保持独立，饮品不改其颜色或等级。
+
+每个候选每个依据版本最多显著呈现一次；非实质编辑、同步重放和重启不重发。喝水后可结束饮水邀请，但不能把酒精/咖啡因建议判定为“已治好”。同类型卡片被关闭后至少本会话不再显著出现，普通提醒跨重启还应有至少4小时冷却；“今天不提醒”默认保存到操作时区下一日00:00的绝对时刻；用户选择“休息前别提醒”才延长到已确认的本次睡眠结束。改时区不提前解除已有静音，且饮品push再受滚动24小时最多2次的防重复上限，避免旅行跨日翻倍。按类别区分，不删除饮品事实。
+
+### 8.4 系统实现与隐私
+
+使用单一 `UNUserNotificationCenterDelegate`，与未来全局提醒服务兼容，不覆盖别的 category。启动时注册合并后的 categories，处理冷启动和 actions。[A1,A2] 所有饮品通知由 iPhone 所有；Watch 可依系统镜像显示，不在 Watch 额外安排同一条。禁止将 `isReachable=false` 当“用户没有手表”。
+
+默认锁屏标题“方寸”，正文采用中性“给自己留一点缓冲”，用户明确开启“显示具体建议”后才包含咖啡/饮酒内容，不显示健康分数或精确剂量。通知不附动画、不携带原始健康样本。点击正文进入当前相关饮品页，过期事件显示当时记录或一般入口，不继续下过时结论。
+
+动作最多三个且前两个优先：去记录/看看建议、稍后、今天不提醒。为避免误记，通知上的“去记录”只打开预选饮品弹层，实际保存仍需用户明确确认。委托回调结束前完成必要本地事务；失败不假成功，重试事件ID不变。
+
+系统 Focus/摘要投递可能改变显示时间。只记录 scheduled、responseReceived 或通过系统列表确认的 delivered，不把排程成功记作用户已收到/已阅读。无声音默认、不申请时效性绕过、不加催促红点。
+
+## 9. 语气、文案与不说教的验收
+
+规则：先说与当下有关的一件事，再给一个可选动作；通常不超过两句。用户不需要解释为什么喝酒或喝咖啡。动物用动作陪伴，不用长台词当老师。收藏文案库不等于每次随机推送金句。
+
+| 场景 | 建议初稿 | 避免 |
+| --- | --- | --- |
+| 无饮品记录 | 今天还没记饮品。喝过了可以顺手补一下。 | 你今天还没喝水，身体已经缺水 |
+| 工作间隙 | 歇一口气，也喝几口水。 | 每天必须喝满八杯，否则会疲劳 |
+| 记水成功 | 这杯记下了。 | 真棒！再喝一杯恢复+10 |
+| 咖啡偏晚 | 这杯离休息有些近了，下一杯可以换成无咖啡因的。 | 你又喝晚了，今晚肯定睡不着 |
+| 咖啡累计较多 | 近24小时记录的咖啡因已有约Xmg，接下来换个选择。 | 超标！你已经伤害了身体 |
+| 酒精关怀 | 酒先到这里。安排好回程，今晚别开车。 | 你怎么又喝这么多、喝点水就清醒 |
+| 次日看记录 | 昨晚有饮酒记录。今天给休息多留一点时间。 | 你的低准备度就是喝酒造成的 |
+| 关闭提醒 | 好，今天安静陪你。 | 拒绝提醒会影响你的健康 |
+
+初稿允许用户以后修改，但功能 key、参数、分支、动作含义先正确。不能用“不是……而是……”解释产品理念。避免“必须、应该自律、不达标、惩罚、欠水、再不喝”等日常训诫词；保存失败和严重危险提示需要清楚直接，不用俏皮比喻遮盖。
+
+同包 `COPY_CATALOG.zh-Hans.json` 是初稿，不是正式临床审阅结果。Codex生成完整 `COPY_REVIEW`，区分普通关怀、数据范围和安全文本。按钮文案与行为一致：记下表示已保存，去做只启动动作，稍后不等于已饮用。
+
+## 10. 工程边界、迁移与协议
+
+### 10.1 纯策略与持久化
+
+新增 `BeverageCareEngine.evaluate`、`CareAttentionPolicy.select`、`CompanionMotionPolicy.resolve`；输入为不可变事实、用户偏好、Clock/Calendar、已有呈现账本。输出内容 key/依据/动作/触发等级，不拼文案、不写通知、不直接读取 HealthKit。
+
+`CareLedger` 至少保存 candidateID、ruleVersion、basisIDs/revisions、channel、scheduledFor、expiresAt、notificationRequestID、dismiss/snooze、origin、privacyMode。`ReminderPlanner` 统一占用未来预算和取消请求。`CompanionMotionCoordinator` 消费保存成功事件，不能直接修改业务存储。
+
+### 10.2 数据迁移策略
+
+既有 Diary v2、Insights、Recovery、Sync 各自的权属不变。饮品新字段采用兼容可选扩展或明确 v3 迁移：保留旧文件原字节/摘要，验证条数、ID、容量、历史估值和删除记录；目标写入原子提交，重复启动幂等，失败保留旧事实。禁止动态同时启用两个权威饮品仓库。
+
+未知新版 payload 不应被旧 Watch 解码成白水或0mg；扩展同步协议须 capability/version gating，新端保留未发送/未确认事件，旧端不支持时延后同步并说明，不错误声称已送达。既有五种旧事件照常兼容。清除本地资料时撤销提醒与摘要、删除关怀账本，迟到事件不能复活已删除记录。
+
+### 10.3 确认事件与估值修正
+
+饮品命令返回 `committed(eventID, revision)` / `rejected(reason)` / `failed(error)`。UI 的值、提示、动效、关怀重算均以 committed 为边界。保存失败可重试，重试同一命令不重复增加；撤销要产生有版本的反向变更并重算候选，不只改变界面数字。
+
+对成分迁移、来源修复、设置变化导致的重算，静默更新不重播成功动物动作。不发“刚刚喝了”的通知。所有阈值集中版本化，政策变化不重写过去的事实或准备度。
+
+## 11. 可运行验收样例与边界
+
+同包 `ACCEPTANCE_CASES.json` 为结构化验收目录，`CARE_POLICY_DEFAULTS.json` 为本版工程默认值，`COMPANION_MOTION_SPEC.json` 为动作映射。它们不是已经执行的测试结果，Codex必须转换为真实 Core/App/UI测试并给出运行证据。
+
+### 11.1 必测数据与提醒
+
+| ID | 场景 | 必须结果 |
+| --- | --- | --- |
+| T01 | 无记录且前台过11点 | 可见轻邀请，不能说没喝水/脱水 |
+| T02 | 仅有咖啡300ml | 非酒精记录300ml；不说今日饮水为0 |
+| T03 | 点“喝过，先不记” | 总量不变；关怀暂停3小时 |
+| T04 | 1500ml参考已达到 | 停止当天目标推动；不禁用继续记录 |
+| T05 | 限液开关 | 无定量/喝水push；酒精卡也不催喝水 |
+| T06 | 300ml咖啡140mg改500ml，按每杯剂量 | 咖啡因仍140mg |
+| T07 | 标签每100ml含32mg，250ml改500ml | 80mg变160mg，估值方法保留 |
+| T08 | 上午咖啡晚上补记 | 不产生“刚刚喝晚了”，不补发过期通知 |
+| T09 | 23:30睡眠、16:00消费140mg | 进入晚咖啡范围，一条应用内建议 |
+| T10 | 23:30睡眠、00:30消费 | 关联正在进行的睡眠区间，不能归次日白天 |
+| T11 | 20:00低因10mg且其他晚窗0mg | 不触发50mg晚咖啡策略，不称绝对无影响 |
+| T12 | 咖啡因未知 | 不填0，不伪造累计精确值 |
+| T13 | 咖啡晚且滚动24h达到400mg | 合并一条，未激活push不通知 |
+| T14 | 酒330ml/5% | 新估算约13.0g；旧历史10g不重算 |
+| T15 | 两条15g酒记录跨午夜且相距2h | 6h累计30g，不因换日漏掉关怀 |
+| T16 | 酒精未知 | 一般建议，无“已超量”数字结论 |
+| T17 | 酒后又记一杯水 | 不移除酒精事实、不奖励恢复、不显示解酒成功 |
+| T18 | 酒后明确严重症状 | 静态安全出口，不推荐呼吸/走动/睡一觉 |
+| T19 | 本机饮品保存失败/重试 | 失败不演成功；成功一次事件、一次动效 |
+| T20 | Watch重复/乱序/删除后旧事件 | 事实幂等、不复活、不重播不重发 |
+| T21 | 水/咖啡/酒候选同时出现 | 应用内最高优先一条，关闭不立即换下一条 |
+| T22 | 无数据授权但饮品功能可用 | 记录/建议继续，准备度不被编造 |
+| T23 | 拒绝通知权限 | 无排程、无循环索权；应用内正常 |
+| T24 | 前台记录同时到通知时间 | 原页一条，无第二横幅声音 |
+| T25 | 队列2条已占预算，再有酒后请求 | 不超过预算；不悄悄深夜延后 |
+| T26 | 饮水记录后取消近2h排程 | 不相关通知保留，不能removeAll误删其他模块 |
+| T27 | 旧计划到点但应用被终止 | 通知只能是通用邀请，无实时无记录断言 |
+| T28 | 默认锁屏隐私 | 看不出饮酒/剂量/身体状态；点开才读 |
+| T29 | 暂停今天提醒、重启、改时区 | 指定类别仍受抑制；新日预算不翻倍 |
+| T30 | 修改/撤销触发条件、已送达提醒 | 撤销待发；能移除的旧通知移除；不能撤回已看内容需如实记录 |
+
+### 11.2 必测角色与呈现
+
+| ID | 场景 | 必须结果 |
+| --- | --- | --- |
+| T31 | 首页点击/朗读猫狗 | 无观看sheet、无重播按钮；不抢业务点击 |
+| T32 | 主状态刷新10次/切tab返回 | 入场不连播，无10份动画队列 |
+| T33 | 白水、咖啡、酒、撤销各一次 | 水有可爱确认；咖啡酒中性；撤销不演喝水 |
+| T34 | 呼吸暂停/继续/提前结束 | 共用相位、暂停冻结、不补发迟到节拍 |
+| T35 | 系统Reduce Motion、轻柔、静态、低电量 | 优先级正确，无常驻装饰时钟 |
+| T36 | 原画合成、暗色、大字 | 无换脸、撕裂、白底硬框、裁耳尾或压正文 |
+| T37 | 当前资料合格usual/reduced/low | 明确不同结论与真实原因，无技术枚举标题 |
+| T38 | 一日基线 | 不展示个人区间；仍有明确限定范围建议 |
+| T39 | 阶段重叠与awake/asleep冲突 | 两类分开；前者不重复累计，后者不捏造时长 |
+| T40 | 当前与历史质量处理 | 相同规则；基线审计与纳入样本一致 |
+| T41 | sourceIdentityIncomplete但来源可比 | 不产生普通故障警告 |
+| T42 | 删除、修订、并发与旧缓存 | M2-R01～R05回归继续通过 |
+| T43 | 最大字号、VoiceOver解释页 | 正确顺序，按钮可达，无技术内容堆叠 |
+| T44 | 三段真实录屏 | 明确看到相关动作差异；“可爱/自然”由用户人工确认 |
+| T45 | 普通人看合成页面 | 说得出结论、理由、动作，不把一般建议当完整评估 |
+
+## 12. 开发阶段与交付停止点
+
+| 阶段 | 工作 | 退出条件 |
+| --- | --- | --- |
+| V2-00 | 审阅差异、原图与存储盘点；复制本规格；记录已有失败 | BASELINE与范围映射，未提交工作受保护 |
+| V2-01 | 删除看一下/重播；今日/解释呈现；饮品卡布局；三段角色样片 | 真实SwiftUI截图与录屏，不用静态设计图冒充 |
+| V2-02 | 睡眠质量分层、基线逐日审计、版本化修复 | 合成回归；本机根因明确或具体标未验证 |
+| V2-03 | 六场景动效、调度、无障碍与性能 | 逐场景视频、静态回退和原稿对比 |
+| V2-04 | 饮品字段/剂量/度数/时间编辑、迁移与命令结果 | 历史事实不变；T06/T07/T14/T19通过 |
+| V2-05 | 饮水参考与三类关怀纯策略、注意力选择、初稿 | 候选有依据、无说教、无恢复加分 |
+| V2-06 | 用户开启的iPhone本地通知、隐私、冷启动动作 | 系统实投证据/模拟边界；静音、预算、撤销通过 |
+| V2-07 | 集成、真机、体验审核与文案整理 | 全部验收目录逐项标状态，停止等待用户 |
+
+V2-01先交可看的产品，不等数据审计完成才出画面；可并行做V2-02。不得借并行同时改模型评分、Watch和所有系统入口。
+
+最终交付到 `docs/plans/fangcun-experience-v2/`：`REVIEW.md`、`TASKS.md`、`DECISIONS.md`、`BASELINE_COVERAGE_FINDINGS.md`（公开版仅脱敏结论）、`COPY_REVIEW`、`ASSET_MAP.md`、`MOTION_REVIEW.md`、`VERIFICATION.md`。同一开发分支按阶段提交/推送，不强推、不合并main、不发布。
+
+验证必须列真实命令、测试名、退出码、结果包和失败分类。Core/App功能测试通过、用户是否看懂、用户是否觉得可爱、通知真机送达分别验收，不能互相替代。动画录屏使用合成数据；真实健康资料、真实姓名/设备名、用户截图和签名凭证不入公开仓库。
+
+当前真机可用则覆盖安装、不卸载，保留原记录偏好，回读版本；权限弹窗、通知冷启动、后台/锁屏送达、减少动态、保存失败恢复逐项实测。缺Watch/App Group条件不借机宣布全端完成，也不阻止手机本轮验收。
+
+## 13. 依据与事实边界
+
+本文件的动作时长、提醒频率、50mg/8小时/30g/6小时等为**产品工程策略初值**，不是实测个体生理阈值。首次上线前审查内容与适用人群。医疗/科学依据只支持相应一般关系，不支持强制的个体因果判断。
+
+- **[H1] NHS｜Water, drinks and hydration**：一般6–8杯液体指导，其他饮品与食物水分、个体需求变化。https://www.nhs.uk/live-well/eat-well/food-guidelines-and-food-labels/water-drinks-nutrition/
+- **[H2] NHS｜Dehydration**：疲倦是可能症状之一，支持一般知识而非用记录诊断。https://www.nhs.uk/conditions/dehydration/
+- **[H3] FDA｜Spilling the Beans: How Much Caffeine is Too Much?**：多数成人400mg参考、敏感性差异、含量变化与低因不等于零。https://www.fda.gov/consumers/consumer-updates/spilling-beans-how-much-caffeine-too-much
+- **[H4] Gardiner等，Sleep 2025，随机交叉试验**：23名男性，100/400mg、睡前4/8/12小时；不同剂量和时机影响不同，不能外推所有人/所有咖啡。doi:10.1093/sleep/zsae230。https://pubmed.ncbi.nlm.nih.gov/39377163/
+- **[H5] NIAAA｜What Is a Standard Drink?**：不同酒种和度数导致实际纯酒精不同，美国标准杯14g不等于国际统一杯具或安全量。https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink
+- **[H6] NIAAA｜Hangovers**：睡眠、疲倦与酒精关系；水/咖啡/洗澡不构成保证解酒方案。https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/hangovers
+- **[H7] NIAAA｜Understanding the Dangers of Alcohol Overdose**：严重信号与急救，不能把意识不清当“睡一下就好”。https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/understanding-dangers-of-alcohol-overdose
+- **[A1] Apple｜Scheduling and Handling Local Notifications**：排程、取消、前台与后台动作；归档资料仍须核对本机SDK。https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SchedulingandHandlingLocalNotifications.html
+- **[A2] Apple｜Managing Your App’s Notification Support**：用户授权、categories与actions。https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SupportingNotificationsinYourApp.html
+- **[A3] Apple WWDC23｜Wind your way through advanced animations in SwiftUI**：phase/keyframe等实现选择，实际以当前SDK能力为准。https://developer.apple.com/videos/play/wwdc2023/10157/
+
+**仓库读取依据，均固定于审阅SHA：**
+
+- **[R1]** `InnerBalance/InnerBalanceApp/Features/Home/FangcunTodayView.swift`
+- **[R2]** `InnerBalance/InnerBalanceApp/DesignSystem/FangcunCompanion.swift` 和 `FangcunCompanion.metal`
+- **[R3]** `InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkSheet.swift`
+- **[R4]** `InnerBalance/InnerBalanceApp/Persistence/FangcunDiary.swift`
+- **[R5]** `InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessViews.swift`；Core Readiness目录
+- **[R6]** `docs/plans/fangcun-v1/M3-REVIEW.md`；前次用户确认的M3体验纠偏文件
+
+仓库文件URL模板：`https://github.com/yvain57-afk/fangcun/blob/99ebe69f30a2a502225e913a9dfd35f54101dabd/<path>`。后续SDK变化重新核验，当前未验证能力不得作为完成声明。
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/MANIFEST.json =====
+{
+  "packageVersion": "2.0",
+  "date": "2026-09-19",
+  "primarySpecification": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+  "start": "START_CODEX.md",
+  "docxPages": 18,
+  "acceptanceCases": 45,
+  "draftCopyEntries": 46,
+  "implementationStatus": "specification_only",
+  "files": [
+    {
+      "name": "ACCEPTANCE_CASES.json",
+      "bytes": 17329,
+      "sha256": "19aa843d58a4bd1bcdac0e1a4cfca819f55cf2af09e49cb41081d2d82f478ac6"
+    },
+    {
+      "name": "CARE_POLICY_DEFAULTS.json",
+      "bytes": 4837,
+      "sha256": "44ac6995691a0e369601d28187a705283ca10525e9c92b24ee241bf2e38f2924"
+    },
+    {
+      "name": "COMPANION_MOTION_SPEC.json",
+      "bytes": 4125,
+      "sha256": "3c0233bfa93a48def52f04a78a91987dcc5a1ea9304ea1c1f69c22e7cbf38605"
+    },
+    {
+      "name": "COPY_CATALOG.zh-Hans.json",
+      "bytes": 11582,
+      "sha256": "05ce21497b9212dfd85b6a13dc750f5b71d5cd544e7cb7b446ff636428aae924"
+    },
+    {
+      "name": "FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md",
+      "bytes": 45922,
+      "sha256": "38eda518056b7d1ff96934a68d81547f2d016cd422721c002842d6b428257b29"
+    },
+    {
+      "name": "README.md",
+      "bytes": 888,
+      "sha256": "2720227d43dcb2bdaa995a8f58d0ce315eb604529f3ef079b138580ef7119a22"
+    },
+    {
+      "name": "START_CODEX.md",
+      "bytes": 2689,
+      "sha256": "f93d5261506183d417190bb080c6959e86ccf30d9453c21394009c7b38dc8821"
+    },
+    {
+      "name": "方寸_体验与饮品关怀_Codex任务书_v2.0.docx",
+      "bytes": 68184,
+      "sha256": "f2b31866292489d8245044a64e7aadce5ca597ae0ddff20b665ee7df6f24066a"
+    }
+  ]
+}
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/MOTION_REVIEW.md =====
+# Motion implementation
+
+V2-03 reuses the six existing source images. No artwork regeneration or anatomy replacement.
+
+- `CompanionMotionPolicy` defines event eligibility, durations, standard/gentle/static intensity and breathing priority. `CompanionMotionCoordinator` consumes IDs and holds one current gesture; there is no replay queue.
+- SwiftUI drives a finite 30 fps timeline only while visible, active, uncovered and allowed by accessibility/power settings. Static/finished/breathing branches contain no decorative TimelineView. Inactive events are dropped.
+- Water commit: 1.1 s cup-interior displacement plus head/tail masks; other drinks: 0.6 s neutral head nod, no drinking animation. Undo is 0.25 s inverse cup movement.
+- Entry calm 1.8 s; rest/curious 1.6 s; completion 1.3 s only on saved screen. Pre-save comparison art is static. Early end uses rest.
+- Breathing uses the existing session's expansion only, and pausing preserves that value. Removed saved-screen whole-character scale animation.
+- Existing flattened images cannot support a real new blink or detached paw articulation. Mask-based ear/head follow and the existing paw-touch pose are the supported scope; not claimed as new skeletal animation.
+
+Evidence: [six scene recordings and drink variants](evidence/final-native/README.md), with the first three recordings retained under `evidence/first-native/`. `CompanionMotionPolicyTests` five tests pass in the final 145-test Core run. Simulator evidence includes a real 60-second completion, a five-minute session's live/paused phase, dark appearance and maximum text size. No real health values appear in these captures.
+
+The original recording has simulator startup latency; final clips are aligned to actual video frames rather than using xcresult attachment wall time as frame time. Sampled water, breathing and completion frames were inspected. Completion shows transition to the saved screen, not an injected “finished” state.
+
+Physical Reduce Motion/Low Power/VoiceOver and long-run energy are unverified. Dark-mode blue ink remains the approved original rather than an inverted palette; its subjective visibility and naturalness remain for human review. No physical/user aesthetic acceptance is inferred from shader compilation or test counts.
+
+===== END FILE =====
+
+===== FILE: docs/plans/fangcun-experience-v2/README.md =====
+# 方寸｜v2.0 开发交付包
+
+本包整合首页解释纠偏、睡眠/基线修复、猫狗功能动效，以及饮水/咖啡/酒精关怀。
+
+入口是 START_CODEX.md。权威规格是 FANGCUN_EXPERIENCE_AND_CARE_SPEC_v2.0.md；Word版供阅读与批注，正文与主规格对应。
+
+CARE_POLICY_DEFAULTS.json 为提醒工程初值；COMPANION_MOTION_SPEC.json 为动效映射；COPY_CATALOG.zh-Hans.json 为待编辑文案；ACCEPTANCE_CASES.json 为45项验收目录与部分合成输入。
+
+这些文件不是已实现代码、动画素材或已经执行的测试。此前的M3体验纠偏已合并，无需重复下发。实际开发版本变化时，先核对差异，保留用户工作。
+
+不得把本包中的毫升、咖啡因和酒精关怀策略说成个人医学处方或安全额度；不把无记录判成无摄入。无需给原始健康数据或用户截图上云。
+
+===== END FILE =====

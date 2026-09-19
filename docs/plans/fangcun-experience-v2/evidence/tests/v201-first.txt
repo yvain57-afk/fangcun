@@ -1,0 +1,11 @@
+Synthetic test output excerpt. Complete logs and result bundle remain local.
+Test Suite 'Selected tests' started at 2026-09-19 15:44:47.058.
+Test Suite 'InnerBalanceUITests.xctest' started at 2026-09-19 15:44:47.061.
+Test Suite 'ExperienceV2UITests' started at 2026-09-19 15:44:47.061.
+Test Case '-[InnerBalanceUITests.ExperienceV2UITests testFirstExperienceDelivery]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2UITests testFirstExperienceDelivery]' passed (35.604 seconds).
+Test Suite 'ExperienceV2UITests' passed at 2026-09-19 15:45:22.674.
+Test Suite 'InnerBalanceUITests.xctest' passed at 2026-09-19 15:45:22.678.
+Test Suite 'Selected tests' passed at 2026-09-19 15:45:22.679.
+Test session results, code coverage, and logs:
+** TEST SUCCEEDED **

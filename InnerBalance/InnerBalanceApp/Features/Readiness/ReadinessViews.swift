@@ -22,6 +22,7 @@ struct ReadinessDetailView: View {
   let assessment: ReadinessAssessment?
   let snapshot: InsightsSnapshot
   var onStart: (() -> Void)? = nil
+  @State private var methodExpanded = false
   private var guidance: DayGuidancePresentation { .resolve(assessment) }
   var body: some View {
     ScrollView {
@@ -49,7 +50,11 @@ struct ReadinessDetailView: View {
           Button(FangcunCopy.text("guidance.action.pause"), action: onStart)
             .buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("readiness.detail.action")
         } else { Text(FangcunCopy.text(guidance.actionKey)).font(.headline) }
-        DisclosureGroup(FangcunCopy.text("guidance.method")) {
+        Button { methodExpanded.toggle() } label: {
+          HStack { Text(FangcunCopy.text("guidance.method")); Spacer(); Image(systemName: methodExpanded ? "chevron.up" : "chevron.down") }
+        }.frame(minHeight: 44).accessibilityIdentifier("readiness.method")
+          .accessibilityValue(FangcunCopy.text(methodExpanded ? "guidance.expanded" : "guidance.collapsed"))
+        if methodExpanded {
           VStack(alignment: .leading, spacing: 12) {
             Text(FangcunCopy.text("guidance.method.explanation"))
             if let a = assessment {
@@ -63,7 +68,7 @@ struct ReadinessDetailView: View {
               }
             }
           }.font(.caption).padding(.top, 10)
-        }.accessibilityIdentifier("readiness.method")
+        }
       }.padding(20)
     }.background(InnerBalanceTheme.canvas).navigationTitle(FangcunCopy.text("readiness.why"))
   }
@@ -173,6 +178,20 @@ struct ReadinessHistoryView: View {
     case .insufficient: return "minus.circle"
     }
   }
+  private func cycleKey(_ a: ReadinessAssessment) -> String { a.recoveryCycleID ?? a.sleepEpisodeID ?? a.assessmentID }
+  private func cycles(_ date: Date) -> [ReadinessAssessment] {
+    var seen = Set<String>()
+    return records(date).filter { seen.insert(cycleKey($0)).inserted }
+  }
+  private func historyLink(_ a: ReadinessAssessment) -> some View {
+    NavigationLink { ReadinessDetailView(assessment: a, snapshot: owner.snapshot) } label: {
+      VStack(alignment: .leading, spacing: 6) {
+        Text(DayGuidancePresentation.resolve(a).title)
+        if let end = a.sleepEndAt { Text(FangcunCopy.text("readiness.sleepEnd", FangcunCopy.timestamp(end))).font(.caption) }
+      }.frame(maxWidth: .infinity, alignment: .leading)
+    }.accessibilityIdentifier("readiness.history.assessment")
+  }
+
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 18) {
@@ -196,15 +215,16 @@ struct ReadinessHistoryView: View {
         if let recovery { NavigationLink(FangcunCopy.text("recovery.history")) { RecoveryHistoryView(owner: recovery) } }
         Text(selected, format: .dateTime.year().month().day()).font(.headline)
         if records(selected).isEmpty { Text(FangcunCopy.text("readiness.history.blank")) }
-        ForEach(records(selected), id: \.assessmentID) { a in
-          NavigationLink { ReadinessDetailView(assessment: a, snapshot: owner.snapshot) } label: {
-            VStack(alignment: .leading) {
-              Text(FangcunCopy.text("readiness.state." + a.availability.rawValue))
-              if let level = a.level { Text(FangcunCopy.text("readiness.recordedLevel", FangcunCopy.text("readiness.level." + level.rawValue))) }
-              Text(FangcunCopy.text("readiness.sleepEnd", FangcunCopy.timestamp(a.sleepEndAt)))
-              Text("v\(a.revision) · \(a.assessmentID.prefix(8))").font(.caption)
-            }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
-          }.accessibilityIdentifier("readiness.history.assessment")
+        ForEach(cycles(selected), id: \.assessmentID) { a in
+          VStack(alignment: .leading, spacing: 10) {
+            historyLink(a)
+            let revisions = records(selected).filter { cycleKey($0) == cycleKey(a) && $0.assessmentID != a.assessmentID }
+            if !revisions.isEmpty {
+              DisclosureGroup(FangcunCopy.text("guidance.revisions", revisions.count)) {
+                ForEach(revisions, id: \.assessmentID) { old in historyLink(old) }
+              }.font(.caption)
+            }
+          }.fangcunPaperCard()
         }
         ForEach(diary.allSnapshots.filter { Calendar.current.isDate($0.date, inSameDayAs: selected) }, id: \.date) { old in
           VStack(alignment: .leading) {

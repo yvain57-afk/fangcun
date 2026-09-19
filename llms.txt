@@ -2,7 +2,7 @@
 
 > Native iOS/watchOS wellbeing app and its design archive.
 
-- [AI entry](https://raw.githubusercontent.com/yvain57-afk/fangcun/main/AI_CONTEXT.md)
-- [Context in one file](https://raw.githubusercontent.com/yvain57-afk/fangcun/main/llms-full.txt)
-- [Complete file index](https://raw.githubusercontent.com/yvain57-afk/fangcun/main/FILE_INDEX.md)
-- [Source bundles](https://raw.githubusercontent.com/yvain57-afk/fangcun/main/ai/README.md)
+- [AI entry](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/AI_CONTEXT.md)
+- [Context in one file](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/llms-full.txt)
+- [Complete file index](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/FILE_INDEX.md)
+- [Source bundles](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/ai/README.md)

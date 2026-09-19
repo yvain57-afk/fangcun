@@ -1,0 +1,119 @@
+Synthetic test output excerpt. Complete logs and result bundle remain local.
+Test Suite 'All tests' started at 2026-09-19 16:09:34.755.
+Test Suite 'InnerBalanceUITests.xctest' started at 2026-09-19 16:09:34.755.
+Test Suite 'CheckInFlowUITests' started at 2026-09-19 16:09:34.755.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testBottomChromeDoesNotInterceptHomeScroll]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testBottomChromeDoesNotInterceptHomeScroll]' failed (8.213 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testBreathPhaseRemainsThePrimaryGuideAtAccessibilityTextSizes]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testBreathPhaseRemainsThePrimaryGuideAtAccessibilityTextSizes]' passed (18.098 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testEchoImmediatelyPersonalizesTheSentenceAndRecoveryAction]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testEchoImmediatelyPersonalizesTheSentenceAndRecoveryAction]' failed (33.549 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testEmotionCompassDragCommitsItsEndpoint]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testEmotionCompassDragCommitsItsEndpoint]' passed (12.449 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testEmotionFieldRemainsUsableAtAccessibilityTextSizes]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testEmotionFieldRemainsUsableAtAccessibilityTextSizes]' passed (22.744 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testFangcunNavigationUsesProductLanguage]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testFangcunNavigationUsesProductLanguage]' failed (6.885 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testHomeLeadsWithOneStressDecision]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testHomeLeadsWithOneStressDecision]' failed (6.755 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testHomeResponseRemainsReachableAtAccessibilityTextSizes]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testHomeResponseRemainsReachableAtAccessibilityTextSizes]' failed (20.287 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testKegelCompletionRemainsReachableAtAccessibilityTextSizes]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testKegelCompletionRemainsReachableAtAccessibilityTextSizes]' passed (29.608 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPacedBreathingLeadsWithTheCurrentBreathPhase]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPacedBreathingLeadsWithTheCurrentBreathPhase]' passed (11.746 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeCompletionRemainsReachableAtAccessibilityTextSizes]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeCompletionRemainsReachableAtAccessibilityTextSizes]' passed (20.466 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeLibraryOpensARealSession]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeLibraryOpensARealSession]' failed (9.051 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeLibraryStartsFromTheOutcomeInsteadOfAPlainCatalog]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeLibraryStartsFromTheOutcomeInsteadOfAPlainCatalog]' failed (8.999 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeOffersHandsFreeSoundAndHapticGuidance]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticeOffersHandsFreeSoundAndHapticGuidance]' passed (9.160 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticePreparationIsScrollableForLargeContent]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testPracticePreparationIsScrollableForLargeContent]' passed (8.882 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testSelectingSuggestedWordImmediatelySavesPrimaryRecord]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testSelectingSuggestedWordImmediatelySavesPrimaryRecord]' passed (14.425 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testStatusNeedsNoWritingAndDoesNotCreateAChoreList]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testStatusNeedsNoWritingAndDoesNotCreateAChoreList]' failed (7.855 seconds).
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testUnclassifiedStillSavesSelectedValence]' started.
+Test Case '-[InnerBalanceUITests.CheckInFlowUITests testUnclassifiedStillSavesSelectedValence]' passed (12.353 seconds).
+Test Suite 'CheckInFlowUITests' failed at 2026-09-19 16:13:56.302.
+Test Suite 'DrinkEditorUITests' started at 2026-09-19 16:13:56.303.
+Test Case '-[InnerBalanceUITests.DrinkEditorUITests testCapacityEditingUndoAndQuickLogShareTheSameRecords]' started.
+Test Case '-[InnerBalanceUITests.DrinkEditorUITests testCapacityEditingUndoAndQuickLogShareTheSameRecords]' failed (24.792 seconds).
+Test Suite 'DrinkEditorUITests' failed at 2026-09-19 16:14:21.097.
+Test Suite 'ExperienceV2UITests' started at 2026-09-19 16:14:21.097.
+Test Case '-[InnerBalanceUITests.ExperienceV2UITests testFirstExperienceDelivery]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2UITests testFirstExperienceDelivery]' passed (33.481 seconds).
+Test Suite 'ExperienceV2UITests' passed at 2026-09-19 16:14:54.580.
+Test Suite 'FangcunAppearanceUITests' started at 2026-09-19 16:14:54.581.
+Test Case '-[InnerBalanceUITests.FangcunAppearanceUITests testCriticalScreensInCurrentAppearance]' started.
+Test Case '-[InnerBalanceUITests.FangcunAppearanceUITests testCriticalScreensInCurrentAppearance]' failed (7.742 seconds).
+Test Suite 'FangcunAppearanceUITests' failed at 2026-09-19 16:15:02.324.
+Test Suite 'FangcunRedesignUITests' started at 2026-09-19 16:15:02.324.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testAcceptedSoloAndDuoScenesInDarkAndLargeType]' started.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testAcceptedSoloAndDuoScenesInDarkAndLargeType]' passed (18.676 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' started.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testBreathingWithMotionEnabledCanPauseAndExit]' passed (14.506 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testDisplayPreferencesSurviveRelaunch]' started.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testDisplayPreferencesSurviveRelaunch]' passed (25.467 seconds).
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' started.
+Test Case '-[InnerBalanceUITests.FangcunRedesignUITests testNativeTodayDrinksTrendsPracticeAndSettings]' passed (29.228 seconds).
+Test Suite 'FangcunRedesignUITests' passed at 2026-09-19 16:16:30.205.
+Test Suite 'FangcunResponseLoopUITests' started at 2026-09-19 16:16:30.205.
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testDetailedThenQuickImmediatelyShowsOnlyTheQuickState]' started.
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testDetailedThenQuickImmediatelyShowsOnlyTheQuickState]' failed (34.874 seconds).
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testFinishThenSkipFeedbackReturnsHomeWithCompletedOnly]' started.
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testFinishThenSkipFeedbackReturnsHomeWithCompletedOnly]' failed (28.114 seconds).
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testQuickThenDetailedImmediatelyShowsOnlyTheDetailedState]' started.
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testQuickThenDetailedImmediatelyShowsOnlyTheDetailedState]' failed (28.123 seconds).
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testSavedPostPracticeFeelingImmediatelyUpdatesHome]' started.
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testSavedPostPracticeFeelingImmediatelyUpdatesHome]' failed (9.977 seconds).
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testSelectedPressureSourceImmediatelyUpdatesTheWholeHomeResponse]' started.
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testSelectedPressureSourceImmediatelyUpdatesTheWholeHomeResponse]' failed (17.562 seconds).
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testStateChoicesStayInPlaceAfterResponding]' started.
+Test Case '-[InnerBalanceUITests.FangcunResponseLoopUITests testStateChoicesStayInPlaceAfterResponding]' failed (10.752 seconds).
+Test Suite 'FangcunResponseLoopUITests' failed at 2026-09-19 16:18:39.614.
+Test Suite 'HomeEvidencePipelineUITests' started at 2026-09-19 16:18:39.615.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testHistoryFailureAndLimitedEvidence]' started.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testHistoryFailureAndLimitedEvidence]' passed (35.172 seconds).
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testMeasurementTimeDoesNotBecomeQueryTime]' started.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testMeasurementTimeDoesNotBecomeQueryTime]' passed (9.136 seconds).
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testPreviousSleepAndIncompleteBaselines]' started.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testPreviousSleepAndIncompleteBaselines]' passed (24.098 seconds).
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testQualifiedEvidenceAndWorkoutProtection]' started.
+Test Case '-[InnerBalanceUITests.HomeEvidencePipelineUITests testQualifiedEvidenceAndWorkoutProtection]' failed (29.795 seconds).
+Test Suite 'HomeEvidencePipelineUITests' failed at 2026-09-19 16:20:17.819.
+Test Suite 'PracticeReturnHomeUITests' started at 2026-09-19 16:20:17.828.
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testClosingBeforeStartingKeepsThePracticeTabSelected]' started.
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testClosingBeforeStartingKeepsThePracticeTabSelected]' passed (20.391 seconds).
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testCompletedLibraryPracticeReturnsToNowTab]' started.
+Test Case '-[InnerBalanceUITests.PracticeReturnHomeUITests testCompletedLibraryPracticeReturnsToNowTab]' passed (22.503 seconds).
+Test Suite 'PracticeReturnHomeUITests' passed at 2026-09-19 16:21:00.724.
+Test Suite 'ReadinessHomeUITests' started at 2026-09-19 16:21:00.724.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testAssessable]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testAssessable]' failed (26.826 seconds).
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testAwaiting]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testAwaiting]' passed (20.957 seconds).
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testBreathingRoundTripKeepsCurrentAssessmentWithoutReward]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testBreathingRoundTripKeepsCurrentAssessmentWithoutReward]' passed (12.525 seconds).
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testFailed]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testFailed]' passed (21.616 seconds).
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testHistoryIdentityAndAccessibleLargeDarkLayout]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testHistoryIdentityAndAccessibleLargeDarkLayout]' passed (21.288 seconds).
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testInsufficient]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testInsufficient]' passed (20.819 seconds).
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testLimited]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testLimited]' passed (21.093 seconds).
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testProvisional]' started.
+Test Case '-[InnerBalanceUITests.ReadinessHomeUITests testProvisional]' passed (20.897 seconds).
+Test Suite 'ReadinessHomeUITests' failed at 2026-09-19 16:23:46.753.
+Test Suite 'RecoveryActionUITests' started at 2026-09-19 16:23:46.753.
+Test Case '-[InnerBalanceUITests.RecoveryActionUITests testLocalActionPauseEarlyEndSkipThenEditFeedback]' started.
+Test Case '-[InnerBalanceUITests.RecoveryActionUITests testLocalActionPauseEarlyEndSkipThenEditFeedback]' passed (20.588 seconds).
+Test Suite 'RecoveryActionUITests' passed at 2026-09-19 16:24:07.344.
+Test Suite 'InnerBalanceUITests.xctest' failed at 2026-09-19 16:24:07.345.
+Test Suite 'All tests' failed at 2026-09-19 16:24:07.346.
+Test session results, code coverage, and logs:
+** TEST FAILED **

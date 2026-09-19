@@ -1,4 +1,956 @@
 
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/BodyLoadSectionComponents.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+struct RecoveryRecommendationCard: View {
+  let action: TodayRecoveryAction
+  let onCheckIn: () -> Void
+  let onStartPractice: (PracticeKind) -> Void
+  let onStrongSurface: Bool
+
+  init(
+    action: TodayRecoveryAction,
+    onCheckIn: @escaping () -> Void,
+    onStartPractice: @escaping (PracticeKind) -> Void,
+    onStrongSurface: Bool = false
+  ) {
+    self.action = action
+    self.onCheckIn = onCheckIn
+    self.onStartPractice = onStartPractice
+    self.onStrongSurface = onStrongSurface
+  }
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+      Text(sectionTitle)
+        .font(.caption.weight(.semibold))
+        .tracking(1.1)
+        .foregroundStyle(secondaryInk)
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+
+      switch action {
+      case .practice(let practice):
+        ViewThatFits(in: .horizontal) {
+          HStack(alignment: .center, spacing: FangcunLayout.spacing(3)) {
+            practiceSummary(practice)
+              .layoutPriority(1)
+            Spacer(minLength: FangcunLayout.spacing(2))
+            startButton(practice)
+              .frame(width: 144)
+          }
+
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+            practiceSummary(practice)
+            startButton(practice)
+          }
+        }
+
+        adjustmentButton
+
+      case .continueNormally:
+        Text("照常进行，不需要额外练习。")
+          .font(.subheadline.weight(.semibold))
+          .foregroundStyle(primaryInk)
+          .fixedSize(horizontal: false, vertical: true)
+        adjustmentButton
+
+      case .needsInput:
+        Text("想直接弄清压力和来源，用十秒做一次判断。")
+          .font(.subheadline)
+          .foregroundStyle(secondaryInk)
+          .fixedSize(horizontal: false, vertical: true)
+        Button("判断压力与来源", action: onCheckIn)
+          .buttonStyle(
+            InnerBalancePrimaryButtonStyle(
+              onStrongSurface: onStrongSurface,
+              cornerRadius: FangcunSurface.editorialActionCornerRadius
+            )
+          )
+          .accessibilityIdentifier("home.checkIn")
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var adjustmentButton: some View {
+    Button("调整状态与来源", action: onCheckIn)
+      .font(.subheadline.weight(.semibold))
+      .foregroundStyle(secondaryInk)
+      .frame(minHeight: 44)
+      .buttonStyle(FangcunPressButtonStyle())
+      .accessibilityIdentifier("home.checkIn")
+  }
+
+  private var sectionTitle: String {
+    switch action {
+    case .practice: "现在做这个"
+    case .continueNormally: "现在怎么做"
+    case .needsInput: "下一步"
+    }
+  }
+
+  private func practiceSummary(_ practice: PracticeKind) -> some View {
+    Label {
+      VStack(alignment: .leading, spacing: 4) {
+        Text(practice.title)
+          .font(.headline)
+        Text(recommendationDetail(for: practice))
+          .font(.caption)
+          .foregroundStyle(secondaryInk)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+    } icon: {
+      Image(systemName: practice.systemImage)
+        .font(.title3)
+        .foregroundStyle(primaryInk)
+        .frame(width: 44, height: 44)
+        .background(iconFill, in: Circle())
+    }
+    .foregroundStyle(primaryInk)
+  }
+
+  private func startButton(_ practice: PracticeKind) -> some View {
+    Button(actionTitle(for: practice)) { onStartPractice(practice) }
+      .buttonStyle(
+        InnerBalancePrimaryButtonStyle(
+          onStrongSurface: onStrongSurface,
+          cornerRadius: FangcunSurface.editorialActionCornerRadius
+        )
+      )
+      .accessibilityLabel("开始 · \(practice.title)")
+      .accessibilityIdentifier("home.startRecommendation")
+  }
+
+  private func actionTitle(for practice: PracticeKind) -> String {
+    switch practice {
+    case .physiologicalSigh: "先缓 1 分钟"
+    case .pacedBreathing: "呼吸 3 分钟"
+    case .meditation: "安静 5 分钟"
+    case .nsdr: "躺下休息 10 分钟"
+    case .kegel: "开始 3 分钟"
+    }
+  }
+
+  private var primaryInk: Color {
+    onStrongSurface ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink
+  }
+
+  private var secondaryInk: Color {
+    onStrongSurface
+      ? InnerBalanceTheme.inverseInk.opacity(0.70) : InnerBalanceTheme.mutedInk
+  }
+
+  private var iconFill: Color {
+    onStrongSurface
+      ? InnerBalanceTheme.inverseInk.opacity(0.14) : InnerBalanceTheme.subtleFill
+  }
+
+  private func recommendationDetail(for practice: PracticeKind) -> String {
+    switch practice {
+    case .physiologicalSigh: "1 分钟 · 双重吸气后延长呼气"
+    case .pacedBreathing: "3 或 5 分钟 · 跟随节奏呼吸"
+    case .meditation: "5 或 10 分钟 · 安静地放松注意力"
+    case .nsdr: "10 或 20 分钟 · 躺下完成深度休息"
+    case .kegel: "3 分钟 · 盆底肌收紧与放松"
+    }
+  }
+}
+
+struct RecentPracticeRow: View {
+  let practice: PracticeCompletionRecord
+
+  var body: some View {
+    HStack(alignment: .top, spacing: FangcunLayout.spacing(3)) {
+      Image(systemName: "checkmark")
+        .font(.title3)
+        .foregroundStyle(InnerBalanceTheme.strongFill)
+        .frame(width: 36, height: 44)
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
+        Text("今日完成")
+          .font(.caption.weight(.semibold))
+          .foregroundStyle(InnerBalanceTheme.strongFill)
+        Text(practice.practiceKind.title)
+          .font(.headline)
+        Text(changeText)
+          .font(.subheadline.weight(.medium))
+        Text("练习了 \(PracticeDurationFormatter.clock(practice.actualDuration))")
+          .font(.caption2.monospacedDigit())
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding(.vertical, FangcunLayout.spacing(4))
+    .overlay(alignment: .top) {
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .overlay(alignment: .bottom) {
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("home.latestPractice")
+  }
+
+  private var changeText: String {
+    guard practice.hasSubjectiveComparison else { return "已完成" }
+    let change = practice.subjectiveChange
+    if change == 0 { return "主观感受持平" }
+    return "需要调节程度\(change < 0 ? "下降" : "上升") \(abs(change))"
+  }
+}
+
+struct BodyEvidenceDisclosure: View {
+  @Binding var isExpanded: Bool
+  let viewModel: HomeViewModel
+  let onReviewSleep: () -> Void
+
+  var body: some View {
+    DisclosureGroup(isExpanded: $isExpanded) {
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(5)) {
+        if viewModel.baselineDays < 5 {
+          BaselineProgressView(completedDays: viewModel.baselineDays)
+        }
+        TrainingContextSummary(viewModel: viewModel)
+        ForEach(Array(viewModel.evidence.prefix(3))) { item in
+          HealthEvidenceView(evidence: item)
+        }
+        if viewModel.recentWorkoutProtection {
+          Label("近期较长训练已从 HRV 与静息心率判断中单独处理", systemImage: "figure.run")
+            .font(.caption)
+            .foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        if viewModel.sleepNeedsReview {
+          Button(action: onReviewSleep) {
+            Label("核对睡眠数据", systemImage: "exclamationmark.bubble")
+              .font(.subheadline.weight(.semibold))
+          }
+          .buttonStyle(.plain)
+          .foregroundStyle(InnerBalanceTheme.emphasis)
+          .frame(minHeight: 44, alignment: .leading)
+        }
+        if let lastUpdated = viewModel.lastUpdated {
+          Text(
+            FangcunCopy.text("body.time.fetched", FangcunCopy.timestamp(lastUpdated))
+          )
+          .font(.caption2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        Text("方寸给出的是当下调节建议，不是医疗诊断。")
+          .font(.caption2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
+      .padding(.top, FangcunLayout.spacing(5))
+    } label: {
+      Label("为什么这样判断", systemImage: "waveform.path.ecg")
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(InnerBalanceTheme.strongFill)
+        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+    }
+    .accessibilityHint("展开查看训练、数据来源、时间和可靠性")
+    .accessibilityIdentifier("home.trainingSummary")
+  }
+}
+
+private struct TrainingContextSummary: View {
+  let viewModel: HomeViewModel
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+      Text("训练背景").font(.subheadline.weight(.semibold))
+      if let summary = viewModel.trainingSummary {
+        Text(BodyLoadCardPresentation.trainingHeadline(summary)).font(.subheadline)
+        Text(
+          "最近一次 \(summary.latestActivityName) · "
+            + "\(PracticeDurationFormatter.text(summary.latestDuration)) · "
+            + "\(summary.latestEndDate.formatted(.relative(presentation: .named))) · "
+            + summary.latestSourceName
+        )
+        .font(.caption)
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+      } else {
+        Text(
+          viewModel.unavailableKinds.contains(.workout)
+            ? "训练数据尚未可用" : BodyLoadCardPresentation.emptyTrainingMessage
+        )
+        .font(.caption)
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
+    }
+    .fixedSize(horizontal: false, vertical: true)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/CareNotificationClient.swift =====
+import Foundation
+import InnerBalanceCore
+import UserNotifications
+
+enum CareNotificationAccess { case notAsked, denied, allowed }
+@MainActor protocol CareNotificationClient: AnyObject {
+  func access() async -> CareNotificationAccess
+  func requestPermission() async -> Bool
+  func pendingIDs() async -> [String]
+  func deliveredIDs() async -> [String]
+  func removePending(_ ids: [String])
+  func removeDelivered(_ ids: [String])
+  func add(_ request: CareNotificationRequest, calendar: Calendar) async throws
+}
+@MainActor final class SystemCareNotificationClient: CareNotificationClient {
+  private let center = UNUserNotificationCenter.current()
+  func access() async -> CareNotificationAccess {
+    switch await center.notificationSettings().authorizationStatus {
+    case .authorized, .provisional, .ephemeral: .allowed
+    case .notDetermined: .notAsked
+    default: .denied
+    }
+  }
+  func requestPermission() async -> Bool { (try? await center.requestAuthorization(options: [.alert])) ?? false }
+  func pendingIDs() async -> [String] { await center.pendingNotificationRequests().map(\.identifier) }
+  func deliveredIDs() async -> [String] { await center.deliveredNotifications().map { $0.request.identifier } }
+  func removePending(_ ids: [String]) { center.removePendingNotificationRequests(withIdentifiers: ids) }
+  func removeDelivered(_ ids: [String]) { center.removeDeliveredNotifications(withIdentifiers: ids) }
+  func add(_ request: CareNotificationRequest, calendar: Calendar) async throws {
+    let content = UNMutableNotificationContent()
+    content.title = FangcunCopy.text(request.titleKey); content.body = FangcunCopy.text(request.bodyKey)
+    content.sound = nil; content.badge = nil; content.interruptionLevel = .passive
+    content.categoryIdentifier = CareNotificationPlanner.prefix + "actions"
+    content.userInfo = ["careCategory": request.category.rawValue]
+    var components = calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: request.fireAt)
+    components.timeZone = calendar.timeZone
+    try await center.add(UNNotificationRequest(identifier: request.id, content: content,
+      trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)))
+  }
+  nonisolated static func foregroundOptions(requestID: String) -> UNNotificationPresentationOptions {
+    requestID.hasPrefix(CareNotificationPlanner.prefix) ? [] : [.banner]
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/DailyWordField.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+struct DailyWordField: View {
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+
+  let reflection: DailyReflection
+  let contextTitle: String
+
+  var body: some View {
+    VStack(spacing: 0) {
+      HStack(alignment: .top, spacing: FangcunLayout.spacing(3)) {
+        if !dynamicTypeSize.isAccessibilitySize {
+          Text("“")
+            .font(.system(size: 52, weight: .light, design: .default))
+            .foregroundStyle(InnerBalanceTheme.ink)
+            .frame(width: 36, alignment: .leading)
+            .accessibilityHidden(true)
+        }
+
+        VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+          HStack(spacing: FangcunLayout.spacing(2)) {
+            Text(contextTitle)
+          }
+          .font(.caption2.weight(.bold))
+          .tracking(1.2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+          .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
+            Text(reflection.text)
+              .fangcunQuoteStyle()
+              .foregroundStyle(InnerBalanceTheme.ink)
+              .fixedSize(horizontal: false, vertical: true)
+              .accessibilityAddTraits(.isHeader)
+              .accessibilityIdentifier("home.dailyReflection")
+
+            if let attribution = reflection.attribution {
+              Text(
+                reflection.work.map { "\(attribution) · \($0)" }
+                  ?? attribution
+              )
+              .font(.footnote.weight(.medium))
+              .foregroundStyle(InnerBalanceTheme.mutedInk)
+              .fixedSize(horizontal: false, vertical: true)
+              .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+            }
+          }
+          .id(reflection.id)
+          .transition(.opacity)
+          .animation(
+            .easeOut(duration: reduceMotion ? 0.12 : 0.28),
+            value: reflection.id
+          )
+        }
+      }
+      .padding(.vertical, FangcunLayout.spacing(6))
+
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .accessibilityElement(children: .contain)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/EchoArcSelector.swift =====
+import InnerBalanceCore
+import SwiftUI
+
+enum FangcunEchoSelectionEvent {
+  case loaded
+  case tapped
+}
+
+enum FangcunEchoGridLayout {
+  static func columnCount(isAccessibilitySize: Bool) -> Int {
+    isAccessibilitySize ? 2 : 3
+  }
+
+  static func isSelected(candidate: DailyEchoState, selection: DailyEchoState?) -> Bool {
+    candidate == selection
+  }
+
+  static func shouldPlayHaptic(for event: FangcunEchoSelectionEvent) -> Bool {
+    event == .tapped
+  }
+}
+
+struct EchoArcSelector: View {
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @Environment(\.fangcunReduceMotion) private var reduceMotion
+  @State private var hapticTrigger = 0
+
+  let selection: DailyEchoState?
+  let historyAvailable: Bool
+  let saveMessage: String?
+  let onSelect: (DailyEchoState) -> Void
+  let onShowHistory: () -> Void
+
+  var body: some View {
+    VStack(spacing: 0) {
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+        heading
+        echoGrid
+
+        Text(saveMessage ?? " ")
+          .font(.caption2)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+          .frame(maxWidth: .infinity, minHeight: 16, alignment: .trailing)
+          .opacity(saveMessage == nil ? 0 : 1)
+          .animation(
+            FangcunMotion.stateAnimation(reduceMotion: reduceMotion),
+            value: saveMessage
+          )
+          .accessibilityHidden(saveMessage == nil)
+          .accessibilityAddTraits(.updatesFrequently)
+      }
+      .padding(.vertical, FangcunLayout.spacing(4))
+
+      FangcunEditorialRule()
+        .frame(height: 1)
+    }
+    .sensoryFeedback(.impact(weight: .medium), trigger: hapticTrigger)
+  }
+
+  private var heading: some View {
+    ViewThatFits(in: .horizontal) {
+      HStack(alignment: .firstTextBaseline, spacing: FangcunLayout.spacing(3)) {
+        headingTitle
+        Spacer(minLength: FangcunLayout.spacing(2))
+        instruction
+        historyButton
+      }
+      VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
+        HStack {
+          headingTitle
+          Spacer()
+          historyButton
+        }
+        instruction
+      }
+    }
+  }
+
+  private var headingTitle: some View {
+    Text("现在怎样")
+      .font(.title3.weight(.semibold))
+      .foregroundStyle(InnerBalanceTheme.ink)
+  }
+
+  private var instruction: some View {
+    Text("不用解释，选最接近的")
+      .font(.subheadline)
+      .foregroundStyle(InnerBalanceTheme.mutedInk)
+  }
+
+  private var historyButton: some View {
+    Button("过去", action: onShowHistory)
+      .font(.caption.weight(.semibold))
+      .foregroundStyle(InnerBalanceTheme.strongFill)
+      .frame(minWidth: 44, minHeight: 44)
+      .contentShape(Rectangle())
+      .buttonStyle(FangcunPressButtonStyle())
+      // Reserve the same space before the first save so the choices do not move.
+      .opacity(historyAvailable ? 1 : 0)
+      .disabled(!historyAvailable)
+      .accessibilityHidden(!historyAvailable)
+      .accessibilityIdentifier("home.echo.history")
+  }
+
+  private var echoGrid: some View {
+    let columnCount = FangcunEchoGridLayout.columnCount(
+      isAccessibilitySize: dynamicTypeSize.isAccessibilitySize
+    )
+    return LazyVGrid(
+      columns: Array(
+        repeating: GridItem(.flexible(), spacing: FangcunLayout.spacing(2)),
+        count: columnCount
+      ),
+      spacing: FangcunLayout.spacing(2)
+    ) {
+      ForEach(DailyEchoState.allCases, id: \.rawValue) { state in
+        touchpoint(for: state)
+      }
+    }
+  }
+
+  private func touchpoint(for state: DailyEchoState) -> some View {
+    let isSelected = FangcunEchoGridLayout.isSelected(candidate: state, selection: selection)
+    return Button {
+      onSelect(state)
+      if FangcunEchoGridLayout.shouldPlayHaptic(for: .tapped) { hapticTrigger += 1 }
+    } label: {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+            HStack(spacing: FangcunLayout.spacing(2)) {
+              stateIcon(state)
+              Spacer(minLength: 0)
+              selectionMark(isSelected)
+            }
+            stateTitle(state, isSelected: isSelected)
+          }
+        } else {
+          HStack(spacing: FangcunLayout.spacing(2)) {
+            stateIcon(state, isSelected: isSelected)
+            stateTitle(state, isSelected: isSelected)
+            Spacer(minLength: 0)
+          }
+        }
+      }
+      .foregroundStyle(isSelected ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink)
+      .padding(.horizontal, FangcunLayout.spacing(3))
+      .padding(.vertical, FangcunLayout.spacing(2))
+      .frame(
+        maxWidth: .infinity,
+        minHeight: dynamicTypeSize.isAccessibilitySize ? 64 : 52,
+        alignment: .leading
+      )
+      .contentShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+      .background(
+        isSelected ? InnerBalanceTheme.strongFill : Color.clear,
+        in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: 6, style: .continuous)
+          .strokeBorder(
+            isSelected ? InnerBalanceTheme.inverseInk.opacity(0.28) : Color.clear,
+            lineWidth: 1
+          )
+      }
+      .overlay(alignment: .bottom) {
+        Rectangle()
+          .fill(isSelected ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.hairline)
+          .frame(height: isSelected ? 2 : 1)
+      }
+      .animation(
+        FangcunMotion.stateAnimation(reduceMotion: reduceMotion),
+        value: isSelected
+      )
+    }
+    .buttonStyle(FangcunPressButtonStyle())
+    .accessibilityAddTraits(isSelected ? .isSelected : [])
+    .accessibilityHint("点一下即保存当下状态")
+    .accessibilityIdentifier("home.echo.state.\(state.rawValue)")
+  }
+
+  private func stateIcon(_ state: DailyEchoState, isSelected: Bool = false) -> some View {
+    Image(systemName: isSelected ? "checkmark.circle.fill" : state.systemImage)
+      .font(.system(size: 17, weight: .medium))
+      .accessibilityHidden(true)
+  }
+
+  private func stateTitle(_ state: DailyEchoState, isSelected: Bool) -> some View {
+    Text(state.title)
+      .font(.caption.weight(isSelected ? .bold : .semibold))
+      .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+      .minimumScaleFactor(dynamicTypeSize.isAccessibilitySize ? 1 : 0.84)
+  }
+
+  private func selectionMark(_ isSelected: Bool) -> some View {
+    Image(systemName: "checkmark.circle.fill")
+      .font(.caption.weight(.bold))
+      .opacity(isSelected ? 1 : 0)
+      .accessibilityHidden(true)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkEditor.swift =====
+import SwiftUI
+import InnerBalanceCore
+
+struct FangcunDrinkEditor: View {
+  @Environment(FangcunDiary.self) private var diary
+  @Environment(\.dismiss) private var dismiss
+  @AppStorage("fangcun.coffeeMg") private var coffeeMg = 140
+  @State private var selectedID: UUID?
+  @State private var kind = FangcunDrink.water
+  @State private var consumedAt = Date.now
+  @State private var volume = 250
+  @State private var name = ""
+  @State private var caffeinePresence = BeveragePresence.no
+  @State private var doseMethod = BeverageDoseMethod.perServing
+  @State private var dose = 140.0
+  @State private var alcoholPresence = BeveragePresence.no
+  @State private var abv = 5.0
+  @State private var abvKnown = true
+  @State private var feedback: String?
+  @State private var editingLegacy = false
+  private var details: BeverageDetails { .init(displayName: name.isEmpty ? kind.title : name,
+    caffeinePresence: caffeinePresence, caffeineMethod: doseMethod, caffeineDose: doseMethod == .unknown ? nil : dose,
+    alcoholPresence: alcoholPresence, abvPercent: abvKnown ? abv : nil) }
+  private var earliest: Date { Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: .now))! }
+  var body: some View {
+    NavigationStack {
+      ScrollViewReader { proxy in
+      Form {
+        Section {
+          Picker(FangcunCopy.text("diary.kind"), selection: $kind) {
+            ForEach(FangcunDrink.allCases) { Text($0.title).tag($0) }
+          }.disabled(selectedID != nil).id("drink.editor.top")
+          DatePicker(FangcunCopy.text("diary.time"), selection: $consumedAt, in: earliest...Date.now)
+            .accessibilityIdentifier("drinks.edit.time")
+          TextField(FangcunCopy.text("diary.volume"), value: $volume, format: .number)
+            .keyboardType(.numberPad).accessibilityIdentifier("drinks.edit.volume")
+          TextField(FangcunCopy.text("drink.name"), text: $name)
+          if editingLegacy { Text(FangcunCopy.text("drink.legacy")) }
+          else {
+            Picker(FangcunCopy.text("drink.caffeinePresence"), selection: $caffeinePresence) {
+              ForEach([BeveragePresence.no, .yes, .unknown], id: \.self) { Text(FangcunCopy.text("drink.presence." + $0.rawValue)).tag($0) }
+            }
+            if caffeinePresence == .yes {
+              Picker(FangcunCopy.text("drink.doseMethod"), selection: $doseMethod) {
+                ForEach([BeverageDoseMethod.perServing, .per100ML, .unknown], id: \.self) { Text(FangcunCopy.text("drink.dose." + $0.rawValue)).tag($0) }
+              }
+              if doseMethod != .unknown { TextField(FangcunCopy.text("drink.doseMG"), value: $dose, format: .number).keyboardType(.decimalPad) }
+            }
+            Picker(FangcunCopy.text("drink.alcoholPresence"), selection: $alcoholPresence) {
+              ForEach([BeveragePresence.no, .yes, .unknown], id: \.self) { Text(FangcunCopy.text("drink.presence." + $0.rawValue)).tag($0) }
+            }
+            if alcoholPresence == .yes {
+              Toggle(FangcunCopy.text("drink.abvKnown"), isOn: $abvKnown)
+              if abvKnown { TextField(FangcunCopy.text("drink.abv"), value: $abv, format: .number).keyboardType(.decimalPad) }
+            }
+          }
+          Button(FangcunCopy.text(selectedID == nil ? "diary.add" : "diary.save")) {
+            let result: DrinkCommandResult
+            if let selectedID { result = diary.edit(selectedID, consumedAt: consumedAt, volumeML: volume, details: editingLegacy ? nil : details) }
+            else { result = diary.add(kind, at: consumedAt, volumeML: volume, details: details) }
+            feedback = FangcunCopy.text(result.receipt == nil ? "drink.failed" : "drink.saved")
+            if result.receipt != nil { selectedID = nil; editingLegacy = false; resetDefaults() }
+          }.accessibilityIdentifier("drinks.edit.save")
+            .disabled(!(10...3000).contains(volume) || diary.storageMessage != nil)
+          if let feedback { Text(feedback).accessibilityIdentifier("drinks.edit.feedback") }
+          Button(FangcunCopy.text("diary.undo")) { _ = diary.undo() }.disabled(!diary.canUndo)
+          if let selectedID {
+            Button(FangcunCopy.text("drink.delete"), role: .destructive) {
+              let result = diary.remove(id: selectedID)
+              if result.receipt != nil { self.selectedID = nil; editingLegacy = false; resetDefaults() }
+            }
+          }
+        } footer: { Text(FangcunCopy.text("diary.range")) }
+        if let message = diary.storageMessage {
+          Section { Text(message); Button(FangcunCopy.text("diary.retry")) { diary.retry() } }
+        }
+        Section(FangcunCopy.text("diary.records")) {
+          ForEach(diary.allEntries.filter { $0.date >= earliest }.sorted { $0.date > $1.date }) { entry in
+            Button {
+              selectedID = entry.id; kind = entry.kind; consumedAt = entry.date; volume = entry.volumeML
+              name = entry.displayName; editingLegacy = entry.details == nil
+              withAnimation { proxy.scrollTo("drink.editor.top", anchor: .top) }
+              if let d = entry.details {
+                caffeinePresence = d.caffeinePresence; doseMethod = d.caffeineMethod; dose = d.caffeineDose ?? 0
+                alcoholPresence = d.alcoholPresence; abvKnown = d.abvPercent != nil; abv = d.abvPercent ?? 5
+              }
+            } label: {
+              VStack(alignment: .leading) {
+                Text(FangcunCopy.text("diary.entry", entry.displayName, entry.volumeML))
+                Text(FangcunCopy.timestamp(entry.date)).font(.caption)
+              }
+            }.accessibilityIdentifier("drinks.edit.entry.\(entry.id)")
+          }
+        }
+      }.scrollContentBackground(.hidden).background(InnerBalanceTheme.canvas)
+        .foregroundStyle(InnerBalanceTheme.ink).tint(InnerBalanceTheme.strongFill)
+        .navigationTitle(FangcunCopy.text("diary.manage"))
+        .toolbar { Button(FangcunCopy.text("diary.done")) { dismiss() } }
+        .onChange(of: kind) { _, value in if selectedID == nil { volume = value.fluid; resetDefaults() } }
+      }
+    }
+  }
+  private func resetDefaults() {
+    let d = FangcunDiary.defaultDetails(kind, caffeine: coffeeMg)
+    name = d.displayName; caffeinePresence = d.caffeinePresence; doseMethod = d.caffeineMethod; dose = d.caffeineDose ?? 140
+    alcoholPresence = d.alcoholPresence; abvKnown = d.abvPercent != nil; abv = d.abvPercent ?? 5
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/FangcunDrinkSheet.swift =====
+import SwiftUI
+import InnerBalanceCore
+
+struct FangcunDrinkSheet: View {
+  @Environment(FangcunDiary.self) private var diary
+  @Environment(\.dynamicTypeSize) private var typeSize
+  @Environment(\.careOwner) private var care
+  @Environment(\.dismiss) private var dismiss
+  @AppStorage("fangcun.coffeeMg") private var coffeeMg = 140
+  @State private var sweetCoffee = false
+  @State private var feedback = "轻轻记一下，就好。"
+  @State private var reaction = 0
+  @State private var motionEvent = CompanionMotionEvent.entered
+  @State private var committedEvent: CompanionEvent?
+  @State private var editing = false
+  private var kinds: [FangcunDrink] { [.water, sweetCoffee ? .sweetCoffee : .coffee, .beer, .soda] }
+  private var totals: BeverageTotals { BeverageTotals(diary.entries().map(\.beverage)) }
+  private var cupML: Int { care?.preferences.cupML ?? 250 }
+
+  var body: some View {
+    Group {
+      if typeSize.isAccessibilitySize {
+        ScrollView {
+          VStack(alignment: .leading, spacing: 24) { header; rows; summary }
+        }
+      } else {
+        VStack(spacing: 8) { header; ScrollView { rows }; summary }
+      }
+    }
+    .padding(.horizontal, 20).padding(.top, 18).padding(.bottom, 8)
+    .foregroundStyle(InnerBalanceTheme.ink).tint(InnerBalanceTheme.strongFill)
+    .background(InnerBalanceTheme.canvas)
+    .sheet(isPresented: $editing) { FangcunDrinkEditor() }
+    .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.fraction(0.55), .large])
+    .presentationDragIndicator(.visible)
+    .presentationCornerRadius(28)
+  }
+  private var header: some View {
+    let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12)) : AnyLayout(HStackLayout())
+    return layout {
+      VStack(alignment: .leading, spacing: 4) {
+        Text("今天喝了什么？").font(.title3.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+        Text(feedback).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+          .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("drinks.feedback")
+      }
+      HStack {
+        Spacer(minLength: 0)
+        FangcunCompanion(scene: .drink, paused: editing, reaction: reaction, event: motionEvent, committedEvent: committedEvent).frame(width: 68, height: 68)
+        Button("完成") { dismiss() }.font(.subheadline).frame(minWidth: 44, minHeight: 44)
+      }
+    }
+  }
+  private var rows: some View {
+    VStack(spacing: typeSize.isAccessibilitySize ? 28 : 3) {
+      ForEach(kinds) { kind in drinkRow(kind) }
+      Toggle("咖啡是甜拿铁（同时记糖饮）", isOn: $sweetCoffee).font(.caption).padding(.vertical, 6)
+      Button(FangcunCopy.text("diary.manage")) { editing = true }.accessibilityIdentifier("drinks.manage")
+      Text("按杯预估，实际含量会因品牌与杯量变化。酒精不折算为补水建议。")
+        .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk).frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+  private func drinkRow(_ kind: FangcunDrink) -> some View {
+    let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12)) : AnyLayout(HStackLayout(spacing: 10))
+    return layout {
+      HStack(alignment: .top, spacing: 10) {
+        Image(systemName: kind.symbol).foregroundStyle(InnerBalanceTheme.strongFill).accessibilityHidden(true)
+        VStack(alignment: .leading, spacing: 3) {
+          Text(kind.title).font(.subheadline.weight(.medium))
+          Text("\(kind == .water ? cupML : kind.fluid) ml" + (kind.isCoffee ? " · 每杯约 \(coffeeMg) mg 咖啡因" : kind == .beer ? " · 5% · 约 13 g 酒精" : ""))
+            .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk)
+        }.fixedSize(horizontal: false, vertical: true)
+      }
+      HStack(spacing: 10) {
+        Spacer(minLength: 0)
+        Button { change(kind, adding: false) } label: { Image(systemName: "minus").frame(minWidth: 44, minHeight: 44) }
+          .accessibilityLabel("减少\(kind.title)").disabled(count(kind) == 0)
+        Text("\(count(kind))").font(.subheadline.monospacedDigit()).frame(minWidth: 12)
+          .accessibilityIdentifier("drinks.count.\(kind.rawValue)")
+        Button { change(kind, adding: true) } label: {
+          if kind == .water {
+            Text(FangcunCopy.text("drink.logCup", cupML)).font(.caption2).multilineTextAlignment(.center)
+              .fixedSize(horizontal: false, vertical: true).padding(.horizontal, 12).padding(.vertical, 6)
+              .frame(minWidth: 72, minHeight: 44).background(InnerBalanceTheme.subtleFill, in: RoundedRectangle(cornerRadius: 18))
+          } else { Image(systemName: "plus").frame(minWidth: 44, minHeight: 44).background(InnerBalanceTheme.subtleFill, in: Circle()) }
+        }
+        .accessibilityLabel(kind == .water ? FangcunCopy.text("drink.logCup", cupML) : "增加\(kind.title)")
+        .accessibilityIdentifier("drinks.add." + kind.rawValue)
+      }
+    }
+    .opacity(diary.storageMessage == nil ? 1 : 0.5).disabled(diary.storageMessage != nil)
+  }
+  private var summary: some View {
+    VStack(spacing: 8) {
+      if let care, care.preferences.volumePromptsAllowed {
+        if care.preferences.referenceAccepted {
+          Text(FangcunCopy.text("care.progress", totals.nonAlcoholBeverageML, care.preferences.referenceML)).font(.caption)
+          ProgressView(value: Double(min(totals.nonAlcoholBeverageML, care.preferences.referenceML)), total: Double(care.preferences.referenceML))
+        } else {
+          Button(FangcunCopy.text("care.acceptDraft", care.preferences.referenceML)) {
+            var p = care.preferences; p.referenceAccepted = true; care.update(p)
+          }.font(.caption).frame(minHeight: 44)
+        }
+      }
+      Divider()
+      (typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 16)) : AnyLayout(HStackLayout())) {
+        VStack(alignment: .leading, spacing: 3) {
+          Text(FangcunCopy.text("drink.recordedFluid", totals.allBeverageML, totals.nonAlcoholBeverageML))
+          Text(FangcunCopy.text("drink.recordedDose", totals.knownCaffeineMG, totals.knownAlcoholGrams))
+        }.font(.caption).fixedSize(horizontal: false, vertical: true).accessibilityElement(children: .combine).accessibilityIdentifier("drinks.totals")
+        if !typeSize.isAccessibilitySize { Spacer() }
+        Button { report(diary.undo(), key: "drink.undone", event: .drinkUndone) } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
+          .font(.caption).frame(minHeight: 44).disabled(!diary.canUndo)
+      }
+      if totals.hasUnknownCaffeine { Text(FangcunCopy.text("drink.unknownCaffeine")).font(.caption) }
+      if totals.hasUnknownAlcohol { Text(FangcunCopy.text("diary.unknownAlcohol")).font(.caption) }
+      if let message = diary.storageMessage {
+        Text(message).font(.caption).foregroundStyle(InnerBalanceTheme.emphasis)
+        Button(FangcunCopy.text("diary.retry")) { diary.retry() }
+      }
+    }
+  }
+  private func count(_ kind: FangcunDrink) -> Int { diary.entries().filter { kind.isCoffee ? $0.kind.isCoffee : $0.kind == kind }.count }
+  private func change(_ kind: FangcunDrink, adding: Bool) {
+    let result: DrinkCommandResult
+    if adding { result = diary.add(kind, caffeine: coffeeMg, volumeML: kind == .water ? cupML : nil) }
+    else if kind.isCoffee, let last = diary.entries().last(where: { $0.kind.isCoffee }) { result = diary.remove(last.kind) }
+    else { result = diary.remove(kind) }
+    report(result, key: adding ? "drink.saved" : "drink.removed", event: !adding ? .drinkUndone : kind == .water ? .waterCommitted : .drinkCommitted)
+  }
+  private func report(_ result: DrinkCommandResult, key: String, event: CompanionMotionEvent) {
+    switch result {
+    case let .committed(receipt):
+      feedback = FangcunCopy.text(key); motionEvent = event
+      committedEvent = .init(id: receipt.eventID, kind: event, entityID: receipt.entityID.uuidString,
+        revision: receipt.revision, committedAt: receipt.committedAt)
+      reaction += 1
+    case .rejected: feedback = FangcunCopy.text("drink.rejected")
+    case .failed: feedback = diary.storageMessage ?? FangcunCopy.text("drink.failed")
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Home/FangcunHomeHeader.swift =====
+import Foundation
+import SwiftUI
+
+struct FangcunHomeHeader: View {
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @ScaledMetric(relativeTo: .largeTitle) private var displayPointSize =
+    FangcunTypography.display.basePointSize
+
+  let date: Date
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
+            titleBlock
+            dateLabel
+          }
+        } else {
+          HStack(alignment: .bottom, spacing: FangcunLayout.spacing(5)) {
+            titleBlock
+            Spacer(minLength: FangcunLayout.spacing(3))
+            dateLabel
+          }
+        }
+      }
+      .padding(.top, FangcunLayout.spacing(2))
+      .padding(.bottom, FangcunLayout.spacing(5))
+
+      FangcunEditorialRule(emphasized: true)
+        .frame(height: 2)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var titleBlock: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      brandPoint
+      Text("此刻")
+        .font(
+          dynamicTypeSize.isAccessibilitySize
+            ? .largeTitle.bold()
+            : .system(size: displayPointSize, weight: .bold, design: .default)
+        )
+        .tracking(FangcunTypography.display.tracking)
+        .foregroundStyle(InnerBalanceTheme.ink)
+        .accessibilityAddTraits(.isHeader)
+    }
+  }
+
+  private var dateLabel: some View {
+    Text(editorialDate)
+      .font(.caption.weight(.medium))
+      .foregroundStyle(InnerBalanceTheme.mutedInk)
+      .multilineTextAlignment(dynamicTypeSize.isAccessibilitySize ? .leading : .trailing)
+      .fixedSize(horizontal: false, vertical: true)
+      .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+      .accessibilityIdentifier("home.date")
+  }
+
+  private var brandPoint: some View {
+    HStack(spacing: FangcunLayout.spacing(2)) {
+      FangcunBrandMark(size: 28)
+      Text("方寸")
+        .font(.subheadline.weight(.semibold))
+        .tracking(1.4)
+        .foregroundStyle(InnerBalanceTheme.ink)
+    }
+    .frame(minHeight: 24)
+    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("方寸")
+    .accessibilityIdentifier("home.brandPoint")
+  }
+
+  private var editorialDate: String {
+    let calendar = Calendar.autoupdatingCurrent
+    let month = calendar.component(.month, from: date)
+    let day = calendar.component(.day, from: date)
+    let weekday = date.formatted(.dateTime.weekday(.wide))
+    return String(format: "%02d / %02d\n%@", month, day, weekday)
+  }
+}
+
+===== END FILE =====
+
 ===== FILE: InnerBalance/InnerBalanceApp/Features/Home/FangcunTodayView.swift =====
 import InnerBalanceCore
 import SwiftUI
@@ -10,37 +962,53 @@ struct FangcunTodayView: View {
   let isUITesting: Bool
   let onStart: () -> Void
   let onCheckIn: () -> Void
+  var onSuggestedPractice: (PracticeKind, TimeInterval) -> Void = { _, _ in }
+  @Environment(\.careOwner) private var care
+  @Environment(\.recoveryOwner) private var recovery
+  @Environment(\.readinessOwner) private var readiness
   @Environment(FangcunDiary.self) private var diary
   @Environment(\.scenePhase) private var phase
   @Environment(\.dynamicTypeSize) private var typeSize
   @AppStorage("fangcun.dark") private var dark = false
   @AppStorage("fangcun.largeType") private var largeType = false
   @State private var drinks = false
-  @State private var companion = false
-  @State private var replay = 0
   @State private var askingHealth = false
 
   private var state: FangcunDayState {
+    if let readiness, readiness.enabled { return readiness.scene }
+    #if DEBUG
     if isUITesting, let flag = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--preview-state=") }),
       let value = FangcunDayState(rawValue: String(flag.dropFirst("--preview-state=".count))) { return value }
+    #endif
     return FangcunDayState.resolve(model)
   }
   private var summary: String {
-    switch state {
-    case .steady: "身体指标接近平常，今天按自己的节奏来。"
-    case .elevated: "身体有些忙，先给自己留一点缓冲。"
-    case .insufficient: model.baselineDays > 0 ? "正在认识你的节奏，个人基线已积累 \(model.baselineDays)/5 天。" : "身体线索还不够。你仍然可以先休息，或做一次呼吸。"
+    if let readiness, readiness.enabled { return readiness.guidance.summary }
+    if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
+      return FangcunCopy.text("body.workout.summary")
     }
+    if model.assessment.availability == .buildingBaseline && state == .limited {
+      return FangcunCopy.text("body.baseline.summary", model.baselineDays)
+    }
+    return FangcunCopy.text("body.state.\(state.rawValue).summary")
   }
   private var evidenceLine: String {
-    switch state {
-    case .steady: "已有可靠身体指标处于个人参考范围"
-    case .elevated: model.assessment.level == .watch ? "一项身体指标偏离参考，先留意今天的恢复" : "多项身体指标偏离个人参考"
-    case .insufficient: "数据不足时，不把未知当作平稳"
+    if let readiness, readiness.enabled { return FangcunCopy.text((readiness.current?.refreshFailure != nil || readiness.errorKey != nil) ? "readiness.refreshError" : "readiness.boundary") }
+    if !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
+      return FangcunCopy.text("body.workout.evidence")
     }
+    return FangcunCopy.text("body.state.\(state.rawValue).evidence")
   }
-  private var sleepText: String { model.evidence.first(where: { $0.kind == .sleep })?.valueText ?? "暂无可用数据" }
-  private var recovery: String { state == .steady ? "接近平常" : state == .elevated ? "需要缓一缓" : "基线积累中" }
+  private var sleepText: String {
+    guard let sleep = model.evidence.first(where: { $0.kind == .sleep }) else {
+      return FangcunCopy.text("body.metric.unavailable")
+    }
+    return FangcunCopy.text("body.sleep.value", FangcunCopy.timestamp(sleep.measuredAt), sleep.valueText)
+  }
+  private var cardiovascular: HomeHealthEvidence? {
+    model.evidence.filter { $0.kind == .restingHeartRate || $0.kind == .heartRateVariability }
+      .max { $0.measuredAt < $1.measuredAt }
+  }
 
   var body: some View {
     NavigationStack {
@@ -50,7 +1018,7 @@ struct FangcunTodayView: View {
           HStack {
             Text(Date.now, format: .dateTime.month().day().weekday(.wide)).font(.caption)
             Spacer()
-            Text(model.isLoading ? "正在更新" : "Apple 健康 · 身体线索").font(.caption2)
+            Text((readiness?.enabled == true ? readiness?.loading == true : model.isLoading) ? "正在更新" : "Apple 健康 · 身体线索").font(.caption2)
           }.foregroundStyle(InnerBalanceTheme.mutedInk)
           hero
           Button(action: onStart) {
@@ -64,28 +1032,35 @@ struct FangcunTodayView: View {
               Image(systemName: "arrow.up.right")
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 18)
           }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
-          evidenceCard
+            .disabled(recovery?.canStart == false || care?.selection?.candidate.category == .danger)
+          if let recovery, care?.selection?.candidate.category != .danger { RecoverySuggestionView(owner: recovery, assessment: readiness?.current, onPractice: onSuggestedPractice) }
+          if let readiness, readiness.enabled { ReadinessEvidenceLink(owner: readiness, onStart: onStart) } else { evidenceCard }
+          VStack(alignment: .leading, spacing: 12) {
           Button { drinks = true } label: {
             HStack(spacing: 14) {
               Image(systemName: "drop").font(.title2).foregroundStyle(InnerBalanceTheme.strongFill)
               VStack(alignment: .leading, spacing: 5) {
                 Text("今天喝了什么？").font(.headline)
-                Text(diary.entries().isEmpty ? "水、咖啡，或是别的什么" : "已记 \(diary.entries().count) 杯 · 总液体 \(FangcunDrinkTotals(diary.entries()).fluid) ml")
+                Text(diary.entries().isEmpty ? "水、咖啡，或是别的什么" : "已记 \(diary.entries().count) 杯 · 已记录饮品 \(FangcunDrinkTotals(diary.entries()).fluid) ml")
                   .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
               }
               Spacer(minLength: 0)
               Image(systemName: "plus").frame(width: 34, height: 34).background(InnerBalanceTheme.subtleFill, in: Circle())
             }.fangcunPaperCard()
           }.buttonStyle(.plain).accessibilityIdentifier("today.drinks")
-          if !diary.entries().isEmpty { drinkContext }
+          if let care { BeverageCareCard(owner: care).padding(.horizontal, 12) }
+          }
           if let latestPractice, Calendar.current.isDateInToday(latestPractice.endedAt) {
             Label("今天，已经为自己留了片刻。", systemImage: "checkmark.circle")
+              .accessibilityIdentifier("today.latestPractice")
+              .accessibilityValue(latestPractice.sessionID)
               .font(.subheadline).foregroundStyle(InnerBalanceTheme.strongFill)
           }
-          NavigationLink { FangcunTrendsView() } label: {
+          NavigationLink { if let readiness, readiness.enabled { ReadinessHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: {
             HStack { Text("看看这一周的节奏"); Spacer(); Image(systemName: "arrow.right") }.font(.subheadline).padding(.vertical, 10)
           }.accessibilityIdentifier("today.trends")
           Button("想补充一下自己的感受") { onCheckIn() }
+            .accessibilityIdentifier("home.checkIn")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).frame(minHeight: 44)
           Text("不必把每一天，都过得很用力。")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 18)
@@ -95,20 +1070,20 @@ struct FangcunTodayView: View {
       .foregroundStyle(InnerBalanceTheme.ink)
       .toolbar(.hidden, for: .navigationBar)
       .refreshable { await refresh() }
+      .onChange(of: care?.pendingRoute, initial: true) { _, route in
+        if route == "record" { drinks = true; care?.pendingRoute = nil }
+      }
       .sheet(isPresented: $drinks) { FangcunDrinkSheet() }
-      .sheet(isPresented: $companion) {
-        VStack(spacing: 22) {
-          FangcunCompanion(scene: state.scene, reaction: replay).frame(maxWidth: 300)
-          Text(state == .elevated ? "先靠一会儿。" : state == .insufficient ? "慢慢认识你的节奏。" : "就这样，待一会儿。")
-            .font(.title2.weight(.semibold))
-          Button("再看一次动作") { replay += 1 }.frame(minHeight: 44)
-          Button("回到今日") { companion = false }.frame(minHeight: 44)
-        }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
-          .background(InnerBalanceTheme.canvas).presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
+
+    }
+    .task {
+      if readiness?.enabled != true { await refresh() }
+      while !Task.isCancelled {
+        readiness?.tick()
+        try? await Task.sleep(for: .seconds(1))
       }
     }
-    .task { await refresh() }
-    .onChange(of: phase) { _, value in if value == .active { Task { await refresh() } } }
+    .onChange(of: phase) { _, value in if value == .active, readiness?.enabled != true { Task { await refresh() } } }
     .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in Task { await refresh() } }
   }
 
@@ -129,38 +1104,47 @@ struct FangcunTodayView: View {
   private var hero: some View {
     VStack(alignment: .leading, spacing: 16) {
       HStack {
-        Label(state.shortTitle, systemImage: "circle.fill").font(.caption).labelStyle(.titleAndIcon)
+        Label(readiness?.enabled == true ? FangcunCopy.text("guidance.kind." + (readiness?.guidance.kind.rawValue ?? "onboarding")) : state.shortTitle, systemImage: "circle.fill").font(.caption).labelStyle(.titleAndIcon)
           .foregroundStyle(state == .elevated ? InnerBalanceTheme.emphasis : InnerBalanceTheme.strongFill)
           .padding(.horizontal, 10).padding(.vertical, 6).background(InnerBalanceTheme.subtleFill, in: Capsule())
         Spacer()
-        if let updated = model.lastUpdated { Text(updated, style: .time).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk) }
       }
-      Text(state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("today.conclusion")
+      Text(readiness?.enabled == true ? readiness!.guidance.title : state.title).font(.title2.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+        .accessibilityIdentifier("today.conclusion").accessibilityValue(readiness?.enabled == true ? readiness!.presentationKey : state.rawValue)
+      Text((readiness?.enabled == true ? readiness?.current?.latestMeasuredAt : model.latestMeasuredAt).map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0)) }
+        ?? FangcunCopy.text("body.time.noMeasurement"))
+        .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        .accessibilityIdentifier("today.measuredAt")
+        .accessibilityValue((readiness?.enabled == true ? readiness?.current?.latestMeasuredAt : model.latestMeasuredAt)?.ISO8601Format() ?? "none")
       ViewThatFits(in: .horizontal) {
         HStack(spacing: 10) { Text(summary).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true); character.frame(width: 142) }
         VStack(alignment: .leading, spacing: 10) { Text(summary).font(.subheadline); character.frame(maxWidth: 180).frame(maxWidth: .infinity) }
       }
-      Divider()
-      Text(evidenceLine).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true)
+      if readiness?.enabled != true && !model.assessment.workoutExcludedEvidenceIDs.isEmpty {
+        Text(evidenceLine).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+          .accessibilityIdentifier("today.evidenceSummary")
+      }
+      if let note = readiness?.guidance.noteKey {
+        Text(FangcunCopy.text(note)).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
     }.fangcunPaperCard()
   }
   private var character: some View {
-    Button { companion = true } label: {
-      VStack(spacing: 2) {
-        FangcunCompanion(scene: state.scene, paused: drinks || companion)
-        Text(state == .steady ? "看看它们 ↗" : "看看它 ↗").font(.system(size: 10)).foregroundStyle(InnerBalanceTheme.mutedInk)
-      }
-    }.buttonStyle(.plain).accessibilityLabel(state.scene.label)
+    FangcunCompanion(scene: readiness?.enabled == true ? readiness!.guidance.scene : state.scene, paused: drinks)
+      .accessibilityHidden(true)
   }
+
   private var evidenceCard: some View {
     VStack(alignment: .leading, spacing: 12) {
       HStack { Text("身体给的线索").font(.headline); Spacer(); Text("真实数据").font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk) }
       NavigationLink { FangcunEvidenceDetail(model: model, authorization: authorization) } label: {
         VStack(spacing: 16) {
           HStack(alignment: .top) {
-            metric("昨晚睡眠", sleepText, "moon")
+            metric(FangcunCopy.text("body.sleep.title"), sleepText, "moon")
             Spacer(minLength: 8); Divider(); Spacer(minLength: 8)
-            metric("身体恢复", recovery, "heart")
+            metric(FangcunCopy.text(cardiovascular?.kind == .heartRateVariability ? "body.metric.hrv" : "body.metric.rhr"),
+              cardiovascular?.valueText ?? FangcunCopy.text("body.metric.unavailable"), "heart",
+              detail: cardiovascular.map { FangcunCopy.text("body.time.measured", FangcunCopy.timestamp($0.measuredAt)) })
           }.fixedSize(horizontal: false, vertical: true)
           Divider()
           HStack { Text("为什么这样判断"); Spacer(); Image(systemName: "chevron.right") }.font(.caption)
@@ -168,10 +1152,11 @@ struct FangcunTodayView: View {
       }.buttonStyle(.plain).accessibilityIdentifier("today.evidence")
     }
   }
-  private func metric(_ title: String, _ value: String, _ icon: String) -> some View {
+  private func metric(_ title: String, _ value: String, _ icon: String, detail: String? = nil) -> some View {
     VStack(alignment: .leading, spacing: 10) {
       Label(title, systemImage: icon).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
       Text(value).font(.subheadline.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+      if let detail { Text(detail).font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk) }
     }.frame(maxWidth: .infinity, alignment: .leading)
   }
   private var drinkContext: some View {
@@ -184,6 +1169,7 @@ struct FangcunTodayView: View {
     }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).frame(maxWidth: .infinity, alignment: .leading)
   }
   private func refresh() async {
+    if let readiness, readiness.enabled { await readiness.refresh(); return }
     await model.refresh()
     guard !isUITesting else { return }
     diary.record(FangcunDaySnapshot(date: .now, state: state, summary: evidenceLine, sleep: sleepText,
@@ -201,6 +1187,18 @@ struct FangcunEvidenceDetail: View {
         Text("判断有依据，也有边界。").font(.title2.weight(.semibold))
         Text("与自己的近期基线比较，综合恢复指标和睡眠。身体负荷不等于你的主观感受；数据不足时保留未知。")
           .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+        VStack(alignment: .leading, spacing: 8) {
+          if let fetchedAt = model.fetchedAt {
+            Text(FangcunCopy.text("body.time.fetched", FangcunCopy.timestamp(fetchedAt)))
+              .accessibilityIdentifier("evidence.fetchedAt").accessibilityValue(fetchedAt.ISO8601Format())
+          }
+          if let computedAt = model.computedAt {
+            Text(FangcunCopy.text("body.time.computed", FangcunCopy.timestamp(computedAt)))
+              .accessibilityIdentifier("evidence.computedAt").accessibilityValue(computedAt.ISO8601Format())
+          }
+          Text(FangcunCopy.text("body.time.explanation"))
+          if !model.unavailableKinds.isEmpty { Text(FangcunCopy.text("body.query.unavailable")) }
+        }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         if model.evidence.isEmpty { Text("还没有可用的健康数据。你可以检查授权，或等待设备同步。").fangcunPaperCard() }
         ForEach(model.evidence) { evidence in HealthEvidenceView(evidence: evidence).fangcunPaperCard() }
         VStack(alignment: .leading, spacing: 10) {
@@ -209,7 +1207,9 @@ struct FangcunEvidenceDetail: View {
             Text("\(training.count) 次训练 · \(Int(training.totalDuration / 60)) 分钟")
             Text("最近：\(training.latestActivityName) · \(training.latestSourceName)").font(.caption)
           } else { Text("没有可用的近期训练记录").font(.subheadline) }
-          if model.recentWorkoutProtection { Text("近期运动可能影响恢复指标，本次判断已考虑运动后的保护窗口。").font(.caption) }
+          if model.recentWorkoutProtection {
+            Text(FangcunCopy.text("body.workout.detail")).font(.caption).accessibilityIdentifier("evidence.workoutProtection")
+          }
         }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
         Text("基线积累：\(model.baselineDays)/5 天。饮品记录作为生活线索展示，不会凭几杯饮品改写健康结论。")
           .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
@@ -247,28 +1247,35 @@ struct FangcunTrendsView: View {
         Text("每一天，都有自己的起伏。").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
         HStack(alignment: .bottom, spacing: 8) {
           ForEach(days, id: \.self) { date in
-            let dayState = diary.snapshot(on: date)?.state
+            let daySnapshot = diary.snapshot(on: date)
+            let dayState = daySnapshot?.state
             Button { selected = date } label: {
               VStack(spacing: 10) {
                 RoundedRectangle(cornerRadius: 8)
                   .fill(color(dayState))
-                  .frame(height: dayState == .elevated ? 88 : dayState == .steady ? 52 : 12)
+                  .frame(height: dayState == .elevated ? 88 : dayState == .watch ? 70 : dayState == .steady ? 52 : 12)
                   .frame(height: 92, alignment: .bottom)
                 Text(date, format: .dateTime.weekday(.narrow)).font(.caption)
                 Circle().fill(Calendar.current.isDate(date, inSameDayAs: selected) ? InnerBalanceTheme.strongFill : .clear).frame(width: 5, height: 5)
               }.frame(maxWidth: .infinity).frame(minHeight: 130).contentShape(Rectangle())
             }.buttonStyle(.plain)
-              .accessibilityLabel("\(date.formatted(.dateTime.month().day()))，\(dayState?.shortTitle ?? "未记录")")
+              .accessibilityLabel("\(date.formatted(.dateTime.month().day()))，\(daySnapshot?.displayStateTitle ?? "未记录")")
               .accessibilityAddTraits(Calendar.current.isDate(date, inSameDayAs: selected) ? .isSelected : [])
           }
         }.fangcunPaperCard()
-        HStack(spacing: 16) {
-          Label("平稳", systemImage: "circle.fill").foregroundStyle(color(.steady))
-          Label("偏高", systemImage: "circle.fill").foregroundStyle(color(.elevated))
-          Text("浅色短线：未知 / 未记录").foregroundStyle(InnerBalanceTheme.mutedInk)
+        VStack(alignment: .leading, spacing: 8) {
+          HStack(spacing: 16) {
+            Label(FangcunDayState.steady.shortTitle, systemImage: "circle.fill").foregroundStyle(color(.steady))
+            Label(FangcunDayState.watch.shortTitle, systemImage: "circle.fill").foregroundStyle(color(.watch))
+            Label(FangcunDayState.elevated.shortTitle, systemImage: "circle.fill").foregroundStyle(color(.elevated))
+          }
+          Text(FangcunCopy.text("body.history.unknownLegend")).foregroundStyle(InnerBalanceTheme.mutedInk)
         }.font(.caption2)
         VStack(alignment: .leading, spacing: 18) {
-          HStack { Text(selected, format: .dateTime.month().day()).font(.headline); Spacer(); Text(snapshot?.state.shortTitle ?? "未记录").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk) }
+          HStack { Text(selected, format: .dateTime.month().day()).font(.headline); Spacer(); Text(snapshot?.displayStateTitle ?? "未记录").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk) }
+          if snapshot?.isLegacy == true {
+            Text(FangcunCopy.text("body.history.legacy")).font(.caption).accessibilityIdentifier("trends.legacy")
+          }
           Text(snapshot?.summary ?? "这一天没有身体状态快照，不推测过去的状态。")
             .font(.subheadline).accessibilityIdentifier("trends.snapshot")
           Divider()
@@ -278,6 +1285,14 @@ struct FangcunTrendsView: View {
           row("总液体", "\(totals.fluid) ml", "drop")
           row("咖啡因 / 酒精", "\(totals.caffeine) mg / \(totals.alcohol) g", "cup.and.saucer")
           row("含糖饮品", "\(totals.sugar) 份", "takeoutbag.and.cup.and.straw")
+          if snapshot?.isLegacy == false {
+            ForEach(diary.legacySnapshots(on: selected)) { legacy in
+              VStack(alignment: .leading, spacing: 6) {
+                Text(FangcunCopy.text("body.history.legacy")).font(.caption)
+                Text(legacy.displayStateTitle + " · " + legacy.summary).font(.caption)
+              }.foregroundStyle(InnerBalanceTheme.mutedInk)
+            }
+          }
         }.fangcunPaperCard()
         if Calendar.current.isDateInToday(selected) { Button("补记今天的饮品") { drinks = true }.buttonStyle(InnerBalancePrimaryButtonStyle()) }
         Text("身体状态从本次改版开始按日保存；已有练习记录继续保留。柱高只区分状态，不代表医学评分。")
@@ -288,7 +1303,7 @@ struct FangcunTrendsView: View {
       .sheet(isPresented: $drinks) { FangcunDrinkSheet() }
   }
   private func color(_ state: FangcunDayState?) -> Color {
-    switch state { case .steady: Color(red: 0.41, green: 0.60, blue: 0.57); case .elevated: InnerBalanceTheme.emphasis; default: InnerBalanceTheme.mutedInk.opacity(0.22) }
+    switch state { case .steady: Color(red: 0.41, green: 0.60, blue: 0.57); case .watch: InnerBalanceTheme.strongFill; case .elevated: InnerBalanceTheme.emphasis; default: InnerBalanceTheme.mutedInk.opacity(0.22) }
   }
   private func row(_ title: String, _ value: String, _ symbol: String) -> some View {
     HStack(alignment: .top) { Label(title, systemImage: symbol).foregroundStyle(InnerBalanceTheme.mutedInk); Spacer(); Text(value).multilineTextAlignment(.trailing) }.font(.subheadline)
@@ -359,6 +1374,7 @@ struct HealthEvidenceView: View {
       }
     }
     .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("evidence.metric.\(evidence.kind.rawValue)")
   }
 
   private var title: String {
@@ -366,7 +1382,7 @@ struct HealthEvidenceView: View {
     case .heartRateVariability: "心率变异性"
     case .restingHeartRate: "静息心率"
     case .respiratoryRate: "呼吸频率"
-    case .sleep: "主睡眠"
+    case .sleep: FangcunCopy.text("body.sleep.title")
     }
   }
 
@@ -394,11 +1410,14 @@ struct HealthEvidenceView: View {
       case .reliable: evidence.deviation == .elevated ? "偏离近期参考" : "在近期参考内"
       case .buildingBaseline: "原始读数 · 基线尚未完成"
       case .needsReview: "数据需要确认"
-      case .stale: "超过 36 小时 · 不参与当前判断"
+      case .stale: FangcunCopy.text("body.source.stale")
       }
-    let time = evidence.measuredAt.formatted(.relative(presentation: .named))
+    let time = FangcunCopy.timestamp(evidence.measuredAt)
     let assessment = evidence.assessmentValueText.map { " · \($0)" } ?? ""
-    return "\(evidence.sourceName) · 最新测量于 \(time)\(assessment) · \(reliability)"
+    let assessmentTime = evidence.assessmentMeasuredAt.map {
+      FangcunCopy.text("body.time.assessmentLatest", FangcunCopy.timestamp($0))
+    } ?? ""
+    return FangcunCopy.text("body.source.detail", evidence.sourceName, time, assessment, assessmentTime, reliability)
   }
 }
 
@@ -826,6 +1845,7 @@ struct HomeHealthEvidence: Equatable, Identifiable, Sendable {
   let reliability: HomeEvidenceReliability
   let deviation: HomeEvidenceDeviation
   let assessmentValueText: String?
+  let assessmentMeasuredAt: Date?
 
   init(
     kind: BodyLoadEvidenceKind,
@@ -834,7 +1854,8 @@ struct HomeHealthEvidence: Equatable, Identifiable, Sendable {
     measuredAt: Date,
     reliability: HomeEvidenceReliability,
     deviation: HomeEvidenceDeviation,
-    assessmentValueText: String? = nil
+    assessmentValueText: String? = nil,
+    assessmentMeasuredAt: Date? = nil
   ) {
     self.kind = kind
     self.valueText = valueText
@@ -843,6 +1864,7 @@ struct HomeHealthEvidence: Equatable, Identifiable, Sendable {
     self.reliability = reliability
     self.deviation = deviation
     self.assessmentValueText = assessmentValueText
+    self.assessmentMeasuredAt = assessmentMeasuredAt
   }
 
   var isAggregatedAssessment: Bool {
@@ -874,6 +1896,7 @@ struct HomeTrainingSummary: Equatable, Sendable {
 @Observable
 final class HomeViewModel {
   private let provider: any BodyHealthDataProviding
+  private let clock: () -> Date
   @ObservationIgnored private var currentRefreshID: UUID?
 
   private(set) var assessment = BodyLoadEngine.assess(evidence: [], baselineDays: 0)
@@ -884,14 +1907,22 @@ final class HomeViewModel {
   private(set) var sleepNeedsReview = false
   private(set) var sleepReviewDetails: SleepReviewDetails?
   private(set) var trainingSummary: HomeTrainingSummary?
-  private(set) var lastUpdated: Date?
+  private(set) var fetchedAt: Date?
+  private(set) var computedAt: Date?
+  /// Compatibility for older diagnostics; this has always been a query timestamp.
+  var lastUpdated: Date? { fetchedAt }
+  var latestMeasuredAt: Date? {
+    evidence.flatMap { [$0.measuredAt, $0.assessmentMeasuredAt].compactMap { $0 } }.max()
+  }
   private(set) var isLoading = false
 
-  init(provider: any BodyHealthDataProviding) {
+  init(provider: any BodyHealthDataProviding, clock: @escaping () -> Date = { .now }) {
     self.provider = provider
+    self.clock = clock
   }
 
-  func refresh(now: Date = .now) async {
+  func refresh(now: Date? = nil) async {
+    let now = now ?? clock()
     let refreshID = UUID()
     currentRefreshID = refreshID
     isLoading = true
@@ -901,12 +1932,20 @@ final class HomeViewModel {
       }
     }
 
-    let snapshot = await provider.fetchBodyHealthData(now: now)
+    let received = await provider.fetchBodyHealthData(now: now)
     guard currentRefreshID == refreshID else { return }
+    // A failed query cannot validate any cached values delivered alongside it.
+    let snapshot = BodyHealthDataSnapshot(
+      heartRateVariability: received.unavailableKinds.contains(.heartRateVariability) ? [] : received.heartRateVariability,
+      restingHeartRate: received.unavailableKinds.contains(.restingHeartRate) ? [] : received.restingHeartRate,
+      sleep: received.unavailableKinds.contains(.sleep) ? [] : received.sleep,
+      workouts: received.unavailableKinds.contains(.workout) ? [] : received.workouts,
+      unavailableKinds: received.unavailableKinds, fetchedAt: received.fetchedAt)
     let calendar = Calendar.current
     let today = calendar.startOfDay(for: now)
-    let historicalHRV = snapshot.heartRateVariability.filter { $0.date < today }
-    let historicalResting = snapshot.restingHeartRate.filter { $0.date < today }
+    let baselineCutoff = calendar.date(byAdding: .day, value: -14, to: now) ?? now
+    let historicalHRV = snapshot.heartRateVariability.filter { $0.date < today && $0.date >= baselineCutoff }
+    let historicalResting = snapshot.restingHeartRate.filter { $0.date < today && $0.date >= baselineCutoff }
     let currentHRV = assessmentRecords(
       from: snapshot.heartRateVariability,
       now: now
@@ -989,7 +2028,8 @@ final class HomeViewModel {
             "近 36 小时中位数 "
               + "\($0.value.formatted(.number.precision(.fractionLength(0)))) ms"
               + " · 来源 \(assessmentSourceName(from: currentHRV))"
-          }
+          },
+          assessmentMeasuredAt: recentHRV?.latestDate
         )
       )
       if recentHRV != nil {
@@ -1020,7 +2060,8 @@ final class HomeViewModel {
             "近 36 小时中位数 "
               + "\($0.value.formatted(.number.precision(.fractionLength(0)))) 次/分"
               + " · 来源 \(assessmentSourceName(from: currentResting))"
-          }
+          },
+          assessmentMeasuredAt: recentResting?.latestDate
         )
       )
       if recentResting != nil {
@@ -1050,6 +2091,7 @@ final class HomeViewModel {
       )
     }
     if let primarySleep {
+      let isCurrent = primarySleep.end >= now.addingTimeInterval(-36 * 3_600)
       let isElevated = primarySleep.isUsableForBodyLoad && primarySleep.asleepDuration < 6.5 * 3_600
       items.append(
         HomeHealthEvidence(
@@ -1057,17 +2099,17 @@ final class HomeViewModel {
           valueText: Self.durationText(primarySleep.asleepDuration),
           sourceName: primarySleep.sourceNames.joined(separator: "、"),
           measuredAt: primarySleep.end,
-          reliability: primarySleep.isUsableForBodyLoad ? .reliable : .needsReview,
+          reliability: !isCurrent ? .stale : primarySleep.isUsableForBodyLoad ? .reliable : .needsReview,
           deviation: isElevated ? .elevated : .withinRange
         )
       )
-      coreEvidence.append(
+      if isCurrent { coreEvidence.append(
         BodyLoadEvidence(
           kind: .sleep,
           state: isElevated ? .elevated : .withinRange,
           isReliable: primarySleep.isUsableForBodyLoad
         )
-      )
+      ) }
     }
 
     recentWorkoutProtection = snapshot.workouts.contains {
@@ -1101,7 +2143,8 @@ final class HomeViewModel {
       baselineDays: baselineDays,
       recentWorkout: recentWorkoutProtection
     )
-    lastUpdated = snapshot.fetchedAt
+    fetchedAt = snapshot.fetchedAt
+    computedAt = clock()
   }
 
   private func validDayCount(
@@ -2721,7 +3764,7 @@ struct PracticeComparisonScreen: View {
     } else {
       ScrollView {
         VStack(alignment: .leading, spacing: FangcunLayout.spacing(7)) {
-          FangcunCompanion(scene: viewModel.actualDuration ?? 0 >= viewModel.duration - 1 ? .complete : .rest)
+          FangcunCompanion(scene: viewModel.actualDuration ?? 0 >= viewModel.duration - 1 ? .complete : .rest, paused: true)
             .frame(height: 155).frame(maxWidth: .infinity)
           VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
             Text("已经为自己留了片刻")
@@ -2815,9 +3858,8 @@ struct PracticeSavedScreen: View {
       VStack(spacing: FangcunLayout.spacing(5)) {
         Text("练习结果")
           .fangcunSectionLabelStyle()
-        FangcunCompanion(scene: scene)
+        FangcunCompanion(scene: scene, event: scene == .complete ? .completed : .endedEarly)
           .frame(height: 185)
-        .scaleEffect(appeared || reduceMotion ? 1 : 0.94)
         .opacity(appeared ? 1 : 0)
         Text("本次练习已保存")
           .font(.title.weight(.semibold))
@@ -3203,1448 +4245,6 @@ private struct PracticeDurationButtonStyle: ButtonStyle {
         FangcunMotion.pressAnimation(reduceMotion: reduceMotion),
         value: configuration.isPressed
       )
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeLibraryView.swift =====
-import InnerBalanceCore
-import SwiftUI
-
-struct PracticeLaunch: Identifiable, Equatable {
-  let kind: PracticeKind
-  let duration: TimeInterval
-  var startsImmediately = false
-
-  var id: String { "\(kind.rawValue)-\(Int(duration))" }
-}
-
-struct PracticeLibraryView: View {
-  let onStart: (PracticeLaunch) -> Void
-
-  private let featuredPlan = PracticeCatalog.buildOne[0]
-  private let otherPlans = Array(PracticeCatalog.buildOne.dropFirst())
-
-  var body: some View {
-    NavigationStack {
-      ZStack {
-        InnerBalanceTheme.canvas.ignoresSafeArea()
-        ScrollView {
-          VStack(alignment: .leading, spacing: FangcunLayout.spacing(8)) {
-            PracticeLibraryHeader()
-            VStack(alignment: .leading, spacing: 18) {
-              FangcunCompanion(scene: .breathe).frame(height: 160).frame(maxWidth: .infinity)
-              Text("先从一口呼吸开始").font(.title2.weight(.semibold))
-              Text("大口吸气，再补一小口，慢慢呼出。").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
-              Button("开始 5 分钟 · 双吸一呼") {
-                onStart(PracticeLaunch(kind: .physiologicalSigh, duration: 300, startsImmediately: true))
-              }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("practice.sigh.300")
-              Button("先试 1 分钟，看看练习说明") {
-                onStart(PracticeLaunch(kind: .physiologicalSigh, duration: 60))
-              }.font(.caption).frame(minHeight: 44).accessibilityIdentifier("practice.physiologicalSigh.60")
-            }.fangcunPaperCard()
-            VStack(alignment: .leading, spacing: FangcunLayout.spacing(5)) {
-              Text("其他练习")
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(InnerBalanceTheme.ink)
-              ForEach(otherPlans, id: \.kind.rawValue) { plan in
-                PracticeLibraryRow(plan: plan, onStart: onStart)
-              }
-            }
-          }
-          .padding(.horizontal, FangcunLayout.pageHorizontalPadding)
-          .padding(.top, FangcunLayout.spacing(6))
-          .padding(.bottom, FangcunLayout.spacing(6))
-        }
-      }
-      .toolbar(.hidden, for: .navigationBar)
-    }
-  }
-}
-
-private struct PracticeLibraryHeader: View {
-  var body: some View {
-    VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-      HStack(spacing: FangcunLayout.spacing(2)) {
-        Circle()
-          .fill(InnerBalanceTheme.strongFill)
-          .frame(width: 8, height: 8)
-        Text("练习")
-          .font(.caption.weight(.semibold))
-          .tracking(1.2)
-          .foregroundStyle(InnerBalanceTheme.strongFill)
-      }
-      Text("给自己留一点时间")
-        .font(.largeTitle.weight(.bold))
-        .foregroundStyle(InnerBalanceTheme.ink)
-        .fixedSize(horizontal: false, vertical: true)
-      Text("呼吸、休息，或慢慢感受身体。")
-        .font(.subheadline)
-        .foregroundStyle(InnerBalanceTheme.mutedInk)
-    }
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeNonBreathingStages.swift =====
-import InnerBalanceCore
-import SwiftUI
-
-struct SettlingStagePlayer: View {
-  let kind: PracticeKind
-  let elapsed: TimeInterval
-  let remaining: TimeInterval
-  let isPaused: Bool
-  let reduceMotion: Bool
-
-  private var state: PracticeStageState { .make(kind: kind, elapsed: elapsed) }
-
-  var body: some View {
-    PracticeStageScaffold(
-      eyebrow: kind.outcomeTitle,
-      title: isPaused ? "已暂停" : "让注意力落下来",
-      instruction: isPaused ? "准备好后继续" : kind.cue(elapsed: elapsed),
-      remaining: remaining,
-      accessibilityIdentifier: "practice.settlingStage"
-    ) {
-      ZStack {
-        ForEach(0..<4) { index in
-          Circle()
-            .stroke(
-              InnerBalanceTheme.emphasis.opacity(0.22 + Double(index) * 0.10),
-              lineWidth: index == state.focusIndex ? 3 : 1
-            )
-            .frame(width: 112 + CGFloat(index) * 40, height: 112 + CGFloat(index) * 40)
-            .scaleEffect(reduceMotion ? 1 : 0.96 + state.intensity * 0.05)
-            .opacity(1 - Double(index) * 0.12)
-        }
-        Circle()
-          .fill(InnerBalanceTheme.strongFill.opacity(0.78))
-          .frame(width: 28, height: 28)
-          .scaleEffect(reduceMotion ? 1 : 0.82 + state.intensity * 0.24)
-      }
-      .accessibilityHidden(true)
-    }
-  }
-}
-
-struct BodyScanStagePlayer: View {
-  let kind: PracticeKind
-  let duration: TimeInterval
-  let elapsed: TimeInterval
-  let remaining: TimeInterval
-  let isPaused: Bool
-  let reduceMotion: Bool
-
-  private var state: PracticeBodyScanState {
-    .make(elapsed: elapsed, duration: duration)
-  }
-
-  var body: some View {
-    PracticeStageScaffold(
-      eyebrow: kind.outcomeTitle,
-      title: isPaused ? "已暂停" : state.isReturning ? "慢慢回到此刻" : "把重量交给支撑面",
-      instruction: isPaused ? "准备好后继续" : state.cue.spokenText,
-      remaining: remaining,
-      accessibilityIdentifier: "practice.bodyScanStage"
-    ) {
-      VStack(spacing: FangcunLayout.spacing(3)) {
-        ForEach(0..<4) { index in
-          ZStack {
-            Capsule()
-              .fill(InnerBalanceTheme.subtleFill)
-            Capsule()
-              .fill(InnerBalanceTheme.strongFill)
-              .scaleEffect(
-                x: reduceMotion ? 1 : index == state.focusIndex ? 1.04 : 0.96,
-                y: reduceMotion ? 1 : index == state.focusIndex ? 1.34 : 1
-              )
-              .opacity(state.focusIndex == nil ? 0.36 : index == state.focusIndex ? 0.92 : 0)
-          }
-          .frame(width: 112 + CGFloat(index) * 28, height: 12)
-          .animation(
-            reduceMotion
-              ? .easeOut(duration: 0.18)
-              : .timingCurve(0.23, 1, 0.32, 1, duration: 0.22),
-            value: state.focusIndex
-          )
-        }
-      }
-      .frame(maxHeight: .infinity)
-      .accessibilityHidden(true)
-    }
-  }
-}
-
-struct PelvicFloorStagePlayer: View {
-  let kind: PracticeKind
-  let elapsed: TimeInterval
-  let remaining: TimeInterval
-  let isPaused: Bool
-  let reduceMotion: Bool
-
-  private var state: PracticeStageState { .make(kind: kind, elapsed: elapsed) }
-
-  var body: some View {
-    PracticeStageScaffold(
-      eyebrow: kind.outcomeTitle,
-      title: isPaused ? "已暂停" : state.focusIndex == 0 ? "轻轻收紧" : "完全放松",
-      instruction: isPaused ? "保持自然呼吸，准备好再继续" : "肩膀和腹部不用帮忙",
-      remaining: remaining,
-      accessibilityIdentifier: "practice.pelvicFloorStage"
-    ) {
-      ZStack {
-        ForEach([1.0, 0.78, 0.56], id: \.self) { scale in
-          Capsule()
-            .stroke(
-              InnerBalanceTheme.emphasis.opacity(0.28 + scale * 0.24),
-              lineWidth: scale == 0.56 ? 2 : 1
-            )
-            .frame(width: 152 * scale, height: 228 * scale)
-        }
-        Capsule()
-          .fill(state.focusIndex == 0 ? InnerBalanceTheme.strongFill : InnerBalanceTheme.subtleFill)
-          .frame(width: 56, height: 112)
-          .overlay {
-            Capsule()
-              .stroke(InnerBalanceTheme.emphasis.opacity(0.72), lineWidth: 2)
-          }
-          .scaleEffect(
-            x: reduceMotion ? 0.82 : 0.72 + state.intensity * 0.22,
-            y: reduceMotion ? 0.82 : 0.68 + state.intensity * 0.28
-          )
-          .offset(y: reduceMotion ? 0 : -state.intensity * 12)
-          .opacity(reduceMotion ? (state.focusIndex == 0 ? 0.9 : 0.62) : 0.86)
-      }
-      .accessibilityHidden(true)
-    }
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticePreparationComponents.swift =====
-import InnerBalanceCore
-import SwiftUI
-
-struct PracticePreparationHero: View {
-  let kind: PracticeKind
-  let duration: TimeInterval
-
-  var body: some View {
-    HStack(alignment: .center, spacing: FangcunLayout.spacing(5)) {
-      PracticeFieldGlyph(kind: kind, size: 96)
-      VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
-        Text(kind.outcomeTitle)
-          .font(.caption.weight(.bold))
-          .foregroundStyle(InnerBalanceTheme.emphasis)
-        Text(kind.title)
-          .font(.title.weight(.semibold))
-          .foregroundStyle(InnerBalanceTheme.ink)
-        Text(PracticeDurationFormatter.text(duration))
-          .font(.subheadline.monospacedDigit())
-          .foregroundStyle(InnerBalanceTheme.mutedInk)
-      }
-    }
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .padding(FangcunLayout.spacing(5))
-    .fangcunLevelOneSurface(cornerRadius: FangcunLayout.spacing(5))
-  }
-}
-
-struct PracticeIntroductionCard: View {
-  let kind: PracticeKind
-
-  var body: some View {
-    VStack(alignment: .leading, spacing: FangcunLayout.spacing(5)) {
-      Text(kind.summary)
-        .font(.title3.weight(.semibold))
-        .foregroundStyle(InnerBalanceTheme.ink)
-        .fixedSize(horizontal: false, vertical: true)
-
-      explanation("这个练什么", kind.purpose, systemImage: "scope")
-      explanation("适合什么时候", kind.bestFor, systemImage: "clock")
-      explanation("怎么做", kind.steps, systemImage: "list.number")
-      explanation("开始前", kind.preparation, systemImage: "checkmark.shield")
-    }
-    .padding(FangcunLayout.spacing(5))
-    .fangcunLevelOneSurface(cornerRadius: FangcunLayout.spacing(5))
-    .accessibilityElement(children: .contain)
-    .accessibilityIdentifier("practice.introduction")
-  }
-
-  private func explanation(_ title: String, _ detail: String, systemImage: String) -> some View {
-    HStack(alignment: .top, spacing: FangcunLayout.spacing(3)) {
-      Image(systemName: systemImage)
-        .font(.subheadline.weight(.semibold))
-        .foregroundStyle(InnerBalanceTheme.emphasis)
-        .frame(width: 24, height: 24)
-      VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
-        Text(title)
-          .font(.subheadline.weight(.semibold))
-          .foregroundStyle(InnerBalanceTheme.ink)
-        Text(detail)
-          .font(.subheadline)
-          .foregroundStyle(InnerBalanceTheme.mutedInk)
-          .fixedSize(horizontal: false, vertical: true)
-      }
-    }
-  }
-}
-
-struct PracticeStartingPicker: View {
-  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-  @Binding var value: Double
-
-  var body: some View {
-    Group {
-      if dynamicTypeSize.isAccessibilitySize {
-        VStack(spacing: FangcunLayout.spacing(2)) { choices }
-      } else {
-        HStack(spacing: FangcunLayout.spacing(2)) { choices }
-      }
-    }
-    .sensoryFeedback(.selection, trigger: Int(value))
-  }
-
-  @ViewBuilder private var choices: some View {
-    ForEach(PracticeStartingChoice.allCases, id: \.self) { choice in
-      Button(choice.title) { value = Double(choice.rating) }
-        .font(.subheadline.weight(.semibold))
-        .foregroundStyle(
-          isSelected(choice) ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink
-        )
-        .frame(maxWidth: .infinity, minHeight: 52)
-        .background(
-          isSelected(choice) ? InnerBalanceTheme.strongFill : InnerBalanceTheme.subtleFill,
-          in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-        )
-        .overlay {
-          RoundedRectangle(cornerRadius: 16, style: .continuous)
-            .strokeBorder(
-              isSelected(choice) ? InnerBalanceTheme.strongFill : InnerBalanceTheme.hairline,
-              lineWidth: 1
-            )
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isSelected(choice) ? .isSelected : [])
-        .accessibilityHint("选择后作为练习前的主观参照")
-    }
-  }
-
-  private func isSelected(_ choice: PracticeStartingChoice) -> Bool {
-    Int(value.rounded()) == choice.rating
-  }
-}
-
-struct PracticeHapticToggle: View {
-  @Binding var isOn: Bool
-
-  var body: some View {
-    Toggle(isOn: $isOn) {
-      Label {
-        VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
-          Text("触觉提示").font(.headline)
-          Text("每次换动作时轻触一下")
-            .font(.caption)
-            .foregroundStyle(InnerBalanceTheme.mutedInk)
-        }
-      } icon: {
-        Image(systemName: "waveform.path")
-          .foregroundStyle(InnerBalanceTheme.emphasis)
-      }
-    }
-    .tint(InnerBalanceTheme.strongFill)
-    .padding(FangcunLayout.spacing(5))
-    .fangcunLevelOneSurface(cornerRadius: 20)
-    .accessibilityHint("在节奏切换处提供轻触感，可独立关闭")
-    .accessibilityIdentifier("practice.haptics")
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticePresentation.swift =====
-import Foundation
-import InnerBalanceCore
-
-enum PracticeStageKind: Equatable {
-  case breathing
-  case settling
-  case bodyScan
-  case pelvicFloor
-
-  static func `for`(_ kind: PracticeKind) -> Self {
-    switch kind {
-    case .physiologicalSigh, .pacedBreathing: .breathing
-    case .meditation: .settling
-    case .nsdr: .bodyScan
-    case .kegel: .pelvicFloor
-    }
-  }
-}
-
-enum PracticeScreenIdentity: Equatable {
-  case ready
-  case active
-  case comparison
-  case saved
-
-  static func `for`(_ phase: PracticeSessionPhase) -> Self {
-    switch phase {
-    case .ready: .ready
-    case .running, .paused: .active
-    case .comparison: .comparison
-    case .saved: .saved
-    }
-  }
-}
-
-enum PracticeCompletionMode: Equatable {
-  case subjectiveComparison
-  case completionOnly
-
-  static func `for`(_ kind: PracticeKind) -> Self {
-    kind == .kegel ? .completionOnly : .subjectiveComparison
-  }
-}
-
-enum PracticeFeedbackPolicy {
-  static func canSave(
-    beforeRating: Int?,
-    changeChoice: PracticeChangeChoice?,
-    hasPostPosition: Bool
-  ) -> Bool {
-    hasPostPosition && (beforeRating == nil || changeChoice != nil)
-  }
-}
-
-struct PracticeBodyScanState: Equatable {
-  let id: Int
-  let cue: PracticeAudioCue
-  let progress: Double
-
-  var isReturning: Bool { cue == .nsdrReturn }
-
-  var focusIndex: Int? {
-    switch cue {
-    case .nsdrFace: 0
-    case .nsdrShoulders: 1
-    case .nsdrBelly: 2
-    case .nsdrLegs: 3
-    default: nil
-    }
-  }
-
-  static func make(elapsed: TimeInterval, duration: TimeInterval? = nil) -> Self {
-    let elapsed = max(0, elapsed)
-    if let duration, duration - elapsed <= 30 {
-      return Self(
-        id: Int(ceil(duration / 25)) + 1,
-        cue: .nsdrReturn,
-        progress: min(max((elapsed - max(0, duration - 30)) / 30, 0), 1)
-      )
-    }
-
-    let cues: [PracticeAudioCue] = [
-      .nsdrFace, .nsdrShoulders, .nsdrBreath, .nsdrBelly, .nsdrLegs, .nsdrBreath,
-    ]
-    let id = Int(elapsed / 25)
-    return Self(
-      id: id,
-      cue: cues[id % cues.count],
-      progress: elapsed.truncatingRemainder(dividingBy: 25) / 25
-    )
-  }
-}
-
-enum PracticeHapticTimeline {
-  static func cueID(
-    for kind: PracticeKind,
-    elapsed: TimeInterval,
-    duration: TimeInterval
-  ) -> Int {
-    if kind == .nsdr {
-      return PracticeBodyScanState.make(elapsed: elapsed, duration: duration).id
-    }
-    return PracticeHapticCadence.cueID(for: kind, elapsed: elapsed)
-  }
-}
-
-enum PracticeTimelineCadence {
-  static func interval(
-    kind: PracticeKind,
-    phase: PracticeSessionPhase,
-    reduceMotion: Bool
-  ) -> TimeInterval {
-    if phase == .paused || reduceMotion { return 1 }
-    return kind == .nsdr ? 1 : 1.0 / 30
-  }
-}
-
-enum PracticeSavedCopy {
-  static func detail(
-    kind: PracticeKind,
-    healthNeedsAttention: Bool,
-    hasSubjectiveComparison: Bool = true
-  ) -> String {
-    if PracticeCompletionMode.for(kind) == .completionOnly {
-      return "本次练习已保存在本机。"
-    }
-    if !hasSubjectiveComparison {
-      return healthNeedsAttention
-        ? "此刻的感受已经保存在本机，Apple 健康稍后再试。"
-        : "此刻的感受已经保存在本机，回到首页就能看到。"
-    }
-    return healthNeedsAttention
-      ? "这次变化已经保存在本机，Apple 健康稍后再试。"
-      : "这次变化已经保留，回到首页就能看到。"
-  }
-}
-
-enum PracticeStartingRating {
-  static func value(kind: PracticeKind, selected: Double) -> Int {
-    PracticeCompletionMode.for(kind) == .completionOnly ? 0 : Int(selected.rounded())
-  }
-}
-
-enum PracticeChangeChoice: CaseIterable, Equatable {
-  case lighter
-  case same
-  case heavier
-
-  var title: String {
-    switch self {
-    case .lighter: "松了一些"
-    case .same: "差不多"
-    case .heavier: "更需要缓缓"
-    }
-  }
-
-  func afterRating(before: Int) -> Int {
-    let delta =
-      switch self {
-      case .lighter: -3
-      case .same: 0
-      case .heavier: 2
-      }
-    return min(max(before + delta, 0), 10)
-  }
-}
-
-enum PracticeStartingChoice: CaseIterable, Equatable {
-  case okay
-  case some
-  case strong
-
-  var rating: Int {
-    switch self {
-    case .okay: 2
-    case .some: 5
-    case .strong: 8
-    }
-  }
-
-  var title: String {
-    switch self {
-    case .okay: "还好"
-    case .some: "有点需要"
-    case .strong: "很需要"
-    }
-  }
-}
-
-struct PracticeStageState: Equatable {
-  let stage: PracticeStageKind
-  let focusIndex: Int
-  let intensity: Double
-
-  static func make(
-    kind: PracticeKind,
-    elapsed: TimeInterval,
-    duration: TimeInterval? = nil
-  ) -> Self {
-    let elapsed = max(0, elapsed)
-    switch kind {
-    case .physiologicalSigh, .pacedBreathing:
-      return Self(stage: .breathing, focusIndex: 0, intensity: 0)
-    case .meditation:
-      let wave = (sin(elapsed * 0.55) + 1) / 2
-      return Self(stage: .settling, focusIndex: (Int(elapsed) / 30) % 3, intensity: wave)
-    case .nsdr:
-      let state = PracticeBodyScanState.make(elapsed: elapsed, duration: duration)
-      return Self(
-        stage: .bodyScan,
-        focusIndex: state.focusIndex ?? -1,
-        intensity: state.progress
-      )
-    case .kegel:
-      let position = elapsed.truncatingRemainder(dividingBy: 12)
-      let intensity = position < 4 ? position / 4 : 1 - (position - 4) / 8
-      return Self(stage: .pelvicFloor, focusIndex: position < 4 ? 0 : 1, intensity: intensity)
-    }
-  }
-}
-
-extension PracticeKind {
-  var outcomeTitle: String {
-    switch self {
-    case .physiologicalSigh: "压力突然升高"
-    case .pacedBreathing: "压力中等，节奏偏快"
-    case .meditation: "压力较低，思绪占满"
-    case .nsdr: "睡眠或训练透支"
-    case .kegel: "专项训练，不用于即时减压"
-    }
-  }
-
-  var outcomeDetail: String {
-    summary
-  }
-
-  var title: String {
-    switch self {
-    case .physiologicalSigh: "生理性叹息"
-    case .pacedBreathing: "延长呼气"
-    case .meditation: "冥想"
-    case .nsdr: "NSDR 躺式休息"
-    case .kegel: "凯格尔练习"
-    }
-  }
-
-  var summary: String {
-    switch self {
-    case .physiologicalSigh: "两次鼻吸、一次长呼，用 1 分钟把呼气慢下来。"
-    case .pacedBreathing: "按 4 秒吸、6 秒呼的节奏练习，不屏息。"
-    case .meditation: "留意身体的支撑感和自然呼吸，走神了再回来。"
-    case .nsdr: "躺着完成一段身体扫描，不要求睡着。"
-    case .kegel: "轻收 4 秒、完全放松 8 秒，同时保持自然呼吸。"
-    }
-  }
-
-  var purpose: String {
-    switch self {
-    case .physiologicalSigh: "把短促的呼吸拉回更慢的节奏。"
-    case .pacedBreathing: "给呼吸一个固定节拍，也给注意力一个跟随点。"
-    case .meditation: "练习发现走神，再把注意力放回来；不是清空大脑。"
-    case .nsdr: "把注意力依次带过身体，减少主动用力，留出一段安静休息。"
-    case .kegel: "练习找到盆底肌，并协调收紧、放松与呼吸。"
-    }
-  }
-
-  var bestFor: String {
-    switch self {
-    case .physiologicalSigh: "突然紧绷、呼吸变浅，或只想先快速缓一下。"
-    case .pacedBreathing: "心里有点乱，但还能安静坐 3 到 5 分钟。"
-    case .meditation: "思绪很多，想暂时从手头的事里退开几分钟。"
-    case .nsdr: "睡眠不足、训练后疲惫，或午间想躺一会儿。"
-    case .kegel: "想做日常盆底肌训练，并且当前没有疼痛或异常。"
-    }
-  }
-
-  var steps: String {
-    switch self {
-    case .physiologicalSigh: "鼻吸一口 → 再补一小口 → 用嘴慢慢呼尽。"
-    case .pacedBreathing: "慢慢吸气 4 秒 → 再用 6 秒呼出。"
-    case .meditation: "感受身体被托住 → 留意一口自然呼吸 → 走神后再回来。"
-    case .nsdr: "放松脸和下颌 → 肩膀 → 腹部 → 双腿，再慢慢回来。"
-    case .kegel: "轻轻收紧 4 秒 → 完全放松 8 秒 → 重复下一轮。"
-    }
-  }
-
-  var systemImage: String {
-    switch self {
-    case .physiologicalSigh: "wind"
-    case .pacedBreathing: "circle.dotted.circle"
-    case .meditation: "figure.mind.and.body"
-    case .nsdr: "bed.double.fill"
-    case .kegel: "figure.core.training"
-    }
-  }
-
-  var preparation: String {
-    switch self {
-    case .physiologicalSigh:
-      "坐稳或站稳，不用吸到满。头晕、胸闷或不舒服就停下，恢复自然呼吸。"
-    case .pacedBreathing:
-      "找个不费力的姿势，不要追求深呼吸；气短或头晕时，先恢复自然呼吸。"
-    case .meditation:
-      "可以坐着或躺着，不需要控制呼吸。不舒服时，可以睁眼、看看周围并结束练习。"
-    case .nsdr:
-      "不要在驾驶、操作设备或需要保持警觉时开始；它不能代替正常睡眠。"
-    case .kegel:
-      "保持自然呼吸，不在排尿时练习。盆底持续紧张、排尿排便异常、产后或术后恢复中，请先咨询专业人员；如有疼痛或不适立即停止。"
-    }
-  }
-
-  func cue(elapsed: TimeInterval, duration: TimeInterval? = nil) -> String {
-    switch self {
-    case .physiologicalSigh:
-      return switch Int(elapsed) % 12 {
-      case 0..<3: "用鼻子轻吸一口"
-      case 3..<5: "再轻轻补一小口"
-      default: "用嘴缓慢、完全呼出"
-      }
-    case .pacedBreathing:
-      return Int(elapsed) % 10 < 4 ? "慢慢吸气" : "更慢地呼气"
-    case .meditation:
-      let cues = ["感受身体与支撑面接触", "注意一次自然呼吸", "走神了，只需温和地回来"]
-      return cues[(Int(elapsed) / 30) % cues.count]
-    case .nsdr:
-      return PracticeBodyScanState.make(elapsed: elapsed, duration: duration).cue.spokenText
-    case .kegel:
-      return Int(elapsed) % 12 < 4 ? "轻轻收紧，保持呼吸" : "完全放松"
-    }
-  }
-}
-
-enum PracticeDurationFormatter {
-  static func text(_ duration: TimeInterval) -> String {
-    let minutes = max(1, Int(duration / 60))
-    return "\(minutes) 分钟"
-  }
-
-  static func clock(_ duration: TimeInterval) -> String {
-    let seconds = max(0, Int(duration.rounded(.up)))
-    return String(format: "%d:%02d", seconds / 60, seconds % 60)
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionContent.swift =====
-import InnerBalanceCore
-import SwiftUI
-
-struct PracticeSessionContent: View {
-  @Bindable var viewModel: PracticeSessionViewModel
-  @Binding var beforeRating: Double
-  @Binding var hapticCadenceEnabled: Bool
-  @Binding var soundMode: PracticeSoundMode
-  @Binding var ambienceEnabled: Bool
-  @Binding var afterRating: Double
-  @Binding var changeChoice: PracticeChangeChoice?
-  @Binding var postValence: Double
-  @Binding var postArousal: Double
-  @Binding var hasPostPosition: Bool
-  let reduceMotion: Bool
-  let isSaving: Bool
-  let savedDetail: String
-  let onStart: () -> Void
-  let onFinish: () -> Void
-  let onSave: () -> Void
-  let onDone: () -> Void
-
-  @ViewBuilder var body: some View {
-    switch viewModel.phase {
-    case .ready:
-      PracticePreparationScreen(
-        viewModel: viewModel,
-        beforeRating: $beforeRating,
-        hapticCadenceEnabled: $hapticCadenceEnabled,
-        soundMode: $soundMode,
-        ambienceEnabled: $ambienceEnabled,
-        onStart: onStart
-      )
-    case .running, .paused:
-      PracticePlayerScreen(
-        viewModel: viewModel,
-        reduceMotion: reduceMotion,
-        onFinish: onFinish
-      )
-    case .comparison:
-      PracticeComparisonScreen(
-        viewModel: viewModel,
-        afterRating: $afterRating,
-        changeChoice: $changeChoice,
-        postValence: $postValence,
-        postArousal: $postArousal,
-        hasPostPosition: $hasPostPosition,
-        isSaving: isSaving,
-        onSave: onSave
-      )
-    case .saved:
-      PracticeSavedScreen(detail: savedDetail,
-        scene: (viewModel.actualDuration ?? 0) >= viewModel.duration - 1 ? .complete : .rest,
-        onDone: onDone)
-    }
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionDialogs.swift =====
-import SwiftUI
-
-struct PracticeCloseToolbar: ToolbarContent {
-  let isActive: Bool
-  @Binding var showExitConfirmation: Bool
-  let onDismiss: () -> Void
-
-  var body: some ToolbarContent {
-    ToolbarItem(placement: .cancellationAction) {
-      Button("\(Image(systemName: "xmark"))") {
-        if isActive { showExitConfirmation = true } else { onDismiss() }
-      }
-      .frame(minWidth: 44, minHeight: 44)
-      .accessibilityLabel("关闭练习")
-    }
-  }
-}
-
-enum PracticeSessionDialogAction {
-  case retry
-  case dismiss
-}
-
-enum PracticeSessionDialogCopy {
-  static let finishActionTitle = "结束练习"
-  static let finishMessage = "今天到这里，也很好。结束后可保留已完成的时长。"
-}
-
-enum PracticeSessionDialogPolicy {
-  static func shouldRetry(for action: PracticeSessionDialogAction) -> Bool {
-    switch action {
-    case .retry: true
-    case .dismiss: false
-    }
-  }
-}
-
-private struct PracticeSessionDialogs: ViewModifier {
-  @Binding var showFinish: Bool
-  @Binding var showExit: Bool
-  @Binding var saveErrorMessage: String?
-  let onFinish: () -> Void
-  let onRetry: () -> Void
-  let onDiscard: () -> Void
-
-  func body(content: Content) -> some View {
-    content
-      .tint(InnerBalanceTheme.strongFill)
-      .confirmationDialog("要提前结束吗？", isPresented: $showFinish) {
-        Button(PracticeSessionDialogCopy.finishActionTitle, action: onFinish)
-        Button("继续练习", role: .cancel) {}
-      } message: {
-        Text(PracticeSessionDialogCopy.finishMessage)
-      }
-      .confirmationDialog("正在进行练习", isPresented: $showExit) {
-        Button(PracticeSessionDialogCopy.finishActionTitle, action: onFinish)
-        Button("直接离开，不记录", action: onDiscard)
-        Button("继续练习", role: .cancel) {}
-      } message: {
-        Text(PracticeSessionDialogCopy.finishMessage)
-      }
-      .alert(
-        "未能保留本次练习",
-        isPresented: Binding(
-          get: { saveErrorMessage != nil },
-          set: { if !$0 { saveErrorMessage = nil } }
-        )
-      ) {
-        Button("重试") {
-          saveErrorMessage = nil
-          if PracticeSessionDialogPolicy.shouldRetry(for: .retry) { onRetry() }
-        }
-        Button("稍后处理", role: .cancel) {}
-      } message: {
-        Text(saveErrorMessage ?? "请重试。")
-      }
-  }
-}
-
-extension View {
-  func practiceSessionDialogs(
-    showFinish: Binding<Bool>,
-    showExit: Binding<Bool>,
-    saveErrorMessage: Binding<String?>,
-    onFinish: @escaping () -> Void,
-    onRetry: @escaping () -> Void,
-    onDiscard: @escaping () -> Void
-  ) -> some View {
-    modifier(
-      PracticeSessionDialogs(
-        showFinish: showFinish,
-        showExit: showExit,
-        saveErrorMessage: saveErrorMessage,
-        onFinish: onFinish,
-        onRetry: onRetry,
-        onDiscard: onDiscard
-      )
-    )
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionScreens.swift =====
-import InnerBalanceCore
-import SwiftUI
-
-struct PracticePreparationScreen: View {
-  let viewModel: PracticeSessionViewModel
-  @Binding var beforeRating: Double
-  @Binding var hapticCadenceEnabled: Bool
-  @Binding var soundMode: PracticeSoundMode
-  @Binding var ambienceEnabled: Bool
-  let onStart: () -> Void
-
-  var body: some View {
-    ScrollView {
-      VStack(alignment: .leading, spacing: FangcunLayout.spacing(7)) {
-        PracticePreparationHero(kind: viewModel.plan.kind, duration: viewModel.duration)
-        PracticeIntroductionCard(kind: viewModel.plan.kind)
-        preparationInput
-        Text("引导设置")
-          .font(.title3.weight(.semibold))
-          .foregroundStyle(InnerBalanceTheme.ink)
-        PracticeSoundControls(
-          mode: $soundMode,
-          ambienceEnabled: $ambienceEnabled,
-          voiceAvailable: PracticeVoiceAssets.isAvailable(for: viewModel.plan.kind)
-        )
-        PracticeHapticToggle(isOn: $hapticCadenceEnabled)
-      }
-      .padding(.vertical, FangcunLayout.spacing(3))
-      .padding(.bottom, FangcunLayout.spacing(24))
-    }
-    .safeAreaInset(edge: .bottom) {
-      Button("开始 · \(PracticeDurationFormatter.text(viewModel.duration))", action: onStart)
-        .buttonStyle(InnerBalancePrimaryButtonStyle())
-        .accessibilityLabel("开始 \(PracticeDurationFormatter.text(viewModel.duration))练习")
-        .padding(.vertical, FangcunLayout.spacing(3))
-        .background(InnerBalanceTheme.canvas)
-    }
-    .accessibilityIdentifier("practice.preparation")
-  }
-
-  @ViewBuilder private var preparationInput: some View {
-    if PracticeCompletionMode.for(viewModel.plan.kind) == .completionOnly {
-      VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-        Text("练习前先确认")
-          .font(.caption.weight(.bold))
-          .foregroundStyle(InnerBalanceTheme.emphasis)
-        Text("这次只记录完成，不需要评估感受变化。")
-          .font(.title3.weight(.semibold))
-      }
-    } else {
-      VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
-        Text("先记一下")
-          .font(.caption.weight(.bold))
-          .foregroundStyle(InnerBalanceTheme.emphasis)
-        Text("此刻有多需要缓一缓？")
-          .font(.title2.weight(.semibold))
-        PracticeStartingPicker(value: $beforeRating)
-      }
-    }
-  }
-}
-
-struct PracticePlayerScreen: View {
-  @Bindable var viewModel: PracticeSessionViewModel
-  let reduceMotion: Bool
-  let onFinish: () -> Void
-
-  var body: some View {
-    VStack(spacing: 0) {
-      TimelineView(.periodic(from: .now, by: timelineInterval)) { _ in
-        PracticeActiveStage(
-          kind: viewModel.plan.kind,
-          duration: viewModel.duration,
-          elapsed: elapsed,
-          remaining: viewModel.remainingTime,
-          isPaused: viewModel.phase == .paused,
-          reduceMotion: reduceMotion
-        )
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-      }
-      PracticeTransportControls(
-        isPaused: viewModel.phase == .paused,
-        onTogglePause: togglePause,
-        onFinish: onFinish
-      )
-    }
-  }
-
-  private var elapsed: TimeInterval {
-    viewModel.duration - viewModel.remainingTime
-  }
-
-  private var timelineInterval: TimeInterval {
-    PracticeTimelineCadence.interval(
-      kind: viewModel.plan.kind,
-      phase: viewModel.phase,
-      reduceMotion: reduceMotion
-    )
-  }
-
-  private func togglePause() {
-    viewModel.phase == .paused ? viewModel.resume() : viewModel.pause()
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionView.swift =====
-import InnerBalanceCore
-import SwiftUI
-
-struct PracticeSessionView: View {
-  @Environment(\.dismiss) private var dismiss
-  @Environment(\.fangcunReduceMotion) private var reduceMotion
-  @State private var viewModel: PracticeSessionViewModel
-  @State private var beforeRating = -1.0
-  @State private var afterRating = 5.0
-  @State private var changeChoice: PracticeChangeChoice?
-  @State private var showFinishConfirmation = false
-  @State private var showExitConfirmation = false
-  @State private var cadence = PracticeCadenceController()
-  @State private var audio = PracticeAudioController()
-  @State private var sound = PracticeSoundPreferences()
-  @State private var saving: PracticeCompletionSaveController
-  @State private var postValence = 0.0
-  @State private var postArousal = 0.0
-  @State private var hasPostPosition = false
-
-  private let diagnostics: any LocalDiagnosticsRecording
-  private let startsImmediately: Bool
-  private let wasRecommended: Bool
-  private let onReturnToHome: () -> Void
-
-  init(
-    launch: PracticeLaunch,
-    coordinator: PracticeCompletionCoordinator,
-    diagnostics: any LocalDiagnosticsRecording,
-    wasRecommended: Bool,
-    onReturnToHome: @escaping () -> Void = {},
-    onSaved: @escaping (PracticeCompletionRecord, StateOfMindRecord?) -> Void
-  ) {
-    let plan = PracticeCatalog.protocol(for: launch.kind)!
-    _viewModel = State(
-      initialValue: PracticeSessionViewModel(plan: plan, duration: launch.duration))
-    _saving = State(
-      initialValue: PracticeCompletionSaveController(
-        coordinator: coordinator,
-        diagnostics: diagnostics,
-        onSaved: onSaved
-      ))
-    self.startsImmediately = launch.startsImmediately
-    self.diagnostics = diagnostics
-    self.wasRecommended = wasRecommended
-    self.onReturnToHome = onReturnToHome
-  }
-
-  var body: some View {
-    NavigationStack {
-      ZStack {
-        PracticeSessionAtmosphere(kind: viewModel.plan.kind)
-        PracticeSessionContent(
-          viewModel: viewModel,
-          beforeRating: $beforeRating,
-          hapticCadenceEnabled: Binding(
-            get: { cadence.isEnabled },
-            set: { cadence.isEnabled = $0 }
-          ),
-          soundMode: Binding(
-            get: { sound.mode(hasVoiceAssets: voiceAvailable) },
-            set: { sound.preferredMode = $0 }
-          ),
-          ambienceEnabled: Binding(
-            get: { sound.ambienceEnabled },
-            set: { sound.ambienceEnabled = $0 }
-          ),
-          afterRating: $afterRating,
-          changeChoice: $changeChoice,
-          postValence: $postValence,
-          postArousal: $postArousal,
-          hasPostPosition: $hasPostPosition,
-          reduceMotion: reduceMotion,
-          isSaving: saving.isSaving,
-          savedDetail: savedDetail,
-          onStart: startPractice,
-          onFinish: { showFinishConfirmation = true },
-          onSave: { Task { await saveCompletion() } },
-          onDone: {
-            onReturnToHome()
-            dismiss()
-          }
-        )
-        .id(PracticeScreenIdentity.for(viewModel.phase))
-        .transition(
-          reduceMotion
-            ? .opacity
-            : .asymmetric(
-              insertion: .opacity.combined(with: .scale(scale: 0.98)),
-              removal: .opacity
-            )
-        )
-        .padding(FangcunLayout.pageHorizontalPadding)
-      }
-      .navigationTitle("")
-      .navigationBarTitleDisplayMode(.inline)
-      .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
-      .toolbarBackground(.visible, for: .navigationBar)
-      .toolbar {
-        PracticeCloseToolbar(
-          isActive: viewModel.phase == .running || viewModel.phase == .paused,
-          showExitConfirmation: $showExitConfirmation,
-          onDismiss: { dismiss() }
-        )
-      }
-    }
-    .interactiveDismissDisabled(viewModel.phase == .running)
-    .animation(
-      .timingCurve(0.23, 1, 0.32, 1, duration: 0.22),
-      value: PracticeScreenIdentity.for(viewModel.phase)
-    )
-    .onAppear { if startsImmediately && viewModel.phase == .ready { startPractice() } }
-    .task(id: viewModel.phase) { await runSessionPhase() }
-    .modifier(
-      PracticeAudioLifecycle(
-        viewModel: viewModel,
-        audio: audio,
-        mode: sound.mode(hasVoiceAssets: voiceAvailable),
-        ambienceEnabled: sound.ambienceEnabled
-      )
-    )
-    .practiceSessionDialogs(
-      showFinish: $showFinishConfirmation,
-      showExit: $showExitConfirmation,
-      saveErrorMessage: Binding(
-        get: { saving.saveErrorMessage },
-        set: { saving.saveErrorMessage = $0 }
-      ),
-      onFinish: viewModel.finish,
-      onRetry: { Task { await saveCompletion() } },
-      onDiscard: { dismiss() }
-    )
-    .sensoryFeedback(.impact(weight: .light), trigger: cadence.trigger)
-  }
-
-  private func startPractice() {
-    diagnostics.record(.practiceStarted)
-    if wasRecommended { diagnostics.record(.recommendationAccepted) }
-    let selectedRating =
-      beforeRating >= 0
-      ? PracticeStartingRating.value(kind: viewModel.plan.kind, selected: beforeRating)
-      : nil
-    viewModel.start(beforeRating: selectedRating)
-  }
-
-  private var voiceAvailable: Bool {
-    PracticeVoiceAssets.isAvailable(for: viewModel.plan.kind)
-  }
-
-  private func saveCompletion() async {
-    if PracticeFeedbackPolicy.canSave(
-      beforeRating: viewModel.beforeRating,
-      changeChoice: changeChoice,
-      hasPostPosition: hasPostPosition
-    ) {
-      await saving.save(
-        viewModel: viewModel,
-        afterRating: afterRating,
-        postValence: postValence,
-        postArousal: postArousal,
-        hasPostPosition: hasPostPosition
-      )
-    } else {
-      await saving.skipFeedback(viewModel: viewModel)
-    }
-  }
-
-  private func runSessionPhase() async {
-    if viewModel.phase == .comparison {
-      await saving.saveCompletion(viewModel: viewModel)
-    } else {
-      await cadence.run(viewModel)
-      if viewModel.phase == .comparison {
-        await saving.saveCompletion(viewModel: viewModel)
-      }
-    }
-  }
-
-  private var savedDetail: String {
-    guard saving.hasSavedFeedback else {
-      return saving.healthWriteNeedsAttention
-        ? "本次练习已经保存在本机，Apple 健康稍后再试。"
-        : "本次练习已经保存在本机。"
-    }
-    return PracticeSavedCopy.detail(
-      kind: viewModel.plan.kind,
-      healthNeedsAttention: saving.healthWriteNeedsAttention,
-      hasSubjectiveComparison: viewModel.beforeRating != nil
-    )
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionViewModel.swift =====
-import Foundation
-import InnerBalanceCore
-import Observation
-
-enum PracticeSessionPhase: Equatable, Sendable {
-  case ready
-  case running
-  case paused
-  case comparison
-  case saved
-}
-
-@MainActor
-@Observable
-final class PracticeSessionViewModel {
-  let plan: PracticeProtocol
-  let duration: TimeInterval
-
-  private let now: () -> Date
-  private(set) var phase = PracticeSessionPhase.ready
-  private(set) var beforeRating: Int?
-  private(set) var startedAt: Date?
-  private(set) var pausedAt: Date?
-  private(set) var accumulatedPause: TimeInterval = 0
-  private(set) var wasInterrupted = false
-  private(set) var endedAt: Date?
-  private(set) var actualDuration: TimeInterval?
-
-  init(
-    plan: PracticeProtocol,
-    duration: TimeInterval,
-    now: @escaping () -> Date = { .now }
-  ) {
-    self.plan = plan
-    self.duration = duration
-    self.now = now
-  }
-
-  var remainingTime: TimeInterval {
-    guard let startedAt else { return duration }
-    let reference = pausedAt ?? now()
-    return remainingTime(at: reference, startedAt: startedAt)
-  }
-
-  func start(beforeRating: Int?) {
-    guard phase == .ready else { return }
-    self.beforeRating = beforeRating.map { min(max($0, 0), 10) }
-    startedAt = now()
-    phase = .running
-  }
-
-  func pause() {
-    guard phase == .running else { return }
-    pausedAt = now()
-    phase = .paused
-  }
-
-  func resume() {
-    guard phase == .paused, let pausedAt else { return }
-    accumulatedPause += max(0, now().timeIntervalSince(pausedAt))
-    self.pausedAt = nil
-    phase = .running
-  }
-
-  func handleInterruption() {
-    guard phase == .running else { return }
-    wasInterrupted = true
-    pause()
-  }
-
-  func finish() {
-    guard phase == .running || phase == .paused else { return }
-    let completedAt = now()
-    guard let startedAt else { return }
-    let reference = pausedAt ?? completedAt
-    actualDuration = duration - remainingTime(at: reference, startedAt: startedAt)
-    endedAt = completedAt
-    phase = .comparison
-  }
-
-  func makeCompletion(
-    sessionID: String
-  ) -> PracticeCompletionRecord? {
-    guard phase == .comparison,
-      let startedAt,
-      let endedAt,
-      let actualDuration
-    else { return nil }
-
-    return PracticeCompletionRecord(
-      sessionID: sessionID,
-      practiceKind: plan.kind,
-      plannedDuration: duration,
-      actualDuration: actualDuration,
-      startedAt: startedAt,
-      endedAt: endedAt,
-      beforeRating: nil,
-      afterRating: nil
-    )
-  }
-
-  func makeCompletion(
-    afterRating: Int,
-    sessionID: String
-  ) -> PracticeCompletionRecord? {
-    guard let completion = makeCompletion(sessionID: sessionID) else { return nil }
-
-    return PracticeCompletionRecord(
-      sessionID: completion.sessionID,
-      practiceKind: completion.practiceKind,
-      plannedDuration: completion.plannedDuration,
-      actualDuration: completion.actualDuration,
-      startedAt: completion.startedAt,
-      endedAt: completion.endedAt,
-      beforeRating: beforeRating,
-      afterRating: beforeRating.map { _ in min(max(afterRating, 0), 10) }
-    )
-  }
-
-  func markSaved() {
-    guard phase == .comparison else { return }
-    phase = .saved
-  }
-
-  private func remainingTime(at reference: Date, startedAt: Date) -> TimeInterval {
-    let elapsed = max(0, reference.timeIntervalSince(startedAt) - accumulatedPause)
-    return max(0, duration - elapsed)
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeSoundControls.swift =====
-import SwiftUI
-
-struct PracticeSoundControls: View {
-  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-  @Binding var mode: PracticeSoundMode
-  @Binding var ambienceEnabled: Bool
-  let voiceAvailable: Bool
-
-  var body: some View {
-    VStack(alignment: .leading, spacing: FangcunLayout.spacing(4)) {
-      Label {
-        VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
-          Text("不用盯着屏幕").font(.headline)
-          Text("语音只提示下一步")
-            .font(.caption)
-            .foregroundStyle(InnerBalanceTheme.mutedInk)
-        }
-      } icon: {
-        Image(systemName: "ear")
-          .foregroundStyle(InnerBalanceTheme.emphasis)
-      }
-
-      Group {
-        if dynamicTypeSize.isAccessibilitySize {
-          VStack(spacing: FangcunLayout.spacing(2)) { modeButtons }
-        } else {
-          HStack(spacing: FangcunLayout.spacing(2)) { modeButtons }
-        }
-      }
-
-      if mode.supportsAmbience {
-        Toggle("环境声·锁屏继续", isOn: $ambienceEnabled)
-          .font(.subheadline.weight(.semibold))
-          .tint(InnerBalanceTheme.strongFill)
-          .padding(.vertical, FangcunLayout.spacing(2))
-          .accessibilityHint("开启后练习在锁屏时仍会继续播放")
-      } else {
-        Label("声音已关闭", systemImage: "speaker.slash.fill")
-          .font(.subheadline.weight(.semibold))
-          .foregroundStyle(InnerBalanceTheme.mutedInk)
-      }
-    }
-    .padding(FangcunLayout.spacing(5))
-    .fangcunLevelOneSurface(cornerRadius: FangcunLayout.spacing(5))
-    .sensoryFeedback(.selection, trigger: mode.rawValue)
-    .accessibilityIdentifier("practice.sound.controls")
-  }
-
-  @ViewBuilder private var modeButtons: some View {
-    ForEach(PracticeSoundMode.availableCases(hasVoiceAssets: voiceAvailable), id: \.rawValue) {
-      option in
-      Button {
-        mode = option
-      } label: {
-        VStack(spacing: FangcunLayout.spacing(1)) {
-          Text(option.title).font(.subheadline.weight(.semibold))
-          Text(option.detail)
-            .font(.caption2)
-            .foregroundStyle(
-              mode == option ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.mutedInk
-            )
-        }
-        .frame(maxWidth: .infinity, minHeight: 56)
-        .padding(.horizontal, FangcunLayout.spacing(2))
-        .background(
-          mode == option ? InnerBalanceTheme.strongFill : InnerBalanceTheme.subtleFill,
-          in: RoundedRectangle(cornerRadius: FangcunLayout.spacing(4), style: .continuous)
-        )
-        .overlay {
-          RoundedRectangle(cornerRadius: FangcunLayout.spacing(4), style: .continuous)
-            .strokeBorder(
-              mode == option ? InnerBalanceTheme.strongFill : InnerBalanceTheme.hairline,
-              lineWidth: 1
-            )
-        }
-        .foregroundStyle(
-          mode == option ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink
-        )
-      }
-      .buttonStyle(.plain)
-      .accessibilityLabel(option.title)
-      .accessibilityAddTraits(mode == option ? .isSelected : [])
-      .accessibilityHint(option.detail)
-    }
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Features/Practice/PracticeSoundPreferences.swift =====
-import Foundation
-import Observation
-
-@MainActor
-@Observable
-final class PracticeSoundPreferences {
-  private enum Key {
-    static let mode = "practice.sound.mode"
-    static let ambience = "practice.sound.ambience"
-    static let voicePack = "practice.voice.pack"
-  }
-
-  private let defaults: UserDefaults
-
-  var preferredMode: PracticeSoundMode {
-    didSet { defaults.set(preferredMode.rawValue, forKey: Key.mode) }
-  }
-
-  var ambienceEnabled: Bool {
-    didSet { defaults.set(ambienceEnabled, forKey: Key.ambience) }
-  }
-
-  init(defaults: UserDefaults = .standard) {
-    self.defaults = defaults
-    if defaults.string(forKey: Key.voicePack) != PracticeVoiceAssets.selectedPackID {
-      preferredMode = .guided
-      defaults.set(PracticeSoundMode.guided.rawValue, forKey: Key.mode)
-      defaults.set(PracticeVoiceAssets.selectedPackID, forKey: Key.voicePack)
-    } else {
-      preferredMode =
-        defaults.string(forKey: Key.mode).flatMap(PracticeSoundMode.init(rawValue:)) ?? .guided
-    }
-    ambienceEnabled =
-      defaults.object(forKey: Key.ambience) == nil
-      ? true
-      : defaults.bool(forKey: Key.ambience)
-  }
-
-  func mode(hasVoiceAssets: Bool) -> PracticeSoundMode {
-    PracticeSoundMode.resolved(preferredMode, hasVoiceAssets: hasVoiceAssets)
   }
 }
 

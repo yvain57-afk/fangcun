@@ -1,0 +1,17 @@
+Synthetic test output excerpt. Complete logs and result bundle remain local.
+Test Suite 'Selected tests' started at 2026-09-19 18:11:28.348.
+Test Suite 'InnerBalanceUITests.xctest' started at 2026-09-19 18:11:28.349.
+Test Suite 'DrinkEditorUITests' started at 2026-09-19 18:11:28.349.
+Test Case '-[InnerBalanceUITests.DrinkEditorUITests testCapacityEditingUndoAndQuickLogShareTheSameRecords]' started.
+Test Case '-[InnerBalanceUITests.DrinkEditorUITests testCapacityEditingUndoAndQuickLogShareTheSameRecords]' passed (26.836 seconds).
+Test Suite 'DrinkEditorUITests' passed at 2026-09-19 18:11:55.187.
+Test Suite 'ExperienceV2SceneUITests' started at 2026-09-19 18:11:55.191.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange]' passed (31.465 seconds).
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testWaterCoffeeAlcoholAndUndoShowCommittedFeedback]' started.
+Test Case '-[InnerBalanceUITests.ExperienceV2SceneUITests testWaterCoffeeAlcoholAndUndoShowCommittedFeedback]' passed (20.834 seconds).
+Test Suite 'ExperienceV2SceneUITests' passed at 2026-09-19 18:12:47.493.
+Test Suite 'InnerBalanceUITests.xctest' passed at 2026-09-19 18:12:47.499.
+Test Suite 'Selected tests' passed at 2026-09-19 18:12:47.500.
+Test session results, code coverage, and logs:
+** TEST SUCCEEDED **
