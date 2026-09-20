@@ -1,6 +1,6 @@
 # 方寸：给 GPT / AI 的项目入口
 
-> 当前开发分支 `codex/fangcun-v1-m0-m1` 已完成 M2-R、M3，并实施体验与饮品关怀 v2。最新审阅入口为 [V2 REVIEW](docs/plans/fangcun-experience-v2/REVIEW.md)、[验收](docs/plans/fangcun-experience-v2/VERIFICATION.md) 和 [任务状态](docs/plans/fangcun-experience-v2/TASKS.md)。首页已经接入真实准备度及限定范围建议，饮品有独立关怀与主动开启的本地提醒。M4–M6 仍未展开。测试、真机安装、通知实际送达与人工体验验收分别登记；不要把实现或排程当成实测通过。
+> 当前开发分支 `codex/fangcun-v1-m0-m1` 的产品契约为 **分数优先 V3**，取代 V2 的首页结论路线。最新入口：[V3 REVIEW](docs/plans/fangcun-score-v3/REVIEW.md)、[实际验证](docs/plans/fangcun-score-v3/VERIFICATION.md)、[原规格](docs/plans/fangcun-score-v3/FANGCUN_SCORE_FIRST_SPEC_v3.0.md)。可靠睡眠可独立生成状态分；HRV、静息心率按各自资料和渐进权重参与。旧准备度仅保留历史与数据安全兼容。饮品、原画、练习和用户记录继续保留；不得把模型分数当作实时压力或医学标准。Watch/Widget/Live Activity 新功能阶段未展开。
 
 仓库：<https://github.com/yvain57-afk/fangcun>
 
@@ -30,7 +30,9 @@
 - `Features/Home/FangcunTodayView.swift`：新首页与依据详情。旧 `HomeView.swift` 保留但不是根入口。
 - `Features/Home/FangcunDrinkSheet.swift`、`FangcunDrinkEditor.swift`、`Persistence/FangcunDiary.swift`：剂量、酒精度、可撤销且幂等的饮品命令与旧档兼容。
 - `Features/Home/BeverageCareCoordinator.swift`、`CareNotificationClient.swift`：本机关怀回执、主动开启的通知、默认锁屏隐私。Core 的 `BeverageCareEngine`、`CareAttentionPolicy`、`CareNotificationPlanner` 不做 IO。
-- `Features/Readiness/DayGuidancePresentation.swift`：普通人结论与工程诊断分层；少量数据保留限定范围。
+- `Features/Readiness/ReadinessCoordinator.swift`：独立数值引擎、逐指标发布、磁盘快照和失败保留。
+- `Features/Readiness/DailyStatusViews.swift`、`DailyStatusHistoryView.swift`：整数状态分、实际构成权重、数值历史和旧记录分离。
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/`：V3 睡眠/HRV/RHR 提取、参数、引擎、版本化快照与最小跨端 DTO。
 - `Features/Home/FangcunTrendsView.swift`：周视图与真实已存记录。
 - `DesignSystem/FangcunCompanion.swift`、同名 Metal shader：确认原画的局部动效。
 - `Features/Practice/PracticeSessionView.swift`：练习完整流程；`PracticeAudioCoordinator.swift` 将可能阻塞的音频 session 准备移出主线程。

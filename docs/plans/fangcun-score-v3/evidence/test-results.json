@@ -1,0 +1,275 @@
+{
+  "syntheticOnly": true,
+  "core": {
+    "tests": 162,
+    "suites": 31,
+    "exitCode": 0
+  },
+  "reference": {
+    "methods": 14,
+    "fixtures": 24,
+    "exitCode": 0
+  },
+  "runs": [
+    {
+      "run": "s4-final",
+      "exitCode": 65,
+      "total": 251,
+      "passed": 244,
+      "failed": 7,
+      "skipped": 0,
+      "uiCount": 54,
+      "appCount": 197,
+      "readableResult": true
+    },
+    {
+      "run": "s4-rerun",
+      "exitCode": 65,
+      "total": 223,
+      "passed": 219,
+      "failed": 4,
+      "skipped": 0,
+      "uiCount": 25,
+      "appCount": 198,
+      "readableResult": true
+    },
+    {
+      "run": "s4-acceptance",
+      "exitCode": 0,
+      "total": 212,
+      "passed": 212,
+      "failed": 0,
+      "skipped": 0,
+      "uiCount": 14,
+      "appCount": 198,
+      "readableResult": true
+    }
+  ],
+  "latestUI": {
+    "CheckInFlowUITests/testBottomChromeDoesNotInterceptHomeScroll": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testBreathPhaseRemainsThePrimaryGuideAtAccessibilityTextSizes": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testEmotionCompassDragCommitsItsEndpoint": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testEmotionFieldRemainsUsableAtAccessibilityTextSizes": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testExplicitNoBreathingChoiceChangesActionOnly": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "CheckInFlowUITests/testFangcunNavigationUsesProductLanguage": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testHomeLeadsWithOneScoreAndAction": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "CheckInFlowUITests/testHomeResponseRemainsReachableAtAccessibilityTextSizes": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testKegelCompletionRemainsReachableAtAccessibilityTextSizes": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testPacedBreathingLeadsWithTheCurrentBreathPhase": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testPracticeCompletionRemainsReachableAtAccessibilityTextSizes": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testPracticeLibraryOpensARealSession": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "CheckInFlowUITests/testPracticeLibraryStartsFromTheOutcomeInsteadOfAPlainCatalog": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "CheckInFlowUITests/testPracticeOffersHandsFreeSoundAndHapticGuidance": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testPracticePreparationIsScrollableForLargeContent": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testSelectingSuggestedWordImmediatelySavesPrimaryRecord": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testStatusNeedsNoWritingAndDoesNotCreateAChoreList": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "CheckInFlowUITests/testUnclassifiedStillSavesSelectedValence": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "DrinkEditorUITests/testCapacityEditingUndoAndQuickLogShareTheSameRecords": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ExperienceV2SceneUITests/testActualMinuteCompletesBeforePawTouchSaveScreen": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ExperienceV2SceneUITests/testDistinctCurrentConclusionsAndSceneEntry": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ExperienceV2SceneUITests/testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ExperienceV2SceneUITests/testWaterCoffeeAlcoholAndUndoShowCommittedFeedback": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "ExperienceV2UITests/testFirstExperienceDelivery": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "FangcunAppearanceUITests/testCriticalScreensInCurrentAppearance": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "FangcunRedesignUITests/testAcceptedSoloAndDuoScenesInDarkAndLargeType": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "FangcunRedesignUITests/testBreathingWithMotionEnabledCanPauseAndExit": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "FangcunRedesignUITests/testDisplayPreferencesSurviveRelaunch": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "FangcunRedesignUITests/testNativeTodayDrinksTrendsPracticeAndSettings": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "FangcunResponseLoopUITests/testActionChooserKeepsScorePositionStable": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "FangcunResponseLoopUITests/testDetailedFeelingRemainsSeparateFromScore": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "FangcunResponseLoopUITests/testDisplayPreferencesDoNotOverwriteFeeling": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "FangcunResponseLoopUITests/testFinishThenSkipFeedbackReturnsHomeWithCompletedOnly": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "FangcunResponseLoopUITests/testSavedPostPracticeFeelingImmediatelyUpdatesHome": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "FangcunResponseLoopUITests/testSelectedPressureSourceImmediatelyUpdatesTheWholeHomeResponse": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "HomeEvidencePipelineUITests/testHistoryFailureAndLimitedEvidence": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "HomeEvidencePipelineUITests/testMeasurementTimeDoesNotBecomeQueryTime": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "HomeEvidencePipelineUITests/testPreviousSleepAndIncompleteBaselines": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "HomeEvidencePipelineUITests/testQualifiedEvidenceAndWorkoutProtection": {
+      "result": "passed",
+      "run": "s4-rerun"
+    },
+    "PracticeReturnHomeUITests/testClosingBeforeStartingKeepsThePracticeTabSelected": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "PracticeReturnHomeUITests/testCompletedLibraryPracticeReturnsToNowTab": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "ReadinessHomeUITests/testAssessable": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ReadinessHomeUITests/testAwaiting": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ReadinessHomeUITests/testBreathingRoundTripKeepsCurrentAssessmentWithoutReward": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ReadinessHomeUITests/testFailed": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ReadinessHomeUITests/testHistoryIdentityAndAccessibleLargeDarkLayout": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ReadinessHomeUITests/testInsufficient": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ReadinessHomeUITests/testLimited": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "ReadinessHomeUITests/testProvisional": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "RecoveryActionUITests/testLocalActionPauseEarlyEndSkipThenEditFeedback": {
+      "result": "passed",
+      "run": "s4-final"
+    },
+    "StatusScoreV3UITests/testEmptyCanSaveActualSleepWithoutConnectingHealth": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "StatusScoreV3UITests/testFirstNightRawSleepPublishes78AndRealAction": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "StatusScoreV3UITests/testMaximumTypeDarkModeScoreAndActionRemainReachable": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    },
+    "StatusScoreV3UITests/testNightKeeps78AndStartsShortBreathingThenForegroundStillClean": {
+      "result": "passed",
+      "run": "s4-acceptance"
+    }
+  },
+  "watchSimulatorBuild": "passed",
+  "signedBuild": "1.0.0 (2026092002)",
+  "device": {
+    "installedVersionReadback": "1.0.0 (2026092002)",
+    "supportFilesPreserved": 13,
+    "preferencesPreserved": true,
+    "launch": "blocked_locked",
+    "realHealthRefresh": "unverified"
+  }
+}

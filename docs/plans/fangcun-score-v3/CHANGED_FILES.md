@@ -1,0 +1,82 @@
+# V3 修改文件
+
+相对审阅基准 `7d2f87ef46c625fda2549649879fb18367a0e766`。源码分卷和索引由现有脚本另行生成；下面按路径列出实际源码、测试、契约和证据变化。
+
+- `AI_CONTEXT.md`
+- `InnerBalance/InnerBalanceApp/App/RootView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Home/FangcunTodayView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Practice/PracticeInputComponents.swift`
+- `InnerBalance/InnerBalanceApp/Features/Readiness/DailyStatusHistoryView.swift`
+- `InnerBalance/InnerBalanceApp/Features/Readiness/DailyStatusViews.swift`
+- `InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessCoordinator.swift`
+- `InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessDemoProvider.swift`
+- `InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessViews.swift`
+- `InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessHealthKitProvider.swift`
+- `InnerBalance/InnerBalanceApp/Sync/PhoneSyncCoordinator.swift`
+- `InnerBalance/InnerBalanceTests/Features/PhoneSyncIntegrationTests.swift`
+- `InnerBalance/InnerBalanceTests/Features/StatusScoreCoordinatorV3Tests.swift`
+- `InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift`
+- `InnerBalance/InnerBalanceUITests/ExperienceV2SceneUITests.swift`
+- `InnerBalance/InnerBalanceUITests/ExperienceV2UITests.swift`
+- `InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift`
+- `InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift`
+- `InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift`
+- `InnerBalance/InnerBalanceUITests/HomeEvidencePipelineUITests.swift`
+- `InnerBalance/InnerBalanceUITests/ReadinessHomeUITests.swift`
+- `InnerBalance/InnerBalanceUITests/RecoveryActionUITests.swift`
+- `InnerBalance/InnerBalanceUITests/StatusScoreV3UITests.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusScoreEngine.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSnapshot.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSummaryDTO.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreCardioBuilder.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreFeatureBuilder.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusPresentationPolicy.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusScoreConfiguration.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncModels.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncService.swift`
+- `InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncStore.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/ScoreV3SyncTests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/StatusScoreDataV3Tests.swift`
+- `InnerBalanceCore/Tests/InnerBalanceCoreTests/StatusScoreV3Tests.swift`
+- `README.md`
+- `docs/ARCHITECTURE.md`
+- `docs/CURRENT_DESIGN.md`
+- `docs/plans/fangcun-experience-v2/REVIEW.md`
+- `docs/plans/fangcun-score-v3/CONTRACT_CHANGES.md`
+- `docs/plans/fangcun-score-v3/COPY_REVIEW.md`
+- `docs/plans/fangcun-score-v3/COPY_V3.zh-Hans.json`
+- `docs/plans/fangcun-score-v3/DECISIONS.md`
+- `docs/plans/fangcun-score-v3/FANGCUN_SCORE_FIRST_SPEC_v3.0.md`
+- `docs/plans/fangcun-score-v3/Fangcun_Score_v3.docx`
+- `docs/plans/fangcun-score-v3/REVIEW.md`
+- `docs/plans/fangcun-score-v3/S1-VERIFICATION.md`
+- `docs/plans/fangcun-score-v3/S2-VERIFICATION.md`
+- `docs/plans/fangcun-score-v3/S3-VERIFICATION.md`
+- `docs/plans/fangcun-score-v3/SCORE_POLICY_v3.json`
+- `docs/plans/fangcun-score-v3/SCORE_V3_FIXTURES.json`
+- `docs/plans/fangcun-score-v3/START_CODEX.md`
+- `docs/plans/fangcun-score-v3/TASKS.md`
+- `docs/plans/fangcun-score-v3/VERIFICATION.md`
+- `docs/plans/fangcun-score-v3/VERIFICATION_NOTE.md`
+- `docs/plans/fangcun-score-v3/VISIBLE_COPY_DENYLIST.json`
+- `docs/plans/fangcun-score-v3/evidence/S1-composition.png`
+- `docs/plans/fangcun-score-v3/evidence/S1-home-78.png`
+- `docs/plans/fangcun-score-v3/evidence/S1-native-flow.mp4`
+- `docs/plans/fangcun-score-v3/evidence/S1-rest.png`
+- `docs/plans/fangcun-score-v3/evidence/S4-composition.png`
+- `docs/plans/fangcun-score-v3/evidence/S4-home-78.png`
+- `docs/plans/fangcun-score-v3/evidence/S4-maximum-type.png`
+- `docs/plans/fangcun-score-v3/evidence/S4-night-78.png`
+- `docs/plans/fangcun-score-v3/evidence/S4-water.png`
+- `docs/plans/fangcun-score-v3/legacy-ui-contracts/CheckInFlowUITests.swift.txt`
+- `docs/plans/fangcun-score-v3/legacy-ui-contracts/FangcunAppearanceUITests.swift.txt`
+- `docs/plans/fangcun-score-v3/legacy-ui-contracts/FangcunResponseLoopUITests.swift.txt`
+- `docs/plans/fangcun-score-v3/legacy-ui-contracts/HomeEvidencePipelineUITests.swift.txt`
+- `docs/plans/fangcun-score-v3/reference_score_v3.py`
+- `docs/plans/fangcun-score-v3/test_reference_score_v3.py`
+
+生成项：`ai/source-*.txt`、`ai/README.md`、`FILE_INDEX.md`、`llms.txt`、`llms-full.txt`、`publication-manifest.json`。它们由 `scripts/generate_ai_index.py` 从本轮项目内容生成，不包含本机私有结果包。
+
+最终证据另包含 `evidence/S4-home-action.mp4`、`S4-drinks.mp4`、`S4-breathing.mp4`、`test-results.json`；全局 `docs/verification/STATUS.md` 和原能力记录已追加 V3 当前状态。

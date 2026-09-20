@@ -50,18 +50,25 @@ struct PracticeChangePicker: View {
   }
 }
 
-struct PostPracticeCompassPicker: View {
-  @Binding var valence: Double
-  @Binding var arousal: Double
-  @Binding var hasSelection: Bool
-
-  private let choices: [(String, String, Double, Double)] = [
+enum PostPracticeFeelingNames {
+  static let choices: [(String, String, Double, Double)] = [
     ("低落", "cloud.rain", -0.7, -0.7),
     ("紧绷", "bolt", -0.7, 0.8),
     ("平平", "minus", 0, 0),
     ("平和", "water.waves", 0.7, -0.7),
     ("有劲", "sparkles", 0.7, 0.8),
   ]
+  static func title(valence: Double, arousal: Double) -> String? {
+    choices.first { abs($0.2-valence) < 0.0001 && abs($0.3-arousal) < 0.0001 }?.0
+  }
+}
+
+struct PostPracticeCompassPicker: View {
+  @Binding var valence: Double
+  @Binding var arousal: Double
+  @Binding var hasSelection: Bool
+
+  private let choices = PostPracticeFeelingNames.choices
 
   var body: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {

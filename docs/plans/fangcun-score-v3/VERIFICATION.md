@@ -5,10 +5,10 @@
 Canonical working directory: `/Users/yvainair/Code/fangcun`.
 
 - `cd docs/plans/fangcun-score-v3 && python3 -m unittest -v test_reference_score_v3.py`: 14 methods / 24 reference cases passed.
-- `swift test --package-path InnerBalanceCore`: S4 baseline 159 tests / 31 suites passed (`s4-core.log`). The additional raw 64-point regression is pending the final rerun.
-- `DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'platform=iOS Simulator,id=<local simulator>' -derivedDataPath <local DerivedData> -resultBundlePath <local result.xcresult> -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 -collect-test-diagnostics never -only-testing:InnerBalanceTests -only-testing:InnerBalanceUITests CODE_SIGNING_ALLOWED=NO`: `s4-final`, App 197 tests passed; complete UI and targeted reruns in progress. Device identifiers remain local.
-- `DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -configuration Debug -destination 'generic/platform=watchOS Simulator' -derivedDataPath <local WatchDerivedData> CODE_SIGNING_ALLOWED=NO`: `s4-watch-final.log`, BUILD SUCCEEDED.
-- Signed Release uses the existing local signing identity, generic iOS destination and `CURRENT_PROJECT_VERSION=2026092001`. Credentials/team/profiles/logs remain local. Build succeeded; `devicectl device install app` exit 0; installed app version read back as 1.0.0 (2026092001).
+- `swift test --package-path InnerBalanceCore`: final 162 tests / 31 suites passed, exit 0 (`s4-core-complete.log`); includes raw 64 points, log-HRV display consistency and HealthKit selection superseding manual sleep without history loss.
+- `DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination 'platform=iOS Simulator,id=<local simulator>' -derivedDataPath <local DerivedData> -resultBundlePath <local result.xcresult> -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 -collect-test-diagnostics never -only-testing:InnerBalanceTests -only-testing:InnerBalanceUITests CODE_SIGNING_ALLOWED=NO`: `s4-final`, normal exit 65 and readable result: 251 total (197 App passed, 54 UI: 47 passed / 7 failed); final `s4-acceptance` exit0, 212/212 passed (198 App + 14 focused UI), readable result. Across the complete run and focused reruns, all 54 distinct UI cases have passing latest results; zero skipped. Device identifiers remain local.
+- `DEVELOPER_DIR=/Applications/Xcode-27-beta.app/Contents/Developer xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -configuration Debug -destination 'generic/platform=watchOS Simulator' -derivedDataPath <local WatchDerivedData> CODE_SIGNING_ALLOWED=NO`: `s4-watch-complete.log`, final shared Core BUILD SUCCEEDED, exit 0.
+- Signed Release uses the existing local signing identity, generic iOS destination and final `CURRENT_PROJECT_VERSION=2026092002`. Credentials/team/profiles/logs remain local. Build exit 0. Initial build2001 install exited0. Final build2002 install reported an interrupted connection (CoreDevice3002 / IXRemote6); fresh `devicectl device info apps` exited0 and independently confirmed installed **1.0.0 (2026092002)**. No blind reinstall was needed.
 
 ## Acceptance mapping
 
@@ -30,7 +30,7 @@ Canonical working directory: `/Users/yvainair/Code/fangcun`.
 | V314 | `sleepPublishesBeforeHRVAndCursorThenFailureRetainsScore`, app cold reload/query failure: same ID/asOf retained |
 | V315 | `revisionsIgnoreQueryClockButTrackCompositionConfigurationAndDeletion`, deletion journal/backup legacy tests; same-cycle supersession and redaction |
 | V316 | Same fingerprint/clock regression; old M2-R04 tests preserved |
-| V317 | Old owner selection/generation/CAS tests preserved; additional `simultaneousTargetAndSourceChangeRejectsOldScoreIntent` pending final targeted run |
+| V317 | Old owner selection/generation/CAS tests preserved; additional `simultaneousTargetAndSourceChangeRejectsOldScoreIntent` passed in the full198 App rerun |
 | V318 | `nightAndConstraintsChangeOnlyAction`, `testNightKeeps78AndStartsShortBreathingThenForegroundStillClean`; same78, night120-second route |
 | V319 | First-night rest UI, breathing round-trip, drink editor tests; no score reward; sessions/feedback actually save |
 | V320 | `testMaximumTypeDarkModeScoreAndActionRemainReachable`, current appearance/home scroll/large text and drink tests; screenshots for human review |
@@ -50,8 +50,28 @@ Canonical working directory: `/Users/yvainair/Code/fangcun`.
 - S2 old protocol expectation: phone summary test now asserts real score identity plus legacy/new revocation. Session/drink/ACK assertions preserved. Full App rerun passed.
 - `s3-ui2`: 25 UI tests, 19 passed / 6 failed over a host-sleep-interrupted overnight run. `pmset` confirmed repeated deep sleep and final 10:28 wake. These six crash/timeout outcomes are not counted as passing; rerun under process-scoped caffeinate.
 - `s4-ui-full`: superseded old-contract run stopped, exit75; preserved locally, not counted as final complete result. Its obsolete preset-selector assertions are archived verbatim under legacy-ui-contracts. Updated cases test the approved V3 surface and actual saved records instead.
-- `s4-final`: currently running. Initial locator/type/header/preference issues are being fixed; final aggregate and rerun names will be appended before delivery.
+- `s4-final`: 7 failures comprised four CheckInFlow locator/header/preference cases, Appearance brand locator, actual duplicate resume accessibility elements, and actual post-practice feeling display mismatch. No assertion was removed. `s4-rerun`: normal exit65, readable result, 198 App passed; 25 UI: 21 passed / 4 failed. It exposed an off-screen privacy row and no-breathing test preference left enabled (three tests expecting breathing correctly received rest). Scroll to the privacy row; assert preference reset to 0 and declare default preference preconditions. Keep accessibility hiding on the home content only, outside the modal presenter. `s4-acceptance` exited0 with all 212 tests passed. Original failed cases each have a passing rerun; [filtered machine-readable results](evidence/test-results.json) identify the latest passing run for each of the 54 UI cases.
 
 ## Local-only device receipt
 
-Installation and version readback succeeded. All 13 Application Support files and preference dictionary matched byte-for-byte / value-for-value before vs after overwrite, before launch. No uninstall or clear. System rejected launch while phone locked; unlock requested. Real score generation/HealthKit refresh, Watch delivery, notifications and subjective visual/comprehension acceptance remain unverified until independently checked. No private health files, device identifiers, signing material or physical screenshots are in this repository.
+Final installed version2002 was confirmed by fresh device readback after the install connection error. All 13 Application Support files and the preference dictionary matched byte-for-byte / value-for-value before vs after this final overwrite, before launch. No uninstall or clear. System rejected launch while phone locked; unlock requested. Real score generation/HealthKit refresh, Watch delivery, notifications and subjective visual/comprehension acceptance remain unverified until independently checked. Final launch returned CoreDevice10002 with explicit locked/denied evidence; this is not counted as a successful runtime verification. No private health files, device identifiers, signing material or physical screenshots are in this repository.
+
+## Original contracts and fixture integrity
+
+`git show 7d2f87e:<golden path>` compared byte-for-byte with the working tree: the original golden file is unchanged. V3 SCORE_V3_FIXTURES.json and SCORE_POLICY_v3.json match the ZIP bytes. Reference runner was accidentally invoked once from repository root (module not found); running from its documented package directory passed all 14 methods / 24 cases.
+
+## Final acceptance (normal exit / readable results)
+
+| Run | Exit | App | UI | Result |
+| --- | --- | --- | --- | --- |
+| s4-final (complete) | 65 | 197 pass | 47 pass / 7 fail | preserved failure history |
+| s4-rerun | 65 | 198 pass | 21 pass / 4 fail | locator scrolling / test preference cleanup resolved next |
+| s4-acceptance | 0 | 198 pass | 14 pass / 0 fail | final affected flows; result readable |
+
+Latest result across the complete and focused runs: **54 distinct UI tests passed**, none skipped. This is aggregate coverage, not a claim that the original complete command passed. Final14 = CheckIn no-breathing preference/reset(1), water/coffee/alcohol/undo(1), appearance/privacy/full practice/check-in(1), redesign/motion/preferences/complete journey(4), saved feeling(1), original practice return tests(2), V3 sleep78/manual/night/maximum-type(4).
+
+Focused runs use the same `xcodebuild test` command above and `-only-testing:InnerBalanceTests` plus the class/method IDs in [test-results.json](evidence/test-results.json). Core162, App198, 24 unchanged numeric fixtures, unchanged legacy golden, Watch simulator build and signed iOS Release all passed. Original physical Watch/background, real HealthKit refresh and locked-phone launch remain separate unverified items. Maximum-type content scrolls; a single automated device size and synthetic data do not prove human three-second comprehension or every narrow-device layout.
+
+## Final media evidence
+
+The final screenshots and three recordings are from `s4-acceptance` synthetic simulator UI. simctl uses variable frame timestamps: cuts were selected by inspecting actual frames, not assuming wall-clock test timestamps equal video timestamps. Playback retains native speed; exported videos contain no device identifiers or private metadata. Home78 is a raw-provider fixture; water/coffee/alcohol/undo shows persisted feedback; breathing shows actual inhale/re-inhale/exhale clock and pause/exit. Files: `evidence/S4-home-action.mp4`, `S4-drinks.mp4`, `S4-breathing.mp4`. Appearance remains subject to human review.

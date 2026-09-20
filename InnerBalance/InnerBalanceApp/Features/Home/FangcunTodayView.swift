@@ -118,7 +118,7 @@ struct FangcunTodayView: View {
             HStack { Text("看看这一周的节奏"); Spacer(); Image(systemName: "arrow.right") }.font(.subheadline).padding(.vertical, 10)
           }.accessibilityIdentifier("today.trends")
           if let recentFeeling, Calendar.current.isDateInToday(recentFeeling.date) {
-            Text("你最近记录：" + (recentFeeling.labels.first?.displayName ?? "未分类的感受")
+            Text("你最近记录：" + (recentFeeling.labels.first?.displayName ?? (recentFeeling.phase == .post ? PostPracticeFeelingNames.title(valence:recentFeeling.valence,arousal:recentFeeling.arousal) : nil) ?? "未分类的感受")
               + (recentFeeling.associations.isEmpty ? "" : " · " + recentFeeling.associations.map(\.displayName).joined(separator:"、")))
               .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
               .accessibilityIdentifier("today.feeling").accessibilityValue(recentFeeling.syncIdentifier)
@@ -129,6 +129,7 @@ struct FangcunTodayView: View {
           Text("不必把每一天，都过得很用力。")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 18)
         }.padding(.horizontal, 20).padding(.top, 14)
+          .accessibilityHidden(hasOngoingPractice || localAction != nil)
       }
       .background(InnerBalanceTheme.canvas)
       .foregroundStyle(InnerBalanceTheme.ink)
@@ -164,7 +165,8 @@ struct FangcunTodayView: View {
       HStack(spacing: 10) {
         FangcunBrandMark(size: 34)
         VStack(alignment: .leading, spacing: 2) {
-          Text("方寸").font(.title3.weight(.semibold)).tracking(2)
+          // The wordmark and toolbar symbols are artwork; page text follows Dynamic Type.
+          Text("方寸").font(.system(size: 20, weight: .semibold)).tracking(2)
           Text("FANGCUN").font(.system(size: 8)).tracking(1.5)
         }
       }.accessibilityElement(children: .combine).accessibilityIdentifier("home.brandPoint")
@@ -175,7 +177,7 @@ struct FangcunTodayView: View {
         Button("开始 5 分钟呼吸", action: onStart).disabled(recovery?.canStart == false)
         Button("换个方式") { choosing = true }.accessibilityIdentifier("recovery.change")
       } label: { Image(systemName: "ellipsis").frame(width: 44, height: 44) }.accessibilityLabel("选择练习")
-    }.foregroundStyle(InnerBalanceTheme.strongFill)
+    }.font(.system(size: 20)).foregroundStyle(InnerBalanceTheme.strongFill)
   }
   private var hero: some View {
     Group {

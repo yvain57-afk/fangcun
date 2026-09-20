@@ -14,8 +14,8 @@
     },
     {
       "path": "AI_CONTEXT.md",
-      "bytes": 4719,
-      "sha256": "7f6a3f2e0d11b0b9acb991025ee14c64cd224542f1bf1d6e1cbe2299cc05724a"
+      "bytes": 5086,
+      "sha256": "b786c73b94400ec94208b5ee7aa618fdbeff3f71085ea3be9e175e37c268b60f"
     },
     {
       "path": "InnerBalance/Configuration/InnerBalance-Info.plist",
@@ -39,8 +39,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/App/RootView.swift",
-      "bytes": 11101,
-      "sha256": "fd7dfa9e284e4eceaf7931fcc8c9aa3215ce49500f7a381bc7f4e20345f4c018"
+      "bytes": 11249,
+      "sha256": "fc080627332dabb20816905f3d01cfb33952bd634e6516b46ac2216c5c9d6ec1"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Assets.xcassets/AccentColor.colorset/Contents.json",
@@ -359,8 +359,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/FangcunTodayView.swift",
-      "bytes": 16168,
-      "sha256": "3e9fc02847560aa3775ee672294bd3582c089448da544f84732670e6615d5e84"
+      "bytes": 17405,
+      "sha256": "20f229e988f9d203b688052b61e10c1ab1ef753b656ea5e00091e2427fd0f15d"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Home/FangcunTrendsView.swift",
@@ -449,8 +449,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Practice/PracticeInputComponents.swift",
-      "bytes": 4160,
-      "sha256": "8f20f43dfbc22a37ae05675c33bdfaff19e085c6e13b639e8e941477d710ddf9"
+      "bytes": 4404,
+      "sha256": "70241ea6c53d901f38240503f9ce950ae14d27fa15a85afb7ff0d88548d01297"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Practice/PracticeLibraryComponents.swift",
@@ -523,24 +523,34 @@
       "sha256": "c1779fdfdf2a22febc82e8c35a7d847f23c1df342dbfe0b4c918ba97b3044c14"
     },
     {
+      "path": "InnerBalance/InnerBalanceApp/Features/Readiness/DailyStatusHistoryView.swift",
+      "bytes": 5561,
+      "sha256": "eada05af90cbf461b5d6fcb71fd9f4163a64f9b347d65716435189101c75272a"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceApp/Features/Readiness/DailyStatusViews.swift",
+      "bytes": 7853,
+      "sha256": "47d479a953e18ff3afc211813253aa68e3123314dbbb52f5e0cd33f7a5049591"
+    },
+    {
       "path": "InnerBalance/InnerBalanceApp/Features/Readiness/DayGuidancePresentation.swift",
       "bytes": 3170,
       "sha256": "b78273bf8879bbc3c6208e9c7a74ec00c37a62d275bfad0ac3c2e8aef44e1608"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessCoordinator.swift",
-      "bytes": 8842,
-      "sha256": "9c2fc74209b4fa4b5f7ada17fcaa1ac14fb834adb672924a64a798096065bef6"
+      "bytes": 12034,
+      "sha256": "4eeb2aa04d07b12bf5296f719dfedb92ba335b8ac75778c891039cd8fd69350b"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessDemoProvider.swift",
-      "bytes": 2287,
-      "sha256": "20c5ce698e5aa08c0e213fcf33641fdc517572a6f99e52cc74d4b037d94f0690"
+      "bytes": 4272,
+      "sha256": "256d4b33dce1dc7406417717527b97322e7e2b1a17d677c5068988f9c9d2c3ed"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Readiness/ReadinessViews.swift",
-      "bytes": 18513,
-      "sha256": "baaa1e8e08333dfd475682c2094d6a7ee96f48a2918fb408fb5ce812823df464"
+      "bytes": 18807,
+      "sha256": "a5402e85f327024bbd146b0ee8c067a36cfbd7d0766463b58935e90a3b72d410"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Features/Recovery/RecoveryCoordinator.swift",
@@ -589,8 +599,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessHealthKitProvider.swift",
-      "bytes": 8520,
-      "sha256": "a75f40e9b7a146347bb0cd63edc4e3ed52feda358efb283bd1f48aa9cbf2e2bf"
+      "bytes": 8618,
+      "sha256": "78e4490f24fe94b3c60a9509a01e0b4c92edf67fcc823a32f4eedb3cfc4e612b"
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessObserverCompletion.swift",
@@ -759,8 +769,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceApp/Sync/PhoneSyncCoordinator.swift",
-      "bytes": 4572,
-      "sha256": "842641121817da6301f4ad4372879d923c5be34999a3ec4bae73df4e308d87ef"
+      "bytes": 4577,
+      "sha256": "d65089db2d40818f7921844b5ff2e59907cfc6a42a1b4e9e3a8f002b91ab23c1"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Compliance/PrivacyManifestTests.swift",
@@ -829,8 +839,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Features/PhoneSyncIntegrationTests.swift",
-      "bytes": 6254,
-      "sha256": "7ab37efec286dafdf2d79daa0c3c521ddb9bb3277272a3613bcf90e09df8d60a"
+      "bytes": 6424,
+      "sha256": "5823ae15d71a983c4b1486d644666c17e74026a2ac4c389c8098c366d1fa2fbb"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Features/PracticePresentationTests.swift",
@@ -861,6 +871,11 @@
       "path": "InnerBalance/InnerBalanceTests/Features/RecoverySessionTests.swift",
       "bytes": 2728,
       "sha256": "1dfbd866909a24841c782025b3f81d3180ddae1cf588dcaac746349eebb5276f"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceTests/Features/StatusScoreCoordinatorV3Tests.swift",
+      "bytes": 5004,
+      "sha256": "d11fc8e5258fd666364936f1c455d215707421492fd87ad59344b8860a04171c"
     },
     {
       "path": "InnerBalance/InnerBalanceTests/Health/HealthAuthorizationCoordinatorTests.swift",
@@ -919,8 +934,8 @@
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift",
-      "bytes": 16611,
-      "sha256": "9b0faa31830b958c363072b1f81d3a718c4d736a7159d604b9f36d1296619bc4"
+      "bytes": 15666,
+      "sha256": "a89208bf297c7e1941fa0347a7698137fe01e6eed5fbbb731357d5cbc4406d54"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/DrinkEditorUITests.swift",
@@ -929,33 +944,33 @@
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/ExperienceV2SceneUITests.swift",
-      "bytes": 5003,
-      "sha256": "c10a2c532162c51ab9df7da6de22f419877d6c0b084e94398e2ef022b1277a30"
+      "bytes": 4905,
+      "sha256": "9e1190e3d543b5f6a2cfb92c3023a9a7126b55a09c4f88df7a24441b909cda9d"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/ExperienceV2UITests.swift",
-      "bytes": 2265,
-      "sha256": "e94ebd38c875484e9e0dbcef1c87ca53da15dc3cf40d6b888d046da30ade1bce"
+      "bytes": 2251,
+      "sha256": "ee34bbe98993ae85d9b1c16f61b8f81a1d35d9822c2446882f7a4575599afc6f"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift",
-      "bytes": 4074,
-      "sha256": "50598d7fb46973b9cbf79de391bb63be30d78ad6f1b89889a13ba8ea5b5f9f20"
+      "bytes": 4245,
+      "sha256": "b0a2de8dfb3f5f0e173daaf747eb7fcb4ccb1a09c14ba20d24640f7e70aacd5d"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift",
-      "bytes": 6032,
-      "sha256": "5830164545ba0cb220adadcf66e501494bd793efc96b38113c16bf786bf96f28"
+      "bytes": 6332,
+      "sha256": "3e6cc5899c8f9f54a0d26a98d51f5210195d85ab4c07171dba445f3048506d54"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift",
-      "bytes": 9078,
-      "sha256": "c30736038a05fc22558cc25c05f8f83d54a86b7403cc940695a7e8fa5bc66749"
+      "bytes": 5739,
+      "sha256": "1fd1d0079895ff46d1a94a375bc67fb986e632c8805876dfc8132c782a9e253c"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/HomeEvidencePipelineUITests.swift",
-      "bytes": 3636,
-      "sha256": "b7e01970333e6369cdf3ec6331359cf4888f764f5c79131fa95a6ceae5c432ba"
+      "bytes": 2691,
+      "sha256": "fa8d5d49b81ca6677698c425ca7dabb7ac5a8c9042f05c126e29fa2c6d67842c"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/PracticeReturnHomeUITests.swift",
@@ -964,13 +979,18 @@
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/ReadinessHomeUITests.swift",
-      "bytes": 6088,
-      "sha256": "ab55b3e078ce7d86c91c78c7612404105cbf8d20c39b4dc0348794f728f032bd"
+      "bytes": 4722,
+      "sha256": "8d929225ca68cd75b8394d98c7840067a0d5d6b15426c3bfd40fc6e048e74e47"
     },
     {
       "path": "InnerBalance/InnerBalanceUITests/RecoveryActionUITests.swift",
-      "bytes": 1990,
-      "sha256": "f4749ee53650c993194ea0e6f832b81a11ede7a45769ee2f39f40f7ce37df2b9"
+      "bytes": 1983,
+      "sha256": "afd4585977a048f2971fba71677a8236d00f5e16e77f8673b0e3516f05688e0d"
+    },
+    {
+      "path": "InnerBalance/InnerBalanceUITests/StatusScoreV3UITests.swift",
+      "bytes": 5587,
+      "sha256": "46eec0b8bfd2c5278ddcfc5f1e8142bfb2da967a4665b56735418629e4896601"
     },
     {
       "path": "InnerBalance/InnerBalanceWatch/App/InnerBalanceWatchApp.swift",
@@ -1149,8 +1169,8 @@
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift",
-      "bytes": 11454,
-      "sha256": "2623063c18ed02377e78ee19ba4315a7e38f76039f4d5d0a101cce5a913cfa8c"
+      "bytes": 13185,
+      "sha256": "d6e2ab0b3e38edd2a52805204e15fc16f6771e76e65d41a5cfe2b078655c2fc8"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessConfiguration.swift",
@@ -1164,8 +1184,8 @@
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessPipeline.swift",
-      "bytes": 8901,
-      "sha256": "4f51aa5622e6ee87b0f1fb03bb95a99eb8cfcae382ea1a95f5eae56f7f0fc356"
+      "bytes": 11791,
+      "sha256": "8b6135ac411ccbcdd935283b4eee62175d2476c008425408d8f199f8f36d98ff"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessSamples.swift",
@@ -1218,24 +1238,59 @@
       "sha256": "4dfa5fd387bbdea65fc50ddd4b7f965c2a68a5cb8e1556df931086436a558c43"
     },
     {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusScoreEngine.swift",
+      "bytes": 4165,
+      "sha256": "2f8363a2a74f5e3c7a6aa89d0fe69edc65e2cb4b188a35cae537725f8b4b0569"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSnapshot.swift",
+      "bytes": 5175,
+      "sha256": "420028f9f1daf4a9a2e3c3f2d278a13b5accce97a53d58f3f8da1dcc3c31f56f"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSummaryDTO.swift",
+      "bytes": 3285,
+      "sha256": "e380a6c90e276292a0a7628f44bfed3c37d7d13c32f1b901a752434de5a5a300"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreCardioBuilder.swift",
+      "bytes": 5540,
+      "sha256": "f30f9ce07f71c4d0339ab0d019fd2fa802dd3801dab643e54f9e79904a68489c"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreFeatureBuilder.swift",
+      "bytes": 6480,
+      "sha256": "b673ba382691fe6bdc9f540130ec72b4bda8f35f0fa57ef37f639fd1d0fcfe02"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusPresentationPolicy.swift",
+      "bytes": 1417,
+      "sha256": "c2f275a5f3f2440b5a078481bbdf69d568dde4ddd929b0f440008943282a83e1"
+    },
+    {
+      "path": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusScoreConfiguration.swift",
+      "bytes": 3711,
+      "sha256": "ad34318d1e25b2318a2cf423f9da7985326490b5d4bcbbcbb16597dc78a8e064"
+    },
+    {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SummaryCache.swift",
       "bytes": 1210,
       "sha256": "a4f0d75172b91f5652e8246f57eb3f53b7557abc75bd18a09b3fb76938ded45c"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncModels.swift",
-      "bytes": 4390,
-      "sha256": "9ab92d1b07608eafe245ae47c51540587db04b21e612452f3827d7e9cdc735ea"
+      "bytes": 4537,
+      "sha256": "1ffc2f7538876f5a15c616ade578733300fa35efe925b26b8e5492eb68f64514"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncService.swift",
-      "bytes": 7360,
-      "sha256": "09c15857c0e8a7f946fb05e9d8a97c64a2a597ab45bb26e7730e1753e9561636"
+      "bytes": 9601,
+      "sha256": "1fb8bdfc8c3ab9a7b133a6de6ab80dec1a13509b2f0f39dc636ec14595cd0f30"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncStore.swift",
-      "bytes": 7289,
-      "sha256": "d95a0018826b06ca905397bbd43eed7a8c6a87cb360d1b3bbe2097969e36442d"
+      "bytes": 8294,
+      "sha256": "e54446477c8662b853cae7b7ce6d2517c8c7871c46f586094ae2751675dec583"
     },
     {
       "path": "InnerBalanceCore/Sources/InnerBalanceCore/Sync/WatchConnectivityTransport.swift",
@@ -1368,9 +1423,24 @@
       "sha256": "56e2acc6f4fd4745013e0b998b55806179d0fadaa73fa2fbcb7d19d218e5858b"
     },
     {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/ScoreV3SyncTests.swift",
+      "bytes": 2707,
+      "sha256": "16ea6aede59f6f78da64a9e501a8f73035f8e0e4afc28ba1c27c4cc8e58ae1b7"
+    },
+    {
       "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift",
       "bytes": 2378,
       "sha256": "57ea9f2339c15d128eacb7dad32feca717d2f49ac0494952a4d18ac5b1d73329"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/StatusScoreDataV3Tests.swift",
+      "bytes": 14699,
+      "sha256": "679f0a264b4c3494eb49e4a4432e37b2c5f8191bb77d34e26c1b4adfd0d2a186"
+    },
+    {
+      "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/StatusScoreV3Tests.swift",
+      "bytes": 4245,
+      "sha256": "62233b7b44af2055aea861c9c733c87f3259421e0b0ba9244922d93e4d67b7a1"
     },
     {
       "path": "InnerBalanceCore/Tests/InnerBalanceCoreTests/Sync/BeverageSyncV2Tests.swift",
@@ -1394,356 +1464,361 @@
     },
     {
       "path": "README.md",
-      "bytes": 5609,
-      "sha256": "47aa05559134cf2f54b2e0e430f62a46ee841ba6eb310a00388baac74a10d60e"
+      "bytes": 5708,
+      "sha256": "9d9cb95bf4c9a625d9e4f514374905ee59d588e29e7712972a0a85beb2c8f196"
     },
     {
       "path": "ai/README.md",
-      "bytes": 9784,
-      "sha256": "04c28ceb48fa6e64b7e5a3b34823fabce7d643fa728ed325f4e38198f906601f"
+      "bytes": 9922,
+      "sha256": "834e9fad5a08b8c83145efd3a3458c2b366deb604c96a563c68046b339767f18"
     },
     {
       "path": "ai/source-01.txt",
-      "bytes": 151764,
-      "sha256": "8be6041569aff0b00982d917884db86342bdd18f37f1e5624f7a09fab0fa6e40"
+      "bytes": 152279,
+      "sha256": "b30856c2f14cea8408941dae29d7e38c898daa9e6e9c91843cdf9cd1998006a3"
     },
     {
       "path": "ai/source-02.txt",
-      "bytes": 157598,
-      "sha256": "d08dd7b211037e104b6b1442f75d2b70c25e46108647ef6e9271927b1aa12d6e"
+      "bytes": 159079,
+      "sha256": "ee0f8b0ce90214aa1520c3315cbe60188d1341c3a7c0fb2fdda92664e1d12da6"
     },
     {
       "path": "ai/source-03.txt",
-      "bytes": 158148,
-      "sha256": "3b44a6a6f1809fde321e879242ab1d2b549dd2c89cb37dd56519ce32b42eda10"
+      "bytes": 152760,
+      "sha256": "77a90dc1bf645d00973ae94e948b274c842d0b600502eb8ea2d73b792862b00e"
     },
     {
       "path": "ai/source-04.txt",
-      "bytes": 152257,
-      "sha256": "7993cfe7ce8b0b291f5f680023c0f668053c1cd52f6c72576bd75d13918c3ed3"
+      "bytes": 147204,
+      "sha256": "509b26b4a6b7892154929b804f55927a3f95712be198a16e4fe631a1f0f7104c"
     },
     {
       "path": "ai/source-05.txt",
-      "bytes": 157148,
-      "sha256": "a17a965b6bdba8286eb92674dd463d5af9b560b57fedffa2d96f32cbb78b68be"
+      "bytes": 146424,
+      "sha256": "79807bd69c43ffdad66349c4eba612c29f41502ab924d815c07c1601e6b64df9"
     },
     {
       "path": "ai/source-06.txt",
-      "bytes": 147246,
-      "sha256": "cba8b81971d9770c183fcbab2c0e5777c4f1809830bd6d3eb93f2ddf4494810f"
+      "bytes": 159783,
+      "sha256": "2b7d950d63b77c7c9dc606f55af4361d1dfd147b39c14017265a65753c014143"
     },
     {
       "path": "ai/source-07.txt",
-      "bytes": 156574,
-      "sha256": "0a947070e5de6a54579679edd77df3e8449af4a77acbd04de5530feb9c6d1459"
+      "bytes": 159684,
+      "sha256": "0074a51fa68f65634e306a1bf1abb973993107daa094b96a1dba1f59c6618318"
     },
     {
       "path": "ai/source-08.txt",
-      "bytes": 150270,
-      "sha256": "b7ea35599af694957d0425373a9bf993c5de9d4b1d7486830859146832b136ab"
+      "bytes": 158453,
+      "sha256": "8c45adb2c6002c09812e4e7399e2c87148283a41ac3af498b9bad93404087f0c"
     },
     {
       "path": "ai/source-09.txt",
-      "bytes": 127920,
-      "sha256": "d0425c28bf709eafd1bdc7bd864eaf8eaa499ade8e4ad77e73f0627e357a8efc"
+      "bytes": 159805,
+      "sha256": "9c0bd81d7c46628486722b93b3ccb2568573c6efcc4ec36c8d5aee7ac2f4ab07"
     },
     {
       "path": "ai/source-10.txt",
-      "bytes": 155913,
-      "sha256": "66bda938a2abff8ab10743e56093ecf6e1d89f1fded236abe5ea4bbf1ee4b4bd"
+      "bytes": 138605,
+      "sha256": "72c8ec5c2db6fdbe43537dd8c653832cfd582c590cc0d3193d674eeb04336ab3"
     },
     {
       "path": "ai/source-11.txt",
-      "bytes": 152369,
-      "sha256": "bc0172dd3949b5b5e98382fb3a546cdc74e33a3bdf366ac42af222294fe5074b"
+      "bytes": 156937,
+      "sha256": "07f375311882f222f77ff3ddcce71dd927d94db8f7f6f66710643c5a0fb82a92"
     },
     {
       "path": "ai/source-12.txt",
-      "bytes": 116216,
-      "sha256": "1a143af9929da0179e0d2c9c7a14a35cb1b1e7dee5d1d52cf8e359612a3e38a0"
+      "bytes": 101318,
+      "sha256": "233b886c59b7c23a6844b6b03af365a2a2e4acaa9eb249c2eceac6e758fc974d"
     },
     {
       "path": "ai/source-13.txt",
-      "bytes": 138581,
-      "sha256": "e3e9fa9eef71dee4343b8c0284a0feb8f9c4b01cf8772342385c31fae0e96b80"
+      "bytes": 127904,
+      "sha256": "889551366104cabcf8d0b5ddb9be0cda0e1d00c5f379bf1c912d6580b33ce080"
     },
     {
       "path": "ai/source-14.txt",
-      "bytes": 129071,
-      "sha256": "5fd927ed540463d963f50a499307eea94c288facb40264fe44f33742803b6977"
+      "bytes": 155881,
+      "sha256": "11b11117e408d6661c4e07678a0bd728fc351a053336d3e74cbfe6646fb4e586"
     },
     {
       "path": "ai/source-15.txt",
-      "bytes": 155639,
-      "sha256": "ab416f0a5024c1b99f32d06ccc97480abe947c7e65a75a72bd5331353c132b11"
+      "bytes": 153269,
+      "sha256": "b408f0b3f20281c4bf3b984dadd21a4d8dc1aadd8c896b9849d3456d161f17c2"
     },
     {
       "path": "ai/source-16.txt",
-      "bytes": 150729,
-      "sha256": "e7f6cb7676e0846f7dc9d3084e9fe7cf7ab5c981f7710165ca669f7a2e274982"
+      "bytes": 129914,
+      "sha256": "4a76e0ee27cbc40f9ab7d78ff0f1a00f348dd86f6dffc77d4a4a045d7ce76071"
     },
     {
       "path": "ai/source-17.txt",
-      "bytes": 152778,
-      "sha256": "6f44214eb15c27fc486f604df8d5d43450b94c13fcac0df741a399dcb1c8a913"
+      "bytes": 137850,
+      "sha256": "b8d9c49c84c4cce5e90526bd5de7a9d1f31c34f1edc90c260eeed69ace53c396"
     },
     {
       "path": "ai/source-18.txt",
-      "bytes": 144552,
-      "sha256": "6811e8fd7d1874d09597513c109a2473f9f733a093e3b3e303de77733ab4a4f6"
+      "bytes": 148822,
+      "sha256": "85392f54d61c954fad5c0a34d9dd7d13a4c59fc46df2341100c12780232c1c9e"
     },
     {
       "path": "ai/source-19.txt",
-      "bytes": 20134,
-      "sha256": "c4fb68b28abc815126a011b5276acf5e27369cf0c2b58b11ef891265410d8f44"
+      "bytes": 153120,
+      "sha256": "5762d232a4c54c87b68351505382c258f0202d3b010494d1007387dba518375b"
     },
     {
       "path": "ai/source-20.txt",
+      "bytes": 99798,
+      "sha256": "a255cfb568b33f4e543579ae188cf2c31bea7f309ca3a7f98b384718f03a77c8"
+    },
+    {
+      "path": "ai/source-21.txt",
       "bytes": 196559,
       "sha256": "c64c81e7280dc417db1c621552238fae5269f5bacd7255e16e68fc9faeaf0b5a"
     },
     {
-      "path": "ai/source-21.txt",
+      "path": "ai/source-22.txt",
       "bytes": 79421,
       "sha256": "8c73205eaa88661ad4f2395c14527c4fff866a618a53df93c9566b90f5203a7a"
     },
     {
-      "path": "ai/source-22.txt",
+      "path": "ai/source-23.txt",
       "bytes": 107805,
       "sha256": "6c0d9f703dd76a191cb86fde01d619f3b34d158667df4310991279da0fa49585"
     },
     {
-      "path": "ai/source-23.txt",
+      "path": "ai/source-24.txt",
       "bytes": 117850,
       "sha256": "d63539442d8b389a3ce460cb24f0ca0583216275dc6827d9f65e93f37e741b10"
     },
     {
-      "path": "ai/source-24.txt",
+      "path": "ai/source-25.txt",
       "bytes": 49168,
       "sha256": "85a30d4ffd9ff46a2135d5dbc6dd958dd7b254ccfb711df60ffe4dc9b6f9b1f2"
     },
     {
-      "path": "ai/source-25.txt",
+      "path": "ai/source-26.txt",
       "bytes": 462079,
       "sha256": "88695ae85fa0b971581fb2ff2fb86af187d7a5558960ee752d44eec624a3d937"
     },
     {
-      "path": "ai/source-26.txt",
+      "path": "ai/source-27.txt",
       "bytes": 42428,
       "sha256": "6e7bcf7b488e3249037cc6f22967e909171bc6a19849e160251cd77d10ae3802"
     },
     {
-      "path": "ai/source-27.txt",
+      "path": "ai/source-28.txt",
       "bytes": 233795,
       "sha256": "839baf5989f165972828426d9100104a5a1eb3c75eaee1c6e8e2f64989997f0b"
     },
     {
-      "path": "ai/source-28.txt",
+      "path": "ai/source-29.txt",
       "bytes": 155798,
       "sha256": "a6e9b0d91675d2809bc2f27929f6d3942bdc9f6d9e7a29e0210db5157cbde428"
     },
     {
-      "path": "ai/source-29.txt",
+      "path": "ai/source-30.txt",
       "bytes": 25718,
       "sha256": "d4b179d40c27752e99aec41d566530680a5c48c58ff2882f2e2ee214b616640e"
     },
     {
-      "path": "ai/source-30.txt",
+      "path": "ai/source-31.txt",
       "bytes": 284423,
       "sha256": "e557be910895acca8eda435ca5acfee644142c84f7f983ac9f4f33b2f33eabb7"
     },
     {
-      "path": "ai/source-31.txt",
+      "path": "ai/source-32.txt",
       "bytes": 145539,
       "sha256": "3487ae45d6caf543bd9422a3c898103f63d0cf57bf099ef0f46d287ef43ec452"
     },
     {
-      "path": "ai/source-32.txt",
+      "path": "ai/source-33.txt",
       "bytes": 51795,
       "sha256": "fe0205e7322ba9e1e9f9b21668c14ca89f947806285f0b7df0ce6b06969b1a22"
     },
     {
-      "path": "ai/source-33.txt",
+      "path": "ai/source-34.txt",
       "bytes": 196270,
       "sha256": "a589ecd350bf2d013a360222ad32b2c7f8cb8519d3a828d6c3b4cbe1635f1d46"
     },
     {
-      "path": "ai/source-34.txt",
+      "path": "ai/source-35.txt",
       "bytes": 164433,
       "sha256": "6c08e093ca5896978ff8697434f6eb4169b3a068b8e29edb6f2dee590717066c"
     },
     {
-      "path": "ai/source-35.txt",
+      "path": "ai/source-36.txt",
       "bytes": 66562,
       "sha256": "df4550165a2a1b7ecb5499b18f71bfca77498c6098efb7ebfd0ec046b047af6c"
     },
     {
-      "path": "ai/source-36.txt",
+      "path": "ai/source-37.txt",
       "bytes": 191434,
       "sha256": "1c4ae4810bd63fe66c6f501889191088635b54dbaecb4a957c1070e771796654"
     },
     {
-      "path": "ai/source-37.txt",
+      "path": "ai/source-38.txt",
       "bytes": 267366,
       "sha256": "7892445e0a799ed37f5fbb40a6556ba9331d2f0c715d1e9f4a97fe59742ce0b7"
     },
     {
-      "path": "ai/source-38.txt",
+      "path": "ai/source-39.txt",
       "bytes": 479533,
       "sha256": "f443556eb5981d914de759c0f26fe1638876f66926ddc00e9c711e122f9b08ba"
     },
     {
-      "path": "ai/source-39.txt",
+      "path": "ai/source-40.txt",
       "bytes": 38463,
       "sha256": "86207fc6a5df91c504277594205ea53a167ddabac1e82abb4ac9663c249b25f4"
     },
     {
-      "path": "ai/source-40.txt",
+      "path": "ai/source-41.txt",
       "bytes": 157472,
       "sha256": "1b2701f4f550a40b4f58dcb9dbc1b7b7039058540b2e7d7e7a8d40d8db17a332"
     },
     {
-      "path": "ai/source-41.txt",
+      "path": "ai/source-42.txt",
       "bytes": 477234,
       "sha256": "ca48c96b47e78bf8346a98a26b79d90c8047b54b27a307dd683a389308fcc57d"
     },
     {
-      "path": "ai/source-42.txt",
+      "path": "ai/source-43.txt",
       "bytes": 62374,
       "sha256": "60ae11b4aaf2e5e2ffb91ab915418a322759e883e16ef634822cd9c7417e11ee"
     },
     {
-      "path": "ai/source-43.txt",
+      "path": "ai/source-44.txt",
       "bytes": 260255,
       "sha256": "c450fd6734ec0d5c7be6baf47c99f4893898963b402e5b2c06618860fd375fd9"
     },
     {
-      "path": "ai/source-44.txt",
+      "path": "ai/source-45.txt",
       "bytes": 150869,
       "sha256": "7b4a585872da1e1139e16179d5772e7aeed813d47dc91dae5d5a45bace963464"
     },
     {
-      "path": "ai/source-45.txt",
+      "path": "ai/source-46.txt",
       "bytes": 171740,
       "sha256": "edb4d79a25e246642ea8552f3c04b2d4ab8f859e6b27b8a9c2908d8c10084ef9"
     },
     {
-      "path": "ai/source-46.txt",
+      "path": "ai/source-47.txt",
       "bytes": 239,
       "sha256": "d6c87fbc63efc92d2c046f811f067f1dd8944f104fd5c0c874fd1935633d2146"
     },
     {
-      "path": "ai/source-47.txt",
+      "path": "ai/source-48.txt",
       "bytes": 269801,
       "sha256": "b38a7ce7aac3b84cdd3e139fdd8d10c27b22db525bd8b88f6cf8415ab9932012"
     },
     {
-      "path": "ai/source-48.txt",
+      "path": "ai/source-49.txt",
       "bytes": 106666,
       "sha256": "6dd16837a3d0af3c4892a063912f5ec5934487f767143993d72878488e53db0a"
     },
     {
-      "path": "ai/source-49.txt",
+      "path": "ai/source-50.txt",
       "bytes": 130517,
       "sha256": "12748df494bb8b58f50501db8174348d4f7c74ec985ac9658fc435360d62b502"
     },
     {
-      "path": "ai/source-50.txt",
+      "path": "ai/source-51.txt",
       "bytes": 98888,
       "sha256": "5e707ac6b6f7b88577920487fc40fd6b1adf67c470b538d37a7554c3f4a8a9cc"
     },
     {
-      "path": "ai/source-51.txt",
+      "path": "ai/source-52.txt",
       "bytes": 150179,
       "sha256": "beb1b68482fb6d6a3b742a86c2edb73081111fe2f576ae226ec9c2fad7df361d"
     },
     {
-      "path": "ai/source-52.txt",
+      "path": "ai/source-53.txt",
       "bytes": 292876,
       "sha256": "7b831c8a103927c32570292b7caae10f23e1663c8f4255d4d4c4ff168a573ac3"
     },
     {
-      "path": "ai/source-53.txt",
+      "path": "ai/source-54.txt",
       "bytes": 207642,
       "sha256": "9a41517410ef50f2438d4d00ee48b6ad9319de9c1dfc7faf3c9e584efd86bec1"
     },
     {
-      "path": "ai/source-54.txt",
+      "path": "ai/source-55.txt",
       "bytes": 105021,
       "sha256": "2d8f9781b6b4afd217e7a6afb6fde0eaa315ae9384da45cd5441583faaa25996"
     },
     {
-      "path": "ai/source-55.txt",
+      "path": "ai/source-56.txt",
       "bytes": 128543,
       "sha256": "189cb72aca10510b03ebaca2f651f8f631c64875219a0b716dff12d3cc018cbc"
     },
     {
-      "path": "ai/source-56.txt",
+      "path": "ai/source-57.txt",
       "bytes": 110637,
       "sha256": "f00b9647b1341adf489d39a12b5c7b0fff6990ec32637f7ca542f077465e692a"
     },
     {
-      "path": "ai/source-57.txt",
+      "path": "ai/source-58.txt",
       "bytes": 85751,
       "sha256": "05dba7dc754ac7320064bd4646ae156191dec6349a1cb5cc37b5bf990ae5f248"
     },
     {
-      "path": "ai/source-58.txt",
+      "path": "ai/source-59.txt",
       "bytes": 125048,
       "sha256": "5d0c35728804e3ee6cbdb0a6db5acb1169c832f4d907815a7199452af6423677"
     },
     {
-      "path": "ai/source-59.txt",
+      "path": "ai/source-60.txt",
       "bytes": 138337,
       "sha256": "1ea80c065c616423616e8f2f7e6bc4899d5fece5f289070857564c0365f890bb"
     },
     {
-      "path": "ai/source-60.txt",
+      "path": "ai/source-61.txt",
       "bytes": 130186,
       "sha256": "1bca47b512ded836527c89815d04869cc87694b4a8b3cdf1b60d59cc117a1b3a"
     },
     {
-      "path": "ai/source-61.txt",
+      "path": "ai/source-62.txt",
       "bytes": 308509,
       "sha256": "49155eb120dcd3067517dd6e33eb0cc9dc6f548ae62981f2a1259315a279ea95"
     },
     {
-      "path": "ai/source-62.txt",
+      "path": "ai/source-63.txt",
       "bytes": 107231,
       "sha256": "215c92b40c55913b2013a9f2d73b556402712b3ba3dc2cc20eec0cbcc74409cd"
     },
     {
-      "path": "ai/source-63.txt",
+      "path": "ai/source-64.txt",
       "bytes": 140905,
       "sha256": "57f14448b5f4448ea709697ebd99b3fad751eb350d07e3c6e36f4f432b30cabe"
     },
     {
-      "path": "ai/source-64.txt",
+      "path": "ai/source-65.txt",
       "bytes": 191100,
       "sha256": "0d89a61511f1a2315f08039532fbea2d8a77f5875f41469657e2f9bf85d1c9c9"
     },
     {
-      "path": "ai/source-65.txt",
+      "path": "ai/source-66.txt",
       "bytes": 126098,
       "sha256": "0a3d166e1cdf15da4d90148a4dfaa8999502ebab9153e72850914cca8b277eb1"
     },
     {
-      "path": "ai/source-66.txt",
+      "path": "ai/source-67.txt",
       "bytes": 135169,
       "sha256": "3ab9ad2e112fb62b79150492a88f1097621a19be99d88f06e3cd8aaa6abb9bbc"
     },
     {
-      "path": "ai/source-67.txt",
-      "bytes": 158586,
-      "sha256": "3ba5043e8d89f7e8b075d1639624281d2af4d3864b61d49ab01850ff70ee4283"
+      "path": "ai/source-68.txt",
+      "bytes": 158954,
+      "sha256": "42ba9dc39e34d01578d6739007d027dec362c281a4c944a944b80ff9fdbae0f2"
     },
     {
-      "path": "ai/source-68.txt",
+      "path": "ai/source-69.txt",
       "bytes": 158849,
       "sha256": "c8d17828f6b1449020bbd8c1fd8a1a287b6b26626585ec24a6bbb70ffa269e4d"
     },
     {
-      "path": "ai/source-69.txt",
+      "path": "ai/source-70.txt",
       "bytes": 36804,
       "sha256": "a70290e4b5fbca932ee66f7cdf8b646f22d2b519f280a91934f799264c7390d7"
     },
@@ -2049,13 +2124,13 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 2503,
-      "sha256": "e335298d1a6975c1317523d60c8cf931fa9b933e60e0c6759f5a83aa0e666c8b"
+      "bytes": 3410,
+      "sha256": "69cd66d6bc5e9874e6a1ec3edaa56d3c676b2e3a496c870cbec3030229d8a296"
     },
     {
       "path": "docs/CURRENT_DESIGN.md",
-      "bytes": 2814,
-      "sha256": "fb73b391ce6f0b0225bf3233abef25686c1891d9cb0f2b8cfd70ddc1df0d0858"
+      "bytes": 3448,
+      "sha256": "aa1ffbdb162defd5ddbf5e6f1cfdf600f9e3a7929344930d75bbf000c943152d"
     },
     {
       "path": "docs/archive/product-marketing-20260809.md",
@@ -2249,8 +2324,8 @@
     },
     {
       "path": "docs/plans/fangcun-experience-v2/REVIEW.md",
-      "bytes": 5234,
-      "sha256": "196c1268b6db5c46e27f0356283f16b512ab4dc3848c7af7c10d99b01e10bddf"
+      "bytes": 5449,
+      "sha256": "04b8f498136c1b68066b191ab07acd6116412a865f7cebc594d32a46e5233aec"
     },
     {
       "path": "docs/plans/fangcun-experience-v2/START_CODEX.md",
@@ -2533,6 +2608,191 @@
       "sha256": "2befae1985518f420adfa0058b2df57ade0cef0296afcbbe9516daae982698ce"
     },
     {
+      "path": "docs/plans/fangcun-score-v3/CHANGED_FILES.md",
+      "bytes": 5356,
+      "sha256": "ce978f1ca51f3deb4e184fb57c8f4e2876305b168e42cf518a716fbd2278ff30"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/CONTRACT_CHANGES.md",
+      "bytes": 1925,
+      "sha256": "1a57422328eb0aae3cd71ec1a946b7a038fe56966c179da59718c0aa967941cd"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/COPY_REVIEW.md",
+      "bytes": 1903,
+      "sha256": "6067460d08cd4f247db2c9b355f23a59e7461ad795f158427308a9cfc32fe452"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/COPY_V3.zh-Hans.json",
+      "bytes": 1343,
+      "sha256": "5a7a48662c3707b16f245cf2188dbcc8f16b7dd2442be75deddc0a4e665f76ae"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/DECISIONS.md",
+      "bytes": 3471,
+      "sha256": "844e032bc2524583bab2f423cc2999822a7000401a5b09baa4a7ffce722fa527"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/FANGCUN_SCORE_FIRST_SPEC_v3.0.md",
+      "bytes": 31279,
+      "sha256": "0c78bd24d6b007112fdfee978b24ee08220a2f8f5d6f74b33337ac3378e79182"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/Fangcun_Score_v3.docx",
+      "bytes": 55415,
+      "sha256": "d481771bbc8b97f17eba07162c09c7dfbcbf97d7639f06d6f93ff4672a90f313"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/REVIEW.md",
+      "bytes": 4375,
+      "sha256": "a6f99b80eb06091d091061e5f322ffb7722b9b346978649c2021b25f5618c0e5"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/S1-VERIFICATION.md",
+      "bytes": 1613,
+      "sha256": "11fa73331abd7a01021c55b816613037276700c6b791fefbf6b33317cec492cd"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/S2-VERIFICATION.md",
+      "bytes": 2976,
+      "sha256": "33ccdf72ca50d254f4b3df74386c4678de6133df4cff98996d5bf171a19eded7"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/S3-VERIFICATION.md",
+      "bytes": 1455,
+      "sha256": "1dbdefcc4c820a0938097aacb6720b0ebef4b419a72101a859ebf8d14429ada3"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/SCORE_POLICY_v3.json",
+      "bytes": 1665,
+      "sha256": "0ae450fe48cb38a6fe80cea41d2bebf4e2ae3c6b49c3afe6cee32971a7d99282"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/SCORE_V3_FIXTURES.json",
+      "bytes": 7099,
+      "sha256": "2fc90dadcdc4fc14d55b62b94ae662db1e93338e1c981117d6904f06caa27c28"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/START_CODEX.md",
+      "bytes": 2414,
+      "sha256": "19368c22fa1e4ee62cdaf14921d3fce9eb6a33377458e0dd9eab3e50732598c4"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/TASKS.md",
+      "bytes": 1372,
+      "sha256": "00d91710fbb8d22559bc7ce25415841fd688ec402361d562432b21cae3fa1b83"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/VERIFICATION.md",
+      "bytes": 10942,
+      "sha256": "c1894b9ac1ca60917187f7f860411d564afc76d0d19d261d26410680f6b65192"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/VERIFICATION_NOTE.md",
+      "bytes": 756,
+      "sha256": "bec9834f32f251ac2aade8b256311f4753acd89f4da7a880a2c1bf5e33faef26"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/VISIBLE_COPY_DENYLIST.json",
+      "bytes": 728,
+      "sha256": "a5c66c073b1587c4ffefe91ace632440c38504f94d6b746261a57d10c825a63f"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S1-composition.png",
+      "bytes": 188424,
+      "sha256": "5a39a901669c75a60ac40b70ea03d0c8c42a9da00776360b1ad6fee03f3352c8"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S1-home-78.png",
+      "bytes": 292063,
+      "sha256": "a72709225d45929bd9bcab78781da777e95da2ceeec805cd7ade87818b0346f1"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S1-native-flow.mp4",
+      "bytes": 404929,
+      "sha256": "2113df52f0985c5f4d64fe88e4308a28f2c987abfcc283ad749d5b433f357198"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S1-rest.png",
+      "bytes": 249967,
+      "sha256": "99588a7f738f3deed8f1165cc82d8a2a73751bb31b0c4796ca8fbb13bab7baab"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-breathing.mp4",
+      "bytes": 137544,
+      "sha256": "4746cb7ef22dc09e57f6603c9f64d34df95f09248cbf367c8a36a3642729d8e8"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-composition.png",
+      "bytes": 192697,
+      "sha256": "626468e26dcf84aa35d1e19d9dbfb3d4542e996181b69bb798c74429ebf574c4"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-drinks.mp4",
+      "bytes": 274179,
+      "sha256": "6247c32348fe11125b1eb1ffe7f5ef4897607791c3771af91f5692399d0ab2c3"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-home-78.png",
+      "bytes": 302915,
+      "sha256": "aab8e8ae1df801375b5114b5b1d32905c472a843c120c0dca34788e148431e6d"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-home-action.mp4",
+      "bytes": 404943,
+      "sha256": "9d5048f53bd4745fab3d4368f7ec252896d47b0c209c03d2db7a9ecacda3a937"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-maximum-type.png",
+      "bytes": 315160,
+      "sha256": "91e2cf69dad762abb3dca85c6f3fe23a88647284574c6b84655aab8b2e920a49"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-night-78.png",
+      "bytes": 313250,
+      "sha256": "21af2ac08f5917e855b5d4d6c23acc0a8a18802d2b92b89ae4330f64b84527b9"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/S4-water.png",
+      "bytes": 368290,
+      "sha256": "e16185d67e8b8c7c88c5d60b654abe35d108fa441099e6d297e9cb09306b6a25"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/evidence/test-results.json",
+      "bytes": 8389,
+      "sha256": "80d43b5505bbb527f3f5392e0eefb2e566ced838a87ac78674ff3cb101f1276f"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/legacy-ui-contracts/CheckInFlowUITests.swift.txt",
+      "bytes": 16611,
+      "sha256": "9b0faa31830b958c363072b1f81d3a718c4d736a7159d604b9f36d1296619bc4"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/legacy-ui-contracts/FangcunAppearanceUITests.swift.txt",
+      "bytes": 4074,
+      "sha256": "50598d7fb46973b9cbf79de391bb63be30d78ad6f1b89889a13ba8ea5b5f9f20"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/legacy-ui-contracts/FangcunResponseLoopUITests.swift.txt",
+      "bytes": 9078,
+      "sha256": "c30736038a05fc22558cc25c05f8f83d54a86b7403cc940695a7e8fa5bc66749"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/legacy-ui-contracts/HomeEvidencePipelineUITests.swift.txt",
+      "bytes": 3636,
+      "sha256": "b7e01970333e6369cdf3ec6331359cf4888f764f5c79131fa95a6ceae5c432ba"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/reference_score_v3.py",
+      "bytes": 5791,
+      "sha256": "bb10534cd5be729a4a5f891a340d2428d215771d9dbc10db7ac5e24602d4a4e4"
+    },
+    {
+      "path": "docs/plans/fangcun-score-v3/test_reference_score_v3.py",
+      "bytes": 4600,
+      "sha256": "3b69353739dffe230213352facc1f8a3639c17c1af3af00e25da1249dcd8e6ff"
+    },
+    {
       "path": "docs/plans/fangcun-v1/ADR-002-insights-store.md",
       "bytes": 3591,
       "sha256": "93ed0be79d5ff4612d9d7668740d96c32a679f7bf74e4654a46c10b14a017e8d"
@@ -2549,8 +2809,8 @@
     },
     {
       "path": "docs/plans/fangcun-v1/CAPABILITIES.md",
-      "bytes": 6659,
-      "sha256": "c412994c71864fb35598a1292d19b7ecd1a71152647e791979d28eead88e844e"
+      "bytes": 7082,
+      "sha256": "36cb5bfcb311baf6651366fe82b94c892adde9c81bc76e31d9af7c0a532a8dd0"
     },
     {
       "path": "docs/plans/fangcun-v1/COPY_REVIEW.csv",
@@ -3479,8 +3739,8 @@
     },
     {
       "path": "docs/verification/STATUS.md",
-      "bytes": 4469,
-      "sha256": "3223e504a40ae780ef5791dde912b22221d88bc8721204aedb6fe671d2495ffa"
+      "bytes": 4837,
+      "sha256": "c0727a4c5b8a0238f616f914fdc8ec4aed450087a1d9d32e332faace9d22eb37"
     },
     {
       "path": "docs/verification/motion/43469171-776F-413B-8EBE-C71693ECC76F.png",
@@ -3549,8 +3809,8 @@
     },
     {
       "path": "llms-full.txt",
-      "bytes": 14508,
-      "sha256": "8fd03a35134f9716a0d76563b65c9559f8ac7338a6ad7d8d545b06efb0a46d24"
+      "bytes": 16784,
+      "sha256": "510fb3478eb0d4232497d0d6ca6ca8694de3e4f501760ec663336fc10032b7c2"
     },
     {
       "path": "llms.txt",

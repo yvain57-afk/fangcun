@@ -87,7 +87,10 @@ final class FangcunAppearanceUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["设置"].waitForExistence(timeout: 3))
     capture("settings", from: app)
 
-    app.buttons["隐私与数据"].tap()
+    let privacy = app.buttons["隐私与数据"]
+    for _ in 0..<6 where !privacy.isHittable { app.swipeUp() }
+    XCTAssertTrue(privacy.isHittable)
+    privacy.tap()
     XCTAssertTrue(app.staticTexts["本地优先"].waitForExistence(timeout: 3))
     capture("privacy", from: app)
   }

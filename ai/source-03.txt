@@ -1581,6 +1581,219 @@ private struct PracticePrimaryControlStyle: ButtonStyle {
 
 ===== END FILE =====
 
+===== FILE: InnerBalance/InnerBalanceApp/Features/Readiness/DailyStatusHistoryView.swift =====
+import SwiftUI
+import InnerBalanceCore
+
+struct DailyStatusHistoryView: View {
+  let owner: ReadinessCoordinator
+  @State private var span = 7
+  @State private var selected: Date?
+  private var dates: [Date] { (0..<span).reversed().compactMap { Calendar.current.date(byAdding: .day, value: -$0, to: Calendar.current.startOfDay(for: owner.now)) } }
+  private func scores(_ day: Date) -> [DailyStatusSnapshot] {
+    (owner.snapshot.statusScores ?? []).filter { $0.isValid && Calendar.current.isDate($0.asOf, inSameDayAs:day) }
+      .sorted { $0.asOf == $1.asOf ? $0.revision > $1.revision : $0.asOf > $1.asOf }
+  }
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 20) {
+        Picker("时间范围", selection: $span) { Text("7 天").tag(7); Text("28 天").tag(28) }
+          .pickerStyle(.segmented).accessibilityIdentifier("readiness.history.range")
+        LazyVGrid(columns:Array(repeating:GridItem(.flexible()),count:7)) {
+          ForEach(dates,id:\.self) { day in
+            let value = scores(day).first
+            Button { selected = day } label: {
+              VStack(spacing:8) {
+                Text(day,format:.dateTime.day()).font(.caption)
+                ZStack(alignment:.bottom) {
+                  Capsule().fill(InnerBalanceTheme.subtleFill).frame(height:48)
+                  if let value { Capsule().fill(InnerBalanceTheme.strongFill).frame(height:max(2,48*Double(value.displayScore)/100)) }
+                }.frame(width:10,height:48)
+                Text(value.map { String($0.displayScore) } ?? "—").font(.caption.monospacedDigit())
+              }.frame(maxWidth:.infinity).padding(.vertical,8)
+                .background(Calendar.current.isDate(day,inSameDayAs:selected ?? owner.now) ? InnerBalanceTheme.subtleFill : .clear,in:RoundedRectangle(cornerRadius:12))
+            }.buttonStyle(.plain).accessibilityLabel(day.formatted(.dateTime.month().day()) + (value.map { "，\($0.displayScore)分，\($0.band.title)" } ?? "，没有状态分"))
+              .accessibilityIdentifier("status.history.day.\(Calendar.current.component(.day,from:day))")
+          }
+        }
+        let day = selected ?? owner.now
+        Text(day,format:.dateTime.month().day()).font(.headline)
+        if let score = scores(day).first {
+          NavigationLink { DailyStatusDetailView(score:score) } label: {
+            VStack(alignment:.leading,spacing:8) {
+              Text("\(score.displayScore) /100 · \(score.band.title)").font(.title2.weight(.semibold))
+              Text("本次计入："+score.components.map { DailyStatusPresentation.componentName($0.name) }.joined(separator:"、")).font(.subheadline)
+              Text("查看分数构成").font(.caption)
+            }.frame(maxWidth:.infinity,alignment:.leading).fangcunPaperCard()
+          }.buttonStyle(.plain).accessibilityIdentifier("status.history.score")
+          let preceding = (owner.snapshot.statusScores ?? []).filter { $0.asOf < score.asOf }.max { $0.asOf < $1.asOf }
+          if score.compositionUpdated || preceding.map({ $0.scoreBasisProfile != score.scoreBasisProfile }) == true {
+            Text("计入项目已更新").font(.caption).accessibilityIdentifier("status.history.composition")
+          }
+          let revisions = scores(day).filter { $0.cycleID == score.cycleID && $0.scoreID != score.scoreID }
+          if !revisions.isEmpty {
+            DisclosureGroup("此周期的修订记录") {
+              ForEach(revisions,id:\.scoreID) { prior in
+                NavigationLink("修订 \(prior.revision) · \(prior.displayScore)分") { DailyStatusDetailView(score:prior) }
+              }
+            }
+          }
+        } else { Text("这一天还没有状态分。") }
+        Text("状态分从 v3 开始记录，旧版记录保持原样。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        NavigationLink("查看旧版记录（无状态分）") { ReadinessHistoryView(owner:owner) }
+          .accessibilityIdentifier("status.history.legacy")
+      }.padding(20)
+    }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)
+      .navigationTitle("这一周的节奏").navigationBarTitleDisplayMode(.inline)
+  }
+}
+
+struct ManualStatusSleepView: View {
+  let owner: ReadinessCoordinator
+  @Environment(\.dismiss) private var dismiss
+  @State private var minutes = 375.0
+  @State private var end: Date
+  @State private var saving = false
+  @State private var failed = false
+  init(owner:ReadinessCoordinator) { self.owner = owner; _end = State(initialValue:owner.now.addingTimeInterval(-3600)) }
+  var body: some View {
+    NavigationStack {
+      Form {
+        Text("补记这次主睡眠的实际时长和结束时间。记录保存在方寸，标注为你补记的睡眠。")
+        Stepper("实际睡眠 \(Int(minutes)/60) 小时 \(Int(minutes)%60) 分",value:$minutes,in:0...1440,step:15).accessibilityIdentifier("status.manual.minutes")
+        DatePicker("结束时间",selection:$end,in:owner.now.addingTimeInterval(-23*3600)...owner.now)
+        Button(saving ? "正在保存" : "保存并查看状态") {
+          Task { saving = true; await owner.saveManualSleep(minutes:minutes,end:end); saving = false
+            if owner.statusScore?.features.manual == true { dismiss() } else { failed = true }
+          }
+        }.disabled(saving).accessibilityIdentifier("status.manual.save")
+        if failed { Text("暂时未能保存，请重试。") }
+      }.navigationTitle("补记一次睡眠").toolbar { Button("取消") { dismiss() } }
+    }
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceApp/Features/Readiness/DailyStatusViews.swift =====
+import SwiftUI
+import InnerBalanceCore
+
+struct DailyStatusPresentation {
+  let score: DailyStatusSnapshot
+  let now: Date
+  var title: String { now < score.currentUntil ? "今日状态" : "上次状态" }
+  var reason: String {
+    let factor = score.components.max { (100-$0.score)*$0.normalizedWeight < (100-$1.score)*$1.normalizedWeight }
+    if factor?.name == "sleep", let minutes = score.features.input.sleepMinutes {
+      let value = Int(minutes.rounded())
+      return "睡了 \(value/60) 小时\(value%60 == 0 ? "" : " \(value%60) 分")，" + (minutes < score.configuration.sleepGoalMinutes ? "今天给自己留点余地。" : "达到了你的睡眠目标。")
+    }
+    return factor?.name == "hrv" ? "心率变异性与近期个人水平的变化计入了分数。" : "静息心率与近期个人水平的变化计入了分数。"
+  }
+  var scene: FangcunCompanionScene { score.band == .good || score.band == .fair ? .calm : .rest }
+  var cycle: String {
+    let date = score.asOf.formatted(.dateTime.month().day())
+    let hour = Calendar.current.component(.hour, from: score.asOf)
+    return date + (score.features.sleepEnd == nil ? "日间评估" : hour < 12 ? "晨间评估" : "睡后评估")
+  }
+  static func componentName(_ key: String) -> String { key == "sleep" ? "睡眠" : key == "hrv" ? "心率变异性" : "静息心率" }
+}
+
+struct DailyStatusHero: View {
+  let score: DailyStatusSnapshot
+  let now: Date
+  let night: Bool
+  var covered = false
+  @Environment(\.dynamicTypeSize) private var typeSize
+  @ScaledMetric(relativeTo: .largeTitle) private var numberSize = 60.0
+  private var p: DailyStatusPresentation { .init(score: score, now: now) }
+  var body: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      Text(p.title).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+      let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8)) : AnyLayout(HStackLayout(alignment: .center, spacing: 8))
+      layout {
+        VStack(alignment: .leading, spacing: 2) {
+          HStack(alignment: .firstTextBaseline, spacing: 4) {
+            Text(String(score.displayScore)).font(.system(size: numberSize, weight: .semibold).monospacedDigit())
+              .accessibilityIdentifier("status.score")
+            Text("/100").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+          }.accessibilityElement(children: .combine).accessibilityLabel("方寸状态分，\(score.displayScore)分")
+          Text(score.band.title).font(.title3.weight(.semibold)).accessibilityIdentifier("status.band")
+        }
+        if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
+        FangcunCompanion(scene: p.scene, paused: covered).frame(width: 112, height: 86)
+      }
+      Text(p.reason).font(.subheadline).fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("status.reason")
+      if night { Text("今晚早点收尾。").font(.subheadline).accessibilityIdentifier("status.arrangement") }
+      Text(p.cycle).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        .accessibilityIdentifier("status.cycle").accessibilityValue(score.asOf.ISO8601Format())
+    }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
+  }
+}
+
+struct DailyStatusDetailView: View {
+  let score: DailyStatusSnapshot
+  var onStart: (() -> Void)?
+  var actionTitle = "开始 2 分钟安静休息"
+  var lastQueryAt: Date?
+  @State private var method = false
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 20) {
+        Text("\(score.displayScore) /100 · \(score.band.title)").font(.largeTitle.weight(.semibold)).accessibilityIdentifier("status.detail.score")
+        Text(DailyStatusPresentation(score: score, now: score.asOf).reason).font(.subheadline)
+        ForEach(score.components, id: \.name) { part in
+          VStack(alignment: .leading, spacing: 6) {
+            Text("\(DailyStatusPresentation.componentName(part.name)) · \(Int(part.score.rounded())) 分").font(.headline)
+            Text("占本次评分 \(Int((part.normalizedWeight*100).rounded()))%").font(.subheadline)
+            DisclosureGroup("查看这项数据") {
+              if let value = score.features.displayValues[part.name] {
+                Text(part.name == "sleep" ? "实际睡眠 \(Int(value.rounded())) 分钟" : part.name == "hrv" ? "SDNN \(value.formatted(.number.precision(.fractionLength(1)))) ms" : "系统静息心率 \(value.formatted(.number.precision(.fractionLength(1)))) 次/分")
+              }
+              if let measured = score.features.measuredAt[part.name] {
+                Text("测量："+measured.formatted(.dateTime.month().day().hour().minute()))
+              }
+              if part.name == "sleep" {
+                Text("个人目标 \(Int(score.configuration.sleepGoalMinutes)) 分钟")
+                if score.features.manual { Text("你补记的睡眠") }
+                ForEach(score.sleepSubscores.keys.sorted(),id:\.self) { key in
+                  Text("\(key == "duration" ? "时长" : key == "continuity" ? "连续性" : "规律")：\(Int(score.sleepSubscores[key]!.rounded())) 分")
+                }
+              } else {
+                Text("个人比较历史：\(part.name == "hrv" ? score.features.input.hrvDays : score.features.input.rhrDays) 天")
+                if part.name == "hrv" { Text("本次 \(score.features.input.hrvSamples) 个样本，覆盖 \(score.features.input.hrvHours) 个小时桶") }
+                Text(part.name == "hrv" ? "所选主睡眠内，同源 SDNN 的对数中位数。" : score.features.windowPolicy.contains("dailyRHR") ? "当日系统静息心率；同源过去 28 天每日代表值作个人比较。" : "晨间窗口内系统静息心率；同源过去 28 天每日代表值作个人比较。")
+              }
+            }.font(.caption)
+
+          }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
+        }
+        if score.compositionUpdated { Text("计入项目已更新").font(.caption).accessibilityIdentifier("status.compositionChanged") }
+        if let onStart { Button(actionTitle, action: onStart).buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("status.detail.action") }
+        Button("评分说明") { method.toggle() }.frame(minHeight: 44).accessibilityIdentifier("status.method")
+        if method {
+          Text("本次计入：" + score.components.map { DailyStatusPresentation.componentName($0.name) }.joined(separator: "、"))
+          Text("方寸状态分是睡眠及可用心率变化的日常指数，高分表示这些输入在本规则中表现较好。它不是测得的心理压力百分比或运动安全许可。缺失项目不参与加权。")
+          Text("计算版本：\(score.modelVersion)").font(.caption)
+          Text(score.features.manual ? "睡眠由你补记。" : "数据来自所选健康来源。").font(.caption)
+          Text("评估基准："+score.asOf.formatted(.dateTime.month().day().hour().minute())).font(.caption)
+            .accessibilityIdentifier("status.time.asOf").accessibilityValue(score.asOf.ISO8601Format())
+          Text("本次计算："+score.createdAt.formatted(.dateTime.month().day().hour().minute())).font(.caption)
+            .accessibilityIdentifier("status.time.computed").accessibilityValue(score.createdAt.ISO8601Format())
+          if let lastQueryAt {
+            Text("最近查询："+lastQueryAt.formatted(.dateTime.month().day().hour().minute())).font(.caption)
+              .accessibilityIdentifier("status.time.query").accessibilityValue(lastQueryAt.ISO8601Format())
+          }
+        }
+      }.padding(20)
+    }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)
+      .navigationTitle("看看分数构成").navigationBarTitleDisplayMode(.inline)
+  }
+}
+
+===== END FILE =====
+
 ===== FILE: InnerBalance/InnerBalanceApp/Features/Readiness/DayGuidancePresentation.swift =====
 import Foundation
 import InnerBalanceCore
@@ -1666,7 +1879,10 @@ extension EnvironmentValues {
   private(set) var enabled: Bool
   private(set) var reading: Bool
   private(set) var configuration: ReadinessConfiguration
+  private(set) var scoreConfiguration: StatusScoreConfiguration
+  private(set) var connected: Bool
   private(set) var now: Date
+  var onStatusChange: ((DailyStatusSnapshot?) async -> Void)?
   var onSummaryChange: ((ReadinessAssessment?) async -> Void)?
   var interventions: [ReadinessInterval] = []
   private let clock: () -> Date
@@ -1687,7 +1903,11 @@ extension EnvironmentValues {
     self.pipeline = pipeline ?? store.flatMap { s in provider.map { ReadinessPipeline(provider: $0, store: s) } }
     enabled = defaults.object(forKey: "readiness.enabled") as? Bool ?? true
     reading = defaults.object(forKey: "readiness.reading") as? Bool ?? true
-    configuration = .init(sleepTargetHours: defaults.object(forKey: "readiness.sleepTarget") as? Double ?? 8)
+    let target = defaults.object(forKey: "readiness.sleepTarget") as? Double ?? 8
+    configuration = .init(sleepTargetHours: target)
+    scoreConfiguration = .init(sleepGoalMinutes: defaults.object(forKey: "status-v3.sleepGoal") as? Double ?? target*60,
+      regularityEnabled: defaults.object(forKey: "status-v3.regularity") as? Bool ?? true)
+    connected = !requiresAuthorization
     now = clock()
     if store == nil { errorKey = "readiness.storageError" }
   }
@@ -1702,6 +1922,12 @@ extension EnvironmentValues {
     if let flag = args.first(where: { $0.hasPrefix("--readiness-fixture=") }) {
       let scenario = String(flag.dropFirst("--readiness-fixture=".count))
       let store = try? InsightsStore(directory: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+      if scenario.hasPrefix("score") {
+        let date = ISO8601DateFormatter().date(from: args.contains("--score-night") ? "2026-09-20T15:22:00Z" : "2026-09-20T04:00:00Z")!
+        let defaults = UserDefaults(suiteName:UUID().uuidString)!
+        if scenario == "scoreFull240" { defaults.set(false,forKey:"status-v3.regularity") }
+        return .init(store: store, provider: ReadinessDemoProvider(scenario: scenario, now: date), defaults: defaults, clock: { date })
+      }
       return .init(store: store, provider: ReadinessDemoProvider(scenario: scenario),
         defaults: UserDefaults(suiteName: UUID().uuidString)!)
     }
@@ -1715,6 +1941,11 @@ extension EnvironmentValues {
     guard enabled, reading, var value = snapshot.current, value.configuration == configuration else { return nil }
     value.freshness = AssessmentFreshness.resolve(value, now: now, newerSleepEnd: snapshot.episodes.map(\.end).max())
     return value
+  }
+  var statusScore: DailyStatusSnapshot? {
+    guard enabled, reading, let score = snapshot.currentStatus, score.configuration == scoreConfiguration,
+      now < score.validUntil else { return nil }
+    return score
   }
   var presentationKey: String {
     guard reading else { return "stopped" }
@@ -1740,9 +1971,11 @@ extension EnvironmentValues {
   }
   func tick() {
     let before = current?.freshness
+    let scoreBefore = statusScore?.scoreID
     now = clock()
-    if current?.freshness != before {
-      Task { await onSummaryChange?(current) }
+    if current?.freshness != before || scoreBefore != statusScore?.scoreID {
+      Task { await onSummaryChange?(current)
+      await onStatusChange?(statusScore) }
     }
   }
   func refresh(healthDataChanged: Bool = false) async {
@@ -1754,21 +1987,26 @@ extension EnvironmentValues {
     defer { if version == requestVersion { loading = false } }
     if requiresAuthorization {
       let status = await HealthAuthorizationCoordinator().status(for: .initialBodyStatus)
+      connected = status.state != .notRequested
       guard status.state != .notRequested, version == requestVersion, reading else { return }
     }
+    await pipeline.setOnCommit { [weak self] _ in await self?.acceptStoredSnapshot() }
+    // Disk-first: a cold start or query failure must not erase a still-valid score.
+    await acceptStoredSnapshot()
     do {
       let value = try await pipeline.refresh(now: now, calendar: .current, configuration: configuration,
-        interventions: interventions, healthDataChanged: healthDataChanged)
+        interventions: interventions, healthDataChanged: healthDataChanged, scoreConfiguration: scoreConfiguration)
       guard version == requestVersion, reading, enabled else { return }
-      snapshot = value; errorKey = nil; tick()
+      snapshot = value; errorKey = value.statusReadFailed == true ? "readiness.refreshError" : nil; tick()
       await onSummaryChange?(current)
+      await onStatusChange?(statusScore)
       if !observing, let healthProvider {
         try healthProvider.startObserving(pipeline: pipeline, context: { [weak self] in
           guard let self else { return .init(now: .now, calendar: .current) }
-          return .init(now: self.clock(), calendar: .current, configuration: self.configuration, interventions: self.interventions)
+          return .init(now: self.clock(), calendar: .current, configuration: self.configuration, interventions: self.interventions, scoreConfiguration: self.scoreConfiguration)
         }, onSnapshot: { [weak self] value in
           guard let self, self.reading, self.enabled,
-            value.current?.configuration == self.configuration else { return }
+            (value.currentStatus?.configuration == self.scoreConfiguration || value.current?.configuration == self.configuration) else { return }
           // Re-read the committed store: a delayed observer result must not replace newer intent.
           Task { await self.acceptStoredSnapshot() }
         })
@@ -1783,29 +2021,54 @@ extension EnvironmentValues {
     guard let store else { return }
     let value = await store.snapshot()
     guard version == requestVersion, reading, enabled, !changingSelection,
-      value.current?.configuration == configuration else { return }
+      (value.currentStatus?.configuration == scoreConfiguration || value.current?.configuration == configuration) else { return }
     snapshot = value; tick()
     await onSummaryChange?(current)
+      await onStatusChange?(statusScore)
   }
   func setTarget(_ hours: Double) async {
     guard (7...10).contains(hours) else { return }
     configuration = .init(sleepTargetHours: hours)
+    scoreConfiguration.sleepGoalMinutes = hours*60
+    defaults.set(hours*60, forKey: "status-v3.sleepGoal")
     defaults.set(hours, forKey: "readiness.sleepTarget")
-    requestVersion += 1; snapshot.currentAssessmentID = nil
+    requestVersion += 1; snapshot.currentStatusID = nil; snapshot.currentAssessmentID = nil
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     await refresh()
   }
+  func setRegularity(_ enabled: Bool) async {
+    scoreConfiguration.regularityEnabled = enabled
+    defaults.set(enabled, forKey: "status-v3.regularity")
+    requestVersion += 1; snapshot.currentStatusID = nil
+    await onStatusChange?(nil); await refresh()
+  }
+  func saveManualSleep(minutes: Double, end: Date) async {
+    guard let store else { return }
+    do {
+      requestVersion += 1
+      try await store.saveManualStatusSleep(.init(minutes: minutes, end: end, recordedAt: clock()))
+      var value = await store.snapshot()
+      if let features = try ScoreFeatureBuilder.build(snapshot:value,now:clock(),calendar:.current,configuration:scoreConfiguration,interventions:interventions) {
+        try value.recordStatus(features,configuration:scoreConfiguration,now:clock())
+        snapshot = try await store.commit(value,expectedGeneration:value.generation)
+        errorKey = nil; tick(); await onStatusChange?(statusScore)
+      }
+    } catch { errorKey = "readiness.storageError" }
+  }
   func selectSource(_ key: String, metric: ReadinessMetric) async {
-    requestVersion += 1; snapshot.currentAssessmentID = nil; changingSelection = true
+    requestVersion += 1; snapshot.currentStatusID = nil; snapshot.currentAssessmentID = nil; changingSelection = true
     defer { changingSelection = false }
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     do { try await store?.selectSource(key, for: metric, now: clock(), calendar: .current); await refresh() }
     catch { errorKey = "readiness.storageError" }
   }
   func selectSleep(_ id: String) async {
-    requestVersion += 1; snapshot.currentAssessmentID = nil; changingSelection = true
+    requestVersion += 1; snapshot.currentStatusID = nil; snapshot.currentAssessmentID = nil; changingSelection = true
     defer { changingSelection = false }
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     do { try await store?.selectSleep(id); await refresh() } catch { errorKey = "readiness.storageError" }
   }
   func stop(clear: Bool = false) async {
@@ -1814,6 +2077,7 @@ extension EnvironmentValues {
     healthProvider?.stopObserving(); observing = false
     await pipeline?.retire(); pipeline = nil
     await onSummaryChange?(nil)
+    await onStatusChange?(nil)
     do {
       if clear { try await store?.clear(); snapshot = InsightsSnapshot() }
       else { try await store?.invalidateCurrent() }
@@ -1849,6 +2113,32 @@ actor ReadinessDemoProvider: ReadinessDataProviding {
   func changes(for metric: ReadinessMetric, cursor: HealthReadCursor?, now: Date) async throws -> ReadinessChangeBatch {
     if scenario == "failed" || failure { throw ReadinessReadFailure.queryFailed }
     let source = ReadinessSource(bundleID: "org.example.synthetic", name: "Synthetic Wearable Source With A Long English Display Name", samplingMethod: "system")
+    if ["scoreExpired","scoreNoCurrentHistory","scoreHRVOnly","scoreRHR"].contains(scenario) {
+      let end = Calendar.current.date(bySettingHour:7,minute:0,second:0,of:reference)!
+      let rows: [ReadinessSample]
+      if scenario == "scoreRHR" {
+        rows = (0...20).map { day in
+          let date = end.addingTimeInterval(-Double(day)*86400)
+          return ReadinessSample(id:UUID(uuidString:String(format:"00000000-0000-0000-0000-%012d",day+1))!,metric:.restingHeartRate,value:60,unit:"count/min",start:date,end:date,source:source,queriedAt:now)
+        }
+      } else if scenario == "scoreHRVOnly" {
+        rows = [.init(id:UUID(),metric:.hrvSDNN,value:50,unit:"ms",start:end,end:end,source:source,queriedAt:now)]
+      } else {
+        rows = (1...(scenario == "scoreExpired" ? 1:20)).map { day in
+          let date = end.addingTimeInterval(-Double(day)*86400)
+          return ReadinessSample(id:UUID(uuidString:String(format:"00000000-0000-0000-0000-%012d",day+1))!,metric:.sleep,unit:"category",stage:.asleep,start:date.addingTimeInterval(-375*60),end:date,source:source,queriedAt:now)
+        }
+      }
+      return .init(metric:metric,samples:cursor == nil ? rows.filter { $0.metric == metric }:[],cursor:.init(anchor:Data([1]),windowStart:now.addingTimeInterval(-35*86400)))
+    }
+    if scenario.hasPrefix("scoreSleep") {
+      let minutes = Double(scenario.dropFirst("scoreSleep".count)) ?? 375
+      let end = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: reference)!
+      let row = ReadinessSample(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, metric: .sleep,
+        unit: "category", stage: .asleep, start: end.addingTimeInterval(-minutes*60), end: end, source: source, queriedAt: now)
+      return .init(metric: metric, samples: metric == .sleep && cursor == nil ? [row] : [],
+        cursor: .init(anchor: Data([1]), windowStart: now.addingTimeInterval(-35*86400)))
+    }
     var rows: [ReadinessSample] = []
     let days = scenario == "provisional" ? 8 : scenario == "oneDay" ? 1 : 20
     if scenario != "insufficient", cursor == nil {
@@ -1857,7 +2147,7 @@ actor ReadinessDemoProvider: ReadinessDataProviding {
         let end = reference.addingTimeInterval(-(offset + (scenario == "awaitingData" ? 0.1 : 4))*3600)
         func id(_ n: Int) -> UUID { UUID(uuidString: String(format: "00000000-0000-0000-0000-%012d", day*100+n))! }
         rows.append(.init(id: id(1), metric: .sleep, unit: "category", stage: .asleep,
-          start: end.addingTimeInterval(-(day == 0 && ["reduced", "low", "sleepOnly"].contains(scenario) ? 5 : 8)*3600), end: end, source: source, queriedAt: now))
+          start: end.addingTimeInterval(-(day == 0 && scenario == "scoreFull240" ? 4 : day == 0 && ["reduced", "low", "sleepOnly"].contains(scenario) ? 5 : 8)*3600), end: end, source: source, queriedAt: now))
         for n in 0..<4 {
           let date = end.addingTimeInterval(-Double(n+1)*3600)
           rows.append(.init(id: id(10+n), metric: .hrvSDNN, value: day == 0 && scenario == "low" ? 20 : 50, unit: "ms", start: date, end: date, source: source, queriedAt: now))
@@ -2161,6 +2451,9 @@ struct ReadinessSettingsView: View {
       }.accessibilityIdentifier("readiness.diagnostics")
       Toggle(FangcunCopy.text("readiness.enabled"), isOn: Binding(get: { owner.enabled }, set: { value in Task { await owner.setEnabled(value) } }))
       if owner.enabled {
+        Toggle("计入睡眠规律",isOn:Binding(get:{ owner.scoreConfiguration.regularityEnabled },set:{ value in Task { await owner.setRegularity(value) } }))
+          .accessibilityIdentifier("status.regularity")
+        Text("轮班或旅行时，可以关闭规律项。").font(.caption)
         Stepper(value: Binding(get: { owner.configuration.sleepTargetHours }, set: { value in Task { await owner.setTarget(value) } }), in: 7...10, step: 0.5) {
           Text(FangcunCopy.text("readiness.target", owner.configuration.sleepTargetHours))
         }.accessibilityIdentifier("readiness.target")
@@ -3472,700 +3765,6 @@ struct MindfulSessionRecord: Equatable, Codable, Sendable {
 protocol HealthWriting {
   func saveStateOfMind(_ record: StateOfMindRecord) async throws
   func saveMindfulSession(_ record: MindfulSessionRecord) async throws
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessHealthKitProvider.swift =====
-import Foundation
-import HealthKit
-import InnerBalanceCore
-
-typealias ReadinessHealthDataProviding = ReadinessDataProviding
-
-/// Separate from the legacy Home provider. M3 will connect the evaluated result to the UI.
-/// No authorization requests, background delivery entitlement changes, or new read types here.
-@MainActor
-final class ReadinessHealthKitProvider: ReadinessHealthDataProviding {
-  static let permittedMetrics: [ReadinessMetric] = [.hrvSDNN, .restingHeartRate, .sleep, .workout]
-  private let store: HKHealthStore
-  private var observers: [HKObserverQuery] = []
-  private(set) var lastObserverOutcome: ReadinessObserverOutcome?
-  var observerNeedsRefresh: Bool { lastObserverOutcome.map { $0 != .processed } ?? false }
-  private let pageSize = 500
-  init(store: HKHealthStore = HKHealthStore()) { self.store = store }
-
-  func changes(for metric: ReadinessMetric, cursor: HealthReadCursor?, now: Date) async throws -> ReadinessChangeBatch {
-    guard HKHealthStore.isHealthDataAvailable() else { throw ReadinessReadFailure.healthDataUnavailable }
-    let type = try Self.type(for: metric)
-    let cursor = cursor ?? HealthReadCursor(windowStart: now.addingTimeInterval(-35 * 86_400))
-    let anchor: HKQueryAnchor?
-    do {
-      anchor = try cursor.anchor.map {
-        guard let decoded = try NSKeyedUnarchiver.unarchivedObject(ofClass: HKQueryAnchor.self, from: $0) else {
-          throw ReadinessReadFailure.invalidAnchor
-        }
-        return decoded
-      }
-    } catch { throw ReadinessReadFailure.invalidAnchor }
-    // Keep the predicate stable for the lifetime of this anchor. Prune the local cache separately.
-    let predicate = HKQuery.predicateForSamples(withStart: cursor.windowStart, end: nil)
-    let pageSize = pageSize
-    return try await withCheckedThrowingContinuation { continuation in
-      let query = HKAnchoredObjectQuery(type: type, predicate: predicate, anchor: anchor, limit: pageSize) {
-        _, added, deleted, newAnchor, error in
-        if let error {
-          let hk = error as NSError
-          let failure: ReadinessReadFailure = hk.domain == HKErrorDomain && hk.code == HKError.Code.errorDatabaseInaccessible.rawValue
-            ? .protectedDataUnavailable : .queryFailed
-          continuation.resume(throwing: failure); return
-        }
-        do {
-          guard let newAnchor else { throw ReadinessReadFailure.invalidAnchor }
-          let data = try NSKeyedArchiver.archivedData(withRootObject: newAnchor, requiringSecureCoding: true)
-          let additions = (added ?? []).compactMap { Self.normalize($0, metric: metric, queriedAt: now) }
-          continuation.resume(returning: ReadinessChangeBatch(metric: metric, samples: additions,
-            deletedIDs: (deleted ?? []).map(\.uuid),
-            cursor: HealthReadCursor(anchor: data, windowStart: cursor.windowStart),
-            hasMore: (added?.count ?? 0) + (deleted?.count ?? 0) >= pageSize))
-        } catch { continuation.resume(throwing: ReadinessReadFailure.invalidAnchor) }
-      }
-      store.execute(query)
-    }
-  }
-
-  /// Explicit opt-in by a future lifecycle owner; no background delivery/authorization is enabled here.
-  func startObserving(pipeline: ReadinessPipeline,
-    context: @escaping @MainActor @Sendable () -> ReadinessObservationContext,
-    onSnapshot: @escaping @MainActor @Sendable (InsightsSnapshot) -> Void = { _ in }) throws {
-    try startObserving(onChange: {
-      let value = context()
-      let snapshot = try await pipeline.refresh(now: value.now, calendar: value.calendar,
-        configuration: value.configuration, interventions: value.interventions, healthDataChanged: true)
-      onSnapshot(snapshot)
-    })
-  }
-
-  private func startObserving(onChange: @escaping @MainActor @Sendable () async throws -> Void) throws {
-    guard observers.isEmpty else { return }
-    for metric in Self.permittedMetrics {
-      let query = HKObserverQuery(sampleType: try Self.type(for: metric), predicate: nil) { [weak self] _, completion, error in
-        _ = Self.handleObserverUpdate(error: error, completion: completion, onChange: onChange,
-          onOutcome: { [weak self] outcome in self?.lastObserverOutcome = outcome })
-      }
-      observers.append(query); store.execute(query)
-    }
-  }
-
-  /// The real HK callback and tests share this owner. Every path finishes processing before one ACK.
-  nonisolated static func handleObserverUpdate(error: Error?, completion: @escaping () -> Void,
-    onChange: @escaping @MainActor @Sendable () async throws -> Void,
-    onOutcome: @escaping @MainActor @Sendable (ReadinessObserverOutcome) -> Void = { _ in }) -> Task<Void, Never> {
-    let acknowledgement = ReadinessObserverCompletion(completion)
-    return Task { @MainActor in
-      defer { acknowledgement.call() }
-      guard error == nil else { onOutcome(.queryFailed); return }
-      do {
-        try await onChange()
-        onOutcome(.processed)
-      } catch is CancellationError { onOutcome(.cancelled) }
-      catch { onOutcome(.processingFailed) }
-    }
-  }
-
-  func stopObserving() { observers.forEach(store.stop); observers.removeAll() }
-
-  nonisolated private static func type(for metric: ReadinessMetric) throws -> HKSampleType {
-    switch metric {
-    case .hrvSDNN: HKQuantityType(.heartRateVariabilitySDNN)
-    case .restingHeartRate: HKQuantityType(.restingHeartRate)
-    case .sleep: HKCategoryType(.sleepAnalysis)
-    case .workout: HKObjectType.workoutType()
-    default: throw ReadinessReadFailure.unsupportedMetric
-    }
-  }
-
-  nonisolated static func normalize(_ sample: HKSample, metric: ReadinessMetric, queriedAt: Date) -> ReadinessSample? {
-    let revision = sample.sourceRevision
-    let os = revision.operatingSystemVersion
-    let device = sample.device
-    let source = ReadinessSource(bundleID: revision.source.bundleIdentifier,
-      name: revision.source.name, productType: revision.productType, deviceModel: device?.model,
-      deviceIdentity: device?.localIdentifier.map(StableDigest.text),
-      revision: "\(revision.version ?? "")|\(os.majorVersion).\(os.minorVersion).\(os.patchVersion)|\(device?.hardwareVersion ?? "")|\(device?.softwareVersion ?? "")",
-      samplingMethod: metric.rawValue, isOriginalDeviceRecord: device != nil)
-    var value: Double?, unit = "", stage: SleepStage?, activity: UInt?
-    switch metric {
-    case .hrvSDNN, .restingHeartRate:
-      guard let quantity = sample as? HKQuantitySample,
-        quantity.quantityType == (metric == .hrvSDNN ? HKQuantityType(.heartRateVariabilitySDNN) : HKQuantityType(.restingHeartRate)) else { return nil }
-      value = quantity.quantity.doubleValue(for: metric == .hrvSDNN ? .secondUnit(with: .milli) : .count().unitDivided(by: .minute()))
-      unit = metric == .hrvSDNN ? "ms" : "count/min"
-    case .sleep:
-      guard let category = sample as? HKCategorySample, category.categoryType == HKCategoryType(.sleepAnalysis) else { return nil }
-      unit = "category"
-      switch HKCategoryValueSleepAnalysis(rawValue: category.value) {
-      case .asleepUnspecified: stage = .asleep
-      case .asleepCore: stage = .core
-      case .asleepDeep: stage = .deep
-      case .asleepREM: stage = .rem
-      case .awake: stage = .awake
-      case .inBed: stage = .inBed
-      default: stage = .unknown
-      }
-    case .workout:
-      guard let workout = sample as? HKWorkout else { return nil }
-      value = workout.duration; unit = "s"; activity = workout.workoutActivityType.rawValue
-    default: return nil
-    }
-    var metadata: [String: String] = [:]
-    if let context = sample.metadata?[HKMetadataKeyHeartRateMotionContext] as? NSNumber {
-      metadata[HKMetadataKeyHeartRateMotionContext] = context.stringValue
-    }
-    return ReadinessSample(id: sample.uuid, metric: metric, value: value, unit: unit, stage: stage,
-      start: sample.startDate, end: sample.endDate, source: source,
-      manuallyEntered: (sample.metadata?[HKMetadataKeyWasUserEntered] as? NSNumber)?.boolValue ?? false,
-      syncIdentifier: sample.metadata?[HKMetadataKeySyncIdentifier] as? String,
-      syncVersion: (sample.metadata?[HKMetadataKeySyncVersion] as? NSNumber)?.intValue ?? 0,
-      activityType: activity, metadata: metadata, queriedAt: queriedAt)
-  }
-}
-
-
-nonisolated enum ReadinessObserverOutcome: Sendable { case processed, queryFailed, processingFailed, cancelled }
-
-struct ReadinessObservationContext: Sendable {
-  var now: Date
-  var calendar: Calendar
-  var configuration: ReadinessConfiguration = .init()
-  var interventions: [ReadinessInterval] = []
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessObserverCompletion.swift =====
-import Foundation
-
-/// Foreign SDK blocks have no Sendable annotation. This adapter owns only that completion block;
-/// the lock protects take-and-clear, and the block is invoked once, after releasing the lock.
-/// No application state or HealthKit query object crosses isolation through this adapter.
-nonisolated final class ReadinessObserverCompletion: @unchecked Sendable {
-  private let lock = NSLock()
-  private var action: (() -> Void)?
-  init(_ action: @escaping () -> Void) { self.action = action }
-  func call() {
-    lock.lock()
-    let callback = action
-    action = nil
-    lock.unlock()
-    callback?()
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Health/Readiness/ReadinessServices.swift =====
-import Foundation
-import InnerBalanceCore
-
-/// M2 data-service factory. App lifecycle / UI subscription remains an explicit M3 integration.
-/// Creating this service never prompts for authorization or starts background observers.
-@MainActor
-enum ReadinessServices {
-  static func make() throws -> (pipeline: ReadinessPipeline, store: InsightsStore, provider: ReadinessHealthKitProvider) {
-    let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
-      appropriateFor: nil, create: true)
-    let store = try InsightsStore(directory: support.appendingPathComponent("FangcunInsights", isDirectory: true))
-    let provider = ReadinessHealthKitProvider()
-    return (ReadinessPipeline(provider: provider, store: store), store, provider)
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Health/StateOfMindMapper.swift =====
-import HealthKit
-import InnerBalanceCore
-
-enum CheckInAssociation: String, CaseIterable, Codable, Sendable {
-  case work
-  case tasks
-  case health
-  case family
-  case relationship
-  case money
-  case training
-  case sleep
-}
-
-extension CheckInAssociation {
-  var stressSource: CurrentStressSource {
-    switch self {
-    case .work: .work
-    case .tasks: .tasks
-    case .health: .health
-    case .family: .family
-    case .relationship: .relationship
-    case .money: .money
-    case .training: .training
-    case .sleep: .sleep
-    }
-  }
-}
-
-struct StateOfMindRecord: Equatable, Codable, Sendable {
-  let syncIdentifier: String
-  let syncVersion: Int
-  let date: Date
-  let valence: Double
-  let arousal: Double
-  let labels: [EmotionLabel]
-  let associations: [CheckInAssociation]
-  let bodySensationCodes: [String]
-  let unclassified: Bool
-  let origin: HealthRecordOrigin
-  let sessionID: String?
-  let phase: HealthRecordPhase
-}
-
-enum StateOfMindMappingError: Error, Equatable {
-  case invalidValence
-  case invalidArousal
-}
-
-enum StateOfMindMapper {
-  static func sample(from record: StateOfMindRecord) throws -> HKStateOfMind {
-    guard (-1...1).contains(record.valence) else {
-      throw StateOfMindMappingError.invalidValence
-    }
-    guard (-1...1).contains(record.arousal) else {
-      throw StateOfMindMappingError.invalidArousal
-    }
-
-    let associations = Array(record.associations.prefix(2))
-    return HKStateOfMind(
-      date: record.date,
-      kind: .momentaryEmotion,
-      valence: record.valence,
-      labels: record.labels.map(healthKitLabel),
-      associations: associations.compactMap(healthKitAssociation),
-      metadata: HealthMetadataKeys.stateOfMind(
-        syncIdentifier: record.syncIdentifier,
-        syncVersion: record.syncVersion,
-        arousal: record.arousal,
-        bodySensationCodes: record.bodySensationCodes,
-        associationCodes: associations.map(\.rawValue),
-        unclassified: record.unclassified,
-        origin: record.origin,
-        sessionID: record.sessionID,
-        phase: record.phase
-      )
-    )
-  }
-
-  static func record(from sample: HKStateOfMind) -> StateOfMindRecord? {
-    guard
-      let metadata = sample.metadata,
-      let syncIdentifier = metadata[HKMetadataKeySyncIdentifier] as? String,
-      syncIdentifier.isEmpty == false,
-      let syncVersion = (metadata[HKMetadataKeySyncVersion] as? NSNumber)?.intValue,
-      let arousal = (metadata[HealthMetadataKeys.arousal] as? NSNumber)?.doubleValue,
-      (-1...1).contains(arousal),
-      let originValue = metadata[HealthMetadataKeys.origin] as? String,
-      let origin = HealthRecordOrigin(rawValue: originValue),
-      let phaseValue = metadata[HealthMetadataKeys.phase] as? String,
-      let phase = HealthRecordPhase(rawValue: phaseValue)
-    else { return nil }
-
-    let bodySensationCodes = commaSeparatedValues(
-      metadata[HealthMetadataKeys.bodySensationCodes] as? String
-    )
-    let customAssociations = commaSeparatedValues(
-      metadata[HealthMetadataKeys.associationCodes] as? String
-    ).compactMap(CheckInAssociation.init(rawValue:))
-    let associations =
-      customAssociations.isEmpty
-      ? sample.associations.compactMap(checkInAssociation)
-      : customAssociations
-    let labels = sample.labels.compactMap(emotionLabel)
-    let markedUnclassified =
-      (metadata[HealthMetadataKeys.unclassified] as? NSNumber)?.boolValue ?? false
-
-    return StateOfMindRecord(
-      syncIdentifier: syncIdentifier,
-      syncVersion: syncVersion,
-      date: sample.startDate,
-      valence: sample.valence,
-      arousal: arousal,
-      labels: labels,
-      associations: associations,
-      bodySensationCodes: bodySensationCodes,
-      unclassified: markedUnclassified || labels.count != sample.labels.count,
-      origin: origin,
-      sessionID: metadata[HealthMetadataKeys.sessionID] as? String,
-      phase: phase
-    )
-  }
-
-  private static func healthKitLabel(_ label: EmotionLabel) -> HKStateOfMind.Label {
-    switch label {
-    case .amazed: .amazed
-    case .amused: .amused
-    case .angry: .angry
-    case .anxious: .anxious
-    case .ashamed: .ashamed
-    case .brave: .brave
-    case .calm: .calm
-    case .content: .content
-    case .disappointed: .disappointed
-    case .discouraged: .discouraged
-    case .disgusted: .disgusted
-    case .embarrassed: .embarrassed
-    case .excited: .excited
-    case .frustrated: .frustrated
-    case .grateful: .grateful
-    case .guilty: .guilty
-    case .happy: .happy
-    case .hopeless: .hopeless
-    case .irritated: .irritated
-    case .jealous: .jealous
-    case .joyful: .joyful
-    case .lonely: .lonely
-    case .passionate: .passionate
-    case .peaceful: .peaceful
-    case .proud: .proud
-    case .relieved: .relieved
-    case .sad: .sad
-    case .scared: .scared
-    case .stressed: .stressed
-    case .surprised: .surprised
-    case .worried: .worried
-    case .annoyed: .annoyed
-    case .confident: .confident
-    case .drained: .drained
-    case .hopeful: .hopeful
-    case .indifferent: .indifferent
-    case .overwhelmed: .overwhelmed
-    case .satisfied: .satisfied
-    }
-  }
-
-  private static func emotionLabel(_ label: HKStateOfMind.Label) -> EmotionLabel? {
-    switch label {
-    case .amazed: .amazed
-    case .amused: .amused
-    case .angry: .angry
-    case .anxious: .anxious
-    case .ashamed: .ashamed
-    case .brave: .brave
-    case .calm: .calm
-    case .content: .content
-    case .disappointed: .disappointed
-    case .discouraged: .discouraged
-    case .disgusted: .disgusted
-    case .embarrassed: .embarrassed
-    case .excited: .excited
-    case .frustrated: .frustrated
-    case .grateful: .grateful
-    case .guilty: .guilty
-    case .happy: .happy
-    case .hopeless: .hopeless
-    case .irritated: .irritated
-    case .jealous: .jealous
-    case .joyful: .joyful
-    case .lonely: .lonely
-    case .passionate: .passionate
-    case .peaceful: .peaceful
-    case .proud: .proud
-    case .relieved: .relieved
-    case .sad: .sad
-    case .scared: .scared
-    case .stressed: .stressed
-    case .surprised: .surprised
-    case .worried: .worried
-    case .annoyed: .annoyed
-    case .confident: .confident
-    case .drained: .drained
-    case .hopeful: .hopeful
-    case .indifferent: .indifferent
-    case .overwhelmed: .overwhelmed
-    case .satisfied: .satisfied
-    @unknown default: nil
-    }
-  }
-
-  private static func healthKitAssociation(
-    _ association: CheckInAssociation
-  ) -> HKStateOfMind.Association? {
-    switch association {
-    case .work: .work
-    case .tasks: .tasks
-    case .health: .health
-    case .family: .family
-    case .relationship: .partner
-    case .money: .money
-    case .training: .fitness
-    case .sleep: nil
-    }
-  }
-
-  private static func checkInAssociation(
-    _ association: HKStateOfMind.Association
-  ) -> CheckInAssociation? {
-    switch association {
-    case .work: .work
-    case .tasks: .tasks
-    case .health: .health
-    case .family: .family
-    case .partner: .relationship
-    case .money: .money
-    case .fitness: .training
-    default: nil
-    }
-  }
-
-  private static func commaSeparatedValues(_ value: String?) -> [String] {
-    guard let value, value.isEmpty == false else { return [] }
-    return value.split(separator: ",").map(String.init)
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/InnerBalance.entitlements =====
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>com.apple.developer.healthkit</key>
-	<true/>
-</dict>
-</plist>
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Persistence/CachedCheckIn.swift =====
-import Foundation
-import SwiftData
-
-@Model
-final class CachedCheckIn {
-  @Attribute(.unique) var syncIdentifier: String
-  var syncVersion: Int
-  var date: Date
-  var payload: Data
-  var healthKitObjectUUID: UUID?
-
-  init(
-    syncIdentifier: String,
-    syncVersion: Int,
-    date: Date,
-    payload: Data,
-    healthKitObjectUUID: UUID? = nil
-  ) {
-    self.syncIdentifier = syncIdentifier
-    self.syncVersion = syncVersion
-    self.date = date
-    self.payload = payload
-    self.healthKitObjectUUID = healthKitObjectUUID
-  }
-}
-
-@MainActor
-final class CheckInCacheStore {
-  private let modelContext: ModelContext
-  private let decoder = JSONDecoder()
-  private let encoder = JSONEncoder()
-
-  init(modelContext: ModelContext) {
-    self.modelContext = modelContext
-  }
-
-  func upsert(
-    _ record: StateOfMindRecord,
-    healthKitObjectUUID: UUID? = nil
-  ) throws {
-    let syncIdentifier = record.syncIdentifier
-    let descriptor = FetchDescriptor<CachedCheckIn>(
-      predicate: #Predicate { $0.syncIdentifier == syncIdentifier }
-    )
-    let payload = try encoder.encode(record)
-    if let existing = try modelContext.fetch(descriptor).first {
-      if record.syncVersion > existing.syncVersion {
-        existing.syncVersion = record.syncVersion
-        existing.date = record.date
-        existing.payload = payload
-      }
-      if let healthKitObjectUUID {
-        existing.healthKitObjectUUID = healthKitObjectUUID
-      }
-    } else {
-      modelContext.insert(
-        CachedCheckIn(
-          syncIdentifier: record.syncIdentifier,
-          syncVersion: record.syncVersion,
-          date: record.date,
-          payload: payload,
-          healthKitObjectUUID: healthKitObjectUUID
-        )
-      )
-    }
-    try modelContext.save()
-  }
-
-  func delete(healthKitObjectUUIDs: [UUID]) throws {
-    guard !healthKitObjectUUIDs.isEmpty else { return }
-    let deleted = Set(healthKitObjectUUIDs)
-    let cached = try modelContext.fetch(FetchDescriptor<CachedCheckIn>())
-    for item in cached where item.healthKitObjectUUID.map(deleted.contains) == true {
-      modelContext.delete(item)
-    }
-    try modelContext.save()
-  }
-
-  func record(syncIdentifier: String) throws -> StateOfMindRecord? {
-    let descriptor = FetchDescriptor<CachedCheckIn>(
-      predicate: #Predicate { $0.syncIdentifier == syncIdentifier }
-    )
-    guard let cached = try modelContext.fetch(descriptor).first else { return nil }
-    return try decoder.decode(StateOfMindRecord.self, from: cached.payload)
-  }
-
-  func latestRecord() throws -> StateOfMindRecord? {
-    var descriptor = FetchDescriptor<CachedCheckIn>(
-      sortBy: [SortDescriptor(\.date, order: .reverse)]
-    )
-    descriptor.fetchLimit = 1
-    guard let cached = try modelContext.fetch(descriptor).first else { return nil }
-    return try decoder.decode(StateOfMindRecord.self, from: cached.payload)
-  }
-
-  func latestContextRecord(
-    on date: Date = .now,
-    calendar: Calendar = .current
-  ) throws -> StateOfMindRecord? {
-    let descriptor = FetchDescriptor<CachedCheckIn>(
-      sortBy: [SortDescriptor(\.date, order: .reverse)]
-    )
-    for cached in try modelContext.fetch(descriptor) {
-      let record = try decoder.decode(StateOfMindRecord.self, from: cached.payload)
-      guard calendar.isDate(record.date, inSameDayAs: date) else { continue }
-      if !record.associations.isEmpty || !record.bodySensationCodes.isEmpty {
-        return record
-      }
-    }
-    return nil
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Persistence/CheckInDiagnosticEvent.swift =====
-import Foundation
-import SwiftData
-
-@Model
-final class CheckInDiagnosticEvent {
-  @Attribute(.unique) var id: UUID
-  var startedAt: Date
-  var completedAt: Date
-  var duration: TimeInterval
-  var unclassified: Bool
-
-  init(
-    id: UUID = UUID(),
-    startedAt: Date,
-    completedAt: Date,
-    unclassified: Bool
-  ) {
-    self.id = id
-    self.startedAt = startedAt
-    self.completedAt = completedAt
-    duration = max(0, completedAt.timeIntervalSince(startedAt))
-    self.unclassified = unclassified
-  }
-}
-
-@MainActor
-protocol CheckInDiagnosticsRecording {
-  func recordCompletion(startedAt: Date, completedAt: Date, unclassified: Bool)
-  func recordStage(_ stage: CheckInDiagnosticStage, at date: Date)
-}
-
-enum CheckInDiagnosticStage: Sendable {
-  case opened
-  case compassCompleted
-  case emotionWordSelected
-  case optionalSupplementCompleted
-}
-
-extension CheckInDiagnosticsRecording {
-  func recordStage(_ stage: CheckInDiagnosticStage, at date: Date) {}
-}
-
-@MainActor
-final class SwiftDataCheckInDiagnosticsRecorder: CheckInDiagnosticsRecording {
-  private let modelContext: ModelContext
-
-  init(modelContext: ModelContext) {
-    self.modelContext = modelContext
-  }
-
-  func recordCompletion(startedAt: Date, completedAt: Date, unclassified: Bool) {
-    modelContext.insert(
-      CheckInDiagnosticEvent(
-        startedAt: startedAt,
-        completedAt: completedAt,
-        unclassified: unclassified
-      )
-    )
-    try? modelContext.save()
-  }
-
-  func recordStage(_ stage: CheckInDiagnosticStage, at date: Date) {
-    let kind: LocalDiagnosticKind =
-      switch stage {
-      case .opened: .checkInOpened
-      case .compassCompleted: .compassCompleted
-      case .emotionWordSelected: .emotionWordSelected
-      case .optionalSupplementCompleted: .optionalSupplementCompleted
-      }
-    modelContext.insert(LocalDiagnosticEvent(kind: kind, occurredAt: date))
-    try? modelContext.save()
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalance/InnerBalanceApp/Persistence/CheckInSyncCoordinator.swift =====
-import Foundation
-
-@MainActor
-final class CheckInSyncCoordinator {
-  private let repository: HealthKitRepository
-  private let cacheStore: CheckInCacheStore
-
-  init(repository: HealthKitRepository, cacheStore: CheckInCacheStore) {
-    self.repository = repository
-    self.cacheStore = cacheStore
-  }
-
-  func refresh() async -> StateOfMindRecord? {
-    do {
-      let batch = try await repository.ownStateOfMindChanges()
-      for addition in batch.additions {
-        try cacheStore.upsert(
-          addition.record,
-          healthKitObjectUUID: addition.healthKitObjectUUID
-        )
-      }
-      try cacheStore.delete(healthKitObjectUUIDs: batch.deletedObjectUUIDs)
-      try repository.commit(batch)
-    } catch {
-      return try? cacheStore.latestRecord()
-    }
-    return try? cacheStore.latestRecord()
-  }
 }
 
 ===== END FILE =====

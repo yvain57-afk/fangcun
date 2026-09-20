@@ -36,6 +36,7 @@ final class FangcunRedesignUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
+    app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
     app.launch()
     XCTAssertTrue(app.staticTexts["status.band"].waitForExistence(timeout: 15))
     XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
@@ -86,7 +87,9 @@ final class FangcunRedesignUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
+    app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
     app.launch()
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout: 12))
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
     app.buttons["today.start"].tap()
     XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 10))

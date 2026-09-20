@@ -1,4 +1,1463 @@
 
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusPresentationPolicy.swift =====
+import Foundation
+
+public enum StatusPrimaryAction: String, Codable, Sendable {
+  case resume, safety, seatedStretch, quietRest, shortBreathing, breathing, unavailable, sync, connect, resumeReading
+  public var title: String {
+    switch self {
+    case .resumeReading: "恢复状态分析"
+    case .resume: "继续练习"; case .safety: "查看安全帮助"; case .quietRest: "开始 2 分钟安静休息"
+    case .seatedStretch: "开始 1 分钟座位舒展"
+    case .shortBreathing: "开始 2 分钟放松"; case .breathing: "开始 5 分钟呼吸"
+    case .unavailable: "先停靠到安全位置"; case .sync: "同步今日数据"; case .connect: "连接 Apple 健康"
+    }
+  }
+}
+public enum StatusPresentationPolicy {
+  public static func action(score: DailyStatusSnapshot?, night: Bool, ongoing: Bool = false,
+    severe: Bool = false, driving: Bool = false, avoidBreathing: Bool = false, tense: Bool = false, avoidRest: Bool = false, favoriteBreathing: Bool = true) -> StatusPrimaryAction {
+    if ongoing { return .resume }
+    if severe { return .safety }
+    if driving { return .unavailable }
+    if avoidBreathing { return avoidRest ? .seatedStretch : .quietRest }
+    if night { return .shortBreathing }
+    if tense { return .shortBreathing }
+    guard let score else { return .sync }
+    return score.band == .good && favoriteBreathing ? .breathing : avoidRest ? .seatedStretch : .quietRest
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusScoreConfiguration.swift =====
+import Foundation
+
+/// Product rules, not clinically validated thresholds. Independent of legacy readiness-v1.
+public struct StatusScoreConfiguration: Codable, Equatable, Sendable {
+  public var modelVersion = "fangcun-status-3.0"
+  public var qualityPolicyVersion = "status-quality-3.0-gap60"
+  public var sleepGoalMinutes = 480.0
+  public var regularityEnabled = true
+  public var sleepWeight = 0.60
+  public var hrvWeight = 0.25
+  public var rhrWeight = 0.15
+  public var durationWeight = 0.70
+  public var continuityWeight = 0.20
+  public var regularityWeight = 0.10
+  public var minimumHistoryDays = 3
+  public var fullHistoryDays = 14
+  public var baselineDays = 28
+  public var regularityCycles = 14
+  public var regularityZeroMinutes = 120.0
+  public var hrvFullSamples = 3
+  public var hrvFullHours = 2
+  public var madMultiplier = 1.4826
+  public var hrvScaleFloor = 0.10
+  public var rhrScaleFloor = 3.0
+  public var nominalCardioScore = 85.0
+  public var adverseMultiplier = 15.0
+  public var benefitMultiplier = 5.0
+  public var maxBenefitZ = 1.0
+  public var maxCardioScore = 95.0
+  public var highHRVExclusionZ = -2.0
+  public var currentHours = 18.0
+  public var validHours = 24.0
+  public init(sleepGoalMinutes: Double = 480, regularityEnabled: Bool = true) {
+    self.sleepGoalMinutes = sleepGoalMinutes; self.regularityEnabled = regularityEnabled
+  }
+  public var isValid: Bool {
+    modelVersion == "fangcun-status-3.0" && (420...600).contains(sleepGoalMinutes)
+      && [sleepWeight,hrvWeight,rhrWeight,durationWeight,continuityWeight,regularityWeight,
+        regularityZeroMinutes,madMultiplier,hrvScaleFloor,rhrScaleFloor,adverseMultiplier,
+        benefitMultiplier,maxBenefitZ,maxCardioScore,currentHours,validHours].allSatisfy { $0.isFinite && $0 > 0 }
+      && nominalCardioScore.isFinite && highHRVExclusionZ.isFinite
+      && minimumHistoryDays >= 3 && fullHistoryDays >= minimumHistoryDays && baselineDays >= fullHistoryDays
+      && regularityCycles >= 3 && hrvFullSamples > 0 && hrvFullHours > 0 && validHours > currentHours
+  }
+}
+public typealias DailyStatusScoreConfiguration = StatusScoreConfiguration
+
+public enum StatusBand: String, Codable, Sendable, CaseIterable {
+  case good, fair, low, rest
+  public var title: String { switch self { case .good: "良好"; case .fair: "尚可"; case .low: "偏低"; case .rest: "优先休息" } }
+  public static func resolve(_ score: Int) -> Self? {
+    guard (0...100).contains(score) else { return nil }
+    return score >= 85 ? .good : score >= 70 ? .fair : score >= 50 ? .low : .rest
+  }
+}
+
+public struct StatusScoreInput: Codable, Equatable, Sendable {
+  public var sleepMinutes: Double?
+  public var sleepUsable = true
+  public var awakeMinutes: Double?
+  public var awakeCoverageComplete = false
+  public var regularityDeltaMinutes: Double?
+  public var regularityHistoryDays = 0
+  public var hrvDeviation: Double?
+  public var hrvDays = 0
+  public var hrvSamples = 0
+  public var hrvHours = 0
+  public var hrvUsable = true
+  public var rhrDeviation: Double?
+  public var rhrDays = 0
+  public var rhrUsable = true
+  public init(sleepMinutes: Double? = nil) { self.sleepMinutes = sleepMinutes }
+}
+public struct StatusScoreComponent: Codable, Equatable, Sendable {
+  public var name: String
+  public var score: Double
+  public var effectiveWeight: Double
+  public var normalizedWeight: Double
+}
+public struct StatusScoreResult: Codable, Equatable, Sendable {
+  public var rawScore: Double?
+  public var displayScore: Int?
+  public var band: StatusBand?
+  public var components: [StatusScoreComponent]
+  public var sleepSubscores: [String: Double]
+}
+public enum StatusScoreError: Error { case invalidInput, invalidConfiguration }
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Sync/SummaryCache.swift =====
+import Foundation
+
+public struct SummaryCache: Sendable {
+  public enum State: Equatable { case unavailable, neutral, current(ReadinessSummaryDTO) }
+  public let file: URL?
+  public init(directory: URL?) { file = directory?.appendingPathComponent("readiness-summary-v1.json") }
+  public func write(_ summary: ReadinessSummaryDTO) throws {
+    guard let file else { return }
+    try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+    let data = try JSONEncoder().encode(summary)
+    guard data.count < 4096 else { throw SyncStore.Failure.invalid }
+    try data.write(to: file, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+  }
+  public func read(now: Date, peer: String?) -> State {
+    guard let file else { return .unavailable }
+    guard let data = try? Data(contentsOf: file), data.count < 4096,
+      let value = try? JSONDecoder().decode(ReadinessSummaryDTO.self, from: data), value.usable(now: now, peer: peer) else { return .neutral }
+    return .current(value)
+  }
+  public func revoke() throws { if let file, FileManager.default.fileExists(atPath: file.path) { try FileManager.default.removeItem(at: file) } }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncModels.swift =====
+import Foundation
+
+public enum SyncEntityKind: String, Codable, Sendable { case session, drink }
+public struct SyncedDrink: Codable, Equatable, Sendable {
+  public var id: String
+  public var kind: String
+  public var consumedAt: Date
+  public var recordedAt: Date?
+  public var volumeML: Int
+  public var caffeineMG: Int?
+  public var alcoholGrams: Double?
+  public var sugarServings: Double
+  public var sugarGrams: Double?
+  public var estimateMethod: String
+  public var beverageDetails: BeverageDetails? = nil
+  public var estimateVersion: Int
+  public init(id: String, kind: String, consumedAt: Date, recordedAt: Date?, volumeML: Int,
+    caffeineMG: Int?, alcoholGrams: Double?, sugarServings: Double, sugarGrams: Double?, estimateMethod: String, estimateVersion: Int, beverageDetails: BeverageDetails? = nil) {
+    self.beverageDetails = beverageDetails
+    self.id = id; self.kind = kind; self.consumedAt = consumedAt; self.recordedAt = recordedAt
+    self.volumeML = volumeML; self.caffeineMG = caffeineMG; self.alcoholGrams = alcoholGrams
+    self.sugarServings = sugarServings; self.sugarGrams = sugarGrams; self.estimateMethod = estimateMethod; self.estimateVersion = estimateVersion
+  }
+}
+public struct SyncEvent: Codable, Equatable, Sendable {
+  public var schemaVersion = 1
+  public var eventID: String
+  public var entityID: String
+  public var kind: SyncEntityKind
+  public var revision: Int
+  public var originInstallationID: String
+  public var deleted: Bool
+  public var explicitRestore: Bool
+  public var payload: Data
+  public var entityKey: String { kind.rawValue + ":" + entityID }
+  public init(eventID: String = UUID().uuidString, entityID: String, kind: SyncEntityKind,
+    revision: Int, originInstallationID: String, deleted: Bool = false, explicitRestore: Bool = false, payload: Data) {
+    self.eventID = eventID; self.entityID = entityID; self.kind = kind; self.revision = revision
+    self.originInstallationID = originInstallationID; self.deleted = deleted; self.explicitRestore = explicitRestore; self.payload = payload
+  }
+}
+public struct SyncAcknowledgement: Codable, Equatable, Sendable {
+  public var eventID: String
+  public var originInstallationID: String
+  public var digest: String
+  public init(event: SyncEvent) throws {
+    eventID = event.eventID; originInstallationID = event.originInstallationID; digest = try StableDigest.encoded(event)
+  }
+}
+/// The phone's minimal result, without raw values, sources, personal notes or HealthKit identifiers.
+public struct ReadinessSummaryDTO: Codable, Equatable, Sendable {
+  public var schemaVersion = 1
+  public var originInstallationID: String
+  public var sequence: Int
+  public var assessmentID: String?
+  public var assessmentRevision: Int?
+  public var availability: ReadinessAvailability?
+  public var level: ReadinessLevel?
+  public var sleepEndAt: Date?
+  public var validUntil: Date?
+  public var issuedAt: Date
+  public var revoked: Bool
+  public init(assessment: ReadinessAssessment?, installationID: String, sequence: Int, now: Date) {
+    originInstallationID = installationID; self.sequence = sequence; issuedAt = now
+    assessmentID = assessment?.assessmentID; assessmentRevision = assessment?.revision
+    availability = assessment?.availability; sleepEndAt = assessment?.sleepEndAt
+    validUntil = assessment?.currentUntil
+    level = assessment.flatMap { AssessmentFreshness.resolve($0, now: now) == .current ? $0.level : nil }
+    revoked = assessment == nil
+  }
+  public func usable(now: Date, peer: String?) -> Bool {
+    schemaVersion == 1 && !revoked && originInstallationID == peer
+      && validUntil.map { now <= $0 } == true && now >= issuedAt.addingTimeInterval(-300)
+  }
+}
+public struct SyncPacket: Codable, Sendable {
+  public var schemaVersion = 1
+  public var originInstallationID: String
+  public var role: String
+  public var event: SyncEvent?
+  public var acknowledgement: SyncAcknowledgement?
+  public var summary: ReadinessSummaryDTO?
+  public var statusSummary: DailyStatusSummaryDTO?
+  public var capabilities: [String]? = ["beverage-v2", "score-v3"]
+  public var hello = false
+  public init(origin: String, role: String, event: SyncEvent? = nil, acknowledgement: SyncAcknowledgement? = nil,
+    summary: ReadinessSummaryDTO? = nil, hello: Bool = false, statusSummary: DailyStatusSummaryDTO? = nil) {
+    originInstallationID = origin; self.role = role; self.event = event
+    self.statusSummary = statusSummary
+    self.acknowledgement = acknowledgement; self.summary = summary; self.hello = hello
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncService.swift =====
+import Foundation
+
+@MainActor public protocol SyncTransport: AnyObject {
+  var onReceive: (@MainActor @Sendable (Data) async -> Data?)? { get set }
+  var onOpportunity: (@MainActor @Sendable () async -> Void)? { get set }
+  func activate()
+  func deliver(_ data: Data) async throws -> Data?
+  func updateContext(_ data: Data) throws
+}
+@MainActor public final class SyncService {
+  public let store: SyncStore
+  public let role: String
+  public let localCache: SummaryCache
+  public let sharedCache: SummaryCache
+  public private(set) var lastError: String?
+  public var currentStatus: (@MainActor () -> DailyStatusSnapshot?)?
+  public let statusCache: StatusSummaryCache
+  private var statusIntent = 0
+  public var currentAssessment: (@MainActor () -> ReadinessAssessment?)?
+  public var onRecordsChanged: (@MainActor (SyncArchive) async throws -> Void)?
+  private let transport: any SyncTransport
+  private var peerCapabilities: Set<String> = []
+  private var flushing = false
+  private var summaryIntent = 0
+  public init(store: SyncStore, transport: any SyncTransport, role: String, localDirectory: URL, sharedDirectory: URL? = nil) {
+    self.store = store; self.transport = transport; self.role = role
+    statusCache = .init(directory: sharedDirectory ?? localDirectory)
+    localCache = .init(directory: localDirectory); sharedCache = .init(directory: sharedDirectory)
+    transport.onReceive = { [weak self] data in await self?.receive(data) }
+    transport.onOpportunity = { [weak self] in await self?.handshake(); await self?.flush(); await self?.sendStoredSummary() }
+  }
+  public func activate() { transport.activate() }
+  public func reconcile() async {
+    do { try await onRecordsChanged?(await store.snapshot()) } catch { lastError = "projection" }
+  }
+  public func enqueue(_ record: RecoverySession) async throws {
+    guard record.endedAt != nil, record.originDevice != "HealthKit" else { return }
+    var value = record
+    value.feedback?.localNote = nil
+    for index in value.feedbackHistory.indices { value.feedbackHistory[index].localNote = nil }
+    let encoder = JSONEncoder(); encoder.outputFormatting = .sortedKeys
+    try await store.enqueue(kind: .session, id: value.sessionID, payload: encoder.encode(value))
+  }
+  public func enqueue(_ drink: SyncedDrink) async throws {
+    let encoder = JSONEncoder(); encoder.outputFormatting = .sortedKeys
+    try await store.enqueue(kind: .drink, id: drink.id, payload: encoder.encode(drink))
+  }
+  public func delete(kind: SyncEntityKind, id: String) async throws {
+    try await store.enqueue(kind: kind, id: id, payload: Data(), deleted: true)
+  }
+  public func handshake() async {
+    let state = await store.snapshot()
+    let packet = SyncPacket(origin: state.installationID, role: role, hello: true)
+    do {
+      if let response = try await transport.deliver(JSONEncoder().encode(packet)), !response.isEmpty { _ = await receive(response) }
+    } catch { lastError = "disconnected" }
+  }
+  public func flush(manual: Bool = false, now: Date = .now) async {
+    guard !flushing else { return }; flushing = true; defer { flushing = false }
+    let state = await store.snapshot()
+    for event in await store.pending(now: now, manual: manual) {
+      if event.kind == .drink, !event.deleted,
+        let drink = try? JSONDecoder().decode(SyncedDrink.self, from: event.payload),
+        drink.beverageDetails != nil, !peerCapabilities.contains("beverage-v2") {
+        lastError = "peer_beverage_upgrade_required"; continue
+      }
+      do {
+        try await store.attempted(event.eventID, now: now)
+        let packet = SyncPacket(origin: state.installationID, role: role, event: event)
+        if let response = try await transport.deliver(JSONEncoder().encode(packet)), !response.isEmpty { _ = await receive(response) }
+      } catch { lastError = "disconnected" }
+    }
+  }
+  public func publish(_ assessment: ReadinessAssessment?, now: Date = .now) async {
+    guard role == "phone" else { return }
+    summaryIntent += 1; let intent = summaryIntent
+    do {
+      if assessment == nil { try localCache.revoke(); try sharedCache.revoke() }
+      let summary = try await store.makeSummary(assessment, now: now)
+      guard intent == summaryIntent else { return }
+      try localCache.write(summary); try sharedCache.write(summary)
+      try transport.updateContext(JSONEncoder().encode(SyncPacket(origin: summary.originInstallationID, role: role, summary: summary, hello: true)))
+    } catch {
+      lastError = "summary_unavailable"
+      // Revocation is privacy-critical even if protected storage cannot accept a new sequence.
+      if assessment == nil, intent == summaryIntent {
+        let state = await store.snapshot()
+        let revoked = ReadinessSummaryDTO(assessment: nil, installationID: state.installationID,
+          sequence: state.summarySequence + 1, now: now)
+        if let data = try? JSONEncoder().encode(SyncPacket(origin: state.installationID, role: role, summary: revoked, hello: true)) {
+          try? transport.updateContext(data)
+        }
+      }
+    }
+  }
+  public func publishStatus(_ snapshot: DailyStatusSnapshot?, now: Date = .now) async {
+    guard role == "phone" else { return }
+    statusIntent += 1; let intent = statusIntent
+    // Legacy surfaces receive a revocation, never a made-up mapping to the old readiness levels.
+    await publish(nil, now: now)
+    guard intent == statusIntent else { return }
+    do {
+      if snapshot == nil { try statusCache.revoke() }
+      let summary = try await store.makeStatusSummary(snapshot, now: now)
+      guard intent == statusIntent else { return }
+      try statusCache.write(summary)
+      let state = await store.snapshot()
+      let packet = SyncPacket(origin: state.installationID, role: role, summary: state.summary, hello: true,
+        statusSummary: peerCapabilities.contains("score-v3") ? summary : nil)
+      try transport.updateContext(JSONEncoder().encode(packet))
+    } catch {
+      lastError = "status_summary_unavailable"
+      if snapshot == nil, intent == statusIntent {
+        let state = await store.snapshot()
+        let summary = DailyStatusSummaryDTO(snapshot: nil, installationID: state.installationID, sequence: state.summarySequence+1, now: now)
+        let legacy = ReadinessSummaryDTO(assessment: nil, installationID: state.installationID, sequence: state.summarySequence+1, now: now)
+        if let data = try? JSONEncoder().encode(SyncPacket(origin: state.installationID, role: role, summary: legacy, hello: true,
+          statusSummary: peerCapabilities.contains("score-v3") ? summary : nil)) { try? transport.updateContext(data) }
+      }
+    }
+  }
+  private func sendStoredSummary() async {
+    guard role == "phone" else { return }
+    if let currentStatus { await publishStatus(currentStatus()); return }
+    if let currentAssessment { await publish(currentAssessment()); return }
+    guard let summary = await store.snapshot().summary else { return }
+    do { try transport.updateContext(JSONEncoder().encode(SyncPacket(origin: summary.originInstallationID, role: role, summary: summary, hello: true))) }
+    catch { lastError = "disconnected" }
+  }
+  @discardableResult public func receive(_ data: Data) async -> Data? {
+    do {
+      let packet = try JSONDecoder().decode(SyncPacket.self, from: data)
+      guard packet.schemaVersion == 1, packet.role != role,
+        ["phone", "watch"].contains(packet.role) else { throw SyncStore.Failure.unknownProtocol }
+      let before = await store.snapshot()
+      if packet.hello || before.peerInstallationID == nil {
+        try await store.acceptPeer(packet.originInstallationID)
+        if before.peerInstallationID != packet.originInstallationID { peerCapabilities = [] }
+        if role == "watch", before.peerInstallationID != packet.originInstallationID {
+          try localCache.revoke(); try sharedCache.revoke(); try statusCache.revoke()
+        }
+      }
+      guard await store.snapshot().peerInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
+      if let capabilities = packet.capabilities { peerCapabilities = Set(capabilities) }
+      if let event = packet.event {
+        guard event.originInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
+        let ack = try await store.receive(event)
+        try await onRecordsChanged?(await store.snapshot())
+        return try JSONEncoder().encode(SyncPacket(origin: (await store.snapshot()).installationID, role: role, acknowledgement: ack))
+      }
+      if let ack = packet.acknowledgement { try await store.acknowledge(ack) }
+      if let summary = packet.summary {
+        guard packet.role == "phone", summary.originInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
+        try await store.receiveSummary(summary)
+        if let accepted = await store.snapshot().summary { try localCache.write(accepted); try sharedCache.write(accepted) }
+      }
+      if let summary = packet.statusSummary {
+        guard packet.role == "phone", summary.originInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
+        try await store.receiveStatusSummary(summary)
+        if let accepted = await store.snapshot().statusSummary { try statusCache.write(accepted) }
+      }
+      lastError = nil
+      if packet.hello {
+        return try JSONEncoder().encode(SyncPacket(origin: (await store.snapshot()).installationID, role: role))
+      }
+    } catch {
+      lastError = String(describing: error)
+      try? await store.quarantine(data)
+    }
+    return nil
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Sync/SyncStore.swift =====
+import Foundation
+
+public struct SyncQueueItem: Codable, Sendable {
+  public var event: SyncEvent
+  public var attempts = 0
+  public var retryAfter = Date.distantPast
+}
+public struct SyncArchive: Codable, Sendable {
+  public var schemaVersion = 1
+  public var installationID = UUID().uuidString
+  public var peerInstallationID: String?
+  public var retiredPeers: Set<String> = []
+  public var entities: [String: SyncEvent] = [:]
+  public var received: [String: SyncAcknowledgement] = [:]
+  public var outbox: [String: SyncQueueItem] = [:]
+  public var quarantined: [String: Data] = [:]
+  public var summary: ReadinessSummaryDTO?
+  public var summarySequence = 0
+  public var statusSummary: DailyStatusSummaryDTO?
+}
+/// Business payload + deduplication + receipt are one atomic transaction. Never writes HealthKit.
+public actor SyncStore {
+  public enum Failure: Error { case schema, corrupt, injected, peer, invalid, unknownProtocol }
+  private struct Envelope: Codable { var digest: String; var payload: Data }
+  private var state: SyncArchive
+  private let file: URL
+  private var failNext = false
+  public init(directory: URL) throws {
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    file = directory.appendingPathComponent("sync-v1.json")
+    if FileManager.default.fileExists(atPath: file.path) {
+      let e = try JSONDecoder().decode(Envelope.self, from: Data(contentsOf: file))
+      guard StableDigest.data(e.payload) == e.digest else { throw Failure.corrupt }
+      state = try JSONDecoder().decode(SyncArchive.self, from: e.payload)
+      guard state.schemaVersion == 1 else { throw Failure.schema }
+    } else {
+      state = SyncArchive()
+      try Self.write(state, file: file)
+    }
+  }
+  public func snapshot() -> SyncArchive { state }
+  public func injectWriteFailure() { failNext = true }
+  public func acceptPeer(_ id: String) throws {
+    guard !state.retiredPeers.contains(id), id != state.installationID else { throw Failure.peer }
+    guard id != state.peerInstallationID else { return }
+    var next = state
+    if let previous = next.peerInstallationID { next.retiredPeers.insert(previous) }
+    next.peerInstallationID = id
+    if next.statusSummary?.originInstallationID != next.installationID { next.statusSummary = nil }
+    if next.summary?.originInstallationID != next.installationID { next.summary = nil }
+    try publish(next)
+  }
+  @discardableResult public func enqueue(kind: SyncEntityKind, id: String, payload: Data, deleted: Bool = false) throws -> SyncEvent? {
+    let key = kind.rawValue + ":" + id
+    let old = state.entities[key]
+    if old?.payload == payload && old?.deleted == deleted { return nil }
+    let event = SyncEvent(entityID: id, kind: kind, revision: (old?.revision ?? 0)+1,
+      originInstallationID: state.installationID, deleted: deleted, explicitRestore: old?.deleted == true && !deleted, payload: payload)
+    try validate(event)
+    var next = state; next.entities[key] = event; next.outbox[event.eventID] = .init(event: event)
+    try publish(next); return event
+  }
+  public func receive(_ event: SyncEvent) throws -> SyncAcknowledgement {
+    guard event.originInstallationID == state.peerInstallationID else { throw Failure.peer }
+    try validate(event)
+    let ack = try SyncAcknowledgement(event: event)
+    if let old = state.received[event.eventID] {
+      guard old == ack else { throw Failure.invalid }
+      return old
+    }
+    var next = state
+    let previous = next.entities[event.entityKey]
+    let shouldApply: Bool
+    if let previous {
+      shouldApply = (event.revision > previous.revision || (event.revision == previous.revision && event.deleted && !previous.deleted))
+        && (!previous.deleted || event.deleted || event.explicitRestore)
+    } else { shouldApply = true }
+    if shouldApply { next.entities[event.entityKey] = event }
+    next.received[event.eventID] = ack
+    try publish(next) // Only a durable commit can produce an ACK.
+    return ack
+  }
+  public func acknowledge(_ ack: SyncAcknowledgement) throws {
+    guard ack.originInstallationID == state.installationID,
+      let queued = state.outbox[ack.eventID], try SyncAcknowledgement(event: queued.event) == ack else { return }
+    var next = state; next.outbox[ack.eventID] = nil; try publish(next)
+  }
+  public func pending(now: Date, manual: Bool = false) -> [SyncEvent] {
+    state.outbox.values.filter { manual || ($0.attempts < 8 && $0.retryAfter <= now) }
+      .sorted { $0.event.eventID < $1.event.eventID }.prefix(20).map(\.event)
+  }
+  public func attempted(_ id: String, now: Date) throws {
+    guard var item = state.outbox[id] else { return }
+    item.attempts += 1; item.retryAfter = now.addingTimeInterval(min(3600, pow(2, Double(item.attempts))))
+    var next = state; next.outbox[id] = item; try publish(next)
+  }
+  public func quarantine(_ data: Data) throws {
+    var next = state; next.quarantined[StableDigest.data(data)] = data; try publish(next)
+  }
+  public func makeSummary(_ assessment: ReadinessAssessment?, now: Date) throws -> ReadinessSummaryDTO {
+    var next = state; next.summarySequence += 1
+    let summary = ReadinessSummaryDTO(assessment: assessment, installationID: state.installationID, sequence: next.summarySequence, now: now)
+    next.summary = summary; try publish(next); return summary
+  }
+  public func receiveSummary(_ value: ReadinessSummaryDTO) throws {
+    guard value.schemaVersion == 1, value.originInstallationID == state.peerInstallationID else { throw Failure.peer }
+    if let old = state.summary, old.originInstallationID == value.originInstallationID, old.sequence >= value.sequence { return }
+    var next = state; next.summary = value; try publish(next)
+  }
+  public func makeStatusSummary(_ value: DailyStatusSnapshot?, now: Date) throws -> DailyStatusSummaryDTO {
+    var next = state; next.summarySequence += 1
+    let summary = DailyStatusSummaryDTO(snapshot: value, installationID: state.installationID, sequence: next.summarySequence, now: now)
+    guard summary.isValid else { throw Failure.invalid }
+    next.statusSummary = summary; try publish(next); return summary
+  }
+  public func receiveStatusSummary(_ value: DailyStatusSummaryDTO) throws {
+    guard value.originInstallationID == state.peerInstallationID else { throw Failure.peer }
+    guard value.isValid else { throw Failure.invalid }
+    if let old = state.statusSummary, old.originInstallationID == value.originInstallationID, old.sequence >= value.sequence { return }
+    var next = state; next.statusSummary = value; try publish(next)
+  }
+  private func validate(_ event: SyncEvent) throws {
+    guard event.schemaVersion == 1, event.revision > 0, !event.entityID.isEmpty else { throw Failure.unknownProtocol }
+    if event.deleted { return }
+    switch event.kind {
+    case .session:
+      let value = try JSONDecoder().decode(RecoverySession.self, from: event.payload)
+      guard value.protocolVersion == 1 else { throw Failure.unknownProtocol }
+      guard value.sessionID == event.entityID, value.activeDuration.isFinite, value.activeDuration >= 0 else { throw Failure.invalid }
+    case .drink:
+      let value = try JSONDecoder().decode(SyncedDrink.self, from: event.payload)
+      guard value.id == event.entityID, value.volumeML >= 0, value.caffeineMG.map({ $0 >= 0 }) ?? (value.beverageDetails != nil), [1, 2].contains(value.estimateVersion),
+        ["water", "coffee", "sweetCoffee", "beer", "soda", "tea", "milk", "alcohol", "other"].contains(value.kind),
+        value.sugarServings.isFinite, value.sugarServings >= 0,
+        value.alcoholGrams.map({ $0.isFinite && $0 >= 0 }) ?? true,
+        value.sugarGrams.map({ $0.isFinite && $0 >= 0 }) ?? true else { throw Failure.invalid }
+    }
+  }
+  private func publish(_ next: SyncArchive) throws {
+    if failNext { failNext = false; throw Failure.injected }
+    try Self.write(next, file: file); state = next
+  }
+  private static func write(_ value: SyncArchive, file: URL) throws {
+    let encoder = JSONEncoder(); encoder.outputFormatting = .sortedKeys
+    let payload = try encoder.encode(value)
+    try encoder.encode(Envelope(digest: StableDigest.data(payload), payload: payload))
+      .write(to: file, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Sync/WatchConnectivityTransport.swift =====
+#if canImport(WatchConnectivity)
+import Foundation
+import WatchConnectivity
+
+/// WC is only a delivery opportunity. `transferUserInfo` completion is never treated as business ACK.
+@MainActor public final class WatchConnectivityTransport: NSObject, SyncTransport, WCSessionDelegate {
+  public var onReceive: (@MainActor @Sendable (Data) async -> Data?)?
+  public var onOpportunity: (@MainActor @Sendable () async -> Void)?
+  private let session: WCSession
+  public override init() { session = .default; super.init() }
+  public func activate() {
+    guard WCSession.isSupported() else { return }
+    session.delegate = self; session.activate()
+  }
+  public func deliver(_ data: Data) async throws -> Data? {
+    guard session.activationState == .activated else { throw SyncStore.Failure.peer }
+    guard session.isReachable else { session.transferUserInfo(["wire": data]); return nil }
+    do {
+      return try await withCheckedThrowingContinuation { continuation in
+        session.sendMessageData(data, replyHandler: { continuation.resume(returning: $0) }, errorHandler: { continuation.resume(throwing: $0) })
+      }
+    } catch {
+      session.transferUserInfo(["wire": data])
+      throw error // The persisted outbox remains until the receiver's ACK arrives.
+    }
+  }
+  public func updateContext(_ data: Data) throws {
+    guard session.activationState == .activated else { throw SyncStore.Failure.peer }
+    try session.updateApplicationContext(["summary": data])
+  }
+  nonisolated public func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+    guard activationState == .activated, error == nil else { return }
+    Task { @MainActor in await onOpportunity?() }
+  }
+  nonisolated public func sessionReachabilityDidChange(_ session: WCSession) {
+    Task { @MainActor in await onOpportunity?() }
+  }
+  nonisolated public func session(_ session: WCSession, didReceiveMessageData messageData: Data, replyHandler: @escaping (Data) -> Void) {
+    let reply = SyncReply(replyHandler)
+    Task { @MainActor in reply.send(await onReceive?(messageData) ?? Data()) }
+  }
+  nonisolated public func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+    guard let data = userInfo["wire"] as? Data else { return }
+    Task { @MainActor in
+      if let ack = await onReceive?(data) { self.session.transferUserInfo(["wire": ack]) }
+    }
+  }
+  nonisolated public func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
+    guard let data = applicationContext["summary"] as? Data else { return }
+    Task { @MainActor in _ = await onReceive?(data) }
+  }
+  #if os(iOS)
+  nonisolated public func sessionDidBecomeInactive(_ session: WCSession) { }
+  nonisolated public func sessionDidDeactivate(_ session: WCSession) {
+    Task { @MainActor in self.session.activate() }
+  }
+  #endif
+}
+private final class SyncReply: @unchecked Sendable {
+  private let block: (Data) -> Void
+  init(_ block: @escaping (Data) -> Void) { self.block = block }
+  // Each delegate call owns one wrapper; it is invoked exactly once by its single Task.
+  func send(_ data: Data) { block(data) }
+}
+#endif
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/BeverageCareTests.swift =====
+import Foundation
+import Testing
+@testable import InnerBalanceCore
+
+@Suite struct BeverageCareTests {
+  var calendar: Calendar { var c = Calendar(identifier: .gregorian); c.timeZone = TimeZone(secondsFromGMT: 8*3600)!; return c }
+  func at(_ day: Int, _ hour: Int, _ minute: Int = 0) -> Date {
+    calendar.date(from: DateComponents(year: 2026, month: 9, day: day, hour: hour, minute: minute))!
+  }
+  func date(_ hour: Int, _ minute: Int = 0) -> Date { at(19, hour, minute) }
+  func coffee(_ at: Date, mg: Double? = 140, recorded: Date? = nil, origin: String = "local") -> BeverageEvent {
+    .init(id: at.ISO8601Format(), categoryCode: "coffee", consumedAt: at, recordedAt: recorded ?? at,
+      volumeML: 300, caffeineMG: mg, caffeinePresence: .yes, origin: origin)
+  }
+  func alcohol(_ at: Date, grams: Double? = 14) -> BeverageEvent {
+    .init(id: at.ISO8601Format(), categoryCode: "alcohol", consumedAt: at, recordedAt: at,
+      volumeML: 150, alcoholGrams: grams, alcoholPresence: .yes)
+  }
+  func rules(_ events: [BeverageEvent], _ now: Date, _ p: CarePreferences = .init(), _ l: CareLedger = .init()) -> [CareCandidate] {
+    BeverageCareEngine.evaluate(events: events, preferences: p, ledger: l, now: now, calendar: calendar)
+  }
+  @Test func noRecordsMeansInvitationNotDehydration() {
+    #expect(rules([], date(10)).isEmpty)
+    #expect(rules([], date(11,30)).map(\.ruleID) == ["W01"])
+    #expect(rules([], date(20)).isEmpty)
+  }
+  @Test func coffeeCountsFluidAndUnknownAlcoholDoesNot() {
+    let c = coffee(date(11))
+    let total = BeverageTotals([c, alcohol(date(11), grams: nil)])
+    #expect(total.allBeverageML == 450 && total.nonAlcoholBeverageML == 300 && total.plainWaterML == 0)
+    #expect(total.hasUnknownAlcohol)
+    #expect(rules([c], date(12)).map(\.ruleID) == ["W02"])
+  }
+  @Test func doseMethodsAndABVAreExplicit() {
+    let serving = BeverageDetails(displayName: "Coffee", caffeinePresence: .yes, caffeineDose: 140)
+    #expect(serving.caffeineMG(volumeML: 300) == 140 && serving.caffeineMG(volumeML: 500) == 140)
+    let label = BeverageDetails(displayName: "Label", caffeinePresence: .yes, caffeineMethod: .per100ML, caffeineDose: 32)
+    #expect(label.caffeineMG(volumeML: 250) == 80 && label.caffeineMG(volumeML: 500) == 160)
+    let beer = BeverageDetails(displayName: "Beer", alcoholPresence: .yes, abvPercent: 5)
+    let wine = BeverageDetails(displayName: "Wine", alcoholPresence: .yes, abvPercent: 12)
+    #expect(abs(beer.alcoholGrams(volumeML: 330)! - 13.0185) < 0.001)
+    #expect(abs(wine.alcoholGrams(volumeML: 150)! - 14.202) < 0.001)
+  }
+  @Test func referenceRequiresAcceptanceAndNeverCreatesDebt() {
+    let water = BeverageEvent(id: "w", consumedAt: date(10), volumeML: 1500)
+    #expect(!rules([water], date(12)).contains { $0.ruleID == "W04" })
+    var p = CarePreferences(); p.referenceAccepted = true
+    #expect(rules([water], date(12), p).map(\.ruleID) == ["W04"])
+    var ledger = CareLedger(); ledger.waterTargetMetUntil = at(20,0)
+    #expect(rules([], date(12), p, ledger).isEmpty)
+  }
+  @Test func restrictionAndAcknowledgementSuppressWaterWithoutChangingFacts() {
+    var p = CarePreferences(); p.fluidRestricted = true
+    #expect(rules([], date(12), p).isEmpty)
+    var l = CareLedger(); l.waterAcknowledgedUntil = date(15)
+    #expect(rules([], date(12), .init(), l).isEmpty)
+    #expect(rules([], date(15), .init(), l).map(\.ruleID) == ["W01"])
+    let a = alcohol(date(12), grams: 35)
+    #expect(rules([a], date(12,1), p).first?.noteKey == "care.fluidRestricted")
+  }
+  @Test func lateCaffeineUsesConsumedTimeAndConfirmedSleep() {
+    var p = CarePreferences(); p.sleepPlanConfirmed = true
+    #expect(rules([coffee(date(9), recorded: date(16))], date(16), p).allSatisfy { $0.category != .caffeine })
+    #expect(rules([coffee(date(16))], date(16,1), p).contains { $0.ruleID == "C01" })
+    #expect(rules([coffee(date(16), mg: 10)], date(16,1), p).allSatisfy { $0.category != .caffeine })
+    #expect(rules([coffee(date(16), mg: nil)], date(16,1), p).contains { $0.ruleID == "C01" })
+    #expect(rules([coffee(date(16))], date(16,1)).allSatisfy { $0.category != .caffeine })
+  }
+  @Test func midnightBelongsToOngoingSleepAndExpires() {
+    var p = CarePreferences(); p.sleepPlanConfirmed = true
+    #expect(rules([coffee(at(20,0,30))], at(20,1), p).contains { $0.ruleID == "C01" })
+    #expect(rules([coffee(at(20,0,30))], at(20,8), p).allSatisfy { $0.ruleID != "C01" })
+    #expect(rules([alcohol(at(19,23,30))], at(20,0,30), p).contains { $0.ruleID == "A01" })
+  }
+  @Test func amountAndLateMergeUnknownQualifiedAndBackfillPassive() {
+    var p = CarePreferences(); p.sleepPlanConfirmed = true
+    let rows = [coffee(date(10), mg: 200), coffee(date(16), mg: 210), coffee(date(15), mg: nil)]
+    let c = rules(rows, date(16,1), p).filter { $0.category == .caffeine }
+    #expect(c.count == 1 && c[0].ruleID == "C03" && c[0].noteKey == "care.caffeine.partial")
+    let backfill = coffee(date(10), mg: 420, recorded: date(17))
+    #expect(rules([backfill], date(17), p).first { $0.category == .caffeine }?.noticeEligible == false)
+  }
+  @Test func manualCutoffHasNoImaginarySleepAndShiftOverrideWorks() {
+    var p = CarePreferences(); p.cutoffMinute = 900
+    #expect(rules([coffee(date(16))], date(17), p).contains { $0.ruleID == "C01" })
+    #expect(rules([coffee(date(16))], at(20,1), p).allSatisfy { $0.ruleID != "C01" })
+    p.sleepPlanConfirmed = true; p.sleepOverride = .init(start: at(20,8), end: at(20,16))
+    #expect(rules([coffee(at(19,20))], at(19,21), p).allSatisfy { $0.ruleID != "C01" })
+    #expect(rules([coffee(at(20,1))], at(20,2), p).contains { $0.ruleID == "C01" })
+  }
+  @Test func alcoholUnknownNotExcessWaterCannotCancelAndSafetyWins() {
+    let now = date(18)
+    #expect(rules([alcohol(now, grams: nil)], now).first?.ruleID == "A03")
+    let rows = [alcohol(now, grams: 35), BeverageEvent(id: "water", consumedAt: now, volumeML: 1000)]
+    #expect(rules(rows, now).first?.ruleID == "A02")
+    var l = CareLedger(); l.severeSymptomsAt = now
+    #expect(rules(rows, now, .init(), l).map(\.ruleID) == ["A05"])
+    var p = CarePreferences(); p.inAppEnabled = false
+    #expect(rules(rows, now, p, l).map(\.ruleID) == ["A05"])
+  }
+  @Test func nextCycleAlcoholIsPassiveNotHangoverDiagnosis() {
+    var p = CarePreferences(); p.sleepPlanConfirmed = true
+    let c = rules([alcohol(at(19,22))], at(20,9), p).first { $0.ruleID == "A04" }
+    #expect(c != nil && c?.noticeEligible == false)
+    #expect(rules([alcohol(at(19,22))], at(20,17), p).allSatisfy { $0.ruleID != "A04" })
+  }
+  @Test func priorityDismissAndSameBasisDoNotReplay() {
+    let now = date(16); let c = rules([alcohol(now, grams: 35), coffee(now, mg: 420)], now)
+    let selected = CareAttentionPolicy.select(c, ledger: .init(), now: now)!
+    #expect(selected.candidate.category == .alcohol)
+    var l = CareLedger(); l.dismissedUntil = now.addingTimeInterval(4*3600)
+    #expect(CareAttentionPolicy.select(c, ledger: l, now: now) == nil)
+    l.dismissedUntil = nil
+    l.entries.append(.init(candidateID: selected.candidate.id, basisIDs: selected.candidate.basisIDs, expiresAt: selected.candidate.expiresAt, category: .alcohol))
+    #expect(CareAttentionPolicy.select(c, ledger: l, now: now)?.noticeable == false)
+  }
+  @Test func muteSurvivesRestartAndTimezoneChange() throws {
+    var l = CareLedger(); l.muteToday(now: date(18), calendar: calendar)
+    let reloaded = try JSONDecoder().decode(CareLedger.self, from: JSONEncoder().encode(l))
+    var other = calendar; other.timeZone = TimeZone(secondsFromGMT: 0)!
+    #expect(reloaded.mutedUntil == at(20,0))
+    #expect(CareAttentionPolicy.select(rules([], date(19)), ledger: reloaded, now: date(19)) == nil)
+  }
+  @Test func nonMaterialNameEditDoesNotReplayCare() {
+    let now = date(16); var row = coffee(now, mg: 420)
+    let first = rules([row], now).first { $0.category == .caffeine }!
+    var l = CareLedger()
+    var receipt = CareLedgerEntry(candidateID: first.id, basisIDs: first.basisIDs, expiresAt: first.expiresAt, category: .caffeine)
+    receipt.attentionKey = first.attentionKey; l.entries = [receipt]
+    row.displayName = "Renamed"; row.revision += 1
+    let revised = rules([row], now)
+    #expect(CareAttentionPolicy.select(revised, ledger: l, now: now)?.noticeable == false)
+  }
+  @Test func threeDayOneShotPlansReserveBothBudgetsAndCooldown() {
+    var p = CarePreferences(); p.waterPush = true; p.caffeinePush = true; p.sleepPlanConfirmed = true
+    let plans = CareNotificationPlanner.plan(events: [], preferences: p, ledger: .init(), now: date(10), calendar: calendar)
+    #expect(!plans.isEmpty && plans.count <= 6)
+    for plan in plans {
+      #expect(plans.filter { calendar.isDate($0.fireAt, inSameDayAs: plan.fireAt) }.count <= 2)
+      #expect(plans.filter { $0.fireAt <= plan.fireAt && plan.fireAt.timeIntervalSince($0.fireAt) < 24*3600 }.count <= 2)
+      #expect(plan.bodyKey == "care.notification.generic")
+    }
+    for pair in zip(plans, plans.dropFirst()) { #expect(pair.1.fireAt.timeIntervalSince(pair.0.fireAt) >= 4*3600) }
+  }
+  @Test func recentFluidAndReferenceMetCancelWaterAndRestrictionWins() {
+    var p = CarePreferences(); p.waterPush = true; p.referenceAccepted = true
+    let water = BeverageEvent(id: "w", consumedAt: date(11), volumeML: 250)
+    var plans = CareNotificationPlanner.plan(events: [water], preferences: p, ledger: .init(), now: date(11), calendar: calendar)
+    #expect(plans.allSatisfy { $0.fireAt >= date(13) })
+    var met = water; met.volumeML = 1500
+    plans = CareNotificationPlanner.plan(events: [met], preferences: p, ledger: .init(), now: date(11), calendar: calendar)
+    #expect(plans.allSatisfy { !calendar.isDate($0.fireAt, inSameDayAs: date(11)) })
+    p.fluidRestricted = true
+    #expect(CareNotificationPlanner.plan(events: [], preferences: p, ledger: .init(), now: date(10), calendar: calendar).isEmpty)
+  }
+  @Test func lateAlcoholRequestDoesNotLeakIntoQuietHours() {
+    var p = CarePreferences(); p.alcoholPush = true
+    var l = CareLedger(); l.requestedAlcoholReminderAt = date(21,40)
+    #expect(CareNotificationPlanner.plan(events: [], preferences: p, ledger: l, now: date(21,10), calendar: calendar).isEmpty)
+  }
+  @Test func twoAlcoholRecordsAcrossMidnightKeepSixHourTotal() {
+    let rows = [alcohol(at(19,23), grams: 15), alcohol(at(20,1), grams: 15)]
+    #expect(rules(rows, at(20,1,1)).first?.ruleID == "A02")
+    #expect(rules(rows, at(20,5,1)).allSatisfy { $0.ruleID != "A02" })
+  }
+  @Test func twoReservationsAndAlcoholRequestCannotAddAThirdOrDeferIt() {
+    var p = CarePreferences(); p.waterPush = true; p.alcoholPush = true
+    var l = CareLedger(); l.requestedAlcoholReminderAt = date(20,30)
+    let initial = CareNotificationPlanner.plan(events: [], preferences: p, ledger: .init(), now: date(10), calendar: calendar)
+    let todays = initial.filter { calendar.isDate($0.fireAt, inSameDayAs: date(10)) }
+    #expect(todays.count == 2)
+    l.entries = todays.map { .init(candidateID: $0.id, basisIDs: [], channel: "push", scheduledAt: $0.fireAt,
+      expiresAt: $0.expiresAt, requestID: $0.id, category: $0.category) }
+    let replanned = CareNotificationPlanner.plan(events: [], preferences: p, ledger: l, now: date(10), calendar: calendar)
+    #expect(replanned.filter { calendar.isDate($0.fireAt, inSameDayAs: date(10)) }.count == 2)
+    #expect(replanned.allSatisfy { $0.category != .alcohol })
+    let afterTwo = CareNotificationPlanner.plan(events: [], preferences: p, ledger: l, now: date(20), calendar: calendar)
+    #expect(afterTwo.allSatisfy { $0.category != .alcohol })
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/BodyLoadEngineTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Body load baseline")
+struct BodyLoadEngineTests {
+  @Test("Median is resistant to an extreme sample")
+  func medianIgnoresExtremeSample() {
+    #expect(BodyLoadEngine.median([42, 44, 45, 46, 190]) == 45)
+  }
+
+  @Test("Baseline requires five distinct valid days")
+  func baselineRequiresFiveDays() {
+    let fourDays = (1...4).map { day in
+      HealthMetricSample(value: Double(day * 10), date: date(day), isAppleWatch: true)
+    }
+    let fifthDay = HealthMetricSample(value: 50, date: date(5), isAppleWatch: true)
+
+    #expect(
+      BodyLoadEngine.dailyMedianBaseline(
+        from: fourDays,
+        now: date(10),
+        calendar: calendar
+      ) == nil
+    )
+    #expect(
+      BodyLoadEngine.dailyMedianBaseline(
+        from: fourDays + [fifthDay],
+        now: date(10),
+        calendar: calendar
+      ) != nil
+    )
+  }
+
+  @Test("Baseline ignores samples older than 14 days")
+  func baselineUsesFourteenDayWindow() {
+    let now = date(31)
+    let recentDays = (18...21).map { day in
+      HealthMetricSample(value: Double(day), date: date(day), isAppleWatch: true)
+    }
+    let expiredDay = HealthMetricSample(value: 999, date: date(16), isAppleWatch: true)
+
+    #expect(
+      BodyLoadEngine.dailyMedianBaseline(
+        from: recentDays + [expiredDay],
+        now: now,
+        calendar: calendar
+      ) == nil
+    )
+  }
+
+  @Test("Recent summary prefers valid Apple Watch samples")
+  func recentSummaryPrefersWatch() {
+    let now = date(10)
+    let samples = [
+      HealthMetricSample(value: 90, date: now.addingTimeInterval(-900), isAppleWatch: false),
+      HealthMetricSample(value: 50, date: now.addingTimeInterval(-1_800), isAppleWatch: true),
+      HealthMetricSample(value: 60, date: now.addingTimeInterval(-600), isAppleWatch: true),
+      HealthMetricSample(value: 999, date: now.addingTimeInterval(-90_000), isAppleWatch: true),
+      HealthMetricSample(value: .nan, date: now, isAppleWatch: true),
+    ]
+
+    let summary = BodyLoadEngine.recentSummary(
+      from: samples,
+      now: now,
+      window: 24 * 3_600
+    )
+
+    #expect(summary?.value == 55)
+    #expect(summary?.sampleCount == 2)
+    #expect(summary?.usesAppleWatch == true)
+  }
+
+  @Test("Latest reading is the newest valid Watch sample, not the recent median")
+  func latestReadingPrefersNewestWatchSample() {
+    let now = date(10)
+    let samples = [
+      HealthMetricSample(value: 90, date: now.addingTimeInterval(-60), isAppleWatch: false),
+      HealthMetricSample(value: 48, date: now.addingTimeInterval(-1_800), isAppleWatch: true),
+      HealthMetricSample(value: 62, date: now.addingTimeInterval(-300), isAppleWatch: true),
+      HealthMetricSample(value: .nan, date: now, isAppleWatch: true),
+    ]
+
+    let latest = BodyLoadEngine.latestSample(from: samples, now: now, window: 36 * 3_600)
+
+    #expect(latest?.value == 62)
+    #expect(latest?.date == now.addingTimeInterval(-300))
+    #expect(latest?.isAppleWatch == true)
+  }
+
+  @Test("Elevated load requires two independent reliable signals")
+  func elevatedLoadRequiresTwoSignals() {
+    let hrv = BodyLoadEvidence(kind: .heartRateVariability, state: .elevated, isReliable: true)
+    let restingHeartRate = BodyLoadEvidence(
+      kind: .restingHeartRate,
+      state: .elevated,
+      isReliable: true
+    )
+    let unreliableSleep = BodyLoadEvidence(kind: .sleep, state: .elevated, isReliable: false)
+
+    #expect(BodyLoadEngine.assess(evidence: [hrv], baselineDays: 5).availability == .limited)
+    #expect(
+      BodyLoadEngine.assess(evidence: [hrv, unreliableSleep], baselineDays: 5).availability == .limited)
+    #expect(
+      BodyLoadEngine.assess(evidence: [hrv, restingHeartRate], baselineDays: 5).level == .elevated)
+  }
+
+  @Test("Recent workout suppresses an elevated conclusion")
+  func recentWorkoutSuppressesElevatedConclusion() {
+    let evidence = [
+      BodyLoadEvidence(kind: .heartRateVariability, state: .elevated, isReliable: true),
+      BodyLoadEvidence(kind: .restingHeartRate, state: .elevated, isReliable: true),
+    ]
+
+    let assessment = BodyLoadEngine.assess(
+      evidence: evidence,
+      baselineDays: 5,
+      recentWorkout: true
+    )
+
+    #expect(assessment.level != .steady)
+    #expect(assessment.availability == .limited)
+    #expect(assessment.workoutExcludedEvidenceIDs == ["hrv", "rhr"])
+  }
+
+  @Test("Recent workout keeps non-workout-sensitive evidence")
+  func recentWorkoutKeepsIndependentEvidence() {
+    let evidence = [
+      BodyLoadEvidence(kind: .sleep, state: .elevated, isReliable: true),
+      BodyLoadEvidence(kind: .respiratoryRate, state: .elevated, isReliable: true),
+      BodyLoadEvidence(kind: .heartRateVariability, state: .withinRange, isReliable: true),
+    ]
+
+    let assessment = BodyLoadEngine.assess(
+      evidence: evidence,
+      baselineDays: 5,
+      recentWorkout: true
+    )
+
+    #expect(assessment.level == .elevated)
+  }
+
+  @Test("History alone never permits a steady conclusion", arguments: [0, 4, 5, 14])
+  func historyWithoutCurrentEvidence(_ days: Int) {
+    let result = BodyLoadEngine.assess(evidence: [], baselineDays: days)
+    #expect(result.availability == .insufficient)
+    #expect(result.level != .steady)
+  }
+
+  @Test("Two distinct reliable kinds including cardiovascular evidence are required")
+  func currentEvidenceGate() {
+    let hrv = BodyLoadEvidence(kind: .heartRateVariability, state: .withinRange, isReliable: true)
+    let sleep = BodyLoadEvidence(kind: .sleep, state: .withinRange, isReliable: true)
+    let respiratory = BodyLoadEvidence(kind: .respiratoryRate, state: .withinRange, isReliable: true)
+    for evidence in [[hrv], [sleep], [hrv, hrv], [sleep, respiratory]] {
+      let result = BodyLoadEngine.assess(evidence: evidence, baselineDays: 5)
+      #expect(result.availability == .limited)
+      #expect(result.level != .steady)
+    }
+    #expect(BodyLoadEngine.assess(evidence: [hrv, sleep], baselineDays: 5).level == .steady)
+  }
+
+  @Test("Observation is separate from elevated when enough independent evidence exists")
+  func observationVersusElevated() {
+    let hrv = BodyLoadEvidence(kind: .heartRateVariability, state: .elevated, isReliable: true)
+    let sleep = BodyLoadEvidence(kind: .sleep, state: .withinRange, isReliable: true)
+    let result = BodyLoadEngine.assess(evidence: [hrv, sleep], baselineDays: 5)
+    #expect(result.availability == .available)
+    #expect(result.level == .watch)
+    #expect(result.elevatedEvidenceIDs == ["hrv"])
+  }
+
+  private var calendar: Calendar {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    return calendar
+  }
+
+  private func date(_ day: Int) -> Date {
+    calendar.date(from: DateComponents(year: 2026, month: 8, day: day, hour: 8))!
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/CompanionMotionPolicyTests.swift =====
+import Foundation
+import Testing
+@testable import InnerBalanceCore
+
+@Suite struct CompanionMotionPolicyTests {
+  @Test func commitsDeduplicateAndBackgroundDoesNotQueue() {
+    let now = Date(); var c = CompanionMotionCoordinator()
+    let e = CompanionEvent(id: "water-1", kind: .waterCommitted, entityID: "cup", revision: 1, committedAt: now)
+    #expect(c.accept(e, scene: "dog-drink", context: "sheet", now: now)?.duration == 1.1)
+    #expect(c.accept(e, scene: "dog-drink", context: "sheet", now: now) == nil)
+    let hidden = CompanionEvent(id: "water-2", kind: .waterCommitted, committedAt: now)
+    #expect(c.accept(hidden, scene: "dog-drink", context: "sheet", now: now, active: false) == nil)
+    #expect(c.accept(hidden, scene: "dog-drink", context: "sheet", now: now) == nil)
+  }
+  @Test func accessibilityFailureAndRemoteNeverCelebrate() {
+    for kind in [CompanionMotionEvent.saveFailed, .drinkCommitted] {
+      let e = CompanionEvent(id: "remote", kind: kind, origin: "remote", committedAt: .now)
+      #expect(CompanionMotionPolicy.resolve(e, scene: "dog-drink", context: "sheet", now: .now,
+        mode: .standard, reduceMotion: false, lowPower: false, visible: true, active: true, covered: false, seen: []) == nil)
+    }
+    for mode in [CompanionMotionMode.standard, .gentle, .static] {
+      let e = CompanionEvent(id: "reduce", kind: .waterCommitted, committedAt: .now)
+      #expect(CompanionMotionPolicy.resolve(e, scene: "dog-drink", context: "sheet", now: .now,
+        mode: mode, reduceMotion: true, lowPower: false, visible: true, active: true, covered: false, seen: []) == nil)
+    }
+  }
+  @Test func distinctDrinkGesturesAndBreathPriority() {
+    let now = Date(); var c = CompanionMotionCoordinator()
+    #expect(c.accept(.init(id: "coffee", kind: .drinkCommitted, committedAt: now), scene: "dog-drink", context: "sheet", now: now)?.duration == 0.6)
+    #expect(c.accept(.init(id: "undo", kind: .drinkUndone, committedAt: now), scene: "dog-drink", context: "sheet", now: now)?.duration == 0.25)
+    #expect(c.accept(.init(id: "entry", kind: .entered, committedAt: now), scene: "breathing", context: "session", now: now, breathing: true) == nil)
+  }
+  @Test func tenRefreshesDoNotQueueAndRapidCommitsReplace() {
+    let now = Date(); var c = CompanionMotionCoordinator(); var starts = 0
+    for _ in 0..<10 {
+      if c.accept(.init(id: "same-guidance", kind: .entered, committedAt: now), scene: "duo-calm", context: "home", now: now) != nil { starts += 1 }
+    }
+    #expect(starts == 1)
+    for i in 0..<10 { _ = c.accept(.init(id: "cup-\(i)", kind: .waterCommitted, committedAt: now), scene: "dog-drink", context: "sheet", now: now) }
+    #expect(c.current?.eventID == "cup-9")
+    c.stop(); #expect(c.current == nil)
+  }
+  @Test func staticLowPowerCoveredOffscreenAndGentleAreExplicit() {
+    let now = Date(); let e = CompanionEvent(id: "scene", kind: .entered, committedAt: now)
+    for mode in [CompanionMotionMode.standard, .gentle, .static] {
+      #expect(CompanionMotionPolicy.resolve(e, scene: "duo-calm", context: "home", now: now,
+        mode: mode, reduceMotion: false, lowPower: true, visible: true, active: true, covered: false, seen: []) == nil)
+    }
+    var c = CompanionMotionCoordinator()
+    #expect(c.accept(e, scene: "duo-calm", context: "home", now: now, covered: true) == nil)
+    var other = CompanionMotionCoordinator()
+    #expect(other.accept(e, scene: "duo-calm", context: "home", now: now, visible: false) == nil)
+    var gentle = CompanionMotionCoordinator()
+    #expect(gentle.accept(e, scene: "duo-calm", context: "home", now: now, mode: .gentle)?.intensity == 0.4)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/CurrentMomentDecisionTests.swift =====
+import Foundation
+import Testing
+
+@testable import InnerBalanceCore
+
+@Suite("Current moment stress decision")
+struct CurrentMomentDecisionTests {
+  @Test("A newer detailed check-in replaces the quick state")
+  func newerDetailedCheckInWins() {
+    let now = date(day: 29, hour: 12)
+    let detailed = CurrentMomentDetailedState(
+      valence: -0.8,
+      arousal: 0.9,
+      emotion: .stressed,
+      recordedAt: date(day: 29, hour: 11),
+      stressSources: [.work]
+    )
+
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .calm,
+        recordedAt: date(day: 29, hour: 10)
+      ),
+      detailed: detailed,
+      bodyLoadLevel: .steady,
+      now: now,
+      calendar: calendar
+    )
+
+    #expect(decision.source == .detailed(detailed))
+    #expect(decision.assessmentBasis == .selfReport)
+    #expect(decision.stressProfile == CurrentStressProfile(level: .high, source: .work))
+    #expect(decision.recommendation == .physiologicalSigh)
+    #expect(decision.reflectionEcho == .tense)
+    #expect(decision.reasonCode == "stress.high.work.physiologicalSigh")
+  }
+
+  @Test("A newer quick state replaces the detailed check-in")
+  func newerQuickStateWins() {
+    let now = date(day: 29, hour: 12)
+
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .calm,
+        recordedAt: date(day: 29, hour: 11)
+      ),
+      detailed: CurrentMomentDetailedState(
+        valence: -0.8,
+        arousal: 0.9,
+        emotion: .stressed,
+        recordedAt: date(day: 29, hour: 10)
+      ),
+      bodyLoadLevel: .elevated,
+      now: now,
+      calendar: calendar
+    )
+
+    #expect(decision.source == .quick(.calm))
+    #expect(decision.assessmentBasis == .selfReport)
+    #expect(decision.stressProfile == CurrentStressProfile(level: .low, source: .none))
+    #expect(decision.recommendation == .meditation)
+    #expect(decision.reflectionEcho == .calm)
+  }
+
+  @Test("A detailed check-in wins when timestamps are equal")
+  func equalTimestampsPreferDetailedCheckIn() {
+    let timestamp = date(day: 29, hour: 11)
+    let detailed = CurrentMomentDetailedState(
+      valence: -0.7,
+      arousal: 0.8,
+      emotion: .anxious,
+      recordedAt: timestamp,
+      stressSources: [.relationship]
+    )
+
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(state: .tired, recordedAt: timestamp),
+      detailed: detailed,
+      bodyLoadLevel: .watch,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+
+    #expect(decision.source == .detailed(detailed))
+    #expect(decision.stressProfile == CurrentStressProfile(level: .high, source: .relationship))
+    #expect(decision.recommendation == .physiologicalSigh)
+  }
+
+  @Test("All six quick states produce a definite targeted response")
+  func quickStatesProduceDefiniteResponses() {
+    let expectations: [(DailyEchoState, CurrentStressLevel, CurrentStressSource, PracticeKind)] = [
+      (.calm, .low, .none, .meditation),
+      (.clear, .low, .none, .meditation),
+      (.moved, .low, .none, .meditation),
+      (.tense, .high, .physicalTension, .physiologicalSigh),
+      (.tired, .moderate, .lowEnergy, .nsdr),
+      (.uncertain, .moderate, .mentalLoad, .pacedBreathing),
+    ]
+
+    for (state, level, source, practice) in expectations {
+      let decision = CurrentMomentDecisionEngine.decide(
+        quick: CurrentMomentQuickState(
+          state: state,
+          recordedAt: date(day: 29, hour: 11)
+        ),
+        detailed: nil,
+        bodyLoadLevel: .elevated,
+        now: date(day: 29, hour: 12),
+        calendar: calendar
+      )
+
+      #expect(decision.stressProfile == CurrentStressProfile(level: level, source: source))
+      #expect(decision.recommendation == practice)
+      #expect(decision.reflectionEcho == state)
+      #expect(decision.recommendation != .kegel)
+    }
+  }
+
+  @Test("Detailed quadrants map to a clear stress level and fallback source")
+  func detailedQuadrantsMapToStress() {
+    let expectations:
+      [(Double, Double, CurrentStressLevel, CurrentStressSource, PracticeKind, DailyEchoState)] = [
+        (0.8, 0.8, .low, .none, .meditation, .moved),
+        (0.8, -0.8, .low, .none, .meditation, .calm),
+        (-0.8, 0.8, .high, .physicalTension, .physiologicalSigh, .tense),
+        (-0.8, -0.8, .moderate, .lowEnergy, .nsdr, .tired),
+        (0, 0, .moderate, .mentalLoad, .pacedBreathing, .uncertain),
+      ]
+
+    for (valence, arousal, level, source, practice, echo) in expectations {
+      let decision = CurrentMomentDecisionEngine.decide(
+        quick: nil,
+        detailed: CurrentMomentDetailedState(
+          valence: valence,
+          arousal: arousal,
+          emotion: nil,
+          recordedAt: date(day: 29, hour: 11)
+        ),
+        bodyLoadLevel: .buildingBaseline,
+        now: date(day: 29, hour: 12),
+        calendar: calendar
+      )
+
+      #expect(decision.stressProfile == CurrentStressProfile(level: level, source: source))
+      #expect(decision.recommendation == practice)
+      #expect(decision.reflectionEcho == echo)
+    }
+  }
+
+  @Test("High-pressure and vulnerable emotions set a minimum stress level")
+  func emotionFloorsAreApplied() {
+    let highEmotions: [EmotionLabel] = [.stressed, .overwhelmed]
+    let moderateEmotions: [EmotionLabel] = [.anxious, .scared, .worried, .drained, .hopeless]
+
+    for emotion in highEmotions {
+      let decision = detailedDecision(valence: 0.8, arousal: 0.8, emotion: emotion)
+      #expect(decision.stressProfile.level == .high)
+    }
+
+    for emotion in moderateEmotions {
+      let decision = detailedDecision(valence: 0.8, arousal: 0.8, emotion: emotion)
+      #expect(decision.stressProfile.level == .moderate)
+    }
+  }
+
+  @Test("A current expression owns the level even when body load is higher")
+  func expressionLevelIsNotOverriddenByBodyLoad() {
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .calm,
+        recordedAt: date(day: 29, hour: 11)
+      ),
+      detailed: nil,
+      bodyLoadLevel: .elevated,
+      bodyStressSource: .sleep,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+
+    #expect(decision.stressProfile == CurrentStressProfile(level: .low, source: .sleep))
+    #expect(decision.recommendation == .nsdr)
+    #expect(decision.reflectionEcho == .calm)
+  }
+
+  @Test("Explicit context, sensations, and body signals use a stable source priority")
+  func sourcePriorityIsStable() {
+    let explicit = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      stressSources: [.work],
+      bodySensationCodes: ["fatigue", "shoulders_tight"],
+      bodyStressSource: .sleep
+    )
+    #expect(explicit.stressProfile.source == .work)
+
+    let recoverySensation = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      bodySensationCodes: ["shoulders_tight", "heavy_head"],
+      bodyStressSource: .sleep
+    )
+    #expect(recoverySensation.stressProfile.source == .lowEnergy)
+
+    let tensionSensation = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      bodySensationCodes: ["chest_tight"],
+      bodyStressSource: .sleep
+    )
+    #expect(tensionSensation.stressProfile.source == .physicalTension)
+
+    let bodySignal = detailedDecision(
+      valence: -0.8,
+      arousal: 0.8,
+      bodyStressSource: .training
+    )
+    #expect(bodySignal.stressProfile.source == .training)
+  }
+
+  @Test("Every source routes low, moderate, and high pressure to a targeted practice")
+  func sourcesRouteToTargetedPractices() {
+    let expectations: [(CurrentStressSource, CurrentStressLevel, PracticeKind, DailyEchoState)] = [
+      (.sleep, .moderate, .nsdr, .tired),
+      (.lowEnergy, .high, .nsdr, .tired),
+      (.training, .low, .pacedBreathing, .tired),
+      (.training, .high, .nsdr, .tired),
+      (.physicalTension, .moderate, .physiologicalSigh, .tired),
+      (.work, .low, .pacedBreathing, .clear),
+      (.tasks, .high, .physiologicalSigh, .tense),
+      (.money, .moderate, .pacedBreathing, .tense),
+      (.family, .low, .meditation, .moved),
+      (.relationship, .high, .physiologicalSigh, .tense),
+      (.health, .moderate, .pacedBreathing, .tired),
+      (.bodySignals, .high, .physiologicalSigh, .tense),
+      (.mentalLoad, .low, .meditation, .clear),
+      (.mentalLoad, .moderate, .pacedBreathing, .uncertain),
+      (.none, .high, .physiologicalSigh, .tense),
+    ]
+
+    for (source, level, practice, echo) in expectations {
+      let decision = decision(level: level, explicitSource: source)
+
+      #expect(decision.stressProfile.source == source)
+      #expect(decision.recommendation == practice)
+      #expect(decision.reflectionEcho == echo)
+      #expect(decision.recommendation != .kegel)
+    }
+  }
+
+  @Test("No current expression asks for input until body evidence can support a result")
+  func noExpressionUsesBodyLoad() {
+    let waiting = CurrentMomentDecisionEngine.decide(
+      quick: nil,
+      detailed: nil,
+      bodyLoadLevel: .buildingBaseline,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+    #expect(waiting.source == .none)
+    #expect(waiting.assessmentBasis == .needsInput)
+    #expect(waiting.recommendation == nil)
+    #expect(waiting.reasonCode == "stress.needsInput")
+
+    let expectations: [(BodyLoadLevel, CurrentStressLevel, PracticeKind)] = [
+      (.steady, .low, .meditation),
+      (.watch, .moderate, .pacedBreathing),
+      (.elevated, .high, .physiologicalSigh),
+    ]
+
+    for (bodyLevel, stressLevel, practice) in expectations {
+      let decision = CurrentMomentDecisionEngine.decide(
+        quick: nil,
+        detailed: nil,
+        bodyLoadLevel: bodyLevel,
+        now: date(day: 29, hour: 12),
+        calendar: calendar
+      )
+
+      #expect(decision.source == .none)
+      #expect(decision.assessmentBasis == .bodyData)
+      #expect(decision.stressProfile == CurrentStressProfile(level: stressLevel, source: .none))
+      #expect(decision.recommendation == practice)
+      #expect(decision.recommendation != .kegel)
+      #expect(decision.ruleVersion == "fangcun-stress-response-v2")
+    }
+  }
+
+  @Test("Expressions from a previous local day expire before body-only assessment")
+  func previousDayExpressionsExpire() {
+    let decision = CurrentMomentDecisionEngine.decide(
+      quick: CurrentMomentQuickState(
+        state: .tense,
+        recordedAt: date(day: 28, hour: 23, minute: 59)
+      ),
+      detailed: CurrentMomentDetailedState(
+        valence: -0.9,
+        arousal: 0.9,
+        emotion: .overwhelmed,
+        recordedAt: date(day: 28, hour: 22)
+      ),
+      bodyLoadLevel: .elevated,
+      now: date(day: 29, hour: 0, minute: 1),
+      calendar: calendar
+    )
+
+    #expect(decision.source == .none)
+    #expect(decision.stressProfile == CurrentStressProfile(level: .high, source: .none))
+    #expect(decision.recommendation == .physiologicalSigh)
+  }
+
+  @Test("Detailed state context defaults preserve existing call sites")
+  func detailedContextDefaultsAreEmpty() {
+    let state = CurrentMomentDetailedState(
+      valence: 0,
+      arousal: 0,
+      emotion: nil,
+      recordedAt: date(day: 29, hour: 11)
+    )
+
+    #expect(state.stressSources.isEmpty)
+    #expect(state.bodySensationCodes.isEmpty)
+  }
+
+  private func detailedDecision(
+    valence: Double,
+    arousal: Double,
+    emotion: EmotionLabel? = nil,
+    stressSources: [CurrentStressSource] = [],
+    bodySensationCodes: [String] = [],
+    bodyStressSource: CurrentStressSource? = nil
+  ) -> CurrentMomentDecision {
+    CurrentMomentDecisionEngine.decide(
+      quick: nil,
+      detailed: CurrentMomentDetailedState(
+        valence: valence,
+        arousal: arousal,
+        emotion: emotion,
+        recordedAt: date(day: 29, hour: 11),
+        stressSources: stressSources,
+        bodySensationCodes: bodySensationCodes
+      ),
+      bodyLoadLevel: .steady,
+      bodyStressSource: bodyStressSource,
+      now: date(day: 29, hour: 12),
+      calendar: calendar
+    )
+  }
+
+  private func decision(
+    level: CurrentStressLevel,
+    explicitSource: CurrentStressSource
+  ) -> CurrentMomentDecision {
+    let state: (Double, Double) =
+      switch level {
+      case .low: (0.8, 0.8)
+      case .moderate: (0, 0)
+      case .high: (-0.8, 0.8)
+      }
+    return detailedDecision(
+      valence: state.0,
+      arousal: state.1,
+      stressSources: [explicitSource]
+    )
+  }
+
+  private var calendar: Calendar {
+    var value = Calendar(identifier: .gregorian)
+    value.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+    return value
+  }
+
+  private func date(day: Int, hour: Int, minute: Int = 0) -> Date {
+    calendar.date(
+      from: DateComponents(
+        year: 2026,
+        month: 8,
+        day: day,
+        hour: hour,
+        minute: minute
+      )
+    )!
+  }
+}
+
+===== END FILE =====
+
 ===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/DailyReflectionTests.swift =====
 import Foundation
 import Testing
@@ -1832,969 +3291,5 @@ struct RecommendationEngineTests {
     }
   }
 }
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/Recovery/RecoveryActionTests.swift =====
-import Foundation
-import Testing
-@testable import InnerBalanceCore
-
-struct RecoveryActionTests {
-  @Test(arguments: RecoveryActionKind.localActions)
-  func pauseEndRetryAndRestart(_ action: RecoveryActionKind) async throws {
-    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: directory) }
-    let store = try RecoveryStore(directory: directory)
-    let protocolValue = try #require(RecoveryProtocol.local(action))
-    let start = Date(timeIntervalSince1970: 10000)
-    var clock = RecoverySessionClock(session: .init(sessionID: "stable", action: action, plannedDuration: protocolValue.duration, startedAt: start, originDevice: "synthetic"))
-    clock.resume(at: start)
-    clock.pause(at: start.addingTimeInterval(10))
-    clock.resume(at: start.addingTimeInterval(100))
-    let record = clock.finish(at: start.addingTimeInterval(105))
-    #expect(record.activeDuration == 15)
-    #expect(record.endReason == .endedEarly)
-    #expect(clock.finish(at: start.addingTimeInterval(500)) == record)
-    await store.injectWriteFailure()
-    await #expect(throws: RecoveryStore.Failure.self) { try await store.save(record) }
-    #expect(await store.records().isEmpty)
-    try await store.save(record); try await store.save(record)
-    #expect(await store.records().count == 1)
-    var interrupted = RecoverySessionClock(session: .init(sessionID: "restart", action: action, plannedDuration: 120, startedAt: start, originDevice: "synthetic"))
-    interrupted.resume(at: start)
-    try await store.save(interrupted.checkpoint(at: start.addingTimeInterval(4)))
-    let reopened = try RecoveryStore(directory: directory)
-    try await reopened.recoverInterrupted(now: start.addingTimeInterval(600))
-    let restored = try #require(await reopened.records().first { $0.sessionID == "restart" })
-    #expect(restored.activeDuration == 4)
-    #expect(restored.endReason == .interrupted)
-  }
-  @Test func optionalFeedbackRevisionsAndDenominator() async throws {
-    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: directory) }
-    let store = try RecoveryStore(directory: directory)
-    for n in 0..<6 {
-      var record = RecoverySession(sessionID: "s\(n)", action: .quietRest, plannedDuration: 120, startedAt: .now, originDevice: "synthetic")
-      record.endedAt = .now; record.endReason = .endedEarly
-      try await store.save(record)
-      try await store.feedback(sessionID: record.sessionID, helpfulness: n == 0 ? nil : .helpful, now: .now)
-      if n == 4 { #expect(RecoveryFeedbackSummary.counts(await store.records(), action: .quietRest) == nil) }
-    }
-    #expect(RecoveryFeedbackSummary.counts(await store.records(), action: .quietRest)?[.helpful] == 5)
-    try await store.feedback(sessionID: "s1", helpfulness: .uncomfortable, now: .now)
-    let edited = try #require(await store.records().first { $0.sessionID == "s1" })
-    #expect(edited.feedback?.revision == 2)
-    #expect(edited.feedbackHistory.first?.helpfulness == .helpful)
-    let skipped = try #require(await store.records().first { $0.sessionID == "s0" })
-    #expect(skipped.feedback?.helpfulness == nil && skipped.feedback?.skipped == true)
-  }
-  @Test func recommendationsRespectExplicitSafetyAndDiscomfortFirst() {
-    #expect(RecoveryRecommendationEngine.recommend(assessment: nil, environment: .driving) == nil)
-    #expect(RecoveryRecommendationEngine.recommend(assessment: nil, environment: .unavailable) == nil)
-    #expect(RecoveryRecommendationEngine.recommend(assessment: nil, goal: .workBreak, environment: .canMove)?.action == .movementBreak)
-    #expect(RecoveryRecommendationEngine.recommend(assessment: nil, goal: .workBreak, environment: .seated)?.action == .seatedReset)
-    #expect(RecoveryRecommendationEngine.recommend(assessment: nil, favorites: [.quietRest], uncomfortable: [.quietRest])?.action == .seatedReset)
-    #expect(RecoveryRecommendationEngine.recommend(assessment: nil, goal: .calm, uncomfortable: [.practice(.physiologicalSigh)])?.action == .quietRest)
-  }
-  @Test func legacyArchiveWithoutSyncMetadataAndCorruptionPreserveRecords() async throws {
-    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: directory) }
-    let store = try RecoveryStore(directory: directory)
-    var record = RecoverySession(sessionID: "legacy-m303", action: .quietRest, plannedDuration: 120, startedAt: .now, originDevice: "synthetic")
-    record.endedAt = .now; record.endReason = .endedEarly
-    try await store.save(record)
-    let file = directory.appendingPathComponent("recovery-v1.json")
-    var envelope = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any])
-    let encodedPayload = try #require(envelope["payload"] as? String)
-    let payload = try #require(Data(base64Encoded: encodedPayload))
-    var archive = try #require(JSONSerialization.jsonObject(with: payload) as? [String: Any])
-    archive.removeValue(forKey: "syncRevisions"); archive.removeValue(forKey: "tombstones")
-    let oldPayload = try JSONSerialization.data(withJSONObject: archive, options: .sortedKeys)
-    envelope["payload"] = oldPayload.base64EncodedString(); envelope["digest"] = StableDigest.data(oldPayload)
-    try JSONSerialization.data(withJSONObject: envelope).write(to: file)
-    let reopened = try RecoveryStore(directory: directory)
-    #expect(await reopened.records().map(\.sessionID) == ["legacy-m303"])
-    let damaged = Data("damaged archive".utf8)
-    try damaged.write(to: file)
-    #expect(throws: (any Error).self) { _ = try RecoveryStore(directory: directory) }
-    #expect(try Data(contentsOf: file) == damaged)
-  }
-
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/SleepEpisodeAnalyzerTests.swift =====
-import Foundation
-import Testing
-
-@testable import InnerBalanceCore
-
-@Suite("Sleep episode analysis")
-struct SleepEpisodeAnalyzerTests {
-  @Test("Overlapping sleep samples are counted once")
-  func overlappingSamplesAreDeduplicated() {
-    let samples = [
-      SleepSampleInterval(
-        start: date(day: 9, hour: 22),
-        end: date(day: 10, hour: 2),
-        sourceName: "Apple Watch",
-        isAppleWatch: true
-      ),
-      SleepSampleInterval(
-        start: date(day: 10, hour: 0),
-        end: date(day: 10, hour: 6),
-        sourceName: "Health",
-        isAppleWatch: false
-      ),
-    ]
-
-    let result = SleepEpisodeAnalyzer.primarySleep(
-      from: samples,
-      now: date(day: 10, hour: 8)
-    )
-
-    #expect(result?.asleepDuration == TimeInterval(8 * 3_600))
-    #expect(result?.sampleCount == 2)
-  }
-
-  @Test("A daytime nap is not added to the primary sleep")
-  func napIsSeparatedFromPrimarySleep() {
-    let samples = [
-      SleepSampleInterval(
-        start: date(day: 9, hour: 13),
-        end: date(day: 9, hour: 14),
-        sourceName: "Apple Watch",
-        isAppleWatch: true
-      ),
-      SleepSampleInterval(
-        start: date(day: 9, hour: 22),
-        end: date(day: 10, hour: 6),
-        sourceName: "Apple Watch",
-        isAppleWatch: true
-      ),
-    ]
-
-    let result = SleepEpisodeAnalyzer.primarySleep(
-      from: samples,
-      now: date(day: 10, hour: 8)
-    )
-
-    #expect(result?.asleepDuration == TimeInterval(8 * 3_600))
-    #expect(result?.start == date(day: 9, hour: 22))
-    #expect(result?.sampleCount == 1)
-  }
-
-  @Test("An implausibly long episode is excluded from body load")
-  func implausiblyLongSleepNeedsReview() {
-    let sample = SleepSampleInterval(
-      start: date(day: 9, hour: 10),
-      end: date(day: 10, hour: 4),
-      sourceName: "Imported sleep",
-      isAppleWatch: false
-    )
-
-    let result = SleepEpisodeAnalyzer.primarySleep(
-      from: [sample],
-      now: date(day: 10, hour: 8)
-    )
-
-    #expect(result?.quality == .needsReview)
-    #expect(result?.isUsableForBodyLoad == false)
-  }
-
-  private func date(day: Int, hour: Int, minute: Int = 0) -> Date {
-    var calendar = Calendar(identifier: .gregorian)
-    calendar.timeZone = TimeZone(secondsFromGMT: 0)!
-    return calendar.date(
-      from: DateComponents(year: 2026, month: 8, day: day, hour: hour, minute: minute)
-    )!
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/Sync/BeverageSyncV2Tests.swift =====
-import Foundation
-import Testing
-@testable import InnerBalanceCore
-
-@Suite @MainActor struct BeverageSyncV2Tests {
-  final class Transport: SyncTransport {
-    var onReceive: (@MainActor @Sendable (Data) async -> Data?)?
-    var onOpportunity: (@MainActor @Sendable () async -> Void)?
-    var delivered: [SyncPacket] = []
-    func activate() {}
-    func deliver(_ data: Data) async throws -> Data? { delivered.append(try JSONDecoder().decode(SyncPacket.self, from: data)); return nil }
-    func updateContext(_ data: Data) throws {}
-  }
-  @Test func unknownOldWatchKeepsNewBeverageQueuedThenCapabilityUnlocks() async throws {
-    let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: root) }
-    let store = try SyncStore(directory: root), transport = Transport()
-    let service = SyncService(store: store, transport: transport, role: "phone", localDirectory: root)
-    let d = BeverageDetails(displayName: "Wine", alcoholPresence: .yes, abvPercent: 12)
-    let drink = SyncedDrink(id: "wine", kind: "alcohol", consumedAt: .now, recordedAt: .now, volumeML: 150,
-      caffeineMG: 0, alcoholGrams: 14.202, sugarServings: 0, sugarGrams: nil, estimateMethod: "perServing", estimateVersion: 2, beverageDetails: d)
-    try await service.enqueue(drink)
-    await service.flush(manual: true)
-    #expect(transport.delivered.isEmpty)
-    #expect(await store.snapshot().outbox.count == 1)
-    var oldHello = SyncPacket(origin: "old-watch", role: "watch", hello: true); oldHello.capabilities = nil
-    _ = await service.receive(try JSONEncoder().encode(oldHello)); await service.flush(manual: true)
-    #expect(transport.delivered.isEmpty)
-    #expect(await store.snapshot().outbox.count == 1)
-    oldHello.capabilities = ["beverage-v2"]
-    _ = await service.receive(try JSONEncoder().encode(oldHello)); await service.flush(manual: true)
-    let event = try #require(transport.delivered.first?.event)
-    let decoded = try JSONDecoder().decode(SyncedDrink.self, from: event.payload)
-    #expect(decoded.kind == "alcohol" && decoded.beverageDetails == d)
-    #expect((await store.snapshot()).outbox.count == 1) // Sending alone is never an ACK.
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/Sync/SyncReliabilityTests.swift =====
-import Foundation
-import Testing
-@testable import InnerBalanceCore
-
-@MainActor struct SyncReliabilityTests {
-  final class Transport: SyncTransport {
-    var onReceive: (@MainActor @Sendable (Data) async -> Data?)?
-    var onOpportunity: (@MainActor @Sendable () async -> Void)?
-    weak var peer: Transport?
-    var offline = false
-    var loseACK = false
-    var context: Data?
-    func activate() {}
-    func deliver(_ data: Data) async throws -> Data? {
-      guard !offline, let peer else { throw SyncStore.Failure.peer }
-      let result = await peer.onReceive?(data); return loseACK ? nil : result
-    }
-    func updateContext(_ data: Data) throws { if offline { throw SyncStore.Failure.peer }; context = data }
-  }
-  func session(_ id: String = "s1") -> RecoverySession {
-    var result = RecoverySession(sessionID: id, action: .quietRest, plannedDuration: 120, startedAt: .now, originDevice: "watch")
-    result.endedAt = .now; result.endReason = .endedEarly; result.activeDuration = 15
-    result.feedback = .init(helpfulness: nil, revision: 1, updatedAt: .now, localNote: "local-only-note")
-    return result
-  }
-  @Test func durableACKLostOfflineRestartDuplicatesAndProjectionRetry() async throws {
-    let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: dir) }
-    let a = try SyncStore(directory: dir.appendingPathComponent("a")), b = try SyncStore(directory: dir.appendingPathComponent("b"))
-    let ta = Transport(), tb = Transport(); ta.peer = tb; tb.peer = ta
-    let phone = SyncService(store: a, transport: ta, role: "phone", localDirectory: dir.appendingPathComponent("ac"))
-    let watch = SyncService(store: b, transport: tb, role: "watch", localDirectory: dir.appendingPathComponent("bc"))
-    await phone.handshake(); await watch.handshake()
-    try await watch.enqueue(session())
-    tb.offline = true; await watch.flush()
-    #expect(await b.snapshot().outbox.count == 1)
-    let reopened = try SyncStore(directory: dir.appendingPathComponent("b"))
-    let restarted = SyncService(store: reopened, transport: tb, role: "watch", localDirectory: dir.appendingPathComponent("bc"))
-    tb.offline = false; tb.loseACK = true
-    await restarted.flush(manual: true)
-    #expect(await a.snapshot().entities.count == 1)
-    #expect(await reopened.snapshot().outbox.count == 1)
-    let record = try JSONDecoder().decode(RecoverySession.self, from: #require(await a.snapshot().entities["session:s1"]?.payload))
-    #expect(record.feedback?.localNote == nil)
-    tb.loseACK = false
-    phone.onRecordsChanged = { _ in throw SyncStore.Failure.injected }
-    await restarted.flush(manual: true)
-    #expect(await reopened.snapshot().outbox.count == 1)
-    phone.onRecordsChanged = nil
-    await restarted.flush(manual: true)
-    #expect(await reopened.snapshot().outbox.isEmpty)
-    #expect(await a.snapshot().received.count == 1)
-  }
-  @Test func failedReceiverCannotACKAndDeletePrecedesStaleReplay() async throws {
-    let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: dir) }
-    let store = try SyncStore(directory: dir)
-    try await store.acceptPeer("watch")
-    let payload = try JSONEncoder().encode(session())
-    let created = SyncEvent(entityID: "s1", kind: .session, revision: 1, originInstallationID: "watch", payload: payload)
-    await store.injectWriteFailure()
-    await #expect(throws: SyncStore.Failure.self) { try await store.receive(created) }
-    #expect(await store.snapshot().received.isEmpty)
-    let deleted = SyncEvent(entityID: "s1", kind: .session, revision: 3, originInstallationID: "watch", deleted: true, payload: Data())
-    _ = try await store.receive(deleted); _ = try await store.receive(created)
-    #expect(await store.snapshot().entities["session:s1"]?.deleted == true)
-    var forged = created; forged.revision = 4; forged.eventID = "later-stale"
-    _ = try await store.receive(forged)
-    #expect(await store.snapshot().entities["session:s1"]?.deleted == true)
-    var restore = forged; restore.eventID = "explicit-undo"; restore.explicitRestore = true
-    _ = try await store.receive(restore)
-    #expect(await store.snapshot().entities["session:s1"]?.deleted == false)
-    var old = created; old.revision = 2; old.eventID = "out-of-order"
-    _ = try await store.receive(old)
-    #expect(await store.snapshot().entities["session:s1"]?.revision == 4)
-  }
-  @Test func epochUnknownProtocolSummaryAndCorruptionRemainNeutral() async throws {
-    let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: dir) }
-    let store = try SyncStore(directory: dir)
-    let transport = Transport()
-    let receiver = SyncService(store: store, transport: transport, role: "watch", localDirectory: dir)
-    let encoder = JSONEncoder()
-    _ = await receiver.receive(try encoder.encode(SyncPacket(origin: "old", role: "phone", hello: true)))
-    _ = await receiver.receive(try encoder.encode(SyncPacket(origin: "new", role: "phone", hello: true)))
-    _ = await receiver.receive(try encoder.encode(SyncPacket(origin: "old", role: "phone", hello: true)))
-    #expect(await store.snapshot().peerInstallationID == "new")
-    var unknown = SyncPacket(origin: "new", role: "phone"); unknown.schemaVersion = 99
-    #expect(await receiver.receive(try encoder.encode(unknown)) == nil)
-    #expect(await store.snapshot().quarantined.count == 2)
-    #expect(receiver.sharedCache.read(now: .now, peer: "new") == .unavailable)
-    var summary = ReadinessSummaryDTO(assessment: nil, installationID: "new", sequence: 2, now: .now)
-    summary.revoked = false; summary.validUntil = .now.addingTimeInterval(60)
-    try receiver.localCache.write(summary)
-    #expect(receiver.localCache.read(now: .now, peer: "new") == .current(summary))
-    #expect(receiver.localCache.read(now: .now.addingTimeInterval(61), peer: "new") == .neutral)
-    #expect(receiver.localCache.read(now: .now, peer: "old") == .neutral)
-    try Data("corrupt".utf8).write(to: #require(receiver.localCache.file))
-    #expect(receiver.localCache.read(now: .now, peer: "new") == .neutral)
-    try await store.receiveSummary(summary)
-    summary.sequence = 1; summary.revoked = true
-    try await store.receiveSummary(summary)
-    #expect(await store.snapshot().summary?.sequence == 2)
-  }
-  @Test func revocationStillReplacesTransportContextWhenDiskWriteFails() async throws {
-    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    defer { try? FileManager.default.removeItem(at: directory) }
-    let store = try SyncStore(directory: directory)
-    let transport = Transport()
-    let service = SyncService(store: store, transport: transport, role: "phone", localDirectory: directory)
-    await store.injectWriteFailure()
-    await service.publish(nil)
-    let data = try #require(transport.context)
-    let packet = try JSONDecoder().decode(SyncPacket.self, from: data)
-    #expect(packet.summary?.revoked == true)
-    #expect(service.localCache.read(now: .now, peer: (await store.snapshot()).installationID) == .neutral)
-    #expect(service.lastError == "summary_unavailable")
-  }
-
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchCompassGridTests.swift =====
-import Testing
-
-@testable import InnerBalanceCore
-
-@Suite("Watch compass grid")
-struct WatchCompassGridTests {
-  @Test("Watch 情绪罗盘固定提供九个不重复区域")
-  func gridContainsNineUniqueRegions() {
-    #expect(WatchCompassRegion.all.count == 9)
-    #expect(Set(WatchCompassRegion.all.map(\.id)).count == 9)
-    #expect(WatchCompassRegion.all.contains { $0.valence == 0 && $0.arousal == 0 })
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Tests/InnerBalanceCoreTests/WatchPracticeCompletionTests.swift =====
-import Foundation
-import Testing
-
-@testable import InnerBalanceCore
-
-@Suite("Watch practice completion recovery")
-struct WatchPracticeCompletionTests {
-  @Test("A delayed retry reuses the first frozen completion window")
-  func retryReusesFirstSnapshot() throws {
-    let firstEnd = Date(timeIntervalSince1970: 1_786_320_060)
-    var freezer = WatchPracticeCompletionFreezer()
-
-    let first = freezer.freeze(
-      sessionID: "watch-session",
-      endedAt: firstEnd,
-      activeDuration: 60,
-      heartRateEvidenceRequested: true
-    )
-    let retry = freezer.freeze(
-      sessionID: "watch-session",
-      endedAt: firstEnd.addingTimeInterval(90),
-      activeDuration: 150,
-      heartRateEvidenceRequested: true
-    )
-
-    #expect(retry == first)
-    #expect(retry.endedAt == firstEnd)
-    #expect(retry.activeDuration == 60)
-
-    let evidence = HeartRateEvidence(
-      startBeatsPerMinute: 72,
-      endBeatsPerMinute: 64,
-      sampleCount: 8
-    )
-    let completedValue = freezer.completeHeartRateEvidenceCapture(evidence)
-    let completed = try #require(completedValue)
-    let retryAfterCapture = freezer.freeze(
-      sessionID: "watch-session",
-      endedAt: firstEnd.addingTimeInterval(180),
-      activeDuration: 240,
-      heartRateEvidenceRequested: true
-    )
-
-    #expect(completed.heartRateEvidenceCaptureCompleted)
-    #expect(completed.heartRateEvidence == evidence)
-    #expect(retryAfterCapture == completed)
-  }
-
-  @Test("Old payloads infer an evidence request only when evidence exists")
-  func oldEvidencePayloadRemainsEligible() {
-    let evidence = HeartRateEvidence(
-      startBeatsPerMinute: 72,
-      endBeatsPerMinute: 64,
-      sampleCount: 8
-    )
-
-    #expect(
-      HeartRateEvidenceRequestCompatibility.resolved(
-        explicitRequest: nil,
-        evidence: evidence
-      )
-    )
-    #expect(
-      HeartRateEvidenceRequestCompatibility.resolved(
-        explicitRequest: nil,
-        evidence: nil
-      ) == false
-    )
-    #expect(
-      HeartRateEvidenceRequestCompatibility.resolved(
-        explicitRequest: false,
-        evidence: evidence
-      ) == false
-    )
-  }
-
-  @Test("A legacy mindful payload decodes without the request field")
-  func legacyMindfulPayloadDecodes() throws {
-    let evidence = HeartRateEvidence(
-      startBeatsPerMinute: 72,
-      endBeatsPerMinute: 64,
-      sampleCount: 8
-    )
-    let current = WatchMindfulPayload(
-      syncIdentifier: "legacy.mindful",
-      sessionID: "legacy-session",
-      practiceKind: .pacedBreathing,
-      startDate: Date(timeIntervalSince1970: 1_786_320_000),
-      endDate: Date(timeIntervalSince1970: 1_786_320_300),
-      heartRateEvidenceRequested: true,
-      heartRateEvidence: evidence
-    )
-    let encoded = try JSONEncoder().encode(current)
-    var object = try #require(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
-    object.removeValue(forKey: "heartRateEvidenceRequested")
-    let legacyData = try JSONSerialization.data(withJSONObject: object)
-
-    let decoded = try JSONDecoder().decode(WatchMindfulPayload.self, from: legacyData)
-
-    #expect(decoded.heartRateEvidenceRequested == nil)
-    #expect(decoded.heartRateEvidence == evidence)
-    #expect(
-      HeartRateEvidenceRequestCompatibility.resolved(
-        explicitRequest: decoded.heartRateEvidenceRequested,
-        evidence: decoded.heartRateEvidence
-      )
-    )
-  }
-}
-
-===== END FILE =====
-
-===== FILE: README.md =====
-# 方寸 Fangcun
-
-留一方余地，给自己一点缓冲。
-
-方寸是一个以身体数据为线索、提供呼吸与恢复练习的 iOS App，带有 watchOS 伴侣。本仓库汇总当前原生实现、可运行网页原型、猫狗角色、品牌资产、设计方案与验证记录。
-
-**给 GPT / AI 阅读：[AI_CONTEXT.md](AI_CONTEXT.md)** · [完整文件索引](FILE_INDEX.md) · [分卷源码文本](ai/README.md) · [当前交付状态](docs/verification/STATUS.md)
-
-## 当前版本
-
-2026-09-19 开发分支的最新成果见 [体验与饮品关怀 V2 审阅](docs/plans/fangcun-experience-v2/REVIEW.md)。以下 9 月 18 日截图为历史设计基线；当前真实 SwiftUI 截图、测试和安装状态以 V2 报告为准。
-
-2026-09-18：整套新版已迁入 SwiftUI，并将最终修复版覆盖安装、启动于开发者的 iPhone 16 Pro。不是仅替换 Logo，也不是将网页套进手机 App。安装与测试的公开摘要见验证目录；原始设备标识和签名留在本机。
-
-| 今日首页 | 呼吸练习 | 饮品记录 |
-| --- | --- | --- |
-| ![今日首页](docs/verification/screenshots/259B610F-B230-4660-BA62-2D0D341B50E9.png) | ![呼吸练习](docs/verification/motion/E40F80CA-3DE4-47EB-A25A-1FEFBE3D2D38.png) | ![饮品记录](docs/verification/screenshots/DCC9B472-D944-49A8-A9C5-7F53D8E8FE03.png) |
-
-以上为原生 App 的模拟器截图。健康状态演示截图仅用于 UI 验证，不是用户的健康记录。
-
-## 已实现
-
-- 今日结论、依据摘要和详情；依据真实 HealthKit 数据及个人基线，缺少数据时明确显示数据不足。
-- 已确认的蓝橙双色版画猫狗；按平稳、休息、观察、饮品记录、呼吸和结束分别出场。保留独处场景，减少动态效果时停止角色变形。
-- 一键开始 5 分钟双吸一呼；共用练习时钟驱动阶段和胸腹动效；暂停、继续、提前结束、保存和返回首页。
-- 饮品半屏记录，支持复合增减与撤销；甜咖啡同时累计咖啡因和糖饮，但不重复累计体积。
-- 7 天真实状态快照、饮品和既有练习记录；不虚构过去的数据。
-- 深浅色、较大字号、减少动态效果；沿用本机存储、健康授权和现有其他练习。
-
-## 目录
-
-| 路径 | 内容 |
-| --- | --- |
-| `InnerBalance/` | iOS / watchOS Xcode 工程、原生资源、App 与 UI 测试 |
-| `InnerBalanceCore/` | 独立 Swift Package：状态评估、练习、健康数据领域逻辑与测试 |
-| `web/` | React 高保真交互原型、角色工作室、品牌工作室、原始完整设计规格 |
-| `web/public/characters/` | v3 / v4 原画；v4 猫狗为当前主形象，呼吸沿用 v3 |
-| `web/public/brand/` | 留一方余地 Logo、深浅色 App 图标、品牌素材包 |
-| `design/brief/` | 整套 UI 设计提示词、用户确认的双角色参考图 |
-| `design/proposals/` | 早期三套界面方案，用于追溯设计过程 |
-| `design/claude-proposal-c/` | 用户提供的 Claude 方案 C 与可视化 |
-| `docs/design/` | 原生迁移说明、早期猫狗探索及角色规范 |
-| `docs/plans/` | 历史计划，不能作为当前实现或发布状态 |
-| `docs/verification/` | 原生实测截图、测试与真机安装摘要 |
-| `ai/` | 可直接通过公开 raw URL 阅读的分卷源码文本 |
-
-## 运行网页原型
-
-需要 Node.js 22.12+（或满足 Vite 8 要求的较新版本）。
-
-```sh
-cd web
-npm ci
-npm run dev
-```
-
-打开 `http://127.0.0.1:4173/`；角色工作室为 `/character-studio.html`，品牌工作室为 `/brand-studio.html`。
-
-```sh
-npm test
-npm run build
-```
-
-网页采用 Mock 健康数据，存储在浏览器 localStorage。它用来测试设计和交互，不能代替原生健康数据链路。
-
-## 运行原生 App
-
-1. 用支持 Swift 6.2+ 的 Xcode 打开 `InnerBalance/InnerBalance.xcodeproj`。
-2. 选择 `InnerBalance` scheme 与 iPhone 模拟器。当前验证工具链是 Xcode 27 beta；部署目标为 iOS 18 / watchOS 11。
-3. 真机运行时，在 Signing & Capabilities 选择自己的 Team，并按需设置自己的 Bundle Identifier。公开工程不附带签名、描述文件或账户信息。
-4. 保持 `InnerBalanceCore` 与 `InnerBalance` 同级，工程引用的是本地 Package。
-
-```sh
-swift test --package-path InnerBalanceCore
-xcodebuild build -project InnerBalance/InnerBalance.xcodeproj \
-  -scheme InnerBalance -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO
-```
-
-如 Xcode 提示缺少 Metal Toolchain，使用 Xcode 的组件下载完成安装；角色局部动效使用 Metal shader。
-
-## 设计的当前定案
-
-暖纸白、版画蓝、克制的印章橙。保留确认过的圆润猫狗轮廓及印痕，不把角色改造成几何占位图。Logo 的寓意是“留一方余地”，不是“方”字加边框。以原生当前入口和 `web/docs/` 最新规范为准；历史方案保留作对比。
-
-## 阅读范围
-
-源码、设计原文、PNG / SVG、测试和原型均以普通 Git 文件提供，未使用需要另行鉴权的 LFS。可公开访问不等于任意 GPT 会自动读取整个仓库；请把 [AI_CONTEXT.md](AI_CONTEXT.md) 的链接交给具备网页读取能力的 GPT，并按索引读取所需文件。图片需要支持视觉的工具，音频需要支持音频的工具。
-
-没有上传个人健康导出、开发证书、令牌、手机标识、依赖缓存或签名 App。当前并未发布到 TestFlight / App Store。历史备份和重复 ZIP 的可读内容已由对应源码及素材目录提供。公开供查看不额外授予软件或素材的商业使用许可。
-
-===== END FILE =====
-
-===== FILE: design/brief/交付核验.json =====
-{
-  "brief": "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-design-brief/方寸App-整套UI改造设计提示词.md",
-  "reference": "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-design-brief/方寸猫狗-确认稿.png",
-  "package": "<LOCAL_HOME>/Code/Codex/2026-09-17/fangcun-ui-design-brief/方寸App-UI设计委托包.zip",
-  "reference_sha256": "0f920086ea47f43e082301ad0dcbeec81f92916d77d644a3b75ff431292ee60b",
-  "reference_matches_user_selection": true,
-  "archive_verified": true,
-  "brief_characters": 7768,
-  "code_modified": false
-}
-===== END FILE =====
-
-===== FILE: design/brief/方寸App-整套UI改造设计提示词.md =====
-# 方寸 App｜整套 UI 改造设计提示词
-
-请将本文与附件「方寸猫狗-确认稿.png」一起阅读。附件是已确认的角色与风格基准。本文可以直接作为设计委托，或作为专业 UI 设计工具的完整输入。
-
-## 1. 你的任务
-
-请作为有原生 iOS 产品经验的资深产品设计师，为「方寸 Fangcun」设计一套轻松、活泼、有趣，同时信息清晰、可信的完整 App 界面。
-
-先给出 **3 套有明显差异、可以横向比较的设计方案**，帮助我们选方向。差异应体现在信息布局、组件形态、图文关系、导航和角色互动方式上。三套方案都必须来自附件的双色版画语言，并使用同一组产品内容与演示情景。
-
-本轮交付是视觉与交互方案，不是开发代码。请先展示可以判断真实使用体验的页面，选定方向后再展开全套设计。不要把探索阶段直接当成已批准的最终设计系统。
-
-## 2. 产品是什么，为谁服务
-
-方寸希望帮助一部分人理解自己的压力负荷，并采取适合当下的缓解或恢复行动。核心不是记录更多数据，而是让用户迅速得到三个答案：
-
-1. 我今天的压力负荷处于什么状态？
-2. 这个判断主要依据什么？
-3. 我现在可以做什么？
-
-首批重点用户是经常佩戴 Apple Watch、愿意记录睡眠，也希望减少压力和恢复不足影响的成年人。他们可能工作繁忙、注意力有限，不想每次打开 App 都填写问卷。
-
-方寸包含有明确用途区分的呼吸练习，同时会综合身体恢复、睡眠、运动和少量生活记录，为用户提供解释及行动入口。不能把整套界面做成只有一个呼吸圆环的小工具。
-
-产品气质：轻松、亲近、清楚、克制、有一点幽默。像身边两个安静陪伴、偶尔逗趣的小伙伴。不要用幼儿园式的称呼和奖励方式，也不要把用户当作需要被训导的人。
-
-## 3. 已确认的角色与视觉来源
-
-### 必须以附件为基准
-
-- 一只坐着的猫、一只放松趴着的狗；猫左狗右是本张组合图的关系。
-- 白色主体、带自然起伏的蓝色轮廓，局部柔和橙色点缀。
-- 小圆点眼睛、简单嘴型、短圆四肢，造型适度抽象。
-- 蓝色线条和橙色色块内有少量类似印章、版画的颗粒与留白。
-- 整体平面、干净、友好，有自然手工感。
-
-请从这张图提炼整套 UI 的视觉语言。保留这组角色的识别特征和性格，不重新设计一套不同品种、不同画法的猫狗。用于其他动作时可以调整姿势，并规范肢体连接和轮廓，但不能因此改变角色身份。
-
-这张蓝橙双色图是最终选定的参考。此前关于蓝、绿、白、金的配色探索不再作为硬性要求；不必凑齐那些颜色。橙色在本参考中的少量使用已经被接受。
-
-### 全界面的转译方式
-
-- 蓝色成为主色，用于标题、主要操作、选中状态及必要的图形线条。
-- 柔和橙色作为少量强调和角色识别色；不要到处铺满橙色。
-- 背景以白色、柔白或非常浅的纸色为主，大面积保持清爽。
-- 版画质感主要用于角色、插图和少数装饰。正文、数值、图表刻度、按钮标签应保持清晰，不做磨损效果。
-- 组件可以有轻微不规则的圆角或线条气质，但操作区域、对齐、间距和滚动行为应稳定。
-- 采用适合中文阅读的清晰字体。标题可适当圆润，正文不使用难读的手写体；数字保持良好的对齐与辨识度。
-- 图标与角色线条相容，同时保留日常操作图标的可识别性。
-- 图表可以延续蓝橙色，但不能只靠颜色区分数据；需要文字、线型或形状辅助。
-- 状态颜色另有清晰的语义规则。橙色既是品牌色，就不能把所有橙色元素都当成警告。
-
-请避免：写实毛发、3D 吉祥物、立体塑料按钮、大面积渐变、霓虹效果、整屏噪点纸纹、冷绿色动物身体、过重黑框、堆满装饰贴纸的页面，以及只有换色而缺乏布局变化的方案。
-
-## 4. 产品决策与设计自由度
-
-### 已确定的方向
-
-- 首页不再使用「绷着」等预设状态选项，也不再把选择一个情绪词作为获得结论或进入练习的前置条件。
-- 首页以自动评估为主，不增加「你同意这个判断吗」之类强制主观校正步骤。
-- 用户不应为了完成一个流程，花时间在大量情绪标签里寻找自己。
-- 有足够依据时，要给出简洁明确的压力负荷结论；同时允许用户查看依据。
-- 缺少数据、数据过时或个人基线尚未建立，必须有独立呈现，不能伪装成「平稳」。
-- 饮水、咖啡因、酒精和含糖饮料以当日粗略累计记录为主，不要求逐杯登记时间。
-- 身体恢复、睡眠和运动记录与压力判断相互关联，但不把一次咖啡或一次训练直接画成压力升高的确定原因。
-- 猫狗承担陪伴和适量互动，不做宠物养成、喂食任务、金币、等级、连续签到或断签惩罚。
-- 核心体验本地优先，不要求注册账号；本轮不要加入社交广场、聊天机器人、订阅付费墙等新业务。
-
-### 允许设计师探索
-
-导航名称、3 栏或 4 栏结构、记录入口的位置、首屏布局、卡片组织方式、图表形式、角色在不同页面的大小和出场方式，都可以提出建议，并说明用户为什么更容易使用。
-
-当前实现主要是「此刻／练习／设置」三栏，并包含健康依据、感受记录及练习流程。综合生活记录、完整趋势页及新版自动评估首页属于这次需要设计的新范围，不应被描述为现有功能已经实现。
-
-不要被旧页面的排列锁住；也不要为了展示新 UI 随意新增无法说明价值的功能。
-
-## 5. 压力结论怎样表达
-
-建议以以下两种明确标题作为设计占位文案：
-
-- 「今日压力负荷偏高」
-- 「今日压力负荷平稳」
-
-另设「暂时无法判断」等数据条件状态。它不是第三种压力程度。
-
-界面应清楚地让用户理解：这是依据目前可用的身体与生活数据，对压力负荷的判断。不要把标题扩大成「你绝对没有心理压力」或「你肯定焦虑」。也不要用长免责声明淹没主结论。
-
-推荐层级：**一句明确结论 → 一两条主要依据 → 一个当前行动 → 查看更多依据的入口**。记录更新的时间、数据覆盖情况和不确定项放在易找到的次级位置。
-
-第一版不以 0—100 压力分数、精确可信度百分比或大仪表盘作为核心。设计师不制定健康算法、阈值、风险级别或疗效承诺；涉及这些内容，使用清晰的产品占位说明。
-
-## 6. 核心页面与完整体验要求
-
-### A. 初次使用与 Apple 健康连接
-
-- 简短说明能帮助用户做什么、哪些数据有用、为什么需要权限。
-- 展示用户主动连接健康数据的流程，以及暂不连接时仍能直接进入练习的路径。
-- 为新用户准备基线积累状态，说明下一步和可用功能。
-- 不把未取得数据直接写成「用户拒绝授权」；根据产品实际能确认的信息呈现。
-- 首次进入不要求完成一长串情绪测试、生活习惯调查或角色选择。
-
-### B. 今日首页：全套设计的重点
-
-首屏在正常字体下应尽快看到：今天的主要结论、简短原因、可执行的主按钮。猫狗融入这三者的关系，不挤占全部首屏。
-
-建议包含：
-
-- 简洁的日期或问候，不使用巨大的标题占据大量空间。
-- 当前压力负荷结论，以及容易理解的状态标识。
-- 一两条最主要的依据摘要，例如睡眠变化、恢复指标变化或近期训练情况。
-- 一个主行动入口，例如开始适合的练习、休息安排或查看今日建议。
-- 进入完整依据的次级入口。
-- 当日生活记录摘要与快捷补充入口。
-- 数据更新时间和必要的更新提示。
-
-「负荷偏高」状态的猫狗可以陪伴、放缓动作；不要变红、惊慌、哭泣或责备用户。「平稳」状态可以轻松活动，不强迫用户继续做练习。数据不足时角色仍然自然，不出现惩罚性表情。
-
-如保留一句每日短句，应短小、可忽略，不替代结论和行动，也不要让大段励志文字成为首页主体。
-
-需要考虑首页的平稳、偏高、无数据、部分数据、正在更新、使用旧数据等状态。旧数据不能被无提示地当成今日新结论。
-
-### C. 综合评估与「为什么这样判断」
-
-让普通用户先读懂解释，再按需深入看指标。
-
-- 展示本次判断的时间、可用数据及其来源。
-- 将身体恢复与睡眠证据、近期运动情况、手动生活记录清楚区分。
-- 说明指标与个人通常水平的关系，避免拿孤立数字让用户自行猜测。
-- 生活记录可以提供行动背景，但不要画出未经确认的因果箭头。
-- 为缺失、过时、来源不同的数据预留清楚的状态。
-- 图表支持查看某一天的简要解释；详情不能成为读完才能开始行动的必经页面。
-
-身体指标可以包括现有或拟接入的 HRV、静息心率等；具体指标是否可用由实现能力确认。不要为每一种指标发明算法结果。
-
-### D. 睡眠与恢复详情
-
-- 睡眠时长、个人通常水平、恢复相关信息及简短解释。
-- 显示记录日期和来源，区分没有记录、记录不完整及确有数据。
-- 数据不足时仍有清楚的返回和练习入口。
-- 图表干净易读，不把所有原始指标挤进一页。
-
-### E. 今日活动与训练
-
-- 展示步行、日常活动、有氧训练和力量训练等信息的组合方式。
-- 以可取得的自动记录为主，区分日常活动与一次正式训练。
-- 同一次训练出现在多个数据源时，不能在视觉汇总里重复累计。
-- 未读取到力量训练记录，应表达为「暂无相关记录」，不能声称用户一定没做。
-- 训练后的恢复背景与其他身体证据分开解释，避免把正常运动引起的变化直接展示成糟糕状态。
-
-### F. 饮水与饮品快速记录
-
-这是降低使用负担的重要流程。用户能用少量点击粗略补充当天累计情况，也能修改已记录的内容。
-
-覆盖四类信息：饮水、咖啡因、酒精、含糖饮料。
-
-- 饮水：可通过杯数或常用容量快速累计，允许手动调整。
-- 咖啡因：可通过饮品种类和大致杯量填写；如果显示估算量，明确标注估算，并说明预设规格可调整。
-- 酒精：使用容易理解的饮品种类与大致份量；如果显示折算值，标注单位与估算性质。
-- 含糖饮料：以饮品和份量为主要输入；没有标签或配方依据时，不伪造精确糖克数。
-- 不强制逐杯填写时间，不要求拍照识别、扫码或联网查询。
-- 区分「今天还没有记录」和「明确记录为没有摄入」。
-- 一杯饮品可能同时涉及水分、咖啡因、酒精或糖。设计需要说明如何一次输入对应多个属性，以及汇总口径，防止用户重复录入和重复累计。
-- 支持增加、减少、修改、删除或撤销，保存结果反馈清楚。
-- 不做任意设定的统一饮水目标，不用没达标的红圈责备用户，不让猫狗因某杯饮品而露出批评表情。
-
-优先探索首页快捷入口与轻量弹层；同时给出完整记录页，承接修改和查看当日汇总。
-
-### G. 练习库与练习详情
-
-当前核心内容包含生理性叹息、节律呼吸、正念练习和 NSDR 躺式休息。请体现不同练习的用途与方式，避免全部使用相同卡片和同一呼吸动画。
-
-- 练习库按用户意图、适用场景或练习方式清楚组织，入口不依赖情绪标签问卷。
-- 详情用简短文字说明用途、时长、姿势与如何开始。
-- 给推荐内容一个清楚的位置，同时保留自主选择。
-- 推荐时长与可选时长易操作，开始按钮明确。
-- 现有其他身体练习若需保留，可放在次级分类，并与压力缓解主推荐区分；不擅自将所有练习纳入同一压力叙事。
-- 练习方法与节奏沿用产品内容，设计师不另行编造协议或效果承诺。
-
-### H. 练习进行中：让用户可以安静跟随
-
-- 显示当前阶段、剩余时间或必要进度，以及清楚的暂停和结束入口。
-- 吸气、呼气等节拍必须容易理解，可由角色腹部起伏或一个简洁节奏图形辅助表达。
-- 猫狗动画应服务于练习，不要出现与呼吸节拍争夺注意力的独立跳动。
-- 正念和 NSDR 应使用适合其阶段的引导形式，不能硬套固定吸呼循环。
-- 提供声音、触感和减少动态效果的可理解状态；静音后仍能看懂引导。
-- 音频准备、暂停、继续、中断、提前结束等操作需有明确反馈。
-- 结束或不适退出的操作不能被装饰遮挡，也不应引发羞耻式提示。
-
-### I. 练习完成与回到首页
-
-- 轻量庆祝：一个小动作、一句简短确认即可。
-- 展示实际完成内容与保存状态，明确返回首页的入口。
-- 练后反馈可选，不强迫继续做情绪题。
-- 没有练前评价时，不展示没有依据的前后改善幅度。
-- 完成练习不自动等同于「压力已下降」；新数据尚未产生时，首页说明可以更新什么。
-- 区分本地记录已保存、健康记录仍待同步，以及保存失败的恢复入口。
-
-### J. 趋势与历史记录
-
-- 支持按周或月查看压力负荷、恢复与生活记录的关联信息。
-- 稳定地表达每日结论、练习记录和生活记录，不把它们混成一个难以解释的总分。
-- 某一天无数据时明确留空或标记，不能补成平稳。
-- 能进入某一天查看当时的结论、依据和已完成行动。
-- 不因几条短期记录就输出确定的因果结论或百分比疗效。
-- 新用户记录少时，也能理解页面用途和下一步。
-
-### K. 设置、隐私与通用状态
-
-- 设置包括健康连接与权限、声音和触感、动态效果、隐私与数据、关于等适当入口。
-- 保持本地优先、无强制账号的体验。
-- 数据管理与删除操作需说明影响范围，特别是本地记录与 Apple 健康记录的区别。
-- 不把开发诊断工具变成普通用户的主要功能。
-- 通用状态覆盖加载、空记录、部分数据、错误、重试、禁用、保存成功和保存失败。
-- 设置页也应有同一套视觉气质，但仍容易查找，不在每个列表项旁重复放猫狗。
-
-### L. Apple Watch 延展
-
-选定 iPhone 方向后，补充手表端的主要状态、开始练习和练习进行中页面。
-
-- 每屏突出一个结论或一个操作，大触控目标、极少文字。
-- 两只角色可以缩成一个适合小屏的姿态或头像，不必完整铺开双角色图。
-- 保留蓝橙识别与简洁轮廓；细颗粒在小尺寸下可减少，以免变成噪点。
-- 设计待同步、数据不足和练习中断等必要状态。
-
-## 7. 角色互动与动效规则
-
-请提出少量可以长期复用的动作，而不是让每页持续播放动画：
-
-- 首页：偶尔眨眼、轻摇尾巴、靠近一下，静止时也成立。
-- 呼吸：与真实引导阶段一致的缓慢起伏；暂停时能看出已经暂停。
-- 休息：闭眼、轻轻趴下，画面安静。
-- 饮品记录：短暂拿杯或放杯动作；角色只是回应操作，不评判饮品。
-- 完成：轻碰爪或轻微点头，不放大规模彩带、烟花。
-
-角色可以单独出场，猫狗也不必永远左右并排。互动要保留退出与关闭的自由，不提供「不陪它就会难过」之类压力。请给出静态替代状态，考虑系统的减少动态效果设置。
-
-## 8. 原生使用体验与可读性
-
-- 以真实手机屏幕设计，而不是只做漂亮的长图海报。
-- 尊重安全区、返回手势、底部操作区域、键盘和系统权限弹窗。
-- 常用点击区域以至少 44 × 44 pt 为设计目标；图形本身可以小，操作区域不能难点。
-- 支持中文长文案和较大字号，不靠裁掉文字维持版式。
-- 状态不能只依赖颜色；图标、文字和读屏标签要能表达同样的信息。
-- 提供清晰的焦点顺序和按钮含义。装饰性角色不应反复打断读屏。
-- 提供浅色方案；选定方向后补充深色模式的配色规则与关键页。
-- 手机窄屏与较大字号下，最重要的结论和行动仍然容易找到。
-- 不把首屏做成密集健康仪表盘，也不要因为留白过多让用户需要多次滚动才能操作。
-
-## 9. 三套方案如何拉开差异
-
-以下是探索起点，可以提出更好的命名和组织，但要给出区别：
-
-**方案 A：轻版画日常**
-
-清楚的今日结论居前，角色与一段简短解释相伴。版画气质集中在插图与关键视觉，布局轻盈、直接。重点证明用户能迅速看懂、开始行动。
-
-**方案 B：猫狗陪伴日常**
-
-让角色姿态与结论、行动形成更强的关系，通过少量互动增加趣味。重点证明陪伴感能帮助理解和操作，页面仍然简洁，不变成养成游戏。
-
-**方案 C：双色生活记录**
-
-把今日状态、身体恢复和轻量生活记录组织成连贯的一天。可以探索日签、轻笔记或柔和分区的结构。重点证明有多种信息时仍能保持易读和清爽，而不是拼贴杂乱。
-
-三套都必须沿用附件中的同一组猫狗，不用换角色画风来代替 UI 方案差异。
-
-## 10. 第一轮具体交付
-
-每套方案交付：
-
-1. 一段简短设计说明：视觉特点、布局逻辑、最适合解决的问题。
-2. 一张信息架构或主要导航图，说明首页、练习、记录与设置的关系。
-3. **6 张关键高保真界面**：首页平稳、首页偏高、首页数据不足、当日饮品记录弹层或页面、呼吸练习进行中、趋势与历史页。
-4. 一条关键交互链路：从首页看到结论，到查看依据、开始练习，再到完成返回；尚未做成高保真图的环节可以用线框连接。
-5. 一小组组件样例：主次按钮、状态标签、证据摘要、饮品输入控件、导航、图表。
-6. 一个角色微动效示意或分镜，说明发生时机、用户目的和静态替代。
-7. 说明一个需要权衡的地方，例如信息量与首屏空间、颗粒质感与小字号阅读的冲突。
-
-共 3 套、18 张关键界面，统一尺寸与展示顺序。并排比较时，使用相同文案、同一类数据和相同状态场景。
-
-请为平稳、偏高、数据不足分别定义一份共同的虚构演示情景，再将它们一致地用于三个方案。所有演示数据标注为示意；不要为了让某套更漂亮而更换其信息量，也不要把没有记录的数值填成 0。
-
-第一轮不要求把本文件所有页面都做成高保真。先用上述页面选方向，其他页面给出结构覆盖和可行性说明即可。
-
-## 11. 选定方向后的深化交付
-
-- 补齐第 6 节全部适用页面及其必要状态，形成端到端可点击原型。
-- 组件与样式：颜色及语义、字体层级、间距、圆角、描边、图标、按钮、导航、输入、图表、反馈与弹层。
-- 关键组件覆盖默认、按下、选中、禁用、加载与错误等实际需要的状态。
-- 猫狗角色规范：比例、色块、描边、颗粒密度、最小可用尺寸、单独与组合用法、主要动作。
-- 至少展示一组窄屏与较大字号适配，以及关键页的深色模式。
-- Apple Watch 关键页与必要的同步、无数据状态。
-- 提供可编辑的设计文件，优先 Figma；使用清楚的组件、变量和页面命名。
-- 输出界面文案、图标和角色素材的使用说明。纹理插画可交付透明 PNG，适合矢量化的简洁图标可交付 SVG，不强行将颗粒位图变成粗糙的矢量路径。
-- 解释交互行为与实现边界，不需要开发代码，也不要求未经验证的自动算法。
-
-## 12. 我们如何判断方案好不好
-
-我们会重点检查：
-
-1. 打开首页几秒内，能否说出「今天怎样、为什么、下一步做什么」。
-2. 即使不看猫狗，按钮、图表、配色和版式是否仍有一致的品牌气质。
-3. 猫狗是否让页面更亲近，又不遮挡核心信息或催促用户。
-4. 结论是否明确；缺少依据时是否同样诚实、好理解。
-5. 饮品记录是否足够轻量，修改与撤销是否顺手。
-6. 练习进行中是否安静、易跟随，暂停和结束是否随时可用。
-7. 整套页面是否一致，换成小屏、大字号和少数据时是否仍然成立。
-8. 三个方案是否真正体现了不同设计思路，而不只是颜色、插图大小变化。
-
-最终我们希望得到的是一个成年人愿意每天打开、能实际帮助理解状态并采取行动的产品。趣味来自简洁形象、细节和互动；专业感来自清晰信息、诚实表达和稳定好用的操作。
-
-请直接按以上要求给出第一轮三套方案，并指出你最推荐哪套及具体原因。
-
-===== END FILE =====
-
-===== FILE: design/claude-proposal-c/README.md =====
-# 方寸 · 方案 C 可视化预览
-
-本机地址：http://127.0.0.1:4174/
-
-打开 `index.html` 也可以离线查看。无需安装依赖。
-
-提供单页切换和六屏总览；每屏内部可滚动，支持原尺寸单独打开。Claude 原稿的 6 个 HTML 文件及图片保持不变。此版本为静态设计评审预览，未实现饮品记录、计时等业务交互。附带的设计说明包含 A/B/C 比较，但压缩包实际仅提供方案 C 的六屏。
-
-原 ZIP 位于 `<LOCAL_HOME>/Downloads/方寸UI设计稿-方案C.zip`。原始哈希记录见 `source-receipt.json`。
-
-启动本地服务：
-
-```sh
-python3 -m http.server 4174 --bind 127.0.0.1
-```
-
-此目录与上一版原型、原生 App 分开，未覆盖其代码。网页中的日期、计时和健康数值均为原稿示例。
-
-===== END FILE =====
-
-===== FILE: design/claude-proposal-c/index.html =====
-<!doctype html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>方寸 · 方案 C 设计预览</title>
-<style>
-:root{color-scheme:light;--ink:#1b355a;--muted:#728093;--paper:#f7f8fa;--line:#dce2ea;--orange:#e07b4f}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"PingFang SC",sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}a{color:inherit;text-underline-offset:4px}button:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
-header{padding:22px 32px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:24px;background:#fff} .brand{display:flex;gap:16px;align-items:center}.stamp{font-family:serif;border:2px solid var(--ink);border-radius:9px 7px 11px 6px;font-size:24px;padding:7px;letter-spacing:2px;transform:rotate(-4deg)}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted);margin:0 0 6px}h1{font-size:21px;margin:0;font-weight:650}.head-actions{display:flex;align-items:center;gap:20px;font-size:13px}.mode{display:flex;padding:4px;background:#eef2f6;border-radius:12px}.mode button{border:0;background:transparent;padding:10px 15px;border-radius:9px;color:var(--muted)}.mode button[aria-pressed=true]{background:var(--ink);color:white}
-.workspace{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:calc(100vh - 100px)}aside{border-right:1px solid var(--line);padding:30px 20px;display:flex;flex-direction:column;gap:24px}.section-label{font-size:12px;color:var(--muted);letter-spacing:1px;padding:0 12px}nav{display:grid;gap:7px}nav button{display:flex;align-items:center;gap:12px;padding:14px 12px;border:1px solid transparent;border-radius:12px;text-align:left;background:transparent;color:var(--ink);font-size:14px;min-height:48px}nav button span:first-child{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}nav button[aria-pressed=true]{background:#e7eef7;border-color:#c8d6e7}nav button[aria-pressed=true]:after{content:'';margin-left:auto;background:var(--orange);border-radius:50%;width:6px;height:6px}.note{margin-top:auto;padding:18px 12px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.9;color:var(--muted)}.note strong{color:var(--ink);font-weight:600}.note a{display:inline-block;margin-top:9px}
-main{padding:25px 30px 28px;min-width:0;background:radial-gradient(#1b355a0d .7px,transparent .7px);background-size:8px 8px}.stage-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;max-width:1000px;margin:0 auto 18px}.stage-heading h2{font-size:18px;margin:0 0 7px}.stage-heading p{font-size:13px;margin:0;color:var(--muted);line-height:1.7}.badge{font-size:11px;white-space:nowrap;border:1px solid var(--line);border-radius:20px;padding:7px 10px;color:var(--muted);background:#fff}.screens{display:grid;grid-template-columns:1fr;gap:28px;max-width:1400px;margin:auto}.screen-card{min-width:0;text-align:center}.screen-card[hidden]{display:none}.frame-space{margin:auto;width:calc(417px * var(--scale,1));height:calc(876px * var(--scale,1));position:relative;background:#e8eef5;border-radius:calc(48px * var(--scale,1));box-shadow:0 20px 55px #233b5d0c}.frame-space iframe{display:block;width:417px;height:876px;border:0;transform:scale(var(--scale,1));transform-origin:top left;border-radius:24px}.caption{display:none;margin:14px 0 0;font-size:13px}.caption a{font-size:11px;color:var(--muted);margin-left:12px}.gallery .screens{grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 24px}.gallery .caption{display:block}.gallery aside{padding-top:30px}.gallery main{padding-left:24px;padding-right:24px}.bottom-hint{text-align:center;font-size:11px;color:var(--muted);margin:18px 0 0}.gallery .bottom-hint{display:none}
-@media(min-width:1800px){.gallery .screens{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1100px){.workspace{grid-template-columns:210px 1fr}.gallery .screens{grid-template-columns:repeat(2,minmax(0,1fr))}.head-actions>a{display:none}}
-@media(max-width:700px){header{padding:16px;gap:12px}.stamp{font-size:19px}.brand{gap:10px}h1{font-size:16px}.eyebrow{font-size:9px;letter-spacing:1px}.mode button{font-size:12px;padding:9px 10px}.head-actions{gap:0}.workspace{display:block}aside{padding:13px 12px;border-right:0;border-bottom:1px solid var(--line);gap:0}.section-label,.note{display:none}nav{display:flex;overflow-x:auto;gap:7px}nav button{white-space:nowrap;padding:10px;min-height:44px;gap:7px}nav button[aria-pressed=true]:after{display:none}main,.gallery main{padding:20px 12px}.stage-heading{gap:8px}.stage-heading h2{font-size:16px}.stage-heading p{font-size:12px}.badge{font-size:10px;padding:6px}.gallery .screens{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 12px}.caption{font-size:12px}.caption a{display:block;margin:7px 0 0}}
-</style>
-</head>
-<body>
-<header><div class="brand"><div class="stamp">方寸</div><div><p class="eyebrow">FANGCUN / DESIGN STUDY C</p><h1>双色生活记录</h1></div></div><div class="head-actions"><a href="http://127.0.0.1:4173/" target="_blank" rel="noopener">打开上一版原型 ↗</a><div class="mode" aria-label="预览方式"><button id="single" aria-pressed="true">单页细看</button><button id="gallery" aria-pressed="false">六屏总览</button></div></div></header>
-<div class="workspace"><aside><div class="section-label">CLAUDE 设计稿 · 06 SCREENS</div><nav aria-label="设计页面"></nav><div class="note"><strong>保留原稿，直接看效果。</strong><br>分栏式信息 · 蓝橙双色<br>猫狗小印章 · 独立饮品记录<br><br>本页是设计稿查看器。页面内的业务按钮、记录和计时均为静态展示，健康数据为示例。<br><a href="设计说明-原稿.md" target="_blank">查看原始设计说明 ↗</a></div></aside>
-<main><div class="stage-heading"><div><h2 id="page-title"></h2><p id="page-desc"></p></div><span class="badge">静态原稿 · 393 × 852</span></div><div class="screens"></div><p class="bottom-hint">在手机画面内滚动，查看完整页面 · 原始配色与布局未改动</p></main></div>
-<script>
-const pages=[
- ['01-home-calm.html','首页 · 平稳','蓝色结论、身体信号和生活记录，按板块向下展开。'],
- ['02-home-elevated.html','首页 · 偏高','暖橙边框提示负荷变化，身体数据与行动建议保持同一层次。'],
- ['03-home-nodata.html','首页 · 数据不足','用中性板块展示资料收集状态，并保留练习入口。'],
- ['04-beverage.html','饮品记录','独立记录页面：饮水可视化、饮品条目与快捷添加。'],
- ['05-breathing.html','呼吸练习','深蓝色沉浸画面、呼吸圆环和版画猫咪。'],
- ['06-trends.html','趋势与历史','日期选择、周状态图与历史记录分区展示。']
-];
-let selected=0, overview=false;
-const nav=document.querySelector('nav'),screens=document.querySelector('.screens');
-pages.forEach(([file,title],i)=>{
- const button=document.createElement('button');button.innerHTML=`<span>0${i+1}</span><span>${title}</span>`;button.onclick=()=>{selected=i;overview=false;render()};nav.append(button);
- const card=document.createElement('section');card.className='screen-card';card.innerHTML=`<div class="frame-space"><iframe src="proposal-c/${file}" title="${title}原始设计稿" sandbox="allow-same-origin"></iframe></div><p class="caption">${title}<a href="proposal-c/${file}" target="_blank" rel="noopener">原尺寸打开 ↗</a></p>`;screens.append(card);
-});
-function fit(){document.querySelectorAll('.screen-card:not([hidden])').forEach(card=>{const available=card.clientWidth;const mobile=innerWidth<=700;const height=overview?876:Math.max(480,innerHeight-(mobile?250:205));const scale=Math.min(1,(available-12)/417,height/876);card.style.setProperty('--scale',scale)})}
-function render(){document.body.classList.toggle('gallery',overview);document.querySelector('#single').setAttribute('aria-pressed',!overview);document.querySelector('#gallery').setAttribute('aria-pressed',overview);Array.from(nav.children).forEach((button,i)=>button.setAttribute('aria-pressed',!overview&&i===selected));Array.from(screens.children).forEach((card,i)=>card.hidden=!overview&&i!==selected);document.querySelector('#page-title').textContent=overview?'六个页面，一起看。':pages[selected][1];document.querySelector('#page-desc').textContent=overview?'对照三种首页状态，再看记录、练习与趋势。各画面均可独立滚动。':pages[selected][2];history.replaceState(null,'','#'+(overview?'all':selected+1));fit()}
-document.querySelector('#single').onclick=()=>{overview=false;render()};document.querySelector('#gallery').onclick=()=>{overview=true;render()};window.addEventListener('resize',fit);
-if(location.hash==='#all')overview=true;else if(/^#[1-6]$/.test(location.hash))selected=Number(location.hash.slice(1))-1;
-render();
-</script></body></html>
 
 ===== END FILE =====

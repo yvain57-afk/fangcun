@@ -1,0 +1,527 @@
+
+===== FILE: web/src/views/HomeView.jsx =====
+import { useCallback, useState } from 'react';
+import { ArrowUpRight, ChevronRight, Droplets, Moon, Heart, ArrowRight, Wind, X } from 'lucide-react';
+import Companions from '../components/Companions.jsx';
+import Modal from '../components/Modal.jsx';
+import { companionScene } from '../models/companionScenes.js';
+import { SCENARIOS } from '../models/mock.js';
+import { totalDrinks } from '../models/drinks.js';
+
+export default function HomeView({ scenario, setScenario, onStart, onEvidence, onDrinks, onTrends, log, reduced, sessions }) {
+  const data = SCENARIOS[scenario];
+  const totals = totalDrinks(log.entries);
+  const [showCompanions, setShowCompanions] = useState(false);
+  const [replay, setReplay] = useState(0);
+  const closeCompanions = useCallback(() => setShowCompanions(false), []);
+  const companion = companionScene({ mood: scenario });
+  return <div className="home-view view-enter">
+    <div className="scenario-control"><span>演示情景</span><div className="scenario-tabs" role="group" aria-label="切换演示情景">{Object.entries(SCENARIOS).map(([key, value]) => <button key={key} aria-pressed={scenario === key} onClick={() => setScenario(key)}>{value.label}</button>)}</div></div>
+    <section className={`hero-card ${scenario}`} aria-labelledby="home-conclusion">
+      <div className="hero-topline"><span className={`status-pill ${scenario}`}><i />{data.status}</span><span className="eyebrow">今日 · 09:41</span></div>
+      <h1 id="home-conclusion">{data.title}</h1>
+      <div className="hero-body"><p className="hero-subtitle">{data.description}</p><button className="companion-peek" aria-label={scenario === 'stable' ? '看看猫狗的陪伴动作' : scenario === 'elevated' ? '看看小狗的陪伴动作' : '看看猫咪的陪伴动作'} onClick={() => setShowCompanions(true)}><Companions key={scenario} mood={scenario} reduced={reduced} /><span>{scenario === 'stable' ? '看看它们' : '看看它'} ↗</span></button></div>
+      <p className="hero-evidence"><span className="small-dot" />{data.evidence}</p>
+    </section>
+    <button className="primary-button breath-cta" onClick={onStart}><span className="button-icon"><Wind size={23} /></span><span>开始 5 分钟呼吸<small>双吸一呼 · 留一点时间给自己</small></span><ArrowUpRight size={22} /></button>
+    <section className="evidence-section"><div className="section-heading"><h2>身体给的线索</h2><span>示例数据</span></div>
+      <button className="evidence-card" onClick={onEvidence} aria-label="为什么这样判断">
+        <div className="evidence-metrics"><div><span><Moon size={15} />昨晚睡眠</span><strong>{data.sleep}</strong></div><div><span><Heart size={15} />身体恢复</span><strong>{data.recovery}</strong></div></div>
+        <div className="evidence-link"><span>为什么这样判断</span><ChevronRight size={17} /></div>
+      </button>
+    </section>
+    <button className="drink-entry" onClick={onDrinks}><span className="drink-entry-icon"><Droplets size={23} /></span><span><strong>今天喝了什么？</strong><small>{log.entries.length ? `已记 ${log.entries.length} 杯 · 总液体 ${totals.fluidMl} ml` : '水、咖啡，或是别的什么'}</small></span><span className="entry-plus">＋</span></button>
+    {sessions.length > 0 && <div className="home-completion"><span className="stamp-check">✓</span><p>今天，已经为自己留了片刻。<small>练习已记录；压力结论等待新数据更新。</small></p><ArrowRight size={17} /></div>}
+    <button className="history-entry" onClick={onTrends}>看看这一周的节奏<ArrowRight size={17} /></button>
+    <p className="home-signoff">不必把每一天，都过得很用力。</p>
+    {showCompanions && <Modal label="猫狗的此刻" reduced={reduced} onClose={closeCompanions} className="companion-modal"><button className="icon-button companion-close" aria-label="关闭角色预览" onClick={closeCompanions}><X size={20} /></button><div className="companion-portrait"><Companions mood={scenario} reduced={reduced} replay={replay} /></div><h2>{scenario === 'elevated' ? '先靠一会儿。' : scenario === 'insufficient' ? '慢慢认识你的节奏。' : '就这样，待一会儿。'}</h2><p>{companion.label}。</p><div className="companion-preview-actions">{!reduced && <button className="secondary-button" onClick={() => setReplay(value => value + 1)}>再看一次动作</button>}<button className="secondary-button" onClick={closeCompanions}>回到今日</button></div></Modal>}
+  </div>;
+}
+
+===== END FILE =====
+
+===== FILE: web/src/views/PracticeView.jsx =====
+import { Wind, ArrowUpRight } from 'lucide-react';
+import Companions from '../components/Companions.jsx';
+export default function PracticeView({ onStart, reduced }) {
+  return <div className="practice-library view-enter"><span className="eyebrow">给自己，一小段空白</span><h1>从一口呼吸开始</h1><p className="page-intro">不需要准备好心情，<br />找一个舒服的姿势就行。</p>
+    <section className="practice-feature"><span className="status-pill stable"><Wind size={14} />呼吸练习</span><Companions scene="practice" reduced={reduced} /><h2>生理性叹息</h2><p>轻轻吸气，再补一小口，<br />随后用更长的时间慢慢呼出。</p><div className="practice-tags"><span>5 分钟</span><span>坐着或站着</span><span>双吸一呼</span></div><button className="primary-button" onClick={onStart}>开始练习<ArrowUpRight size={20} /></button></section>
+    <div className="practice-instructions"><span>01</span><p><strong>不必追求吸满</strong>舒服地跟随，比做得标准更重要。</p><span>02</span><p><strong>可以随时停下来</strong>暂停和提前结束，都会保留你的选择。</p></div>
+  </div>;
+}
+
+===== END FILE =====
+
+===== FILE: web/src/views/SettingsView.jsx =====
+import { Moon, Type, Feather, ChartColumn, ChevronRight, Coffee, ShieldCheck, MonitorSmartphone } from 'lucide-react';
+import BrandMark from '../components/BrandMark.jsx';
+export default function SettingsView({ theme, setTheme, large, setLarge, reduced, setReduceOverride, coffeeMg, setCoffeeMg, onTrends }) {
+  return <div className="settings-view view-enter"><span className="eyebrow">舒服的方式，由你决定</span><h1>设置</h1><p className="page-intro">少一点打扰，多一点自在。</p>
+    <section className="settings-group"><h2>显示与动效</h2>
+      <button className="settings-row" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-pressed={theme === 'dark'}><Moon size={20} /><span>深色模式</span><i className={`switch ${theme === 'dark' ? 'on' : ''}`} /></button>
+      <button className="settings-row" onClick={() => setLarge(!large)} aria-pressed={large}><Type size={20} /><span>较大字号</span><i className={`switch ${large ? 'on' : ''}`} /></button>
+      <button className="settings-row" onClick={() => setReduceOverride(!reduced)} aria-pressed={reduced}><Feather size={20} /><span>减少动态效果</span><i className={`switch ${reduced ? 'on' : ''}`} /></button>
+    </section>
+    <section className="settings-group"><h2>记录与预设</h2><button className="settings-row" onClick={onTrends}><ChartColumn size={20} /><span>历史与趋势</span><ChevronRight size={18} /></button><label className="settings-row coffee-setting"><Coffee size={20} /><span>每杯咖啡因<small>仅影响之后新增的咖啡记录</small></span><input aria-label="每杯咖啡因毫克数" type="number" min="0" max="500" step="10" value={coffeeMg} onChange={e => { const n = Number(e.target.value); if (Number.isFinite(n)) setCoffeeMg(Math.max(0, Math.min(500, n))); }} /><small>mg</small></label></section>
+    <section className="privacy-card"><ShieldCheck size={23} /><div><h2>你的记录，留在本机</h2><p>饮品和练习保存在当前浏览器。没有账号，不上传健康数据。</p></div></section>
+    <section className="prototype-note"><MonitorSmartphone size={20} /><p>交互测试原型 · v0.1<br /><span>健康结论使用示例数据，尚未连接 Apple 健康。浏览器不模拟原生 Taptic 触感。</span></p></section>
+    <div className="settings-brand"><BrandMark />方寸<span>给自己，留一点空间。</span><a href="/brand-studio.html">方寸的寓意与设计 ↗</a></div>
+  </div>;
+}
+
+===== END FILE =====
+
+===== FILE: web/src/views/TrendsView.jsx =====
+import { useState } from 'react';
+import { ArrowLeft, Moon, Footprints, Wind, Coffee, ChevronRight } from 'lucide-react';
+import { WEEK, SCENARIOS } from '../models/mock.js';
+import { totalDrinks } from '../models/drinks.js';
+import { formatTime } from '../models/breathing.js';
+
+export default function TrendsView({ scenario, log, sessions, onBack, onDrinks }) {
+  const [selected, setSelected] = useState(6);
+  const day = WEEK[selected];
+  const state = day.today ? scenario : day.state;
+  const data = SCENARIOS[state];
+  const totals = totalDrinks(log.entries);
+  return <div className="trends-view view-enter"><button className="back-button" onClick={onBack}><ArrowLeft size={20} />返回</button><span className="eyebrow">慢慢看见，自己的节奏</span><h1>这一周的你</h1><p className="page-intro">每一天不同，也都值得被看见。</p>
+    <section className="week-card"><div className="section-heading"><h2>9.11 — 9.17</h2><span className="week-pill">周视图</span></div><div className="week-chart" role="group" aria-label="选择日期查看状态">
+      {WEEK.map((entry, index) => { const s = entry.today ? scenario : entry.state; return <button key={entry.day} className={`day-bar ${s} ${selected === index ? 'selected' : ''}`} aria-pressed={selected === index} aria-label={`9月${entry.day}日 ${SCENARIOS[s].label}`} onClick={() => setSelected(index)}><span className="weekday">{entry.weekday}</span><div className="bar-track"><i /></div><span className="date-number">{entry.today ? '今' : entry.day}</span></button>; })}
+    </div><div className="chart-legend"><span><i className="stable" />平稳</span><span><i className="elevated" />偏高</span><span><i className="insufficient" />数据不足</span></div><p className="chart-caption">柱形表示状态类别，不是压力分数。</p></section>
+    <section className="day-snapshot" aria-live="polite"><div className="section-heading"><h2>{day.date}{day.today ? ' · 今日' : ''}</h2><span className={`status-pill ${state}`}><i />{data.status}</span></div>
+      <div className="snapshot-row"><Moon size={19} /><span>睡眠<strong>{day.today ? data.sleep : day.sleep}</strong></span></div>
+      <div className="snapshot-row"><Footprints size={19} /><span>活动<strong>{day.today ? data.movement : day.activity}</strong></span></div>
+      <div className="snapshot-row"><Wind size={19} /><span>留给自己的时间<strong>{day.today ? sessions.length ? `已记录 ${sessions.length} 次 · ${formatTime(sessions.reduce((n, s) => n + s.duration, 0))}` : '今天还没有练习记录' : day.practice}</strong></span></div>
+      <div className="snapshot-row"><Coffee size={19} /><span>生活记录<strong>{day.today ? log.entries.length ? `总液体 ${totals.fluidMl} ml · 咖啡因 ${totals.caffeineMg} mg` : '今天还没有饮品记录' : day.drinks}</strong></span></div>
+      {day.today && <button className="inline-link" onClick={onDrinks}>补充或修改今天的饮品<ChevronRight size={17} /></button>}
+    </section><p className="data-disclosure">过去 6 天为内置示例；今日快照联动当前演示情景和本机记录。空缺的日子不会补成平稳。</p>
+  </div>;
+}
+
+===== END FILE =====
+
+===== FILE: web/tests/models.test.js =====
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { EMPTY_LOG, changeLog, totalDrinks, countCategory, validLog } from '../src/models/drinks.js';
+import { phaseAt, formatTime } from '../src/models/breathing.js';
+
+test('one sweet latte counts fluid, caffeine and a sugary serving exactly once', () => {
+  const log = changeLog(EMPTY_LOG, { type: 'add', preset: 'sweetCoffee', coffeeMg: 140 });
+  assert.deepEqual(totalDrinks(log.entries), { fluidMl: 300, caffeineMg: 140, alcoholG: 0, sugarServings: 1 });
+  assert.equal(countCategory(log.entries, 'coffee'), 1);
+  assert.equal(validLog(log), true);
+});
+test('undo restores an entire composite drink, including undoing a removal', () => {
+  const first = changeLog(EMPTY_LOG, { type: 'add', preset: 'sweetCoffee' });
+  const second = changeLog(first, { type: 'add', preset: 'water' });
+  const third = changeLog(second, { type: 'remove', category: 'coffee' });
+  assert.equal(totalDrinks(third.entries).caffeineMg, 0);
+  assert.deepEqual(changeLog(third, { type: 'undo' }).entries, second.entries);
+  assert.deepEqual(changeLog(changeLog(third, { type: 'undo' }), { type: 'undo' }).entries, first.entries);
+});
+test('decrement cannot create negative quantities or spurious undo actions', () => {
+  assert.equal(changeLog(EMPTY_LOG, { type: 'remove', category: 'water' }), EMPTY_LOG);
+  assert.equal(changeLog(EMPTY_LOG, { type: 'undo' }), EMPTY_LOG);
+});
+test('changed caffeine presets only affect future records', () => {
+  let log = changeLog(EMPTY_LOG, { type: 'add', preset: 'coffee', coffeeMg: 140 });
+  log = changeLog(log, { type: 'add', preset: 'coffee', coffeeMg: 90 });
+  assert.equal(totalDrinks(log.entries).caffeineMg, 230);
+  assert.equal(log.entries[0].caffeineMg, 140);
+});
+test('invalid persisted log data is rejected', () => {
+  assert.equal(validLog({ entries: [{ preset: 'fake' }], history: [] }), false);
+  assert.equal(validLog({ entries: ['water'], history: [] }), false);
+});
+test('double-inhale phases and scale remain continuous at cycle boundaries', () => {
+  assert.equal(phaseAt(3.999).id, 'inhale');
+  assert.equal(phaseAt(4).id, 'topup');
+  assert.equal(phaseAt(5).id, 'exhale');
+  assert.equal(phaseAt(12).id, 'inhale');
+  assert.ok(Math.abs(phaseAt(3.999).scale - phaseAt(4).scale) < .001);
+  assert.ok(Math.abs(phaseAt(4.999).scale - phaseAt(5).scale) < .001);
+  assert.ok(Math.abs(phaseAt(11.999).scale - phaseAt(12).scale) < .001);
+  assert.equal(phaseAt(300).complete, true);
+  assert.equal(phaseAt(299).cycle, 25);
+  assert.equal(formatTime(299.1), '5:00');
+  assert.equal(formatTime(-1), '0:00');
+});
+
+import { CHARACTER_ARTWORKS } from '../src/models/characterAssets.js';
+import { deformArtworkPoint } from '../src/models/characterMotion.js';
+test('generated-art motion preserves planted feet and all edges across the entire breath', () => {
+  for (let breath = 0; breath <= 1; breath += .1) {
+    for (const [x, y] of [[.45,.85],[.58,.85],[.7,.85],[0,0],[1,0],[0,1],[1,1]]) {
+      assert.deepEqual(deformArtworkPoint(x,y,{asset:'breathing',breath}),[x,y]);
+    }
+  }
+  const exhaled = deformArtworkPoint(.65,.58,{asset:'breathing',breath:0});
+  const inhaled = deformArtworkPoint(.65,.58,{asset:'breathing',breath:1});
+  assert.ok(inhaled[0] > exhaled[0]);
+  assert.ok(inhaled[1] < exhaled[1]);
+});
+test('reduced motion preserves every sampled source point and gestures stay within local bounds', () => {
+  for (const asset of Object.keys(CHARACTER_ARTWORKS)) {
+    for (let x=0;x<=1;x+=.1) for(let y=0;y<=1;y+=.1) {
+      assert.deepEqual(deformArtworkPoint(x,y,{asset,time:1,breath:1,reduced:true}),[x,y]);
+      const [a,b]=deformArtworkPoint(x,y,{asset,time:1,breath:1});
+      assert.ok(Math.hypot(a-x,b-y)<.022);
+    }
+  }
+});
+
+
+test('a puppy nod preserves spacing between eyes and nose', () => {
+  const landmarks = [[.4,.4],[.5,.43],[.6,.45]];
+  const moved = landmarks.map(([x,y]) => deformArtworkPoint(x,y,{asset:'dog-drink',time:.425,reaction:true}));
+  for (let i=1;i<landmarks.length;i++) {
+    const before = Math.hypot(landmarks[i][0]-landmarks[0][0],landmarks[i][1]-landmarks[0][1]);
+    const after = Math.hypot(moved[i][0]-moved[0][0],moved[i][1]-moved[0][1]);
+    assert.ok(Math.abs(before-after)<1e-8);
+  }
+});
+
+===== END FILE =====
+
+===== FILE: web/tests/ui/brand.spec.js =====
+import { test, expect } from '@playwright/test';
+
+test('brand preview replays once, switches theme, respects reduced motion and downloads assets', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/brand-studio.html#applications');
+  const core = page.locator('#launch-core');
+  await page.getByRole('button', { name: '播放启动效果' }).click();
+  await expect(core).toHaveClass(/is-playing/);
+  await expect(core).not.toHaveClass(/is-playing/, { timeout: 5000 });
+  await page.getByRole('button', { name: '深色预览' }).click();
+  await expect(page.locator('#launch-phone')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('#launch-mark')).toHaveAttribute('src', '/brand/fangcun-mark-white.svg');
+  await page.getByLabel('减少动态效果').check();
+  await page.getByRole('button', { name: '播放启动效果' }).click();
+  await expect(core).not.toHaveClass(/is-playing/);
+  await expect(page.getByRole('status')).toContainText('静态展示');
+  await page.screenshot({ path: 'artifacts/brand-applications-desktop.png' });
+  const download = page.waitForEvent('download');
+  await page.getByRole('link', { name: '下载完整品牌素材包' }).click();
+  expect((await download).suggestedFilename()).toBe('fangcun-brand-kit-v1.zip');
+  expect(errors).toEqual([]);
+});
+
+test('brand applications fit a narrow screen and system reduced motion stays static', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/brand-studio.html#applications');
+  await expect(page.getByLabel('减少动态效果')).toBeChecked();
+  await page.getByRole('button', { name: '播放启动效果' }).click();
+  await expect(page.locator('#launch-core')).not.toHaveClass(/is-playing/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: 'artifacts/brand-applications-mobile.png', fullPage: true });
+  await page.goto('/');
+  await page.getByRole('button', { name: '设置', exact: true }).click();
+  await page.getByRole('link', { name: '方寸的寓意与设计' }).click();
+  await expect(page).toHaveURL(/brand-studio.html/);
+});
+
+===== END FILE =====
+
+===== FILE: web/tests/ui/prototype.spec.js =====
+import { test, expect } from '@playwright/test';
+import { mkdirSync } from 'node:fs';
+mkdirSync('artifacts', { recursive: true });
+
+test.beforeEach(async ({ page }) => { await page.goto('/'); });
+
+test('three scenarios keep the conclusion and direct action visible; details agree', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await expect(page.getByRole('heading', { name: '今日压力负荷平稳' })).toBeVisible();
+  const cta = page.getByRole('button', { name: /开始 5 分钟呼吸/ });
+  await expect(cta).toBeInViewport();
+  await page.screenshot({ animations: 'disabled', path: 'artifacts/01-home-light-desktop.png', fullPage: true });
+  await page.getByRole('button', { name: '偏高', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '今日压力负荷偏高' })).toBeVisible();
+  await page.getByRole('button', { name: '为什么这样判断', exact: true }).click();
+  await expect(page.getByText('5 小时 36 分', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '返回今日' }).click();
+  await page.getByRole('button', { name: '数据不足', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '暂时还无法判断' })).toBeVisible();
+  await cta.click();
+  await expect(page.getByTestId('breathing-session')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('compound drink increments, decrement, undo, keyboard close and persistence', async ({ page }) => {
+  await page.getByRole('button', { name: /今天喝了什么/ }).click();
+  const sheet = page.getByRole('dialog', { name: '今日饮品记录' });
+  await expect(sheet.locator('.character-artwork')).toHaveAttribute('data-character', 'dog');
+  await expect(sheet.locator('img')).toHaveAttribute('src', '/characters/v4/dog-drink.png');
+  await page.getByLabel('咖啡类型').selectOption('sweetCoffee');
+  await page.getByRole('button', { name: '增加咖啡', exact: true }).click();
+  await expect(page.getByTestId('total-fluid')).toHaveText('300 ml');
+  await expect(page.getByTestId('total-caffeine')).toHaveText('140 mg');
+  await expect(page.getByTestId('total-sugar')).toHaveText('1 份');
+  await page.getByRole('button', { name: '增加白水', exact: true }).click();
+  await expect(page.getByTestId('total-fluid')).toHaveText('550 ml');
+  await expect(sheet.locator('.drink-response')).toHaveText('已增加一杯白水');
+  await page.getByRole('button', { name: '减少咖啡', exact: true }).click();
+  await expect(page.getByTestId('total-caffeine')).toHaveText('0 mg');
+  await page.getByRole('button', { name: '撤销上一笔' }).click();
+  await expect(page.getByTestId('total-caffeine')).toHaveText('140 mg');
+  await expect(page.getByTestId('total-sugar')).toHaveText('1 份');
+  const phoneBox = await page.locator('.phone-frame').boundingBox();
+  const sheetBox = await sheet.boundingBox();
+  expect(sheetBox.height / (phoneBox.height - 12)).toBeCloseTo(.5, 1);
+  await page.screenshot({ animations: 'disabled', path: 'artifacts/02-composite-drink-sheet.png' });
+  await page.keyboard.press('Escape');
+  await expect(sheet).not.toBeVisible();
+  await expect(page.getByRole('button', { name: /今天喝了什么/ })).toBeFocused();
+  await page.reload();
+  await expect(page.getByText('已记 2 杯 · 总液体 550 ml')).toBeVisible();
+  await page.getByRole('button', { name: /看看这一周的节奏/ }).click();
+  await expect(page.getByText('总液体 550 ml · 咖啡因 140 mg')).toBeVisible();
+});
+
+test('breathing phase timing freezes on pause and exit confirmation; early exit records duration', async ({ page }) => {
+  await page.clock.install();
+  await page.getByRole('button', { name: /开始 5 分钟呼吸/ }).click();
+  await page.clock.runFor(4200);
+  await expect(page.getByTestId('phase-label')).toHaveText('再补一小口');
+  await page.getByRole('button', { name: '暂停练习', exact: true }).click();
+  const paused = await page.getByTestId('remaining-time').textContent();
+  await page.clock.runFor(6000);
+  await expect(page.getByTestId('remaining-time')).toHaveText(paused);
+  await page.getByRole('button', { name: '继续练习', exact: true }).click();
+  await page.clock.runFor(1400);
+  await expect(page.getByTestId('phase-label')).toHaveText('缓缓呼气');
+  await page.screenshot({ animations: 'disabled', path: 'artifacts/03-breathing.png' });
+  await page.getByRole('button', { name: '结束练习', exact: true }).click();
+  const atExit = await page.getByTestId('remaining-time').textContent();
+  await page.clock.runFor(12000);
+  await expect(page.getByTestId('remaining-time')).toHaveText(atExit);
+  await page.getByRole('button', { name: '结束并记录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '这次，就到这里。' })).toBeVisible();
+  await expect(page.locator('.completion-view .companions')).toHaveAttribute('data-pose', 'rest');
+  await page.getByRole('button', { name: '返回今日首页' }).click();
+  await page.getByRole('button', { name: /看看这一周的节奏/ }).click();
+  await expect(page.getByText(/已记录 1 次/)).toBeVisible();
+});
+
+test('five-minute session completes once with an honest local completion record', async ({ page }) => {
+  await page.clock.install();
+  await page.getByRole('button', { name: /开始 5 分钟呼吸/ }).click();
+  // Skip idle frames, like a delayed render, while retaining the full 300-second duration.
+  await page.clock.fastForward(301000);
+  await page.clock.runFor(100);
+  await expect(page.getByRole('heading', { name: '这 5 分钟，属于你。' })).toBeVisible();
+  await expect(page.locator('.completion-view .companions')).toHaveAttribute('data-pose', 'touch');
+  await page.screenshot({ animations: 'disabled', path: 'artifacts/10-completion-companions.png' });
+  await expect(page.getByText('已记录在本机', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '返回今日首页' }).click();
+  await expect(page.getByRole('heading', { name: '今日压力负荷平稳' })).toBeVisible();
+  await page.getByRole('button', { name: /看看这一周的节奏/ }).click();
+  await expect(page.getByText('已记录 1 次 · 5:00')).toBeVisible();
+});
+
+test('mobile dark mode, large type, missing-day snapshot and no horizontal overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await expect(page.getByRole('button', { name: /开始 5 分钟呼吸/ })).toBeInViewport();
+  await page.screenshot({ animations: 'disabled', path: 'artifacts/04-home-mobile.png' });
+  await page.getByRole('button', { name: '切换深浅色模式' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const bg = await page.locator('.phone-frame').evaluate(el => getComputedStyle(el).backgroundColor);
+  expect(bg).toBe('rgb(18, 22, 26)');
+  await page.getByRole('button', { name: '切换大字号' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-large', 'true');
+  await page.screenshot({ animations: 'disabled', path: 'artifacts/05-dark-large-type.png' });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole('button', { name: /看看这一周的节奏/ }).click();
+  await page.getByRole('button', { name: '9月13日 数据不足' }).click();
+  await expect(page.getByText('9 月 13 日', { exact: true })).toBeVisible();
+  await expect(page.locator('.day-snapshot').getByText('资料不足')).toHaveCount(0);
+  await expect(page.locator('.day-snapshot').getByText('数据不足', { exact: true })).toBeVisible();
+  await expect(page.locator('.day-snapshot').getByText('暂无完整记录')).toHaveCount(2);
+  await page.screenshot({ animations: 'disabled', path: 'artifacts/06-trends-dark-large.png' });
+  expect(await page.locator('.app-scroll').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+});
+
+test('caffeine preferences preserve existing records and reduced motion keeps pets still', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-reduced', 'true');
+  await page.getByRole('button', { name: /今天喝了什么/ }).click();
+  await page.getByRole('button', { name: '增加咖啡', exact: true }).click();
+  await page.getByRole('button', { name: '记好了' }).click();
+  await page.getByRole('navigation').getByRole('button', { name: '设置', exact: true }).click();
+  await page.getByLabel('每杯咖啡因毫克数').fill('90');
+  await page.getByRole('navigation').getByRole('button', { name: '今日', exact: true }).click();
+  await page.getByRole('button', { name: /今天喝了什么/ }).click();
+  await expect(page.getByTestId('total-caffeine')).toHaveText('140 mg');
+  await page.getByRole('button', { name: '增加咖啡', exact: true }).click();
+  await expect(page.getByTestId('total-caffeine')).toHaveText('230 mg');
+  await page.getByRole('button', { name: '记好了' }).click();
+  await page.clock.install();
+  await page.getByRole('button', { name: /开始 5 分钟呼吸/ }).click();
+  await page.clock.runFor(200);
+  const firstOpacity = await page.locator('.breath-expansion').evaluate(el => Number(getComputedStyle(el).opacity));
+  await page.clock.runFor(3000);
+  const laterOpacity = await page.locator('.breath-expansion').evaluate(el => Number(getComputedStyle(el).opacity));
+  expect(laterOpacity).toBeGreaterThan(firstOpacity);
+  expect(await page.locator('.breathing-pet').evaluate(el => getComputedStyle(el).transform)).toBe('none');
+  expect(await page.locator('.breath-expansion').evaluate(el => getComputedStyle(el).transform)).toBe('none');
+  await expect(page.locator('.breathing-pet .character-artwork')).toHaveAttribute('data-still', 'true');
+  await expect(page.locator('.breathing-pet .character-artwork')).toHaveAttribute('data-renderer', 'webgl');
+});
+
+test('contextual portraits retain the selected scenario and restore focus on close', async ({ page }) => {
+  const trigger = page.getByRole('button', { name: /看看.*的陪伴动作/ });
+  for (const [label, file, cast, asset] of [['平稳', '07-calm-portrait', 'duo', 'duo-calm'], ['偏高', '08-support-portrait', 'dog', 'dog-rest'], ['数据不足', '09-curious-portrait', 'cat', 'cat-curious']]) {
+    await page.getByRole('button', { name: label, exact: true }).click();
+    await expect(page.locator('.hero-card .character-artwork')).toHaveAttribute('data-character', cast);
+    await expect(page.locator('.hero-card img')).toHaveAttribute('src', `/characters/v4/${asset}.png`);
+    await trigger.click();
+    await expect(page.locator('.companion-portrait .character-artwork')).toHaveAttribute('data-character', cast);
+    await expect(page.getByRole('dialog', { name: '猫狗的此刻' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: '猫狗的此刻' })).toHaveCSS('opacity', '1');
+    await page.screenshot({ animations: 'disabled', path: `artifacts/${file}.png` });
+    await page.keyboard.press('Escape');
+    await expect(trigger).toBeFocused();
+    await expect(page.getByRole('button', { name: label, exact: true })).toHaveAttribute('aria-pressed', 'true');
+  }
+});
+
+test('generated breathing artwork follows the clock and freezes exactly on pause', async ({ page }) => {
+  await page.clock.install();
+  await page.getByRole('button', { name: /开始 5 分钟呼吸/ }).click();
+  const art = page.locator('.breathing-pet .character-artwork');
+  await expect(art).toHaveAttribute('data-renderer', 'webgl');
+  await expect(art).toHaveAttribute('data-character', 'cat');
+  await expect(art.locator('img')).toHaveAttribute('src', '/characters/v3/breathing.png');
+  const canvas = art.locator('canvas');
+  await page.clock.runFor(200);
+  const firstStrength = Number(await canvas.getAttribute('data-breath'));
+  await page.clock.runFor(3000);
+  expect(Number(await canvas.getAttribute('data-breath'))).toBeGreaterThan(firstStrength);
+  await page.getByRole('button', { name: '暂停练习', exact: true }).click();
+  await page.clock.runFor(100);
+  const pausedStrength = await canvas.getAttribute('data-breath');
+  const pausedTime = await canvas.getAttribute('data-motion-time');
+  const pausedDraws = await canvas.getAttribute('data-draw-count');
+  await page.clock.runFor(6000);
+  expect(await canvas.getAttribute('data-breath')).toBe(pausedStrength);
+  expect(await canvas.getAttribute('data-motion-time')).toBe(pausedTime);
+  expect(await canvas.getAttribute('data-draw-count')).toBe(pausedDraws);
+  await expect(art).toHaveAttribute('data-phase', 'paused');
+  await page.getByRole('button', { name: '继续练习', exact: true }).click();
+  await page.clock.runFor(2000);
+  await expect(page.getByTestId('phase-label')).toHaveText('缓缓呼气');
+  await expect(art).toHaveAttribute('data-phase', 'exhale');
+});
+
+test('artwork studio loads solo cat, redesigned dog and duo scenes and supports replay, pause and dark mode', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/character-studio.html');
+  await expect(page.locator('article')).toHaveCount(7);
+  await expect(page.locator('[data-renderer="webgl"]')).toHaveCount(7);
+  for (const img of await page.locator('.artwork-fallback').all()) {
+    expect(await img.evaluate(el => el.complete && el.naturalWidth > 1000)).toBe(true);
+  }
+  await page.screenshot({ path: 'artifacts/11-character-studio.png', fullPage: true });
+  const breathing = page.locator('article').filter({ has: page.getByRole('heading', { name: '跟着一口呼吸' }) });
+  await breathing.scrollIntoViewIfNeeded();
+  await page.clock.install();
+  await breathing.getByRole('button', { name: '重播动作' }).click();
+  await page.clock.runFor(5500);
+  await expect(breathing.locator('.breathing-label')).toContainText('缓缓呼气');
+  await breathing.getByRole('button', { name: '重播动作' }).click();
+  await page.clock.runFor(150);
+  await expect(breathing.locator('.breathing-label')).toContainText('轻轻吸气');
+  await breathing.getByRole('button', { name: '暂停', exact: true }).click();
+  await page.clock.runFor(100);
+  const value = await breathing.locator('canvas').getAttribute('data-breath');
+  await page.clock.runFor(3000);
+  expect(await breathing.locator('canvas').getAttribute('data-breath')).toBe(value);
+  await page.getByRole('button', { name: '深色背景', exact: true }).click();
+  await expect(page.locator('.studio')).toHaveAttribute('data-theme', 'dark');
+  await page.getByLabel('减少动态效果').check();
+  await expect(page.locator('.character-artwork[data-still="true"]')).toHaveCount(7);
+  await page.clock.runFor(150);
+  const stillDraws = await page.locator('canvas').evaluateAll(nodes => nodes.map(node => node.dataset.drawCount));
+  await page.clock.runFor(2000);
+  expect(await page.locator('canvas').evaluateAll(nodes => nodes.map(node => node.dataset.drawCount))).toEqual(stillDraws);
+  await page.screenshot({ path: 'artifacts/12-character-studio-dark.png', fullPage: true });
+  expect(errors).toEqual([]);
+});
+
+
+test('background pets freeze behind a portrait, replay keeps focus, and rapid drink records stay accurate', async ({ page }) => {
+  await page.clock.install();
+  const home = page.locator('.hero-card canvas');
+  await expect(page.locator('.hero-card .character-artwork')).toHaveAttribute('data-renderer', 'webgl');
+  await page.clock.runFor(200);
+  await page.getByRole('button', { name: '看看猫狗的陪伴动作' }).click();
+  await page.clock.runFor(300);
+  const count = await home.getAttribute('data-draw-count');
+  await page.clock.runFor(800);
+  expect(await home.getAttribute('data-draw-count')).toBe(count);
+  const portrait = page.getByRole('dialog', { name: '猫狗的此刻' });
+  const replay = portrait.getByRole('button', { name: '再看一次动作' });
+  await replay.click();
+  await page.clock.runFor(200);
+  await expect(replay).toBeFocused();
+  await replay.click();
+  await page.clock.runFor(100);
+  await expect(replay).toBeFocused();
+  await portrait.getByRole('button', { name: '回到今日' }).click();
+  await page.clock.runFor(200);
+  expect(Number(await home.getAttribute('data-draw-count'))).toBeGreaterThan(Number(count));
+  await page.getByRole('button', { name: /今天喝了什么/ }).click();
+  const sheet = page.getByRole('dialog', { name: '今日饮品记录' });
+  for (let i=0;i<5;i++) {
+    await sheet.getByRole('button', { name: '增加白水', exact: true }).click();
+    await page.clock.runFor(80);
+  }
+  await expect(page.getByTestId('total-fluid')).toHaveText('1250 ml');
+  await expect(sheet.locator('.drink-response')).toHaveText('已增加一杯白水');
+  await sheet.getByRole('button', { name: '撤销上一笔' }).click();
+  await expect(page.getByTestId('total-fluid')).toHaveText('1000 ml');
+  await expect(sheet.locator('.drink-response')).toHaveText('已撤销上一笔');
+  await page.clock.runFor(1200);
+  const settledDraws = await sheet.locator('canvas').getAttribute('data-draw-count');
+  await page.clock.runFor(1200);
+  expect(await sheet.locator('canvas').getAttribute('data-draw-count')).toBe(settledDraws);
+});
+
+===== END FILE =====
+
+===== FILE: web/vite.config.js =====
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import { resolve } from 'node:path';
+export default defineConfig({ plugins: [react(), tailwindcss()], build: { rollupOptions: { input: { app: resolve(import.meta.dirname, 'index.html'), characters: resolve(import.meta.dirname, 'character-studio.html'), brand: resolve(import.meta.dirname, 'brand-studio.html') } } } });
+
+===== END FILE =====
+
+===== FILE: web/启动预览.command =====
+#!/bin/zsh
+set -e
+cd "$(dirname "$0")"
+if curl --silent --max-time 2 http://127.0.0.1:4173/ | grep -q '方寸 Fangcun'; then
+  open 'http://127.0.0.1:4173/'
+  exit 0
+fi
+if ! command -v npm >/dev/null 2>&1; then
+  print '需要先安装 Node.js 22.12 或更新版本，再双击此文件。'
+  read '?按回车关闭…'
+  exit 1
+fi
+if [[ ! -d node_modules ]]; then
+  npm ci --no-audit --no-fund
+fi
+print '方寸预览即将打开。保留此窗口运行；按 Control-C 停止。'
+exec npm run dev -- --open
+
+===== END FILE =====

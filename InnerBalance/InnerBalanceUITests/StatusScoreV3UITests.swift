@@ -33,6 +33,7 @@ final class StatusScoreV3UITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","--score-night","-fangcun.dark","YES","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
+    app.launchArguments += ["-status-v3.avoidBreathing", "NO"]
     app.launch()
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
     XCTAssertTrue(app.staticTexts["今晚早点收尾。"].exists)
@@ -67,6 +68,11 @@ final class StatusScoreV3UITests: XCTestCase {
     app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","-fangcun.dark","YES","-fangcun.largeType","YES","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL","-fangcun.reduceMotion","YES"]
     app.launch()
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
+    let sizeControl = app.buttons["切换大字号"]
+    let appearanceControl = app.buttons["切换深浅色模式"]
+    let brand = app.descendants(matching: .any).matching(identifier: "home.brandPoint").firstMatch
+    XCTAssertLessThanOrEqual(brand.frame.maxX, sizeControl.frame.minX)
+    XCTAssertLessThanOrEqual(sizeControl.frame.maxX, appearanceControl.frame.minX)
     assertClean(app); capture("v3-dark-maximum-home",app)
     let action = app.buttons["today.start"]
     for _ in 0..<6 where !action.isHittable { app.swipeUp() }

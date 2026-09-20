@@ -71,3 +71,4 @@ Generated from the public source files. Every section names its original reposit
 - [source-67.txt](source-67.txt) — [raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/ai/source-67.txt)
 - [source-68.txt](source-68.txt) — [raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/ai/source-68.txt)
 - [source-69.txt](source-69.txt) — [raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/ai/source-69.txt)
+- [source-70.txt](source-70.txt) — [raw](https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/ai/source-70.txt)

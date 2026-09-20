@@ -52,7 +52,11 @@ final class CheckInFlowUITests: XCTestCase {
     waitForExpectations(timeout:5)
     XCTAssertTrue(app.staticTexts["100"].exists)
     // Reset only the explicit preference this test changed.
-    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap(); app.switches["这次不做呼吸练习"].tap(); app.buttons["完成"].tap()
+    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap()
+    let reset = app.switches["这次不做呼吸练习"]
+    reset.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+    XCTAssertEqual(reset.value as? String, "0")
+    app.buttons["完成"].tap()
   }
 
   @MainActor

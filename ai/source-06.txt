@@ -1,86 +1,1012 @@
 
-===== FILE: InnerBalance/InnerBalanceUITests/HomeEvidencePipelineUITests.swift =====
+===== FILE: InnerBalance/InnerBalanceUITests/CheckInFlowUITests.swift =====
 import XCTest
 
-final class HomeEvidencePipelineUITests: XCTestCase {
-  @MainActor func testHistoryFailureAndLimitedEvidence() {
-    verify([("noCurrentHistory", "insufficient"), ("failed", "insufficient"),
-      ("sleepOnly", "limited"), ("oneCardio", "limited")])
-  }
-
-  @MainActor func testQualifiedEvidenceAndWorkoutProtection() {
-    verify([("steady", "steady"), ("watch", "watch"), ("elevated", "elevated"),
-      ("workoutProtected", "limited")])
-  }
-
-  @MainActor func testPreviousSleepAndIncompleteBaselines() {
-    verify([("previousSleep", "insufficient"), ("baselineBuilding", "limited"),
-      ("unreliablePair", "limited")])
-  }
-
-  @MainActor func testMeasurementTimeDoesNotBecomeQueryTime() {
+final class CheckInFlowUITests: XCTestCase {
+  @MainActor
+  private func launchApp() -> XCUIApplication {
     continueAfterFailure = false
-    let app = launch("stale")
-    expectState("insufficient", app)
-    let measured = Date(timeIntervalSince1970: 1_789_704_000 - 37 * 3_600).ISO8601Format()
-    let fetched = Date(timeIntervalSince1970: 1_789_704_000 - 60).ISO8601Format()
-    XCTAssertEqual(app.staticTexts["today.measuredAt"].value as? String, measured)
-    capture("m1-stale-measurement", app)
-    let detail = app.buttons["today.evidence"]
-    for _ in 0..<5 where !detail.isHittable { app.scrollViews.firstMatch.swipeUp() }
-    detail.tap()
-    XCTAssertTrue(app.staticTexts["evidence.fetchedAt"].waitForExistence(timeout: 5))
-    XCTAssertEqual(app.staticTexts["evidence.fetchedAt"].value as? String, fetched)
-    XCTAssertEqual(app.staticTexts["evidence.computedAt"].value as? String,
-      Date(timeIntervalSince1970: 1_789_704_000).ISO8601Format())
-    capture("m1-time-detail", app)
-  }
-
-  @MainActor private func verify(_ cases: [(String, String)]) {
-    continueAfterFailure = false
-    for (fixture, state) in cases {
-      let app = launch(fixture)
-      expectState(state, app)
-      if fixture == "failed" {
-        XCTAssertEqual(app.staticTexts["today.measuredAt"].value as? String, "none")
-      }
-      if fixture == "workoutProtected" {
-        XCTAssertTrue(app.staticTexts["today.evidenceSummary"].label.contains("不将它们解释为正常"))
-      }
-      if fixture == "previousSleep" {
-        let detail = app.buttons["today.evidence"]
-        for _ in 0..<5 where !detail.isHittable { app.scrollViews.firstMatch.swipeUp() }
-        XCTAssertTrue(detail.label.contains("最近主睡眠"))
-        XCTAssertTrue(detail.label.contains("9月16日"))
-        XCTAssertFalse(detail.label.contains("昨晚"))
-      }
-      capture("m1-" + fixture, app)
-      app.terminate()
-    }
-  }
-
-  @MainActor private func launch(_ fixture: String) -> XCUIApplication {
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "--health-fixture=\(fixture)",
-      "-fangcun.dark", fixture == "watch" ? "YES" : "NO",
-      "-fangcun.largeType", fixture == "oneCardio" ? "YES" : "NO",
-      "-fangcun.reduceMotion", "YES"]
-    // No --preview-state: the UI must derive its conclusion from the raw provider data.
+    app.launchArguments = [
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryLarge",
+    ]
     app.launch()
     return app
   }
 
-  @MainActor private func expectState(_ state: String, _ app: XCUIApplication) {
-    let conclusion = app.staticTexts["today.conclusion"]
-    XCTAssertTrue(conclusion.waitForExistence(timeout: 10))
-    let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(
-      predicate: NSPredicate(format: "value == %@", state), object: conclusion)], timeout: 8)
-    XCTAssertEqual(result, .completed)
+  @MainActor
+  func testHomeLeadsWithOneScoreAndAction() {
+    let app = launchApp()
+    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"home.brandPoint").firstMatch.waitForExistence(timeout:5))
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    XCTAssertEqual(app.staticTexts["status.band"].label,"良好")
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
+    XCTAssertEqual(app.buttons.matching(identifier:"today.start").count,1)
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
+    XCTAssertFalse(app.staticTexts["当前压力"].exists)
+    XCTAssertFalse(app.staticTexts["有限线索"].exists)
   }
 
+  @MainActor
+  func testStatusNeedsNoWritingAndDoesNotCreateAChoreList() {
+    let app = launchApp()
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    XCTAssertEqual(app.textFields.count,0)
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
+    XCTAssertFalse(app.buttons["补一句"].exists)
+    XCTAssertFalse(app.staticTexts["今日足迹"].exists)
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
+  }
+
+  @MainActor
+  func testExplicitNoBreathingChoiceChangesActionOnly() {
+    let app = launchApp()
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap()
+    let toggle = app.switches["这次不做呼吸练习"]
+    XCTAssertTrue(toggle.waitForExistence(timeout:5))
+    if toggle.value as? String != "1" { toggle.coordinate(withNormalizedOffset:CGVector(dx:0.93,dy:0.5)).tap() }
+    XCTAssertEqual(toggle.value as? String,"1")
+    app.buttons["完成"].tap()
+    expectation(for:NSPredicate(format:"label CONTAINS %@","安静休息"),evaluatedWith:app.buttons["today.start"])
+    waitForExpectations(timeout:5)
+    XCTAssertTrue(app.staticTexts["100"].exists)
+    // Reset only the explicit preference this test changed.
+    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap()
+    let reset = app.switches["这次不做呼吸练习"]
+    reset.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+    XCTAssertEqual(reset.value as? String, "0")
+    app.buttons["完成"].tap()
+  }
+
+  @MainActor
+  func testPacedBreathingLeadsWithTheCurrentBreathPhase() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    let practice = app.buttons["practice.pacedBreathing.180"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 3))
+    practice.tap()
+    let start = app.buttons["开始 3 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    start.tap()
+
+    let guide = app.descendants(matching: .any)["practice.breathGuide"]
+    XCTAssertTrue(guide.waitForExistence(timeout: 3))
+    XCTAssertTrue(app.staticTexts["吸气"].exists)
+  }
+
+  @MainActor
+  func testBreathPhaseRemainsThePrimaryGuideAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    app.tabBars.buttons["练习"].tap()
+    let practice = app.buttons["practice.pacedBreathing.180"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 3))
+    for _ in 0..<6 where !practice.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(practice.isHittable)
+    practice.tap()
+    let start = app.buttons["开始 3 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    for _ in 0..<4 where !start.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(start.isHittable)
+    start.tap()
+
+    let phase = app.staticTexts["practice.breathPhase"]
+    XCTAssertTrue(phase.waitForExistence(timeout: 3))
+    XCTAssertTrue(phase.isHittable)
+  }
+
+  @MainActor
+  func testHomeResponseRemainsReachableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep480","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    let action = app.buttons["today.start"]
+    for _ in 0..<8 where !action.isHittable { app.swipeUp() }
+    XCTAssertTrue(action.isHittable)
+    XCTAssertGreaterThanOrEqual(action.frame.height,44)
+  }
+
+  @MainActor
+  func testBottomChromeDoesNotInterceptHomeScroll() {
+    let app = launchApp()
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    let tabBar = app.tabBars.firstMatch
+    XCTAssertLessThan(tabBar.frame.height,120)
+    let response = app.buttons["today.drinks"]
+    XCTAssertTrue(response.exists)
+    let initialY = response.frame.minY
+    app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.80)).press(forDuration:0.05,thenDragTo:app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.35)))
+    XCTAssertLessThan(response.frame.minY,initialY-12)
+    let checkIn = app.buttons["home.checkIn"]
+    for _ in 0..<6 where !checkIn.isHittable { app.swipeUp() }
+    XCTAssertTrue(checkIn.isHittable)
+  }
+
+  @MainActor
+  func testFangcunNavigationUsesProductLanguage() {
+    let app = launchApp()
+
+    XCTAssertTrue(app.tabBars.buttons["今日"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.tabBars.buttons["练习"].exists)
+    XCTAssertTrue(app.tabBars.buttons["设置"].exists)
+  }
+
+  @MainActor
+  func testSelectingSuggestedWordImmediatelySavesPrimaryRecord() {
+    let app = launchApp()
+    revealAndTapCheckIn(in: app)
+    XCTAssertTrue(app.staticTexts["现在怎样？"].waitForExistence(timeout: 2))
+
+    chooseHighNegativePosition(in: app)
+    XCTAssertTrue(app.staticTexts["哪个词最接近？"].waitForExistence(timeout: 2))
+    XCTAssertFalse(app.buttons["checkIn.continue"].exists)
+    XCTAssertEqual(app.sliders.count, 0)
+
+    app.buttons["emotionWord.anxious"].tap()
+
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["焦虑"].exists)
+  }
+
+  @MainActor
+  func testUnclassifiedStillSavesSelectedValence() {
+    let app = launchApp()
+    revealAndTapCheckIn(in: app)
+    chooseLowPositivePosition(in: app)
+
+    app.buttons["emotionWord.unclassified"].tap()
+
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["都不像，也已保留罗盘位置"].exists)
+  }
+
+  @MainActor
+  func testEmotionCompassDragCommitsItsEndpoint() {
+    let app = launchApp()
+    revealAndTapCheckIn(in: app)
+
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout: 2))
+    XCTAssertTrue(field.isHittable)
+
+    let start = field.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+    let end = field.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.25))
+    start.press(forDuration: 0.1, thenDragTo: end)
+
+    XCTAssertEqual(field.value as? String, "较不愉快，较有劲")
+    XCTAssertTrue(app.buttons["emotionWord.anxious"].waitForExistence(timeout: 2))
+  }
+
+  @MainActor
+  func testEmotionFieldRemainsUsableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    revealAndTapCheckIn(in: app)
+    chooseHighNegativePosition(in: app)
+
+    let unclassified = app.buttons["emotionWord.unclassified"]
+    XCTAssertTrue(unclassified.waitForExistence(timeout: 2))
+    for _ in 0..<4 where !unclassified.isHittable {
+      app.scrollViews["checkIn.scroll"].swipeUp()
+    }
+    XCTAssertTrue(unclassified.isHittable)
+  }
+
+  @MainActor
+  func testPracticeLibraryOpensARealSession() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    XCTAssertTrue(app.staticTexts["给自己留一点时间"].waitForExistence(timeout: 2))
+
+    app.buttons["practice.physiologicalSigh.60"].tap()
+
+    XCTAssertTrue(app.staticTexts["生理性叹息"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["这个练什么"].exists)
+    XCTAssertTrue(app.staticTexts["适合什么时候"].exists)
+    XCTAssertTrue(app.staticTexts["怎么做"].exists)
+    XCTAssertTrue(app.staticTexts["开始前"].exists)
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].exists)
+  }
+
+  @MainActor
+  func testPracticeLibraryStartsFromTheOutcomeInsteadOfAPlainCatalog() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+
+    XCTAssertTrue(app.staticTexts["给自己留一点时间"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.buttons["practice.sigh.300"].exists)
+    XCTAssertTrue(app.buttons["practice.physiologicalSigh.60"].exists)
+    XCTAssertTrue(app.staticTexts["压力中等，节奏偏快"].exists)
+    XCTAssertTrue(app.staticTexts["压力较低，思绪占满"].exists)
+    XCTAssertTrue(app.staticTexts["睡眠或训练透支"].exists)
+    reveal(app.staticTexts["专项训练，不用于即时减压"],in:app)
+    XCTAssertTrue(app.staticTexts["专项训练，不用于即时减压"].exists)
+  }
+
+  @MainActor
+  func testPracticeOffersHandsFreeSoundAndHapticGuidance() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    app.buttons["practice.physiologicalSigh.60"].tap()
+
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.descendants(matching: .any)["practice.sound.controls"].exists)
+    XCTAssertTrue(app.buttons["语音引导"].exists)
+    XCTAssertTrue(app.buttons["语音引导"].isSelected)
+    XCTAssertTrue(app.buttons["仅节奏"].exists)
+    XCTAssertTrue(app.buttons["静音"].exists)
+    XCTAssertTrue(app.switches["practice.haptics"].exists)
+  }
+
+  @MainActor
+  func testPracticePreparationIsScrollableForLargeContent() {
+    let app = launchApp()
+
+    app.tabBars.buttons["练习"].tap()
+    app.buttons["practice.physiologicalSigh.60"].tap()
+
+    XCTAssertTrue(app.scrollViews["practice.preparation"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["开始 1 分钟练习"].exists)
+  }
+
+  @MainActor
+  func testPracticeCompletionRemainsReachableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    app.tabBars.buttons["练习"].tap()
+    app.buttons["practice.physiologicalSigh.60"].tap()
+    let start = app.buttons["开始 1 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    start.tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["practice.breathGuide"].waitForExistence(timeout: 5)
+    )
+    let end = app.buttons["结束"]
+    XCTAssertTrue(end.waitForExistence(timeout: 3))
+    end.tap()
+    let confirmEnd = app.buttons["practice.finish.confirm"].firstMatch
+    XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
+    confirmEnd.tap()
+
+    XCTAssertFalse(app.staticTexts["和刚才比"].exists)
+    tapPracticeChoice("平和", in: app)
+    tapPracticeChoice("保留现在的感受", in: app)
+
+    let done = app.buttons["practice.saved.done"]
+    XCTAssertTrue(done.waitForExistence(timeout: 3))
+    if !done.isHittable {
+      app.scrollViews["practice.saved.scroll"].swipeUp()
+    }
+    XCTAssertTrue(done.isHittable)
+  }
+
+  @MainActor
+  func testKegelCompletionRemainsReachableAtAccessibilityTextSizes() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "--ui-testing-practice-save-failure",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryAccessibilityXXXL",
+    ]
+    app.launch()
+
+    app.tabBars.buttons["练习"].tap()
+    let kegel = app.buttons["practice.kegel.180"]
+    for _ in 0..<8 where !kegel.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(kegel.isHittable)
+    kegel.tap()
+
+    let start = app.buttons["开始 3 分钟练习"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3))
+    start.tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["practice.pelvicFloorStage"].waitForExistence(timeout: 5)
+    )
+    let end = app.buttons["结束"]
+    XCTAssertTrue(end.waitForExistence(timeout: 3))
+    end.tap()
+    let confirmEnd = app.buttons["practice.finish.confirm"].firstMatch
+    XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
+    confirmEnd.tap()
+
+    let saveAlert = app.alerts["未能保留本次练习"]
+    XCTAssertTrue(saveAlert.waitForExistence(timeout: 5))
+    saveAlert.buttons["稍后处理"].tap()
+
+    let completionScroll = app.scrollViews["practice.completionOnly.scroll"]
+    XCTAssertTrue(completionScroll.waitForExistence(timeout: 3))
+    let save = app.buttons["记录本次完成"]
+    XCTAssertTrue(save.waitForExistence(timeout: 3))
+    if !save.isHittable {
+      completionScroll.swipeUp()
+    }
+    XCTAssertTrue(save.isHittable)
+  }
+
+  @MainActor
+  private func revealAndTapCheckIn(in app: XCUIApplication) {
+    let button = app.buttons["home.checkIn"]
+    let scroll = app.scrollViews.firstMatch
+    XCTAssertTrue(scroll.waitForExistence(timeout: 3))
+    for _ in 0..<8 where !button.isHittable {
+      scroll.swipeUp()
+    }
+    XCTAssertTrue(button.waitForExistence(timeout: 3))
+    XCTAssertTrue(button.isHittable)
+    button.tap()
+  }
+
+  @MainActor
+  private func tapPracticeChoice(_ label: String, in app: XCUIApplication) {
+    let button = app.buttons[label]
+    let scroll = app.scrollViews["practice.comparison.scroll"]
+    for _ in 0..<4 {
+      if !button.exists || button.frame.maxY > scroll.frame.maxY {
+        scroll.swipeUp()
+      } else if button.frame.minY < scroll.frame.minY {
+        scroll.swipeDown()
+      } else if button.isHittable {
+        break
+      }
+    }
+    XCTAssertTrue(button.waitForExistence(timeout: 3))
+    XCTAssertTrue(button.isHittable)
+    button.tap()
+    if label != "保留这次变化" && label != "保留现在的感受" {
+      expectation(
+        for: NSPredicate(format: "selected == true"),
+        evaluatedWith: button
+      )
+      waitForExpectations(timeout: 2)
+    }
+  }
+
+  @MainActor
+  private func chooseHighNegativePosition(in app: XCUIApplication) {
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout: 2))
+    field.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.25)).tap()
+  }
+
+  @MainActor
+  private func chooseLowPositivePosition(in app: XCUIApplication) {
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout: 2))
+    field.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.75)).tap()
+  }
+
+  @MainActor
+  private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
+    for _ in 0..<8 where !element.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(element.isHittable)
+  }
+
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/DrinkEditorUITests.swift =====
+import XCTest
+
+final class DrinkEditorUITests: XCTestCase {
+  @MainActor func testCapacityEditingUndoAndQuickLogShareTheSameRecords() {
+    continueAfterFailure = false
+    let app = XCUIApplication(); app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO"]
+    app.launch()
+    let drinks = app.buttons["today.drinks"]
+    XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
+    reveal(drinks, app); drinks.tap()
+    XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5)); app.buttons["drinks.add.water"].tap()
+    let manage = app.buttons["drinks.manage"]; reveal(manage, app); manage.tap()
+    let volume = app.textFields["drinks.edit.volume"]
+    XCTAssertTrue(volume.waitForExistence(timeout: 5))
+    volume.tap(); volume.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 10)+"500")
+    let save = app.buttons["drinks.edit.save"]; reveal(save, app); save.tap()
+    let entries = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "drinks.edit.entry."))
+    XCTAssertEqual(entries.count, 2)
+    let newest = entries.firstMatch; reveal(newest, app); newest.tap()
+    reveal(volume, app); volume.tap()
+    volume.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 10)+"750")
+    reveal(save, app); save.tap()
+    let undo = app.buttons["撤销上一笔"]; reveal(undo, app); undo.tap()
+    app.navigationBars.buttons["完成"].tap()
+    let totals = app.descendants(matching: .any)["drinks.totals"].firstMatch
+    XCTAssertTrue(totals.waitForExistence(timeout: 5))
+    XCTAssertTrue(totals.label.contains("750")) // 250 quick log + 500 edited entry after undo.
+  }
+  @MainActor private func reveal(_ item: XCUIElement, _ app: XCUIApplication) {
+    for _ in 0..<6 where !item.isHittable { app.scrollViews.firstMatch.swipeUp() }
+    XCTAssertTrue(item.isHittable)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/ExperienceV2SceneUITests.swift =====
+import XCTest
+
+final class ExperienceV2SceneUITests: XCTestCase {
+  @MainActor private func launch(_ scenario: String, dark: Bool = false, large: Bool = false, motion: String = "standard") -> XCUIApplication {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=" + scenario, "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN",
+      "-fangcun.dark", dark ? "YES" : "NO", "-fangcun.largeType", large ? "YES" : "NO", "-fangcun.reduceMotion", "NO", "-fangcun.motionMode", motion]
+    if large { app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"] }
+    app.launch()
+    XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 12))
+    return app
+  }
+  @MainActor func testDistinctCurrentConclusionsAndSceneEntry() {
+    for (scenario, title) in [("scoreSleep480", "良好"), ("scoreSleep375", "尚可"), ("scoreSleep240", "偏低"), ("scoreSleep45", "优先休息")] {
+      let app = launch(scenario)
+      expectation(for: NSPredicate(format: "label == %@", title), evaluatedWith: app.staticTexts["status.band"])
+      waitForExpectations(timeout: 10)
+      Thread.sleep(forTimeInterval: 2)
+      capture("scene-" + scenario, app)
+      XCTAssertFalse(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "看看它")).firstMatch.exists)
+      app.terminate()
+    }
+  }
+  @MainActor func testWaterCoffeeAlcoholAndUndoShowCommittedFeedback() {
+    let app = launch("assessable")
+    reveal(app.buttons["today.drinks"], app); app.buttons["today.drinks"].tap()
+    XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5))
+    for (button, scene) in [("drinks.add.water", "water"), ("drinks.add.coffee", "coffee"), ("drinks.add.beer", "alcohol")] {
+      reveal(app.buttons[button], app); app.buttons[button].tap()
+      XCTAssertEqual(app.staticTexts["drinks.feedback"].label, "这杯已经记好。")
+      Thread.sleep(forTimeInterval: 1.5)
+      capture("scene-drink-" + scene, app)
+    }
+    app.buttons["撤销"].tap()
+    XCTAssertEqual(app.staticTexts["drinks.feedback"].label, "已撤销上一笔。")
+    Thread.sleep(forTimeInterval: 1)
+    capture("scene-drink-undo", app)
+    XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("550"))
+  }
+  @MainActor func testActualMinuteCompletesBeforePawTouchSaveScreen() {
+    let app = launch("assessable")
+    app.tabBars.buttons["练习"].tap()
+    app.buttons["practice.physiologicalSigh.60"].tap()
+    XCTAssertTrue(app.buttons["practice.prepare.start"].waitForExistence(timeout: 5))
+    app.buttons["practice.prepare.start"].tap()
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 5))
+    let finish = app.buttons["先完成"]
+    XCTAssertTrue(finish.waitForExistence(timeout: 70))
+    reveal(finish, app); finish.tap()
+    XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout: 6))
+    Thread.sleep(forTimeInterval: 2)
+    capture("scene-completed", app)
+  }
+  @MainActor func testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange() {
+    let app = launch("oneDay", dark: true, large: true, motion: "static")
+    expectation(for: NSPredicate(format: "label == %@", "良好"), evaluatedWith: app.staticTexts["status.band"])
+    waitForExpectations(timeout: 12)
+    capture("scene-dark-large-home", app)
+    reveal(app.buttons["today.evidence"], app); app.buttons["today.evidence"].tap()
+    XCTAssertTrue(app.staticTexts["status.detail.score"].waitForExistence(timeout: 5))
+    capture("scene-dark-large-detail", app)
+    reveal(app.buttons["status.method"], app); app.buttons["status.method"].tap()
+    XCTAssertFalse(app.staticTexts["readiness.baseline.reference"].exists)
+    XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
+    app.navigationBars.buttons.firstMatch.tap()
+    reveal(app.buttons["today.drinks"], app); app.buttons["today.drinks"].tap()
+    XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["drinks.add.water"].isHittable)
+    capture("scene-dark-large-drinks", app)
+    app.buttons["drinks.add.water"].tap()
+    let undo = app.buttons["撤销"]
+    reveal(undo, app)
+    XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("250"))
+    capture("scene-dark-large-drink-summary", app)
+    undo.tap()
+    XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("0"))
+  }
+  @MainActor private func reveal(_ item: XCUIElement, _ app: XCUIApplication) {
+    for _ in 0..<8 where !item.isHittable { app.swipeUp() }
+    XCTAssertTrue(item.isHittable)
+  }
   @MainActor private func capture(_ name: String, _ app: XCUIApplication) {
+    let a = XCTAttachment(screenshot: app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/ExperienceV2UITests.swift =====
+import XCTest
+
+final class ExperienceV2UITests: XCTestCase {
+  @MainActor func testFirstExperienceDelivery() throws {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-AppleLanguages", "(zh-Hans)",
+      "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
+    app.launch()
+    let conclusion = app.staticTexts["status.band"]
+    XCTAssertTrue(conclusion.waitForExistence(timeout: 12))
+    expectation(for: NSPredicate(format: "label == %@", "良好"), evaluatedWith: conclusion)
+    waitForExpectations(timeout: 12)
+    XCTAssertFalse(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "看看它")).firstMatch.exists)
+    capture("v2-home", app)
+    print("V2_CLIP_HOME")
+    Thread.sleep(forTimeInterval: 3)
+    for _ in 0..<5 where !app.buttons["today.evidence"].isHittable { app.swipeUp() }
+    app.buttons["today.evidence"].tap()
+    XCTAssertTrue(app.staticTexts["status.detail.score"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
+    XCTAssertFalse(app.staticTexts["readiness.baseline.reference"].exists)
+    capture("v2-detail", app)
+    app.navigationBars.buttons.firstMatch.tap()
+    for _ in 0..<5 where !app.buttons["today.drinks"].isHittable { app.swipeUp() }
+    app.buttons["today.drinks"].tap()
+    XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5))
+    print("V2_CLIP_WATER")
+    app.buttons["drinks.add.water"].tap()
+    Thread.sleep(forTimeInterval: 2)
+    capture("v2-drinks", app)
+    app.buttons["完成"].tap()
+    for _ in 0..<5 where !app.buttons["today.start"].isHittable { app.swipeDown() }
+    app.buttons["today.start"].tap()
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 8))
+    print("V2_CLIP_BREATH")
+    Thread.sleep(forTimeInterval: 12)
+    capture("v2-breathing", app)
+    app.buttons["暂停练习"].tap()
+    XCTAssertTrue(app.buttons["继续练习"].exists)
+  }
+  @MainActor private func capture(_ name: String, _ app: XCUIApplication) {
+    let a = XCTAttachment(screenshot: app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/FangcunAppearanceUITests.swift =====
+import XCTest
+
+final class FangcunAppearanceUITests: XCTestCase {
+  @MainActor
+  func testCriticalScreensInCurrentAppearance() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "-UIPreferredContentSizeCategoryName",
+      "UICTContentSizeCategoryLarge",
+    ]
+    app.launch()
+
+    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"home.brandPoint").firstMatch.waitForExistence(timeout: 3))
+    capture("home-initial", from: app)
+
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    let action = app.buttons["today.start"]
+    XCTAssertGreaterThanOrEqual(action.frame.width,44)
+    XCTAssertGreaterThanOrEqual(action.frame.height,44)
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
+
+    app.tabBars.buttons["练习"].tap()
+    let practice = app.buttons["practice.physiologicalSigh.60"]
+    XCTAssertTrue(practice.waitForExistence(timeout: 3))
+    capture("practice-library", from: app)
+
+    practice.tap()
+    let preparation = app.scrollViews["practice.preparation"]
+    XCTAssertTrue(preparation.waitForExistence(timeout: 3))
+    capture("practice-overview", from: app)
+    let ambience = app.switches["环境声·锁屏继续"]
+    XCTAssertTrue(ambience.waitForExistence(timeout: 3))
+    for _ in 0..<5 where !ambience.isHittable {
+      preparation.swipeUp()
+    }
+    XCTAssertTrue(ambience.isHittable)
+    let ambienceValue = String(describing: ambience.value)
+    ambience.tap()
+    XCTAssertNotEqual(String(describing: ambience.value), ambienceValue)
+    let haptics = app.switches["practice.haptics"]
+    XCTAssertTrue(haptics.exists)
+    for _ in 0..<3 where !haptics.isHittable {
+      preparation.swipeUp()
+    }
+    XCTAssertTrue(haptics.isHittable)
+    capture("practice-preparation", from: app)
+
+    app.buttons["开始 1 分钟练习"].tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["practice.breathGuide"].waitForExistence(timeout: 3)
+    )
+    capture("practice-active", from: app)
+
+    app.buttons["结束"].tap()
+    let finish = app.buttons["practice.finish.confirm"].firstMatch
+    XCTAssertTrue(finish.waitForExistence(timeout: 3))
+    finish.tap()
+    XCTAssertTrue(
+      app.scrollViews["practice.comparison.scroll"].waitForExistence(timeout: 3)
+    )
+    capture("practice-comparison", from: app)
+
+    app.buttons["先完成"].tap()
+    XCTAssertTrue(app.scrollViews["practice.saved.scroll"].waitForExistence(timeout: 3))
+    capture("practice-complete", from: app)
+    app.buttons["practice.saved.done"].tap()
+
+    app.tabBars.buttons["今日"].tap()
+    revealAndTapCheckIn(in: app)
+    XCTAssertTrue(app.otherElements["checkIn.emotionField"].waitForExistence(timeout: 3))
+    capture("check-in-compass", from: app)
+
+    app.otherElements["checkIn.emotionField"]
+      .coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.25))
+      .tap()
+    XCTAssertTrue(app.buttons["emotionWord.anxious"].waitForExistence(timeout: 3))
+    capture("check-in-words", from: app)
+
+    app.buttons["emotionWord.unclassified"].tap()
+    let done = app.buttons["先这样"]
+    XCTAssertTrue(done.waitForExistence(timeout: 3))
+    done.tap()
+
+    app.tabBars.buttons["设置"].tap()
+    XCTAssertTrue(app.staticTexts["设置"].waitForExistence(timeout: 3))
+    capture("settings", from: app)
+
+    let privacy = app.buttons["隐私与数据"]
+    for _ in 0..<6 where !privacy.isHittable { app.swipeUp() }
+    XCTAssertTrue(privacy.isHittable)
+    privacy.tap()
+    XCTAssertTrue(app.staticTexts["本地优先"].waitForExistence(timeout: 3))
+    capture("privacy", from: app)
+  }
+
+  @MainActor
+  private func revealAndTapCheckIn(in app: XCUIApplication) {
+    let button = app.buttons["home.checkIn"]
+    XCTAssertTrue(button.waitForExistence(timeout: 3))
+    for _ in 0..<6 where !button.isHittable {
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(button.isHittable)
+    button.tap()
+  }
+
+  @MainActor
+  private func capture(_ name: String, from app: XCUIApplication) {
     let attachment = XCTAttachment(screenshot: app.screenshot())
-    attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+    attachment.name = name
+    attachment.lifetime = .keepAlways
+    add(attachment)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/FangcunRedesignUITests.swift =====
+import XCTest
+
+final class FangcunRedesignUITests: XCTestCase {
+  @MainActor
+  func testDisplayPreferencesSurviveRelaunch() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480"]
+    app.launch()
+    app.tabBars.buttons["设置"].tap()
+    let labels = ["深色模式", "较大字号", "减少动态效果"]
+    for label in labels {
+      let toggle = app.switches[label]
+      for _ in 0..<5 where !toggle.isHittable { app.scrollViews.firstMatch.swipeUp() }
+      XCTAssertTrue(toggle.exists)
+      if toggle.value as? String != "1" {
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+      }
+      XCTAssertEqual(toggle.value as? String, "1", "Immediate value: \(label)")
+    }
+    app.terminate()
+    app.launch()
+    app.tabBars.buttons["设置"].tap()
+    for label in labels { XCTAssertEqual(app.switches[label].value as? String, "1", "Relaunch value: \(label)") }
+    capture("preferences-relaunch", app)
+    // Keep the shared simulator preferences neutral for subsequent visual tests.
+    for label in labels {
+      let toggle = app.switches[label]
+      for _ in 0..<5 where !toggle.isHittable { app.scrollViews.firstMatch.swipeUp() }
+      toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+    }
+  }
+
+  @MainActor
+  func testNativeTodayDrinksTrendsPracticeAndSettings() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
+    app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["status.band"].waitForExistence(timeout: 15))
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
+    capture("redesign-home", app)
+    reveal(app.buttons["today.drinks"], app)
+    app.buttons["today.drinks"].tap()
+    let addWater = app.buttons["drinks.add.water"]
+    XCTAssertTrue(addWater.waitForExistence(timeout: 5))
+    addWater.tap()
+    app.buttons["增加美式"].tap()
+    XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("550"))
+    app.buttons["撤销"].tap()
+    XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("250"))
+    capture("redesign-drinks", app)
+    app.buttons["完成"].tap()
+    reveal(app.buttons["today.trends"], app)
+    app.buttons["today.trends"].tap()
+    XCTAssertTrue(app.buttons["status.history.score"].waitForExistence(timeout: 5))
+    capture("redesign-trends", app)
+    app.navigationBars.buttons.firstMatch.tap()
+    for _ in 0..<4 where !app.buttons["today.start"].isHittable { app.scrollViews.firstMatch.swipeDown() }
+    app.buttons["today.start"].tap()
+    let pause = app.buttons["暂停练习"]
+    XCTAssertTrue(pause.waitForExistence(timeout: 10))
+    capture("redesign-breathing", app)
+    pause.tap()
+    XCTAssertTrue(app.staticTexts["已暂停"].waitForExistence(timeout: 4))
+    app.buttons["继续练习"].tap()
+    XCTAssertTrue(pause.waitForExistence(timeout: 4))
+    app.buttons["结束"].tap()
+    app.buttons["practice.finish.confirm"].firstMatch.tap()
+    let finish = app.buttons["先完成"]
+    XCTAssertTrue(finish.waitForExistence(timeout: 6))
+    reveal(finish, app)
+    finish.tap()
+    let done = app.buttons["practice.saved.done"]
+    XCTAssertTrue(done.waitForExistence(timeout: 8))
+    capture("redesign-completion", app)
+    done.tap()
+    app.tabBars.buttons["设置"].tap()
+    XCTAssertTrue(app.switches["深色模式"].waitForExistence(timeout: 5))
+    capture("redesign-settings", app)
+  }
+
+  @MainActor
+  func testBreathingWithMotionEnabledCanPauseAndExit() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
+    app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout: 12))
+    XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
+    app.buttons["today.start"].tap()
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 10))
+    XCTAssertTrue(app.staticTexts["双吸一呼"].exists)
+    let exhale = NSPredicate(format: "label == %@", "呼气")
+    expectation(for: exhale, evaluatedWith: app.staticTexts["practice.breathPhase"])
+    waitForExpectations(timeout: 12)
+    capture("redesign-breathing-live", app)
+    app.buttons["暂停练习"].tap()
+    XCTAssertTrue(app.staticTexts["已暂停"].waitForExistence(timeout: 5))
+    capture("redesign-breathing-paused", app)
+    app.buttons["结束"].tap()
+    app.buttons["practice.finish.confirm"].firstMatch.tap()
+    XCTAssertTrue(app.buttons["先完成"].waitForExistence(timeout: 5))
+  }
+
+  @MainActor
+  func testAcceptedSoloAndDuoScenesInDarkAndLargeType() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    for state in ["480", "240", "45"] {
+      app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep\(state)", "-fangcun.dark", state == "240" ? "YES" : "NO", "-fangcun.largeType", state == "45" ? "YES" : "NO", "-fangcun.reduceMotion", "YES"]
+      app.launch()
+      XCTAssertTrue(app.staticTexts["status.band"].waitForExistence(timeout: 10))
+      XCTAssertEqual(app.staticTexts["status.band"].label, state == "480" ? "良好" : state == "240" ? "偏低" : "优先休息")
+      capture("redesign-\(state)", app)
+      reveal(app.buttons["today.start"], app)
+      XCTAssertTrue(app.buttons["today.start"].isHittable)
+      app.terminate()
+    }
+  }
+  @MainActor private func reveal(_ element: XCUIElement, _ app: XCUIApplication) {
+    for _ in 0..<6 where !element.isHittable { app.scrollViews.firstMatch.swipeUp() }
+    XCTAssertTrue(element.isHittable)
+  }
+  @MainActor private func capture(_ name: String, _ app: XCUIApplication) {
+    let shot = XCTAttachment(screenshot: app.screenshot())
+    shot.name = name; shot.lifetime = .keepAlways; add(shot)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/FangcunResponseLoopUITests.swift =====
+import XCTest
+
+/// V3: subjective records are preserved separately; they never manufacture a status-score change.
+final class FangcunResponseLoopUITests: XCTestCase {
+  @MainActor func testActionChooserKeepsScorePositionStable() {
+    let app = launchApp(), score = app.staticTexts["100"]
+    let frame = score.frame
+    XCTAssertFalse(app.buttons["home.echo.state.tense"].exists)
+    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap()
+    XCTAssertTrue(app.buttons["完成"].waitForExistence(timeout:5)); app.buttons["完成"].tap()
+    XCTAssertEqual(score.frame.minY,frame.minY,accuracy:2)
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
+    XCTAssertLessThanOrEqual(app.buttons["today.start"].frame.maxY,app.tabBars.firstMatch.frame.minY)
+  }
+  @MainActor func testSavedPostPracticeFeelingImmediatelyUpdatesHome() {
+    let app = launchApp(); finishPractice(app)
+    app.buttons["平和"].tap()
+    XCTAssertFalse(app.staticTexts["和刚才比"].exists)
+    let keep = app.buttons["保留现在的感受"]; XCTAssertTrue(keep.isEnabled); keep.tap()
+    XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout:6)); app.buttons["practice.saved.done"].tap()
+    reveal(app.staticTexts["today.feeling"],app)
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("平和"))
+    XCTAssertFalse((app.staticTexts["today.feeling"].value as? String ?? "").isEmpty)
+    XCTAssertFalse((app.staticTexts["today.latestPractice"].value as? String ?? "").isEmpty)
+    assertScore(app)
+  }
+  @MainActor func testDetailedFeelingRemainsSeparateFromScore() {
+    let app = launchApp(); checkIn(app,label:"emotionWord.anxious")
+    reveal(app.staticTexts["today.feeling"],app)
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("焦虑"))
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
+    assertScore(app)
+  }
+  @MainActor func testDisplayPreferencesDoNotOverwriteFeeling() {
+    let app = launchApp(); checkIn(app,label:"emotionWord.anxious")
+    reveal(app.staticTexts["today.feeling"],app)
+    let identity = app.staticTexts["today.feeling"].value as? String
+    // A display preference or opening practice selection must not overwrite the saved feeling.
+    for _ in 0..<6 where !app.buttons["切换深浅色模式"].isHittable { app.swipeDown() }
+    app.buttons["切换深浅色模式"].tap(); app.buttons["切换深浅色模式"].tap()
+    reveal(app.staticTexts["today.feeling"],app)
+    XCTAssertEqual(app.staticTexts["today.feeling"].value as? String,identity)
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("焦虑")); assertScore(app)
+  }
+  @MainActor func testFinishThenSkipFeedbackReturnsHomeWithCompletedOnly() {
+    let app = launchApp(); finishPractice(app)
+    app.buttons["先完成"].tap()
+    XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout:6)); app.buttons["practice.saved.done"].tap()
+    reveal(app.staticTexts["today.latestPractice"],app)
+    XCTAssertFalse((app.staticTexts["today.latestPractice"].value as? String ?? "").isEmpty)
+    XCTAssertFalse(app.staticTexts["today.feeling"].exists)
+    XCTAssertFalse(app.staticTexts["today.latestPractice"].label.contains("持平")); assertScore(app)
+  }
+  @MainActor func testSelectedPressureSourceImmediatelyUpdatesTheWholeHomeResponse() {
+    let app = launchApp(); openCheckIn(app)
+    app.buttons["emotionWord.anxious"].tap()
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout:5))
+    reveal(app.buttons["工作"],app); app.buttons["工作"].tap()
+    reveal(app.buttons["保存补充"],app); app.buttons["保存补充"].tap()
+    reveal(app.staticTexts["today.feeling"],app)
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("工作"))
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("焦虑")); assertScore(app)
+  }
+  @MainActor private func launchApp()->XCUIApplication {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep480","-fangcun.dark","NO","-fangcun.largeType","NO","-status-v3.avoidBreathing","NO","-status-v3.favorite","breath","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryLarge"]
+    app.launch(); XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:12)); return app
+  }
+  @MainActor private func openCheckIn(_ app:XCUIApplication) {
+    reveal(app.buttons["home.checkIn"],app); app.buttons["home.checkIn"].tap()
+    let field = app.otherElements["checkIn.emotionField"]
+    XCTAssertTrue(field.waitForExistence(timeout:5)); field.coordinate(withNormalizedOffset:CGVector(dx:0.25,dy:0.25)).tap()
+  }
+  @MainActor private func checkIn(_ app:XCUIApplication,label:String) {
+    openCheckIn(app); app.buttons[label].tap()
+    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout:5))
+    reveal(app.buttons["先这样"],app); app.buttons["先这样"].tap()
+  }
+  @MainActor private func finishPractice(_ app:XCUIApplication) {
+    app.buttons["today.start"].tap()
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout:8))
+    app.buttons["结束"].tap(); app.buttons["practice.finish.confirm"].firstMatch.tap()
+    XCTAssertTrue(app.buttons["先完成"].waitForExistence(timeout:6))
+  }
+  @MainActor private func assertScore(_ app:XCUIApplication) {
+    for _ in 0..<7 where !app.staticTexts["100"].isHittable { app.swipeDown() }
+    XCTAssertTrue(app.staticTexts["100"].exists); XCTAssertEqual(app.staticTexts["status.band"].label,"良好")
+  }
+  @MainActor private func reveal(_ item:XCUIElement,_ app:XCUIApplication) {
+    for _ in 0..<8 where !item.isHittable { app.swipeUp() }; XCTAssertTrue(item.isHittable)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/HomeEvidencePipelineUITests.swift =====
+import XCTest
+
+/// Raw-provider UI contract migrated to score-v3. Legacy workout/measurement gates stay in HomeEvidencePipelineTests.
+final class HomeEvidencePipelineUITests: XCTestCase {
+  @MainActor func testHistoryFailureAndLimitedEvidence() {
+    verify("scoreNoCurrentHistory",score:nil)
+    verify("failed",score:nil)
+    verify("scoreSleep375",score:"78")
+    verify("scoreHRVOnly",score:nil)
+  }
+  @MainActor func testQualifiedEvidenceAndWorkoutProtection() {
+    verify("scoreSleep480",score:"100")
+    verify("scoreSleep240",score:"50")
+    verify("scoreRHR",score:"85")
+    verify("scoreFull240",score:"64")
+  }
+  @MainActor func testPreviousSleepAndIncompleteBaselines() {
+    let old = launch("scoreExpired")
+    XCTAssertTrue(old.staticTexts["status.empty"].waitForExistence(timeout:10))
+    XCTAssertFalse(old.staticTexts["status.score"].exists)
+    XCTAssertFalse(old.staticTexts["昨晚"].exists)
+    old.terminate()
+    verify("oneDay",score:"100")
+    verify("scoreHRVOnly",score:nil)
+  }
+  @MainActor func testMeasurementTimeDoesNotBecomeQueryTime() {
+    let app = launch("scoreSleep375")
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:10))
+    let asOf = app.staticTexts["status.cycle"].value as? String
+    XCTAssertNotNil(asOf)
+    app.buttons["today.evidence"].tap(); app.buttons["status.method"].tap()
+    let time = app.staticTexts["status.time.asOf"]
+    for _ in 0..<6 where !time.isHittable { app.swipeUp() }
+    XCTAssertEqual(time.value as? String,asOf)
+    XCTAssertEqual(app.staticTexts["status.time.query"].value as? String,"2026-09-20T04:00:00Z")
+    XCTAssertEqual(app.staticTexts["status.time.computed"].value as? String,"2026-09-20T04:00:00Z")
+    XCTAssertNotEqual(asOf,app.staticTexts["status.time.query"].value as? String)
+  }
+  @MainActor private func verify(_ fixture:String,score:String?) {
+    let app = launch(fixture)
+    if let score { XCTAssertTrue(app.staticTexts[score].waitForExistence(timeout:12)) }
+    else { XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12)); XCTAssertFalse(app.staticTexts["status.score"].exists) }
+    XCTAssertFalse(app.staticTexts["有限线索"].exists)
+    XCTAssertTrue(app.buttons["today.start"].exists)
+    let a = XCTAttachment(screenshot:app.screenshot()); a.name = "v3-raw-"+fixture; a.lifetime = .keepAlways; add(a)
+    app.terminate()
+  }
+  @MainActor private func launch(_ fixture:String)->XCUIApplication {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture="+fixture,"-fangcun.dark","NO","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
+    app.launch(); return app
   }
 }
 
@@ -171,100 +1097,80 @@ final class PracticeReturnHomeUITests: XCTestCase {
 ===== FILE: InnerBalance/InnerBalanceUITests/ReadinessHomeUITests.swift =====
 import XCTest
 
+/// V3 replaces the legacy homepage availability enum. Legacy algorithm assertions remain in App/Core tests.
 final class ReadinessHomeUITests: XCTestCase {
-  @MainActor func testAssessable() throws { try verify("assessable") }
-  @MainActor func testProvisional() throws { try verify("provisional") }
-  @MainActor func testLimited() throws { try verify("limited") }
-  @MainActor func testInsufficient() throws { try verify("insufficient") }
-  @MainActor func testAwaiting() throws { try verify("awaitingData") }
-  @MainActor func testFailed() throws { try verify("failed") }
+  @MainActor func testAssessable() throws { try verify("assessable", band:"良好") }
+  @MainActor func testProvisional() throws { try verify("provisional", band:"良好") }
+  @MainActor func testLimited() throws { try verify("limited", band:"良好") }
+  @MainActor func testInsufficient() throws { try verify("insufficient", band:nil) }
+  @MainActor func testAwaiting() throws { try verify("awaitingData", band:"良好") }
+  @MainActor func testFailed() throws { try verify("failed", band:nil) }
   @MainActor func testHistoryIdentityAndAccessibleLargeDarkLayout() throws {
-    let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=assessable", "-fangcun.dark", "YES", "-fangcun.largeType", "YES", "-fangcun.reduceMotion", "YES"]
-    app.launch()
-    XCTAssertTrue(app.staticTexts["today.conclusion"].waitForExistence(timeout: 10))
-    let home = XCTAttachment(screenshot: app.screenshot()); home.name = "m302-dark-large-home"; home.lifetime = .keepAlways; add(home)
-    for _ in 0..<5 where !app.buttons["today.evidence"].isHittable { app.swipeUp() }
-    app.buttons["today.evidence"].tap()
-    let conclusion = app.staticTexts["readiness.detail.conclusion"]
-    XCTAssertTrue(conclusion.waitForExistence(timeout: 5))
-    let title = conclusion.label
-    XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
-    let detail = XCTAttachment(screenshot: app.screenshot()); detail.name = "m302-dark-large-detail"; detail.lifetime = .keepAlways; add(detail)
+    let app = launch("scoreSleep375",large:true)
+    XCTAssertTrue(app.staticTexts["尚可"].waitForExistence(timeout:12))
+    reveal(app.buttons["today.evidence"],app); app.buttons["today.evidence"].tap()
+    let title = app.staticTexts["status.detail.score"].label
+    XCTAssertTrue(title.contains("78"))
+    capture("v3-dark-large-detail",app)
     app.navigationBars.buttons.firstMatch.tap()
-    for _ in 0..<6 where !app.buttons["today.trends"].isHittable { app.swipeUp() }
-    app.buttons["today.trends"].tap()
-    XCTAssertTrue(app.segmentedControls["readiness.history.range"].waitForExistence(timeout: 5))
+    reveal(app.buttons["today.trends"],app); app.buttons["today.trends"].tap()
+    XCTAssertTrue(app.segmentedControls["readiness.history.range"].waitForExistence(timeout:5))
     app.buttons["28 天"].tap()
-    let day = app.buttons["readiness.history.day.recorded"].firstMatch
-    XCTAssertTrue(day.waitForExistence(timeout: 5)); day.tap()
-    let row = app.buttons["readiness.history.assessment"].firstMatch
-    for _ in 0..<5 where !row.isHittable { app.swipeUp() }
-    XCTAssertTrue(row.exists); row.tap()
-    XCTAssertEqual(app.staticTexts["readiness.detail.conclusion"].label, title)
-    openDiagnostics(app)
-    XCTAssertFalse((app.staticTexts["readiness.identity"].value as? String ?? "").isEmpty)
+    let row = app.buttons["status.history.score"]
+    reveal(row,app); row.tap()
+    XCTAssertEqual(app.staticTexts["status.detail.score"].label,title)
+    XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
   }
   @MainActor func testBreathingRoundTripKeepsCurrentAssessmentWithoutReward() throws {
-    continueAfterFailure = false
-    let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=assessable", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
-    app.launch()
-    XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
-    let conclusion = app.staticTexts["today.conclusion"]
-    let state = NSPredicate(format: "value == %@", "assessable")
-    expectation(for: state, evaluatedWith: conclusion); waitForExpectations(timeout: 10)
+    let app = launch("scoreSleep480")
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:12))
+    let cycle = app.staticTexts["status.cycle"].value as? String
     app.buttons["today.start"].tap()
-    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 10))
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout:10))
     app.buttons["结束"].tap(); app.buttons["practice.finish.confirm"].firstMatch.tap()
     let skip = app.buttons["先完成"]
-    XCTAssertTrue(skip.waitForExistence(timeout: 6))
-    for _ in 0..<4 where !skip.isHittable { app.swipeUp() }
-    skip.tap()
-    XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout: 8)); app.buttons["practice.saved.done"].tap()
+    XCTAssertTrue(skip.waitForExistence(timeout:6)); reveal(skip,app); skip.tap()
+    XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout:8)); app.buttons["practice.saved.done"].tap()
     XCTAssertTrue(app.tabBars.buttons["今日"].isSelected)
-    for _ in 0..<5 where !app.staticTexts["today.latestPractice"].exists { app.swipeUp() }
+    reveal(app.staticTexts["today.latestPractice"],app)
     XCTAssertFalse((app.staticTexts["today.latestPractice"].value as? String ?? "").isEmpty)
-    for _ in 0..<5 where !conclusion.isHittable { app.swipeDown() }
-    XCTAssertEqual(conclusion.value as? String, "assessable")
+    for _ in 0..<6 where !app.staticTexts["100"].isHittable { app.swipeDown() }
+    XCTAssertTrue(app.staticTexts["100"].exists)
+    XCTAssertEqual(app.staticTexts["status.cycle"].value as? String,cycle)
   }
-  @MainActor private func verify(_ scenario: String) throws {
-      let app = XCUIApplication()
-      app.launchArguments = ["--ui-testing", "--readiness-fixture=" + scenario, "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"]
-      app.launch()
-      let conclusion = app.staticTexts["today.conclusion"]
-      XCTAssertTrue(conclusion.waitForExistence(timeout: 10))
-      let predicate = NSPredicate(format: "value == %@", scenario)
-      expectation(for: predicate, evaluatedWith: conclusion)
-      waitForExpectations(timeout: 15)
-      XCTAssertTrue(app.buttons["today.start"].exists)
-      let home = XCTAttachment(screenshot: app.screenshot()); home.name = "m3-home-" + scenario; home.lifetime = .keepAlways; add(home)
-      app.swipeUp()
-      let detail = app.buttons["today.evidence"]
-      XCTAssertTrue(detail.waitForExistence(timeout: 5)); detail.tap()
-      XCTAssertTrue(app.staticTexts["readiness.detail.conclusion"].waitForExistence(timeout: 5))
+  @MainActor private func verify(_ scenario:String,band:String?) throws {
+    let app = launch(scenario)
+    if let band {
+      XCTAssertTrue(app.staticTexts[band].waitForExistence(timeout:12))
+      reveal(app.buttons["today.evidence"],app); app.buttons["today.evidence"].tap()
+      XCTAssertTrue(app.staticTexts["status.detail.score"].waitForExistence(timeout:5))
       XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
-      if scenario == "assessable" {
-        XCTAssertTrue(app.staticTexts["readiness.sleep.actual"].exists)
-        let method = app.buttons["readiness.method"]
-        for _ in 0..<4 where !method.isHittable { app.swipeUp() }
-        method.tap()
-        for _ in 0..<4 where !app.staticTexts["readiness.baseline.reference"].firstMatch.exists { app.swipeUp() }
-        XCTAssertTrue(app.staticTexts["readiness.baseline.reference"].firstMatch.exists)
-      }
-      openDiagnostics(app)
-      XCTAssertTrue(app.staticTexts["readiness.identity"].waitForExistence(timeout: 5))
-      for _ in 0..<8 where !app.staticTexts["readiness.time.attempt"].exists { app.swipeUp() }
-      XCTAssertTrue(app.staticTexts["readiness.time.attempt"].exists)
-      let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "m302-" + scenario; shot.lifetime = .keepAlways; add(shot)
-      app.terminate()
+      XCTAssertFalse(app.staticTexts["有限线索"].exists)
+    } else {
+      XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12))
+      XCTAssertFalse(app.staticTexts["status.score"].exists)
+      XCTAssertTrue(app.buttons["today.start"].exists)
+      XCTAssertTrue(app.buttons["status.manual"].exists)
+    }
+    capture("v3-home-"+scenario,app)
+    // Diagnostic data and time labels remain reachable separately from the consumer score screen.
+    app.tabBars.buttons["设置"].tap(); app.buttons["恢复参考与来源"].tap()
+    app.buttons["readiness.diagnostics"].tap()
+    XCTAssertTrue(app.staticTexts["readiness.identity"].waitForExistence(timeout:5))
+    reveal(app.staticTexts["readiness.time.attempt"],app)
+    XCTAssertTrue(app.staticTexts["readiness.time.attempt"].exists)
   }
-  @MainActor private func openDiagnostics(_ app: XCUIApplication) {
-    app.tabBars.buttons["设置"].tap()
-    let settings = app.buttons["恢复参考与来源"]
-    XCTAssertTrue(settings.waitForExistence(timeout: 5)); settings.tap()
-    let diagnostics = app.buttons["readiness.diagnostics"]
-    XCTAssertTrue(diagnostics.waitForExistence(timeout: 5)); diagnostics.tap()
+  @MainActor private func launch(_ scenario:String,large:Bool=false)->XCUIApplication {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture="+scenario,"-AppleLanguages","(zh-Hans)","-AppleLocale","zh_CN","-fangcun.dark",large ? "YES":"NO","-fangcun.largeType",large ? "YES":"NO","-fangcun.reduceMotion","YES"]
+    app.launch(); return app
+  }
+  @MainActor private func reveal(_ item:XCUIElement,_ app:XCUIApplication) {
+    for _ in 0..<8 where !item.isHittable { app.swipeUp() }; XCTAssertTrue(item.isHittable)
+  }
+  @MainActor private func capture(_ name:String,_ app:XCUIApplication) {
+    let a = XCTAttachment(screenshot:app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)
   }
 }
 
@@ -276,9 +1182,9 @@ final class RecoveryActionUITests: XCTestCase {
   @MainActor func testLocalActionPauseEarlyEndSkipThenEditFeedback() throws {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=insufficient", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep375", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
     app.launch()
-    let suggestion = app.buttons["recovery.suggestion"]
+    let suggestion = app.buttons["today.start"]
     XCTAssertTrue(suggestion.waitForExistence(timeout: 10))
     for _ in 0..<4 where !suggestion.isHittable { app.swipeUp() }
     suggestion.tap()
@@ -305,6 +1211,103 @@ final class RecoveryActionUITests: XCTestCase {
     for _ in 0..<5 where !suggestion.isHittable { app.swipeDown() }
     XCTAssertTrue(suggestion.label.contains("座位舒展"))
     let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "m303-feedback"; shot.lifetime = .keepAlways; add(shot)
+  }
+}
+
+===== END FILE =====
+
+===== FILE: InnerBalance/InnerBalanceUITests/StatusScoreV3UITests.swift =====
+import XCTest
+
+final class StatusScoreV3UITests: XCTestCase {
+  @MainActor func testFirstNightRawSleepPublishes78AndRealAction() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep375", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["尚可"].waitForExistence(timeout: 12))
+    XCTAssertTrue(app.staticTexts["78"].exists)
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
+    XCTAssertTrue(app.buttons["today.start"].label.contains("2 分钟安静休息"))
+    assertClean(app); capture("s1-score-78", app)
+    app.buttons["today.evidence"].tap()
+    XCTAssertTrue(app.staticTexts["status.detail.score"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["睡眠 · 78 分"].exists)
+    XCTAssertFalse(app.staticTexts["静息心率 · 0 分"].exists)
+    assertClean(app); capture("s1-score-composition", app)
+    app.buttons["status.method"].tap()
+    XCTAssertTrue(app.staticTexts["本次计入：睡眠"].exists)
+    app.navigationBars.buttons.firstMatch.tap()
+    app.buttons["today.start"].tap()
+    XCTAssertTrue(app.buttons["recovery.start"].waitForExistence(timeout: 5))
+    app.buttons["recovery.start"].tap()
+    XCTAssertTrue(app.buttons["recovery.pauseResume"].waitForExistence(timeout: 5))
+    capture("s1-real-rest-action", app)
+    app.buttons["recovery.finish"].tap()
+    XCTAssertTrue(app.buttons["recovery.skip"].waitForExistence(timeout: 5)); app.buttons["recovery.skip"].tap()
+    app.buttons["recovery.done"].tap()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout: 5))
+  }
+  @MainActor func testNightKeeps78AndStartsShortBreathingThenForegroundStillClean() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","--score-night","-fangcun.dark","YES","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
+    app.launchArguments += ["-status-v3.avoidBreathing", "NO"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
+    XCTAssertTrue(app.staticTexts["今晚早点收尾。"].exists)
+    XCTAssertTrue(app.buttons["today.start"].label.contains("2 分钟放松"))
+    assertClean(app); capture("v3-night-2322",app)
+    XCUIDevice.shared.press(.home); app.activate()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:5)); assertClean(app)
+    app.buttons["today.start"].tap()
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout:8))
+    capture("v3-night-real-breathing",app)
+    app.buttons["暂停练习"].tap()
+    XCTAssertTrue(app.buttons["继续练习"].exists)
+  }
+  @MainActor func testEmptyCanSaveActualSleepWithoutConnectingHealth() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=insufficient","-fangcun.dark","NO","-fangcun.largeType","NO"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12))
+    XCTAssertFalse(app.staticTexts["status.score"].exists); assertClean(app)
+    app.buttons["status.manual"].tap()
+    XCTAssertTrue(app.buttons["status.manual.save"].waitForExistence(timeout:5)); app.buttons["status.manual.save"].tap()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:8))
+    app.buttons["today.evidence"].tap()
+    app.buttons["status.method"].tap()
+    XCTAssertTrue(app.staticTexts["睡眠由你补记。"].exists)
+    capture("v3-manual-sleep",app)
+  }
+  @MainActor func testMaximumTypeDarkModeScoreAndActionRemainReachable() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","-fangcun.dark","YES","-fangcun.largeType","YES","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL","-fangcun.reduceMotion","YES"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
+    let sizeControl = app.buttons["切换大字号"]
+    let appearanceControl = app.buttons["切换深浅色模式"]
+    let brand = app.descendants(matching: .any).matching(identifier: "home.brandPoint").firstMatch
+    XCTAssertLessThanOrEqual(brand.frame.maxX, sizeControl.frame.minX)
+    XCTAssertLessThanOrEqual(sizeControl.frame.maxX, appearanceControl.frame.minX)
+    assertClean(app); capture("v3-dark-maximum-home",app)
+    let action = app.buttons["today.start"]
+    for _ in 0..<6 where !action.isHittable { app.swipeUp() }
+    XCTAssertTrue(action.isHittable); action.tap()
+    let start = app.buttons["recovery.start"]
+    XCTAssertTrue(start.waitForExistence(timeout:5))
+    for _ in 0..<6 where !start.isHittable { app.swipeUp() }
+    XCTAssertTrue(start.isHittable)
+  }
+  @MainActor private func assertClean(_ app: XCUIApplication) {
+    for phrase in ["有限线索","有限资料","初步参考","基于睡眠的今日建议","不是整体恢复结论","不代表整体状态","这条建议只基于已有线索","不是完整恢复结论","仍需更多线索","资料不足以判断"] {
+      XCTAssertFalse(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", phrase)).firstMatch.exists)
+    }
+  }
+  @MainActor private func capture(_ name: String, _ app: XCUIApplication) {
+    let item = XCTAttachment(screenshot: app.screenshot()); item.name = name; item.lifetime = .keepAlways; add(item)
   }
 }
 
@@ -3182,642 +4185,6 @@ public enum PracticeKind: String, CaseIterable, Equatable, Sendable {
   case meditation
   case nsdr
   case kegel
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchMindfulPayload.swift =====
-import Foundation
-
-public struct WatchMindfulPayload: Codable, Equatable, Sendable {
-  public let syncIdentifier: String
-  public let sessionID: String
-  public let practiceKindRawValue: String
-  public let startDate: Date
-  public let endDate: Date
-  public let heartRateEvidenceRequested: Bool?
-  public let heartRateEvidence: HeartRateEvidence?
-
-  public init(
-    syncIdentifier: String,
-    sessionID: String,
-    practiceKind: PracticeKind,
-    startDate: Date,
-    endDate: Date,
-    heartRateEvidenceRequested: Bool = false,
-    heartRateEvidence: HeartRateEvidence? = nil
-  ) {
-    self.syncIdentifier = syncIdentifier
-    self.sessionID = sessionID
-    practiceKindRawValue = practiceKind.rawValue
-    self.startDate = startDate
-    self.endDate = endDate
-    self.heartRateEvidenceRequested = heartRateEvidenceRequested
-    self.heartRateEvidence = heartRateEvidence
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Practice/WatchPracticeCompletionFreezer.swift =====
-import Foundation
-
-public struct WatchPracticeCompletionSnapshot: Equatable, Sendable {
-  public let sessionID: String
-  public let endedAt: Date
-  public let activeDuration: TimeInterval
-  public let heartRateEvidenceRequested: Bool
-  public let heartRateEvidence: HeartRateEvidence?
-  public let heartRateEvidenceCaptureCompleted: Bool
-
-  fileprivate init(
-    sessionID: String,
-    endedAt: Date,
-    activeDuration: TimeInterval,
-    heartRateEvidenceRequested: Bool,
-    heartRateEvidence: HeartRateEvidence?,
-    heartRateEvidenceCaptureCompleted: Bool
-  ) {
-    self.sessionID = sessionID
-    self.endedAt = endedAt
-    self.activeDuration = activeDuration
-    self.heartRateEvidenceRequested = heartRateEvidenceRequested
-    self.heartRateEvidence = heartRateEvidence
-    self.heartRateEvidenceCaptureCompleted = heartRateEvidenceCaptureCompleted
-  }
-}
-
-public struct WatchPracticeCompletionFreezer: Equatable, Sendable {
-  public private(set) var snapshot: WatchPracticeCompletionSnapshot?
-
-  public init() {}
-
-  public mutating func freeze(
-    sessionID: String,
-    endedAt: Date,
-    activeDuration: TimeInterval,
-    heartRateEvidenceRequested: Bool
-  ) -> WatchPracticeCompletionSnapshot {
-    if let snapshot {
-      return snapshot
-    }
-    let frozen = WatchPracticeCompletionSnapshot(
-      sessionID: sessionID,
-      endedAt: endedAt,
-      activeDuration: activeDuration,
-      heartRateEvidenceRequested: heartRateEvidenceRequested,
-      heartRateEvidence: nil,
-      heartRateEvidenceCaptureCompleted: !heartRateEvidenceRequested
-    )
-    snapshot = frozen
-    return frozen
-  }
-
-  public mutating func completeHeartRateEvidenceCapture(
-    _ evidence: HeartRateEvidence?
-  ) -> WatchPracticeCompletionSnapshot? {
-    guard let snapshot else { return nil }
-    guard !snapshot.heartRateEvidenceCaptureCompleted else { return snapshot }
-    let completed = WatchPracticeCompletionSnapshot(
-      sessionID: snapshot.sessionID,
-      endedAt: snapshot.endedAt,
-      activeDuration: snapshot.activeDuration,
-      heartRateEvidenceRequested: snapshot.heartRateEvidenceRequested,
-      heartRateEvidence: evidence,
-      heartRateEvidenceCaptureCompleted: true
-    )
-    self.snapshot = completed
-    return completed
-  }
-}
-
-public enum HeartRateEvidenceRequestCompatibility {
-  public static func resolved(
-    explicitRequest: Bool?,
-    evidence: HeartRateEvidence?
-  ) -> Bool {
-    explicitRequest ?? (evidence != nil)
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineBuilder.swift =====
-import Foundation
-
-public struct ReadinessMetricFeature: Codable, Equatable, Sendable {
-  public var metric: ReadinessMetric
-  public var sourceKey: String?
-  public var value: Double?
-  public var displayValue: Double?
-  public var unit: String
-  public var window: ReadinessInterval
-  public var latestMeasuredAt: Date?
-  public var sampleIDs: [UUID]
-  public var sampleCount: Int { sampleIDs.count }
-  public var coveredHours: Int
-  public var reliable: Bool
-  public var reasons: [ReadinessReason]
-}
-
-public struct ReadinessMetricBaseline: Codable, Equatable, Sendable {
-  public var metric: ReadinessMetric
-  public var sourceKey: String?
-  public var validDays: Int
-  public var center: Double?
-  public var scale: Double?
-  public var sampleIDs: [UUID]
-}
-
-public struct ReadinessBaselines: Codable, Sendable {
-  public var hrv: ReadinessMetricBaseline
-  public var rhr: ReadinessMetricBaseline
-}
-
-public enum CurrentMetricExtractor {
-  public static func extract(metric: ReadinessMetric, samples: [ReadinessSample],
-    sourceKey: String?, episode: ReadinessSleepEpisode, now: Date,
-    interventions: [ReadinessInterval] = [], usedRestingIDs: Set<UUID> = [],
-    excludingIDs: Set<UUID> = [], configuration: ReadinessConfiguration = .init()) -> ReadinessMetricFeature {
-    let isHRV = metric == .hrvSDNN
-    let window = isHRV ? ReadinessInterval(start: episode.start, end: episode.end)
-      : ReadinessInterval(start: episode.end.addingTimeInterval(-24*3600), end: min(now, episode.end.addingTimeInterval(3*3600)))
-    let expectedUnit = isHRV ? "ms" : "count/min"
-    let rows = SampleNormalizer.deduplicate(samples).filter { row in
-      guard row.metric == metric, row.sourceKey == sourceKey, !excludingIDs.contains(row.id),
-        row.end <= now, row.end >= row.start else { return false }
-      if isHRV { return episode.intervals.contains { row.start >= $0.start && row.end <= $0.end } }
-      return row.end >= window.start && row.end <= window.end
-    }
-    var reasons: Set<ReadinessReason> = []
-    var valid: [ReadinessSample] = []
-    for row in rows {
-      guard row.unit == expectedUnit else { reasons.insert(.unitMismatch); continue }
-      guard let value = row.value, value.isFinite, value > 0 else { reasons.insert(.invalidValue); continue }
-      guard value <= (isHRV ? configuration.maximumHRVMS : configuration.maximumRestingBPM) else {
-        reasons.insert(.extremeValue); continue
-      }
-      guard !row.manuallyEntered else { reasons.insert(.manuallyEntered); continue }
-      guard !row.source.bundleID.isEmpty else { reasons.insert(.sourceUnknown); continue }
-      guard !row.source.identityAmbiguous else { reasons.insert(.sourceAmbiguous); continue }
-      if row.source.identityIncomplete { reasons.insert(.sourceIdentityIncomplete) }
-      if isHRV, interventions.contains(where: {
-        ReadinessInterval(start: $0.start.addingTimeInterval(-configuration.interventionBufferMinutes*60),
-          end: $0.end.addingTimeInterval(configuration.interventionBufferMinutes*60))
-          .overlaps(ReadinessInterval(start: row.start, end: row.end))
-      }) { reasons.insert(.interventionExcluded); continue }
-      valid.append(row)
-    }
-    if !isHRV {
-      valid = valid.max { $0.end == $1.end ? $0.id.uuidString < $1.id.uuidString : $0.end < $1.end }.map { [$0] } ?? []
-      if let row = valid.first, usedRestingIDs.contains(row.id) { reasons.insert(.restingSampleReused) }
-    }
-    let hours = Set(valid.map { Int(floor($0.end.timeIntervalSince1970 / 3600)) }).count
-    if valid.isEmpty { reasons.insert(isHRV ? .hrvMissing : .rhrMissing) }
-    if isHRV && valid.count < configuration.minimumHRVSamples { reasons.insert(.sparseHRV) }
-    if isHRV && hours < configuration.minimumHRVHours { reasons.insert(.narrowHRVCoverage) }
-    if isHRV && !episode.asleepIntervalsUsableForHRV {
-      reasons.formUnion(episode.quality?.userBlockingReasons ?? episode.flags)
-    }
-    let blockers: Set<ReadinessReason> = [.unitMismatch,.invalidValue,.extremeValue,.manuallyEntered,
-      .sourceUnknown,.sourceAmbiguous,.restingSampleReused,.hrvMissing,.rhrMissing,.sparseHRV,.narrowHRVCoverage]
-    let values = valid.compactMap(\.value)
-    return ReadinessMetricFeature(metric: metric, sourceKey: sourceKey,
-      value: BodyLoadEngine.median(isHRV ? values.map(log) : values),
-      displayValue: BodyLoadEngine.median(values), unit: expectedUnit, window: window,
-      latestMeasuredAt: valid.map(\.end).max(), sampleIDs: valid.map(\.id).sorted { $0.uuidString < $1.uuidString },
-      coveredHours: hours, reliable: reasons.isDisjoint(with: blockers) && (!isHRV || episode.asleepIntervalsUsableForHRV), reasons: reasons.sorted { $0.rawValue < $1.rawValue })
-  }
-}
-
-public enum BaselineBuilder {
-  public static func build(episodes: [ReadinessSleepEpisode], samples: [ReadinessSample],
-    beforeEpisode current: ReadinessSleepEpisode, hrvSource: String?, rhrSource: String?,
-    currentSampleIDs: Set<UUID>, calendar: Calendar, interventions: [ReadinessInterval] = [],
-    configuration: ReadinessConfiguration = .init()) -> ReadinessBaselines {
-    let selected = selectedEpisodes(episodes, before: current, calendar: calendar, configuration: configuration)
-    var hrv: [ReadinessMetricFeature] = [], rhr: [ReadinessMetricFeature] = []
-    var usedRHR: Set<UUID> = []
-    for episode in selected where episode.sleepDurationUsable {
-      let h = CurrentMetricExtractor.extract(metric: .hrvSDNN, samples: samples, sourceKey: hrvSource,
-        episode: episode, now: current.start, interventions: interventions, excludingIDs: currentSampleIDs, configuration: configuration)
-      let r = CurrentMetricExtractor.extract(metric: .restingHeartRate, samples: samples, sourceKey: rhrSource,
-        episode: episode, now: current.start, usedRestingIDs: usedRHR, excludingIDs: currentSampleIDs, configuration: configuration)
-      if h.reliable { hrv.append(h) }
-      if r.reliable { rhr.append(r); usedRHR.formUnion(r.sampleIDs) }
-    }
-    return ReadinessBaselines(hrv: summarize(hrv, metric: .hrvSDNN, source: hrvSource, floor: configuration.hrvScaleFloor, configuration: configuration),
-      rhr: summarize(rhr, metric: .restingHeartRate, source: rhrSource, floor: configuration.rhrScaleFloor, configuration: configuration))
-  }
-
-  static func selectedEpisodes(_ episodes: [ReadinessSleepEpisode], before current: ReadinessSleepEpisode,
-    calendar: Calendar, configuration: ReadinessConfiguration) -> [ReadinessSleepEpisode] {
-    let currentDay = calendar.startOfDay(for: current.end)
-    let cutoff = calendar.date(byAdding: .day, value: -configuration.baselineDays, to: currentDay) ?? currentDay
-    let candidates = episodes.filter {
-      $0.id != current.id && $0.sourceKey == current.sourceKey && $0.end < current.start
-        && calendar.startOfDay(for: $0.end) >= cutoff && calendar.startOfDay(for: $0.end) < currentDay
-    }
-    let days = Dictionary(grouping: candidates) { calendar.startOfDay(for: $0.end) }
-    return days.values.compactMap { $0.max {
-      $0.asleepDuration == $1.asleepDuration ? $0.end < $1.end : $0.asleepDuration < $1.asleepDuration
-    }}.sorted { $0.end < $1.end }
-  }
-
-  private static func summarize(_ features: [ReadinessMetricFeature], metric: ReadinessMetric,
-    source: String?, floor: Double, configuration: ReadinessConfiguration) -> ReadinessMetricBaseline {
-    let values = features.compactMap(\.value)
-    let center = BodyLoadEngine.median(values)
-    let mad = center.flatMap { median in BodyLoadEngine.median(values.map { abs($0-median) }) }
-    return ReadinessMetricBaseline(metric: metric, sourceKey: source, validDays: values.count,
-      center: center, scale: mad.map { max(configuration.madMultiplier * $0, floor) },
-      sampleIDs: Array(Set(features.flatMap(\.sampleIDs))).sorted { $0.uuidString < $1.uuidString })
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Readiness/BaselineCoverageAudit.swift =====
-import Foundation
-
-/// Local diagnostic material. Contains health-record identifiers and must never be
-/// attached to public verification or sent by the sync service.
-public struct BaselineCoverageAudit: Codable, Sendable {
-  public enum Disposition: String, Codable, Sendable {
-    case included, notRead, readingIncomplete, initializationUnknown, rawAbsent
-    case sourceNotSelected, sourceMismatch, noSleepCandidate, sleepExcluded, featureExcluded
-  }
-  public struct Day: Codable, Sendable {
-    public var metric: ReadinessMetric
-    public var day: Date
-    public var initialization: ReadinessInitialization?
-    public var rawCount: Int
-    public var normalizedCount: Int
-    public var selectedSourceCount: Int
-    public var selectedSourceKey: String?
-    public var sleepCandidateIDs: [String]
-    public var selectedSleepID: String?
-    public var sleepQuality: ReadinessSleepQuality?
-    public var includedSampleIDs: [UUID]
-    public var coveredHours: Int
-    public var disposition: Disposition
-    public var filterReasons: [ReadinessReason]
-  }
-  public var qualityPolicyVersion: String?
-  public var generatedAt: Date
-  public var timeZoneID: String
-  public var currentSleepID: String?
-  public var days: [Day]
-
-  public static func build(snapshot: InsightsSnapshot, now: Date, calendar: Calendar,
-    configuration: ReadinessConfiguration = .init(), interventions: [ReadinessInterval] = []) -> Self {
-    let raw = Array(snapshot.ledger.samples.values), rows = SampleNormalizer.deduplicate(raw)
-    let prepared = ReadinessInputBuilder.build(samples: raw, sources: snapshot.sources,
-      previousEpisodes: snapshot.episodes, now: now, calendar: calendar, configuration: configuration,
-      interventions: interventions, manualSleepID: snapshot.manualSleepID)
-    let current = prepared.input.sleep.episode
-    let selected = current.map { BaselineBuilder.selectedEpisodes(prepared.episodes, before: $0,
-      calendar: calendar, configuration: configuration) } ?? []
-    let currentIDs = Set((prepared.input.hrv?.sampleIDs ?? []) + (prepared.input.rhr?.sampleIDs ?? []))
-    let exclusions = interventions + rows.filter { $0.metric == .mindfulSession }.map { ReadinessInterval(start: $0.start, end: $0.end) }
-    let currentDay = calendar.startOfDay(for: current?.end ?? now)
-    var audit: [Day] = [], usedRHR: Set<UUID> = []
-    for offset in stride(from: configuration.baselineDays, through: 1, by: -1) {
-      guard let day = calendar.date(byAdding: .day, value: -offset, to: currentDay) else { continue }
-      let candidates = prepared.episodes.filter { calendar.isDate($0.end, inSameDayAs: day) }
-      let episode = selected.first { calendar.isDate($0.end, inSameDayAs: day) }
-      for metric in [ReadinessMetric.sleep, .hrvSDNN, .restingHeartRate] {
-        let key = snapshot.sources[metric.rawValue]?.sourceKey
-        let rawDay = raw.filter { $0.metric == metric && calendar.isDate($0.end, inSameDayAs: day) }
-        let normalized = rows.filter { $0.metric == metric && calendar.isDate($0.end, inSameDayAs: day) }
-        let sourced = normalized.filter { $0.sourceKey == key }
-        let state = snapshot.initialization?[metric.rawValue]
-        let feature = metric == .sleep ? nil : episode.map {
-          CurrentMetricExtractor.extract(metric: metric, samples: rows, sourceKey: key, episode: $0,
-            now: current?.start ?? now, interventions: exclusions, usedRestingIDs: usedRHR,
-            excludingIDs: currentIDs, configuration: configuration)
-        }
-        var reasons = Set(episode?.quality?.userBlockingReasons ?? episode?.flags ?? [])
-        reasons.formUnion(feature?.reasons ?? [])
-        let disposition: Disposition
-        if state == .unread { disposition = .notRead }
-        else if state == .inProgress { disposition = .readingIncomplete }
-        else if state == nil { disposition = .initializationUnknown }
-        else if key == nil { disposition = rawDay.isEmpty ? .rawAbsent : .sourceNotSelected }
-        else if episode == nil { disposition = rawDay.isEmpty && candidates.isEmpty ? .rawAbsent : .noSleepCandidate }
-        else if episode?.sleepDurationUsable != true { disposition = .sleepExcluded }
-        else if metric == .sleep { disposition = .included }
-        else if feature?.reliable == true {
-          disposition = .included
-          if metric == .restingHeartRate { usedRHR.formUnion(feature?.sampleIDs ?? []) }
-        } else if sourced.isEmpty && !normalized.isEmpty { disposition = .sourceMismatch }
-        else if normalized.isEmpty { disposition = .rawAbsent }
-        else { disposition = .featureExcluded }
-        audit.append(Day(metric: metric, day: day, initialization: state,
-          rawCount: rawDay.count, normalizedCount: normalized.count, selectedSourceCount: sourced.count,
-          selectedSourceKey: key, sleepCandidateIDs: candidates.map(\.id), selectedSleepID: episode?.id,
-          sleepQuality: episode?.quality, includedSampleIDs: disposition == .included
-            ? (feature?.sampleIDs ?? episode?.sampleIDs ?? []) : [],
-          coveredHours: feature?.coveredHours ?? 0, disposition: disposition,
-          filterReasons: reasons.sorted { $0.rawValue < $1.rawValue }))
-      }
-    }
-    return Self(qualityPolicyVersion: configuration.qualityPolicyVersion, generatedAt: now,
-      timeZoneID: calendar.timeZone.identifier, currentSleepID: current?.id, days: audit)
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Readiness/InsightsStore.swift =====
-import Foundation
-
-public enum InsightsStoreError: Error, Equatable {
-  case corrupt, unsupportedSchema, staleTransaction, injectedFailure, invalidTransaction
-}
-public enum InsightsStoreFault: Sendable { case none, beforePublish, afterPrivacy, afterPublish }
-
-extension ReadinessAssessment {
-  var hasCompleteDependencies: Bool { dependencyVersion == 1 }
-}
-
-public struct DeletedAssessmentAudit: Codable, Sendable {
-  public var assessmentID: String
-  public var recoveryCycleID: String?
-  public var revision: Int
-  public var reason: ReadinessReason = .sourceDeleted
-}
-
-public enum ReadinessInitialization: String, Codable, Sendable { case unread, inProgress, complete }
-
-public struct InsightsSnapshot: Codable, Sendable {
-  public var generation: Int = 0
-  public var ledger = ReadinessSampleLedger()
-  public var sources: [String: SelectedReadinessSource] = [:]
-  // Optional for schema-1 compatibility; existing source choices remain authoritative.
-  public var initialization: [String: ReadinessInitialization]?
-  public var lastRefreshAttemptAt: Date?
-  public var lastSuccessfulRefreshAt: Date?
-  public var episodes: [ReadinessSleepEpisode] = []
-  public var assessments: [ReadinessAssessment] = []
-  public var deletionAudit: [DeletedAssessmentAudit] = []
-  public var currentAssessmentID: String?
-  public var requiresResync = false
-  public var manualSleepID: String?
-  public init() {}
-  public var current: ReadinessAssessment? { assessments.first { $0.assessmentID == currentAssessmentID } }
-
-  public mutating func record(_ proposed: ReadinessAssessment) {
-    var result = proposed
-    if let same = current, same.inputFingerprint == result.inputFingerprint,
-      same.recoveryCycleID == result.recoveryCycleID, same.availability == result.availability {
-      result.assessmentID = same.assessmentID
-      result.revision = same.revision; result.supersedesID = same.supersedesID
-    } else {
-      let previous = assessments.filter { $0.recoveryCycleID == result.recoveryCycleID }.max { $0.revision < $1.revision }
-      let removed = deletionAudit.filter { $0.recoveryCycleID == result.recoveryCycleID }.max { $0.revision < $1.revision }
-      result.revision = max(previous?.revision ?? 0, removed?.revision ?? 0) + 1
-      result.supersedesID = (previous?.revision ?? 0) >= (removed?.revision ?? 0) ? previous?.assessmentID : removed?.assessmentID
-      result.assessmentID = StableDigest.text((result.recoveryCycleID ?? "no-cycle") + result.inputFingerprint + "|revision-\(result.revision)")
-    }
-    assessments.removeAll { $0.assessmentID == result.assessmentID }
-    assessments.append(result); currentAssessmentID = result.assessmentID
-  }
-
-  mutating func redact(_ tombstones: Set<String>) {
-    ledger.tombstones.formUnion(tombstones)
-    ledger.samples = ledger.samples.filter { !tombstones.contains($0.key) }
-    episodes.removeAll { $0.sampleIDs.contains { tombstones.contains($0.uuidString) } }
-    let affected = assessments.filter {
-      // Pre-R01 files have incomplete dependency coverage. Any deletion invalidates them conservatively.
-      (!$0.hasCompleteDependencies && !tombstones.isEmpty)
-        || $0.contributingSampleIDs.contains { tombstones.contains($0.uuidString) }
-    }
-    for old in affected where !deletionAudit.contains(where: { $0.assessmentID == old.assessmentID }) {
-      deletionAudit.append(DeletedAssessmentAudit(assessmentID: old.assessmentID, recoveryCycleID: old.recoveryCycleID, revision: old.revision))
-    }
-    let removed = Set(affected.map(\.assessmentID))
-    assessments.removeAll { removed.contains($0.assessmentID) }
-    if currentAssessmentID.map(removed.contains) == true { currentAssessmentID = nil }
-  }
-}
-
-/// One app-owned actor per directory. Independent from the existing SwiftData / diary store.
-/// Snapshot + anchored cursors publish atomically. A monotonic deletion journal takes priority over backups.
-public actor InsightsStore {
-  private struct Envelope: Codable { var schemaVersion: Int; var checksum: String; var payload: Data }
-  private struct PrivacyJournal: Codable { var epoch: Int = 0; var deletedIDs: Set<String> = [] }
-  private let directory: URL
-  private var state: InsightsSnapshot
-  private var privacy: PrivacyJournal
-  private var nextFault: InsightsStoreFault = .none
-
-  public init(directory: URL) throws {
-    self.directory = directory
-    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-    try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: directory.path)
-    let primary = directory.appendingPathComponent("insights-v1.json")
-    let backup = directory.appendingPathComponent("insights-v1.previous.json")
-    let journal = directory.appendingPathComponent("deletions-v1.json")
-    let hasData = FileManager.default.fileExists(atPath: primary.path) || FileManager.default.fileExists(atPath: backup.path)
-    if FileManager.default.fileExists(atPath: journal.path) {
-      privacy = try Self.read(PrivacyJournal.self, at: journal)
-    } else {
-      guard !hasData else { throw InsightsStoreError.corrupt }
-      privacy = PrivacyJournal(); try Self.write(privacy, to: journal)
-    }
-    if hasData {
-      do { state = try Self.read(InsightsSnapshot.self, at: primary) }
-      catch InsightsStoreError.unsupportedSchema { throw InsightsStoreError.unsupportedSchema }
-      catch {
-        state = try Self.read(InsightsSnapshot.self, at: backup)
-        state.requiresResync = true
-        state.ledger.cursors = [:]
-        state.currentAssessmentID = nil
-      }
-    } else { state = InsightsSnapshot() }
-    // clear() journals a newer epoch before publishing an empty snapshot.
-    if privacy.epoch > state.generation { state = InsightsSnapshot(); state.generation = privacy.epoch; state.requiresResync = true }
-    state.redact(privacy.deletedIDs)
-    let needsDeletionCleanup = !privacy.deletedIDs.isEmpty
-    if hasData && needsDeletionCleanup {
-      // Complete interrupted deletion cleanup on disk as well as in memory.
-      try Self.write(state, to: backup)
-      try Self.write(state, to: primary)
-    }
-  }
-
-  public func snapshot() -> InsightsSnapshot { state }
-  public func injectNextFault(_ fault: InsightsStoreFault) { nextFault = fault }
-
-  @discardableResult
-  public func commit(_ candidate: InsightsSnapshot, expectedGeneration: Int) throws -> InsightsSnapshot {
-    guard state.generation == expectedGeneration else { throw InsightsStoreError.staleTransaction }
-    guard candidate.generation == expectedGeneration else { throw InsightsStoreError.invalidTransaction }
-    let fault = nextFault; nextFault = .none
-    if fault == .beforePublish { throw InsightsStoreError.injectedFailure }
-    var next = candidate
-    // Commit the privacy barrier first. On interruption we may lose data, never resurrect it.
-    privacy.deletedIDs.formUnion(candidate.ledger.tombstones)
-    try Self.write(privacy, to: directory.appendingPathComponent("deletions-v1.json"))
-    state.redact(privacy.deletedIDs)
-    if fault == .afterPrivacy { throw InsightsStoreError.injectedFailure }
-    next.redact(privacy.deletedIDs)
-    next.generation = expectedGeneration + 1
-    try Self.write(state, to: directory.appendingPathComponent("insights-v1.previous.json"))
-    do { try Self.write(next, to: directory.appendingPathComponent("insights-v1.json")) }
-    catch {
-      // Atomic replacement may have succeeded before an attribute write failed.
-      if let disk = try? Self.read(InsightsSnapshot.self, at: directory.appendingPathComponent("insights-v1.json")),
-        disk.generation == next.generation { state = disk; state.redact(privacy.deletedIDs) }
-      throw error
-    }
-    state = next
-    if fault == .afterPublish { throw InsightsStoreError.injectedFailure }
-    return state
-  }
-
-  public func selectSource(_ sourceKey: String, for metric: ReadinessMetric, now: Date, calendar: Calendar) throws {
-    var next = state
-    next.sources[metric.rawValue] = StableSourceSelector.select(metric: metric, samples: next.ledger.normalizedSamples,
-      existing: next.sources[metric.rawValue], requested: sourceKey, calendar: calendar, now: now)
-    next.currentAssessmentID = nil
-    try commit(next, expectedGeneration: state.generation)
-  }
-
-  public func selectSleep(_ episodeID: String) throws {
-    guard state.episodes.contains(where: { $0.id == episodeID }) else { throw InsightsStoreError.invalidTransaction }
-    var next = state; next.manualSleepID = episodeID; next.currentAssessmentID = nil
-    try commit(next, expectedGeneration: state.generation)
-  }
-
-  public func deleteSamples(_ ids: Set<UUID>) throws {
-    var next = state; next.ledger.tombstones.formUnion(ids.map(\.uuidString))
-    try commit(next, expectedGeneration: state.generation)
-  }
-
-  public func removeSource(_ key: String) throws {
-    var next = state
-    next.ledger.tombstones.formUnion(next.ledger.samples.values.filter { $0.sourceKey == key }.map { $0.id.uuidString })
-    // Keep the explicit selection: disappearance is missing data, never automatic fallback.
-    try commit(next, expectedGeneration: state.generation)
-  }
-
-  public func invalidateCurrent() throws {
-    var next = state; next.currentAssessmentID = nil
-    try commit(next, expectedGeneration: state.generation)
-  }
-
-  public func clear() throws {
-    privacy.epoch = state.generation + 1
-    privacy.deletedIDs.formUnion(state.ledger.samples.keys)
-    try Self.write(privacy, to: directory.appendingPathComponent("deletions-v1.json"))
-    var empty = InsightsSnapshot(); empty.generation = privacy.epoch
-    empty.ledger.tombstones = privacy.deletedIDs
-    state = empty
-    try Self.write(empty, to: directory.appendingPathComponent("insights-v1.previous.json"))
-    try Self.write(empty, to: directory.appendingPathComponent("insights-v1.json"))
-    state = empty
-  }
-
-  private static func read<T: Decodable>(_ type: T.Type, at url: URL) throws -> T {
-    let envelope: Envelope
-    do { envelope = try JSONDecoder().decode(Envelope.self, from: Data(contentsOf: url)) }
-    catch { throw InsightsStoreError.corrupt }
-    guard envelope.schemaVersion == 1 else { throw InsightsStoreError.unsupportedSchema }
-    guard StableDigest.data(envelope.payload) == envelope.checksum else { throw InsightsStoreError.corrupt }
-    let decoder = JSONDecoder()
-    decoder.nonConformingFloatDecodingStrategy = .convertFromString(positiveInfinity: "Infinity", negativeInfinity: "-Infinity", nan: "NaN")
-    do { return try decoder.decode(type, from: envelope.payload) }
-    catch { throw InsightsStoreError.corrupt }
-  }
-  private static func write<T: Encodable>(_ value: T, to url: URL) throws {
-    let encoder = JSONEncoder(); encoder.outputFormatting = .sortedKeys
-    encoder.nonConformingFloatEncodingStrategy = .convertToString(positiveInfinity: "Infinity", negativeInfinity: "-Infinity", nan: "NaN")
-    let payload = try encoder.encode(value)
-    let data = try encoder.encode(Envelope(schemaVersion: 1, checksum: StableDigest.data(payload), payload: payload))
-    #if os(iOS) || os(watchOS)
-    try data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
-    #else
-    try data.write(to: url, options: .atomic)
-    #endif
-    try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
-    var resource = url; var values = URLResourceValues(); values.isExcludedFromBackup = true
-    try resource.setResourceValues(values)
-  }
-}
-
-===== END FILE =====
-
-===== FILE: InnerBalanceCore/Sources/InnerBalanceCore/Readiness/ReadinessConfiguration.swift =====
-import Foundation
-
-/// Engineering defaults awaiting calibration. Not medical thresholds.
-public struct ReadinessConfiguration: Codable, Equatable, Sendable {
-  public var algorithmVersion = "readiness-v1-engineering"
-  public var featureSchemaVersion = 2
-  public var qualityPolicyVersion: String? = "sleep-quality-v2"
-  public var sleepTargetHours = 8.0
-  public var episodeGapMinutes = 90.0
-  public var minimumSleepHours = 2.0
-  public var reviewSleepHours = 14.0
-  public var arrivalBufferMinutes = 30.0
-  public var interventionBufferMinutes = 30.0
-  public var minimumHRVSamples = 3
-  public var minimumHRVHours = 2
-  public var baselineDays = 28
-  public var provisionalDays = 7
-  public var matureDays = 14
-  public var madMultiplier = 1.4826
-  public var hrvScaleFloor = 0.10
-  public var rhrScaleFloor = 3.0
-  public var currentHours = 18.0
-  public var historicalHours = 24.0
-  public var mildDeviation = 1.0
-  public var severeDeviation = 2.0
-  public var highHRVDeviation = 2.0
-  public var mildSleepDeficitMinutes = 60.0
-  public var severeSleepDeficitMinutes = 120.0
-  public var ambiguousSleepHours = 4.0
-  public var ambiguousEndGapHours = 6.0
-  public var revisionOverlapFraction = 0.5
-  public var revisionEndGapHours = 3.0
-  public var maximumHRVMS = 10_000.0
-  public var maximumRestingBPM = 1_000.0
-  public init(sleepTargetHours: Double = 8) { self.sleepTargetHours = sleepTargetHours }
-  public var version: String { (try? StableDigest.encoded(self)) ?? "invalid-configuration" }
-  public var isValid: Bool {
-    (7...10).contains(sleepTargetHours) && episodeGapMinutes > 0 && minimumSleepHours > 0
-      && reviewSleepHours > minimumSleepHours && arrivalBufferMinutes >= 0 && interventionBufferMinutes >= 0
-      && mildDeviation > 0 && severeDeviation > mildDeviation && highHRVDeviation > 0
-      && mildSleepDeficitMinutes > 0 && severeSleepDeficitMinutes > mildSleepDeficitMinutes
-      && ambiguousSleepHours > 0 && ambiguousEndGapHours > 0 && (0..<1).contains(revisionOverlapFraction)
-      && revisionEndGapHours > 0 && maximumHRVMS > 0 && maximumRestingBPM > 0
-      && minimumHRVSamples >= 3 && minimumHRVHours >= 2 && baselineDays == 28
-      && provisionalDays == 7 && matureDays == 14 && madMultiplier > 0
-      && hrvScaleFloor > 0 && rhrScaleFloor > 0 && currentHours == 18 && historicalHours == 24
-      && [sleepTargetHours,episodeGapMinutes,minimumSleepHours,reviewSleepHours,arrivalBufferMinutes,
-          interventionBufferMinutes,madMultiplier,hrvScaleFloor,rhrScaleFloor,maximumHRVMS,maximumRestingBPM,mildDeviation,severeDeviation,highHRVDeviation,
-          mildSleepDeficitMinutes,severeSleepDeficitMinutes,ambiguousSleepHours,ambiguousEndGapHours,
-          revisionOverlapFraction,revisionEndGapHours].allSatisfy { $0.isFinite }
-  }
-}
-
-public enum ReadinessReason: String, Codable, Hashable, Sendable {
-  case currentDataMissing, sleepMissing, hrvMissing, rhrMissing, baselineBuilding, sparseHRV, narrowHRVCoverage
-  case invalidValue, extremeValue, unitMismatch, sourceUnknown, sourceAmbiguous, sourceIdentityIncomplete
-  case manuallyEntered, interventionExcluded, restingSampleReused, shortSleep, excessiveSleep, futureSleep
-  case sleepStageOverlap, conflictingSleep, ambiguousSleep, ambiguousRevision, awaitingArrival, manualSleepSelection
-  case hrvAtypicallyHigh, hrvBelowBaseline, rhrAboveBaseline, sleepBelowTarget, dataStale
-  case invalidConfiguration, refreshFailed, sourceChanged, sourceDeleted
-}
-
-public struct ReadinessInterval: Codable, Equatable, Sendable {
-  public var start: Date
-  public var end: Date
-  public init(start: Date, end: Date) { self.start = start; self.end = end }
-  public var duration: TimeInterval { max(0, end.timeIntervalSince(start)) }
-  public func overlaps(_ other: Self) -> Bool { start <= other.end && end >= other.start }
 }
 
 ===== END FILE =====

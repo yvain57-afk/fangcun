@@ -1,4 +1,1162 @@
 
+===== FILE: design/proposals/proposal-c/03-home-nodata.html =====
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - 今天（数据不足）</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #E8EEF5;
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .iphone-frame {
+    width: 393px;
+    height: 852px;
+    background: #FAFBFD;
+    border-radius: 47px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
+    color: #2D3748;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .status-bar {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  .screen-content {
+    height: calc(852px - 54px - 83px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid #D8DCE5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 8px;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    color: #8A95AD;
+    width: 64px;
+  }
+  .tab-item.active { color: #2B5EA7; }
+  .tab-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: #1a1a1a;
+    border-radius: 3px;
+  }
+
+  /* Date header */
+  .date-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 0;
+  }
+  .date-header-left {
+    display: flex;
+    flex-direction: column;
+  }
+  .date-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2D3748;
+    letter-spacing: 0.3px;
+  }
+  .date-rule {
+    margin: 10px 24px 0;
+    border: none;
+    height: 0.5px;
+    background: #D8DCE5;
+  }
+  .cat-stamp-header {
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+
+  /* Section cards */
+  .section-card {
+    margin: 16px 20px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 18px;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .section-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 14px 0 0 14px;
+  }
+  .section-card.border-gray::before { background: #8A9AB5; }
+  .section-card.border-warm::before { background: #E07B4F; opacity: 0.6; }
+  .section-card.border-blue::before { background: #2B5EA7; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2D3748;
+  }
+  .card-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .pill-gray {
+    background: #F3F5F8;
+    color: #8A9AB5;
+  }
+
+  .card-main-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #8A9AB5;
+    margin-bottom: 14px;
+  }
+
+  .baseline-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .baseline-label {
+    font-size: 13px;
+    color: #6B7793;
+    flex-shrink: 0;
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: #EDEFF4;
+    border-radius: 3px;
+    overflow: hidden;
+    max-width: 120px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #8A9AB5;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+  .baseline-fraction {
+    font-size: 12px;
+    color: #8A9AB5;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card-subtext {
+    font-size: 12px;
+    color: #8A95AD;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  /* Stamp dividers */
+  .stamp-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 0;
+  }
+  .stamp-divider svg {
+    opacity: 0.4;
+  }
+
+  /* Body signals */
+  .signal-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px dashed #E8ECF2;
+  }
+  .signal-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .signal-row:first-child {
+    padding-top: 0;
+  }
+  .signal-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 12px;
+    background: #F3F5F8;
+  }
+  .signal-content {
+    flex: 1;
+  }
+  .signal-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2D3748;
+    margin-bottom: 2px;
+  }
+  .signal-status {
+    font-size: 12px;
+    color: #8A9AB5;
+    font-weight: 500;
+  }
+  .signal-detail {
+    font-size: 11px;
+    color: #A0A9BC;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .signal-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8A9AB5;
+    flex-shrink: 0;
+    margin-left: 8px;
+    align-self: center;
+  }
+
+  /* Life record empty */
+  .empty-state {
+    text-align: center;
+    padding: 16px 0 8px;
+  }
+  .empty-text {
+    font-size: 14px;
+    color: #8A95AD;
+    margin-bottom: 14px;
+  }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-radius: 22px;
+    border: 1.5px solid #E07B4F;
+    color: #E07B4F;
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+  }
+  .btn-outline:hover {
+    background: #FDF0EB;
+  }
+
+  /* Action card */
+  .action-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2D3748;
+    margin-bottom: 6px;
+  }
+  .action-desc {
+    font-size: 13px;
+    color: #6B7793;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 24px;
+    border-radius: 22px;
+    background: #2B5EA7;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: #1E4578;
+  }
+  .btn-primary svg {
+    flex-shrink: 0;
+  }
+
+  /* Paper texture */
+  .section-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+</style>
+</head>
+<body>
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#2D3748"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#2D3748"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#2D3748"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#2D3748"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.2 2.6 10.7 1.5 8 1.5S2.8 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#2D3748"/><path d="M8 7.2C9.3 7.2 10.5 7.7 11.3 8.6L8 12L4.7 8.6C5.5 7.7 6.7 7.2 8 7.2Z" fill="#2D3748"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0" y="1" width="22" height="10" rx="2" stroke="#2D3748" stroke-width="1" fill="none"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="#2D3748"/><rect x="1.5" y="2.5" width="18" height="7" rx="1" fill="#2D3748"/></svg>
+    </div>
+  </div>
+
+  <div class="screen-content">
+
+    <!-- Date Header -->
+    <div class="date-header">
+      <div class="date-header-left">
+        <span class="date-title">9月17日 周三</span>
+      </div>
+      <div class="cat-stamp-header">
+        <img src="data:image/png;base64,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" width="36" height="36" style="object-fit:contain" alt="猫">
+      </div>
+    </div>
+    <hr class="date-rule">
+
+    <!-- Section 1: Stress Load -->
+    <div class="section-card border-gray">
+      <div class="card-header">
+        <span class="card-title">压力负荷</span>
+        <span class="card-pill pill-gray">数据不足</span>
+      </div>
+      <div class="card-main-text">暂时无法判断</div>
+      <div class="baseline-row">
+        <span class="baseline-label">基线建立中</span>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 33.3%"></div>
+        </div>
+        <span class="baseline-fraction">第1天 / 需3天</span>
+      </div>
+      <div class="card-subtext">Apple Watch 已于昨日连接，正在收集数据</div>
+    </div>
+
+    <!-- Cat stamp divider -->
+    <div class="stamp-divider">
+      <img src="data:image/png;base64,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" width="36" height="36" style="object-fit:contain" alt="猫">
+    </div>
+
+    <!-- Section 2: Body Signals -->
+    <div class="section-card border-gray">
+      <div class="card-header">
+        <span class="card-title">身体信号</span>
+      </div>
+
+      <!-- Sleep -->
+      <div class="signal-row">
+        <div class="signal-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M14.5 10.5C14.5 14 11.8 16 9 16C5.7 16 3 13.3 3 10C3 7.2 5 4.5 8.5 4.5C7.5 6 7.5 8 8.5 10C9.5 12 11.5 13 14.5 10.5Z" fill="#94B3D7" opacity="0.3" stroke="#8A9AB5" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M11 2L12 3.5L13.5 3" stroke="#8A9AB5" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 5L15 6L16 5.5" stroke="#8A9AB5" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="signal-content">
+          <div class="signal-label">睡眠</div>
+          <div class="signal-status">部分数据</div>
+          <div class="signal-detail">仅记录到4小时（佩戴不完整）</div>
+        </div>
+        <div class="signal-value">~4h</div>
+      </div>
+
+      <!-- HR -->
+      <div class="signal-row">
+        <div class="signal-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 15.5S2.5 11 2.5 7C2.5 4.5 4.5 3 6.5 3C7.8 3 8.8 3.8 9 4.5C9.2 3.8 10.2 3 11.5 3C13.5 3 15.5 4.5 15.5 7C15.5 11 9 15.5 9 15.5Z" fill="#F3F5F8" stroke="#8A9AB5" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="signal-content">
+          <div class="signal-label">心率</div>
+          <div class="signal-status">暂无基线</div>
+        </div>
+        <div class="signal-value" style="color: #B8C0D0;">—</div>
+      </div>
+
+      <!-- Steps -->
+      <div class="signal-row">
+        <div class="signal-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M7 14L5.5 8.5C5.3 7.8 5.8 7 6.5 7C7.1 7 7.5 7.4 7.7 8L8.5 10.5" stroke="#8A9AB5" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M11 14L12.5 8.5C12.7 7.8 12.2 7 11.5 7C10.9 7 10.5 7.4 10.3 8L9.5 10.5" stroke="#8A9AB5" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="7" cy="5" r="1.2" fill="#F3F5F8" stroke="#8A9AB5" stroke-width="1"/>
+            <circle cx="11" cy="4" r="1.2" fill="#F3F5F8" stroke="#8A9AB5" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="signal-content">
+          <div class="signal-label">步数</div>
+          <div class="signal-status">暂无数据</div>
+        </div>
+        <div class="signal-value" style="color: #B8C0D0;">—</div>
+      </div>
+    </div>
+
+    <!-- Dog stamp divider -->
+    <div class="stamp-divider">
+      <img src="data:image/png;base64,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" height="32" style="object-fit:contain" alt="狗">
+    </div>
+
+    <!-- Section 3: Life Records -->
+    <div class="section-card border-warm">
+      <div class="card-header">
+        <span class="card-title">生活记录</span>
+      </div>
+      <div class="empty-state">
+        <div class="empty-text">今天还没有记录</div>
+        <button class="btn-outline">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="#E07B4F" stroke-width="1.2" fill="none"/>
+            <path d="M8 5.5V10.5M5.5 8H10.5" stroke="#E07B4F" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          记录一杯饮品
+        </button>
+      </div>
+    </div>
+
+    <!-- Section 4: Suggested Action -->
+    <div class="section-card border-gray" style="margin-bottom: 24px;">
+      <div class="action-title">先体验一次练习</div>
+      <div class="action-desc">无需数据也可以开始，试试节律呼吸</div>
+      <button class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <polygon points="6,4 13,8 6,12" fill="white"/>
+        </svg>
+        开始体验
+      </button>
+    </div>
+
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 9.5L11 3L19 9.5V18C19 18.6 18.6 19 18 19H4C3.4 19 3 18.6 3 18V9.5Z" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="8" y="13" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+      <span>今天</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M11 7V11.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <span>练习</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 17V8M8 17V5M12 17V10M16 17V7M20 17V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <span>记录</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="5" r="1.5" fill="currentColor"/><circle cx="11" cy="11" r="1.5" fill="currentColor"/><circle cx="11" cy="17" r="1.5" fill="currentColor"/></svg></div>
+      <span>更多</span>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+</body>
+</html>
+===== END FILE =====
+
+===== FILE: design/proposals/proposal-c/04-beverage.html =====
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方寸 - 今日饮品</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #E8EEF5;
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .iphone-frame {
+    width: 393px;
+    height: 852px;
+    background: #FAFBFD;
+    border-radius: 47px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
+    color: #2D3748;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .status-bar {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  .screen-content {
+    height: calc(852px - 54px - 83px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid #D8DCE5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 8px;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    color: #8A95AD;
+    width: 64px;
+  }
+  .tab-item.active { color: #2B5EA7; }
+  .tab-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: #1a1a1a;
+    border-radius: 3px;
+  }
+
+  /* Top navigation bar */
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 10px 20px 14px;
+  }
+  .nav-back {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  .nav-back:hover {
+    background: #F0F2F7;
+  }
+  .nav-center {
+    text-align: center;
+  }
+  .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #2D3748;
+  }
+  .nav-subtitle {
+    font-size: 12px;
+    color: #8A95AD;
+    margin-top: 1px;
+  }
+
+  /* Section cards */
+  .section-card {
+    margin: 10px 20px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .section-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 14px 0 0 14px;
+  }
+  .section-card.border-blue::before { background: #2B5EA7; }
+  .section-card.border-warm::before { background: #E07B4F; }
+  .section-card.border-red::before { background: #C75B2A; }
+  .section-card.border-gray::before { background: #8A9AB5; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-icon.blue { background: #E8EFF8; }
+  .card-icon.warm { background: #FDF0EB; }
+  .card-icon.red { background: #FDEEE8; }
+  .card-icon.neutral { background: #F3F5F8; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2D3748;
+  }
+
+  /* Water section */
+  .water-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cups-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cup {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cup.filled {
+    background: #2B5EA7;
+  }
+  .cup.empty {
+    background: #EDEFF4;
+  }
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid #D8DCE5;
+  }
+  .stepper-btn {
+    width: 36px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FAFBFD;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    color: #2B5EA7;
+    border: none;
+    user-select: none;
+  }
+  .stepper-btn:hover {
+    background: #E8EFF8;
+  }
+  .stepper-btn:active {
+    background: #D4E0F0;
+  }
+  .stepper-val {
+    width: 36px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2B5EA7;
+    background: #fff;
+    border-left: 1px solid #D8DCE5;
+    border-right: 1px solid #D8DCE5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Beverage items */
+  .bev-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #F0F2F7;
+  }
+  .bev-item:last-of-type {
+    border-bottom: none;
+  }
+  .bev-info {
+    flex: 1;
+  }
+  .bev-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2D3748;
+  }
+  .bev-detail {
+    font-size: 12px;
+    color: #8A95AD;
+    margin-top: 2px;
+  }
+  .bev-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 8px;
+  }
+  .bev-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+  }
+  .bev-action-btn:hover {
+    background: #F3F5F8;
+  }
+
+  .btn-add-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2B5EA7;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  .btn-add-item:hover {
+    color: #1E4578;
+  }
+
+  /* Empty beverage section */
+  .bev-empty {
+    font-size: 13px;
+    color: #8A95AD;
+    padding: 6px 0 4px;
+  }
+
+  /* Quick-add section */
+  .quick-add-section {
+    margin: 16px 20px 8px;
+  }
+  .quick-add-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6B7793;
+    margin-bottom: 10px;
+  }
+  .quick-add-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .quick-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: #F0F2F7;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2D3748;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .quick-chip:hover {
+    background: #E8EFF8;
+    color: #2B5EA7;
+  }
+  .quick-chip:active {
+    background: #D4E0F0;
+  }
+
+  /* Bottom note */
+  .bottom-note {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 12px 24px 20px;
+  }
+  .note-text {
+    font-size: 11px;
+    color: #A0A9BC;
+    line-height: 1.4;
+  }
+  .dog-stamp-bottom {
+    opacity: 0.3;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  /* Paper texture */
+  .section-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+</style>
+</head>
+<body>
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#2D3748"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#2D3748"/><rect x="9" y="1" width="3" height="11" rx="1" fill="#2D3748"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#2D3748"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.6C10.2 3.6 12.1 4.5 13.5 6L15 4.5C13.2 2.6 10.7 1.5 8 1.5S2.8 2.6 1 4.5L2.5 6C3.9 4.5 5.8 3.6 8 3.6Z" fill="#2D3748"/><path d="M8 7.2C9.3 7.2 10.5 7.7 11.3 8.6L8 12L4.7 8.6C5.5 7.7 6.7 7.2 8 7.2Z" fill="#2D3748"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0" y="1" width="22" height="10" rx="2" stroke="#2D3748" stroke-width="1" fill="none"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="#2D3748"/><rect x="1.5" y="2.5" width="18" height="7" rx="1" fill="#2D3748"/></svg>
+    </div>
+  </div>
+
+  <div class="screen-content">
+
+    <!-- Top navigation -->
+    <div class="nav-bar">
+      <div class="nav-back">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M14 4L7 11L14 18" stroke="#2B5EA7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="nav-center">
+        <div class="nav-title">今日饮品</div>
+        <div class="nav-subtitle">9月17日</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Water -->
+    <div class="section-card border-blue">
+      <div class="card-header">
+        <div class="card-icon blue">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2C8 2 3.5 7.5 3.5 10.5C3.5 13 5.5 14.5 8 14.5C10.5 14.5 12.5 13 12.5 10.5C12.5 7.5 8 2 8 2Z" fill="#94B3D7" opacity="0.3" stroke="#2B5EA7" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <span class="card-title">饮水</span>
+      </div>
+      <div class="water-row">
+        <div class="cups-display">
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup filled">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+          <div class="cup empty">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2C7 2 3.5 5.8 3.5 8C3.5 10 5 11.5 7 11.5C9 11.5 10.5 10 10.5 8C10.5 5.8 7 2 7 2Z" fill="#C8CDD8"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn">−</button>
+          <div class="stepper-val">4</div>
+          <button class="stepper-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Caffeine -->
+    <div class="section-card border-warm">
+      <div class="card-header">
+        <div class="card-icon warm">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="2.5" y="5" width="9" height="8" rx="1.5" stroke="#E07B4F" stroke-width="1.2" fill="none"/>
+            <path d="M11.5 7H13C13.8 7 14.5 7.7 14.5 8.5C14.5 9.3 13.8 10 13 10H11.5" stroke="#E07B4F" stroke-width="1.2" fill="none"/>
+            <path d="M5.5 3.5C5.5 3.5 5.8 2 7 2C8.2 2 8.5 3.5 8.5 3.5" stroke="#E07B4F" stroke-width="0.8" stroke-linecap="round" fill="none"/>
+            <line x1="7" y1="2.5" x2="7" y2="4.5" stroke="#E07B4F" stroke-width="0.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="card-title">咖啡因</span>
+      </div>
+      <div class="bev-item">
+        <div class="bev-info">
+          <div class="bev-name">美式 ×1</div>
+          <div class="bev-detail">约150mg，预设值可调</div>
+        </div>
+        <div class="bev-actions">
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M11.5 2.5L13.5 4.5M10.2 3.8L3.5 10.5V12.5H5.5L12.2 5.8L10.2 3.8Z" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 4.5H13M6 4.5V3C6 2.4 6.4 2 7 2H9C9.6 2 10 2.4 10 3V4.5M5 4.5V13C5 13.6 5.4 14 6 14H10C10.6 14 11 13.6 11 13V4.5" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-add-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="5.5" stroke="#2B5EA7" stroke-width="1.2" fill="none"/>
+          <path d="M7 4.5V9.5M4.5 7H9.5" stroke="#2B5EA7" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        添加咖啡因饮品
+      </button>
+    </div>
+
+    <!-- Section 3: Alcohol -->
+    <div class="section-card border-red">
+      <div class="card-header">
+        <div class="card-icon red">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M5 2L4 8C4 10.2 5.8 12 8 12C10.2 12 12 10.2 12 8L11 2H5Z" stroke="#C75B2A" stroke-width="1.2" fill="none"/>
+            <line x1="8" y1="12" x2="8" y2="14.5" stroke="#C75B2A" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="5.5" y1="14.5" x2="10.5" y2="14.5" stroke="#C75B2A" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M5.5 6H10.5" stroke="#C75B2A" stroke-width="0.8" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="card-title">酒精</span>
+      </div>
+      <div class="bev-item">
+        <div class="bev-info">
+          <div class="bev-name">啤酒 ×1</div>
+          <div class="bev-detail">约350ml</div>
+        </div>
+        <div class="bev-actions">
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M11.5 2.5L13.5 4.5M10.2 3.8L3.5 10.5V12.5H5.5L12.2 5.8L10.2 3.8Z" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="bev-action-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 4.5H13M6 4.5V3C6 2.4 6.4 2 7 2H9C9.6 2 10 2.4 10 3V4.5M5 4.5V13C5 13.6 5.4 14 6 14H10C10.6 14 11 13.6 11 13V4.5" stroke="#8A95AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-add-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="5.5" stroke="#2B5EA7" stroke-width="1.2" fill="none"/>
+          <path d="M7 4.5V9.5M4.5 7H9.5" stroke="#2B5EA7" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        添加酒精饮品
+      </button>
+    </div>
+
+    <!-- Section 4: Sugary drinks -->
+    <div class="section-card border-gray">
+      <div class="card-header">
+        <div class="card-icon neutral">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M5 3H11L10.5 13C10.5 13.3 10.2 13.5 10 13.5H6C5.8 13.5 5.5 13.3 5.5 13L5 3Z" stroke="#8A9AB5" stroke-width="1.2" fill="none"/>
+            <path d="M4 3H12" stroke="#8A9AB5" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="7.5" cy="8" r="0.8" fill="#8A9AB5" opacity="0.4"/>
+            <circle cx="9" cy="10" r="0.6" fill="#8A9AB5" opacity="0.4"/>
+            <circle cx="7" cy="10.5" r="0.5" fill="#8A9AB5" opacity="0.4"/>
+          </svg>
+        </div>
+        <span class="card-title">含糖饮料</span>
+      </div>
+      <div class="bev-empty">今天未记录</div>
+      <button class="btn-add-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="5.5" stroke="#2B5EA7" stroke-width="1.2" fill="none"/>
+          <path d="M7 4.5V9.5M4.5 7H9.5" stroke="#2B5EA7" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        添加
+      </button>
+    </div>
+
+    <!-- Quick-add section -->
+    <div class="quick-add-section">
+      <div class="quick-add-label">快速添加</div>
+      <div class="quick-add-row">
+        <button class="quick-chip">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px;">
+            <path d="M6 1C6 1 2.5 5 2.5 7.5C2.5 9.4 4 11 6 11C8 11 9.5 9.4 9.5 7.5C9.5 5 6 1 6 1Z" fill="#94B3D7" opacity="0.5"/>
+          </svg>
+          水
+        </button>
+        <button class="quick-chip">美式</button>
+        <button class="quick-chip">拿铁</button>
+        <button class="quick-chip">绿茶</button>
+        <button class="quick-chip">啤酒</button>
+        <button class="quick-chip">红酒</button>
+        <button class="quick-chip">可乐</button>
+        <button class="quick-chip">奶茶</button>
+        <button class="quick-chip">果汁</button>
+      </div>
+    </div>
+
+    <!-- Bottom note with dog stamp -->
+    <div class="bottom-note">
+      <div class="note-text">一杯饮品可能同时计入多个类别</div>
+      <div class="dog-stamp-bottom">
+        <img src="data:image/png;base64,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" width="36" height="36" style="object-fit:contain" alt="猫">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 9.5L11 3L19 9.5V18C19 18.6 18.6 19 18 19H4C3.4 19 3 18.6 3 18V9.5Z" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="8" y="13" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+      <span>今天</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M11 7V11.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <span>练习</span>
+    </div>
+    <div class="tab-item active">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 17V8M8 17V5M12 17V10M16 17V7M20 17V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <span>记录</span>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="5" r="1.5" fill="currentColor"/><circle cx="11" cy="11" r="1.5" fill="currentColor"/><circle cx="11" cy="17" r="1.5" fill="currentColor"/></svg></div>
+      <span>更多</span>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+</body>
+</html>
+===== END FILE =====
+
 ===== FILE: design/proposals/proposal-c/05-breathing.html =====
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -848,1238 +2006,5 @@
 </div>
 </body>
 </html>
-
-===== END FILE =====
-
-===== FILE: design/proposals/shared/characters.js =====
-// Fangcun Characters - SVG Components
-// Based on confirmed reference: blue woodblock-print outlines, white bodies, soft orange accents
-
-const FC_BLUE = '#2B5EA7';
-const FC_ORANGE = '#E07B4F';
-const FC_BLUE_LIGHT = '#94B3D7';
-
-// Grain texture filter (shared)
-const grainFilter = `
-<filter id="grain" x="0" y="0" width="100%" height="100%">
-  <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
-  <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
-  <feBlend in="SourceGraphic" in2="gray" mode="multiply" result="blend"/>
-  <feComponentTransfer in="blend">
-    <feFuncA type="linear" slope="0.4" intercept="0.6"/>
-  </feComponentTransfer>
-</filter>`;
-
-// Cat - sitting, content/calm
-function catSitting(size = 80) {
-  return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>${grainFilter}</defs>
-  <g filter="url(#grain)">
-    <!-- Body -->
-    <ellipse cx="52" cy="78" rx="28" ry="24" fill="white" stroke="${FC_BLUE}" stroke-width="4" stroke-linecap="round"/>
-    <!-- Head -->
-    <circle cx="52" cy="48" r="22" fill="white" stroke="${FC_BLUE}" stroke-width="4"/>
-    <!-- Left ear -->
-    <path d="M36 32 L30 14 L44 28" fill="white" stroke="${FC_BLUE}" stroke-width="4" stroke-linejoin="round"/>
-    <!-- Right ear (orange) -->
-    <path d="M68 32 L74 14 L60 28" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="4" stroke-linejoin="round"/>
-    <!-- Eyes -->
-    <circle cx="43" cy="46" r="3" fill="${FC_BLUE}"/>
-    <circle cx="61" cy="46" r="3" fill="${FC_BLUE}"/>
-    <!-- Whiskers -->
-    <line x1="28" y1="50" x2="38" y2="50" stroke="${FC_BLUE}" stroke-width="2" stroke-linecap="round"/>
-    <line x1="28" y1="54" x2="37" y2="53" stroke="${FC_BLUE}" stroke-width="2" stroke-linecap="round"/>
-    <line x1="66" y1="50" x2="76" y2="50" stroke="${FC_BLUE}" stroke-width="2" stroke-linecap="round"/>
-    <line x1="67" y1="53" x2="76" y2="54" stroke="${FC_BLUE}" stroke-width="2" stroke-linecap="round"/>
-    <!-- Nose/mouth -->
-    <circle cx="52" cy="52" r="1.5" fill="${FC_BLUE}"/>
-    <path d="M49 55 Q52 58 55 55" stroke="${FC_BLUE}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <!-- Tail -->
-    <path d="M24 70 Q12 55 18 42" stroke="${FC_BLUE}" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <!-- Front paws -->
-    <ellipse cx="40" cy="96" rx="8" ry="5" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-    <ellipse cx="64" cy="96" rx="8" ry="5" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-  </g>
-</svg>`;
-}
-
-// Cat - small/icon version
-function catIcon(size = 32) {
-  return `<svg width="${size}" height="${size}" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="24" cy="26" r="14" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-  <path d="M14 16 L11 6 L18 14" fill="white" stroke="${FC_BLUE}" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M34 16 L37 6 L30 14" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="2.5" stroke-linejoin="round"/>
-  <circle cx="19" cy="24" r="2" fill="${FC_BLUE}"/>
-  <circle cx="29" cy="24" r="2" fill="${FC_BLUE}"/>
-  <path d="M22 29 Q24 31 26 29" stroke="${FC_BLUE}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-</svg>`;
-}
-
-// Dog - lying down, relaxed
-function dogLying(size = 100) {
-  return `<svg width="${size}" height="${size * 0.6}" viewBox="0 0 160 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>${grainFilter}</defs>
-  <g filter="url(#grain)">
-    <!-- Body -->
-    <ellipse cx="90" cy="58" rx="50" ry="26" fill="white" stroke="${FC_BLUE}" stroke-width="4" stroke-linecap="round"/>
-    <!-- Head -->
-    <circle cx="48" cy="42" r="22" fill="white" stroke="${FC_BLUE}" stroke-width="4"/>
-    <!-- Ear left -->
-    <path d="M30 30 Q22 20 28 40" fill="white" stroke="${FC_BLUE}" stroke-width="3.5" stroke-linecap="round"/>
-    <!-- Ear right (orange patch) -->
-    <ellipse cx="62" cy="28" rx="10" ry="8" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="3.5" transform="rotate(-15 62 28)"/>
-    <!-- Eyes -->
-    <circle cx="40" cy="40" r="3" fill="${FC_BLUE}"/>
-    <circle cx="56" cy="40" r="3" fill="${FC_BLUE}"/>
-    <!-- Nose/mouth -->
-    <ellipse cx="48" cy="48" rx="4" ry="3" fill="${FC_BLUE}" opacity="0.8"/>
-    <path d="M44 51 Q48 55 52 51" stroke="${FC_BLUE}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <!-- Body patch -->
-    <ellipse cx="105" cy="50" rx="16" ry="12" fill="${FC_ORANGE}" opacity="0.6"/>
-    <!-- Tail -->
-    <path d="M138 48 Q148 38 144 52" stroke="${FC_BLUE}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-    <!-- Front paws -->
-    <ellipse cx="60" cy="80" rx="10" ry="5" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-    <ellipse cx="80" cy="82" rx="10" ry="5" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-  </g>
-</svg>`;
-}
-
-// Dog - small/icon version
-function dogIcon(size = 32) {
-  return `<svg width="${size}" height="${size}" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="24" cy="26" r="14" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-  <path d="M13 20 Q9 12 14 22" fill="white" stroke="${FC_BLUE}" stroke-width="2.5" stroke-linecap="round"/>
-  <ellipse cx="32" cy="16" rx="6" ry="5" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="2.5" transform="rotate(-10 32 16)"/>
-  <circle cx="19" cy="24" r="2" fill="${FC_BLUE}"/>
-  <circle cx="29" cy="24" r="2" fill="${FC_BLUE}"/>
-  <ellipse cx="24" cy="29" rx="3" ry="2" fill="${FC_BLUE}" opacity="0.7"/>
-</svg>`;
-}
-
-// Cat + Dog together (compact, for headers)
-function catDogPair(width = 140) {
-  const h = width * 0.55;
-  return `<svg width="${width}" height="${h}" viewBox="0 0 200 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>${grainFilter}</defs>
-  <g filter="url(#grain)">
-    <!-- Cat sitting (left) -->
-    <g transform="translate(15, 10)">
-      <ellipse cx="40" cy="68" rx="24" ry="20" fill="white" stroke="${FC_BLUE}" stroke-width="3.5"/>
-      <circle cx="40" cy="40" r="19" fill="white" stroke="${FC_BLUE}" stroke-width="3.5"/>
-      <path d="M27 27 L22 12 L34 24" fill="white" stroke="${FC_BLUE}" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M53 27 L58 12 L46 24" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="33" cy="38" r="2.5" fill="${FC_BLUE}"/>
-      <circle cx="47" cy="38" r="2.5" fill="${FC_BLUE}"/>
-      <line x1="22" y1="42" x2="29" y2="42" stroke="${FC_BLUE}" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="51" y1="42" x2="58" y2="42" stroke="${FC_BLUE}" stroke-width="1.5" stroke-linecap="round"/>
-      <path d="M37 46 Q40 49 43 46" stroke="${FC_BLUE}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <path d="M18 60 Q8 48 13 36" stroke="${FC_BLUE}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="30" cy="84" rx="7" ry="4" fill="white" stroke="${FC_BLUE}" stroke-width="2.5"/>
-      <ellipse cx="50" cy="84" rx="7" ry="4" fill="white" stroke="${FC_BLUE}" stroke-width="2.5"/>
-    </g>
-    <!-- Dog lying (right) -->
-    <g transform="translate(85, 24)">
-      <ellipse cx="50" cy="44" rx="42" ry="22" fill="white" stroke="${FC_BLUE}" stroke-width="3.5"/>
-      <circle cx="22" cy="30" r="18" fill="white" stroke="${FC_BLUE}" stroke-width="3.5"/>
-      <path d="M8 20 Q2 12 7 28" fill="white" stroke="${FC_BLUE}" stroke-width="3" stroke-linecap="round"/>
-      <ellipse cx="35" cy="18" rx="8" ry="6" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="3" transform="rotate(-10 35 18)"/>
-      <circle cx="16" cy="28" r="2.5" fill="${FC_BLUE}"/>
-      <circle cx="28" cy="28" r="2.5" fill="${FC_BLUE}"/>
-      <ellipse cx="22" cy="34" rx="3" ry="2" fill="${FC_BLUE}" opacity="0.7"/>
-      <ellipse cx="62" cy="38" rx="12" ry="9" fill="${FC_ORANGE}" opacity="0.5"/>
-      <path d="M90 36 Q98 28 96 40" stroke="${FC_BLUE}" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <ellipse cx="32" cy="62" rx="8" ry="4" fill="white" stroke="${FC_BLUE}" stroke-width="2.5"/>
-      <ellipse cx="48" cy="64" rx="8" ry="4" fill="white" stroke="${FC_BLUE}" stroke-width="2.5"/>
-    </g>
-  </g>
-</svg>`;
-}
-
-// Cat breathing - expanded belly (for breathing exercise)
-function catBreathing(size = 160, phase = 'inhale') {
-  const bellyRx = phase === 'inhale' ? 32 : 26;
-  const bellyRy = phase === 'inhale' ? 28 : 22;
-  return `<svg width="${size}" height="${size}" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>${grainFilter}</defs>
-  <g filter="url(#grain)" transform="translate(10, 10)">
-    <!-- Body with breathing belly -->
-    <ellipse cx="60" cy="82" rx="${bellyRx}" ry="${bellyRy}" fill="white" stroke="${FC_BLUE}" stroke-width="4" stroke-linecap="round"/>
-    <!-- Head -->
-    <circle cx="60" cy="46" r="24" fill="white" stroke="${FC_BLUE}" stroke-width="4"/>
-    <!-- Ears -->
-    <path d="M42 28 L36 8 L52 24" fill="white" stroke="${FC_BLUE}" stroke-width="3.5" stroke-linejoin="round"/>
-    <path d="M78 28 L84 8 L70 24" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="3.5" stroke-linejoin="round"/>
-    <!-- Closed eyes (peaceful) -->
-    <path d="M48 44 Q52 40 56 44" stroke="${FC_BLUE}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M64 44 Q68 40 72 44" stroke="${FC_BLUE}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <!-- Nose/mouth -->
-    <path d="M57 52 Q60 55 63 52" stroke="${FC_BLUE}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <!-- Tail -->
-    <path d="M30 72 Q16 58 22 44" stroke="${FC_BLUE}" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <!-- Paws -->
-    <ellipse cx="46" cy="104" rx="9" ry="5" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-    <ellipse cx="74" cy="104" rx="9" ry="5" fill="white" stroke="${FC_BLUE}" stroke-width="3"/>
-  </g>
-</svg>`;
-}
-
-// Cat sleepy (for NSDR/rest)
-function catSleepy(size = 80) {
-  return `<svg width="${size}" height="${size * 0.6}" viewBox="0 0 140 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>${grainFilter}</defs>
-  <g filter="url(#grain)">
-    <ellipse cx="70" cy="52" rx="48" ry="22" fill="white" stroke="${FC_BLUE}" stroke-width="3.5"/>
-    <circle cx="36" cy="36" r="18" fill="white" stroke="${FC_BLUE}" stroke-width="3.5"/>
-    <path d="M22 24 L18 10 L30 22" fill="white" stroke="${FC_BLUE}" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M50 24 L54 10 L42 22" fill="${FC_ORANGE}" stroke="${FC_BLUE}" stroke-width="3" stroke-linejoin="round"/>
-    <!-- Closed eyes -->
-    <path d="M28 34 Q32 31 36 34" stroke="${FC_BLUE}" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M38 34 Q42 31 46 34" stroke="${FC_BLUE}" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M33 40 Q36 42 39 40" stroke="${FC_BLUE}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <path d="M116 42 Q124 34 122 46" stroke="${FC_BLUE}" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <!-- Zzz -->
-    <text x="108" y="24" font-size="14" fill="${FC_BLUE_LIGHT}" font-weight="600" opacity="0.6">z</text>
-    <text x="116" y="16" font-size="11" fill="${FC_BLUE_LIGHT}" font-weight="600" opacity="0.4">z</text>
-  </g>
-</svg>`;
-}
-
-===== END FILE =====
-
-===== FILE: design/proposals/shared/design-system.css =====
-/* Fangcun Design System - Shared Tokens & Base Styles */
-
-:root {
-  /* Brand Colors - from confirmed reference */
-  --fc-blue: #2B5EA7;
-  --fc-blue-dark: #1E4578;
-  --fc-blue-light: #E8EFF8;
-  --fc-blue-muted: #94B3D7;
-  --fc-blue-50: #F0F5FB;
-
-  --fc-orange: #E07B4F;
-  --fc-orange-light: #FDF0EB;
-  --fc-orange-muted: #F2B89E;
-
-  /* Semantic Colors */
-  --fc-calm: #2B5EA7;
-  --fc-calm-bg: #EDF3FB;
-  --fc-elevated: #C75B2A;
-  --fc-elevated-bg: #FDF0EB;
-  --fc-neutral: #8A9AB5;
-  --fc-neutral-bg: #F3F5F8;
-
-  /* Neutrals */
-  --fc-white: #FFFFFF;
-  --fc-paper: #FAFBFD;
-  --fc-gray-50: #F5F7FA;
-  --fc-gray-100: #ECEEF3;
-  --fc-gray-200: #D8DCE5;
-  --fc-gray-300: #B8BFD0;
-  --fc-gray-400: #8A95AD;
-  --fc-gray-500: #6B7793;
-  --fc-gray-600: #4A5568;
-  --fc-gray-700: #2D3748;
-  --fc-gray-800: #1A202C;
-  --fc-text: #2D3748;
-  --fc-text-secondary: #6B7793;
-  --fc-text-tertiary: #8A95AD;
-
-  /* Typography */
-  --fc-font-display: 'SF Pro Rounded', -apple-system, 'PingFang SC', sans-serif;
-  --fc-font-body: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
-  --fc-font-mono: 'SF Mono', 'Menlo', monospace;
-
-  /* Spacing */
-  --fc-space-xs: 4px;
-  --fc-space-sm: 8px;
-  --fc-space-md: 12px;
-  --fc-space-lg: 16px;
-  --fc-space-xl: 20px;
-  --fc-space-2xl: 24px;
-  --fc-space-3xl: 32px;
-  --fc-space-4xl: 40px;
-
-  /* Radius - slightly organic, not perfectly round */
-  --fc-radius-sm: 8px;
-  --fc-radius-md: 12px;
-  --fc-radius-lg: 16px;
-  --fc-radius-xl: 20px;
-  --fc-radius-pill: 100px;
-
-  /* Shadows */
-  --fc-shadow-sm: 0 1px 3px rgba(43, 94, 167, 0.06);
-  --fc-shadow-md: 0 2px 8px rgba(43, 94, 167, 0.08);
-  --fc-shadow-lg: 0 4px 16px rgba(43, 94, 167, 0.10);
-
-  /* iPhone frame dimensions */
-  --iphone-width: 393px;
-  --iphone-height: 852px;
-}
-
-/* Reset */
-*, *::before, *::after {
-  margin: 0; padding: 0; box-sizing: border-box;
-}
-
-/* iPhone Frame Container */
-.iphone-frame {
-  width: var(--iphone-width);
-  height: var(--iphone-height);
-  background: var(--fc-white);
-  border-radius: 47px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 0 0 3px #1a1a1a, 0 20px 60px rgba(0,0,0,0.15);
-  font-family: var(--fc-font-body);
-  color: var(--fc-text);
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Status Bar */
-.status-bar {
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px 0;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-}
-.status-bar .time { font-weight: 700; font-variant-numeric: tabular-nums; }
-.status-bar .icons { display: flex; gap: 5px; align-items: center; }
-
-/* Dynamic Island */
-.dynamic-island {
-  position: absolute;
-  top: 11px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 126px;
-  height: 37px;
-  background: #000;
-  border-radius: 20px;
-  z-index: 10;
-}
-
-/* Home Indicator */
-.home-indicator {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 134px;
-  height: 5px;
-  background: #1a1a1a;
-  border-radius: 3px;
-}
-
-/* Content Area */
-.screen-content {
-  height: calc(var(--iphone-height) - 54px - 83px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-.screen-content::-webkit-scrollbar { display: none; }
-
-/* Tab Bar */
-.tab-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 83px;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 0.5px solid var(--fc-gray-200);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-around;
-  padding-top: 8px;
-  padding-bottom: 34px;
-}
-.tab-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  font-size: 10px;
-  color: var(--fc-gray-400);
-  width: 64px;
-}
-.tab-item.active { color: var(--fc-blue); }
-.tab-icon {
-  width: 24px; height: 24px;
-  display: flex; align-items: center; justify-content: center;
-}
-
-/* Typography Classes */
-.fc-title-lg {
-  font-size: 28px; font-weight: 700; line-height: 1.2;
-  letter-spacing: -0.5px;
-}
-.fc-title {
-  font-size: 22px; font-weight: 700; line-height: 1.3;
-  letter-spacing: -0.3px;
-}
-.fc-title-sm {
-  font-size: 18px; font-weight: 600; line-height: 1.3;
-  letter-spacing: -0.2px;
-}
-.fc-body {
-  font-size: 15px; font-weight: 400; line-height: 1.5;
-  letter-spacing: -0.1px;
-}
-.fc-body-sm {
-  font-size: 13px; font-weight: 400; line-height: 1.45;
-}
-.fc-caption {
-  font-size: 12px; font-weight: 400; line-height: 1.35;
-  color: var(--fc-text-secondary);
-}
-.fc-label {
-  font-size: 11px; font-weight: 500; line-height: 1.2;
-  letter-spacing: 0.3px; text-transform: uppercase;
-}
-.fc-number {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
-}
-
-/* Cards */
-.fc-card {
-  background: var(--fc-white);
-  border-radius: var(--fc-radius-lg);
-  padding: var(--fc-space-lg);
-  box-shadow: var(--fc-shadow-sm);
-  border: 1px solid var(--fc-gray-100);
-}
-
-/* Buttons */
-.fc-btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 48px;
-  padding: 0 24px;
-  background: var(--fc-blue);
-  color: white;
-  border: none;
-  border-radius: var(--fc-radius-pill);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.1px;
-  cursor: pointer;
-}
-.fc-btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 44px;
-  padding: 0 20px;
-  background: var(--fc-blue-light);
-  color: var(--fc-blue);
-  border: none;
-  border-radius: var(--fc-radius-pill);
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.fc-btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  height: 36px;
-  padding: 0 12px;
-  background: transparent;
-  color: var(--fc-blue);
-  border: none;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-/* Tags / Chips */
-.fc-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 28px;
-  padding: 0 10px;
-  border-radius: var(--fc-radius-pill);
-  font-size: 12px;
-  font-weight: 500;
-}
-.fc-tag-calm {
-  background: var(--fc-calm-bg);
-  color: var(--fc-calm);
-}
-.fc-tag-elevated {
-  background: var(--fc-elevated-bg);
-  color: var(--fc-elevated);
-}
-.fc-tag-neutral {
-  background: var(--fc-neutral-bg);
-  color: var(--fc-neutral);
-}
-
-/* Page Background */
-body.page-bg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #E8EEF5;
-  font-family: var(--fc-font-body);
-}
-
-/* Screen-specific layouts */
-.page-header {
-  padding: var(--fc-space-lg) var(--fc-space-xl) var(--fc-space-sm);
-}
-.page-section {
-  padding: 0 var(--fc-space-xl);
-  margin-bottom: var(--fc-space-lg);
-}
-
-/* Beverages */
-.bev-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-.bev-card {
-  background: var(--fc-gray-50);
-  border-radius: var(--fc-radius-md);
-  padding: 12px;
-  text-align: center;
-}
-.bev-icon { font-size: 24px; margin-bottom: 4px; }
-.bev-value { font-size: 20px; font-weight: 700; color: var(--fc-text); }
-.bev-label { font-size: 12px; color: var(--fc-text-secondary); margin-top: 2px; }
-.bev-stepper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-.bev-stepper-btn {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 1.5px solid var(--fc-gray-200);
-  background: white;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: var(--fc-blue);
-  cursor: pointer;
-}
-
-/* Chart placeholder */
-.chart-area {
-  width: 100%;
-  border-radius: var(--fc-radius-md);
-  overflow: hidden;
-}
-
-/* Progress ring for breathing */
-.breath-ring {
-  width: 200px; height: 200px;
-  position: relative;
-}
-
-/* Trend bars */
-.trend-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  height: 80px;
-  padding-top: 8px;
-}
-.trend-bar {
-  flex: 1;
-  border-radius: 4px 4px 0 0;
-  min-height: 4px;
-}
-.trend-bar.calm { background: var(--fc-blue-muted); }
-.trend-bar.elevated { background: var(--fc-orange-muted); }
-.trend-bar.empty { background: var(--fc-gray-100); }
-
-/* Section headers */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--fc-space-md);
-}
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--fc-text);
-}
-.section-more {
-  font-size: 13px;
-  color: var(--fc-blue);
-  font-weight: 500;
-}
-
-/* Evidence row */
-.evidence-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-}
-.evidence-row + .evidence-row {
-  border-top: 0.5px solid var(--fc-gray-100);
-}
-.evidence-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-.evidence-content { flex: 1; }
-.evidence-title { font-size: 14px; font-weight: 500; }
-.evidence-desc { font-size: 12px; color: var(--fc-text-secondary); margin-top: 1px; }
-.evidence-value { font-size: 14px; font-weight: 600; text-align: right; }
-
-/* Utility */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-sm { gap: var(--fc-space-sm); }
-.gap-md { gap: var(--fc-space-md); }
-.gap-lg { gap: var(--fc-space-lg); }
-.text-center { text-align: center; }
-.w-full { width: 100%; }
-.mt-sm { margin-top: var(--fc-space-sm); }
-.mt-md { margin-top: var(--fc-space-md); }
-.mt-lg { margin-top: var(--fc-space-lg); }
-.mb-sm { margin-bottom: var(--fc-space-sm); }
-.mb-md { margin-bottom: var(--fc-space-md); }
-.px-lg { padding-left: var(--fc-space-lg); padding-right: var(--fc-space-lg); }
-.px-xl { padding-left: var(--fc-space-xl); padding-right: var(--fc-space-xl); }
-.py-md { padding-top: var(--fc-space-md); padding-bottom: var(--fc-space-md); }
-
-===== END FILE =====
-
-===== FILE: design/proposals/设计说明-三套方案对比.md =====
-# 方寸 Fangcun — 第一轮 UI 设计方案
-
-三套方案均基于同一份确认稿（蓝橙双色版画猫狗），使用统一的演示数据和状态场景。
-
----
-
-## 演示情景（三套共用）
-
-| 状态 | 睡眠 | 静息心率 | 步数 | 饮品 | 运动 |
-|------|------|---------|------|------|------|
-| **平稳** | 7h20m ↑均值 | 58 bpm 正常 | 8,200 | 水4杯 美式1杯 | 昨日瑜伽30分 |
-| **偏高** | 5h10m ↓均值 | 68 bpm ↑基线 | 3,100 | 水3杯 拿铁2杯 啤酒1罐 | 3天未运动 |
-| **数据不足** | 部分1天 | 收集中 | — | 未记录 | — |
-
----
-
-## 方案 A「轻版画日常」
-
-### 设计特点
-- **极简直接**：压力结论和依据摘要在首屏最上方，用户 2 秒内获得答案
-- 角色作为小型点缀出现在结论卡片右下角，不抢占信息空间
-- 版画质感集中在角色插图和状态标记，界面元素保持平面清爽
-- 大面积留白，视觉重心在文字结论和行动按钮上
-
-### 信息架构
-```
-今日（首页）          练习              记录              设置
-├─ 压力结论卡       ├─ 推荐练习       ├─ 趋势图表       ├─ 健康连接
-├─ 证据摘要         ├─ 呼吸练习       ├─ 每日记录       ├─ 声音触感
-├─ 主行动按钮       ├─ 正念练习       └─ 饮品记录       ├─ 动效设置
-├─ 查看完整依据     └─ NSDR休息                         └─ 隐私数据
-├─ 今日饮品
-└─ 今日活动
-```
-
-### 最适合解决的问题
-用户注意力有限、每次打开只想快速看到「今天怎样、为什么、做什么」。信息密度适中，不需要学习如何与角色互动。
-
-### 权衡点
-角色存在感较低，品牌辨识度更多依赖配色和版式而非猫狗互动。对于希望感受陪伴的用户，可能觉得「工具感」偏强。
-
----
-
-## 方案 B「猫狗陪伴日常」
-
-### 设计特点
-- **角色主导**：猫狗在首屏上半区占据约 120px 高度，姿态随压力状态变化
-- 结论以「它们告诉你」的方式呈现（角色下方的对话卡片）
-- 语言更亲近："一起来做节律呼吸"、"要不要先做个叹息练习？"
-- 呼吸练习中猫咪居中，闭眼随圆环起伏，成为引导节奏的视觉焦点
-- 三栏导航（此刻/练习/我的），记录和设置合并到「我的」
-
-### 信息架构
-```
-此刻（首页）          练习              我的
-├─ 猫狗场景          ├─ 推荐练习       ├─ 趋势回顾
-├─ 结论对话卡        ├─ 呼吸练习       ├─ 饮品记录
-├─ 证据药丸          ├─ 正念练习       ├─ 运动记录
-├─ 行动按钮          └─ NSDR休息       ├─ 健康连接
-└─ 今日记录摘要                        └─ 设置
-```
-
-### 最适合解决的问题
-希望产品有「伙伴感」而非冷冰冰仪表盘的用户。角色姿态变化让抽象的压力判断更具象、更容易接受。呼吸练习时以角色为引导，比纯几何圆环更有人情味。
-
-### 权衡点
-角色占据首屏空间较大，信息密度不如方案 A；首屏需要滚动才能看到饮品和活动。三栏合并意味着「我的」页面信息较多，需要合理分组。角色反复出现在多个页面，如果姿态变化不够丰富，可能产生视觉疲劳。
-
----
-
-## 方案 C「双色生活记录」
-
-### 设计特点
-- **编辑式分栏**：首页垂直分为多个信息板块，每块用左边框颜色区分（蓝色=身体数据，暖色=生活记录，中性=行动建议）
-- 角色缩小为「版画小印章」（32-48px），在板块之间点缀
-- 日期标题突出，有「今日概览」的编辑式气质
-- 身体信号以三列数据块呈现（睡眠/心率/步数），信息密度最高
-- 饮品记录页用水滴可视化 + 详细条目列表 + 快捷添加芯片
-- 四栏导航（今天/练习/记录/更多），记录独立成栏
-
-### 信息架构
-```
-今天（首页）          练习              记录              更多
-├─ 压力负荷板块     ├─ 推荐练习       ├─ 趋势图表       ├─ 健康连接
-├─ 身体信号板块     ├─ 呼吸练习       ├─ 每日详情       ├─ 声音触感
-├─ 今日饮品板块     ├─ 正念练习       └─ 饮品记录       ├─ 动效设置
-├─ 运动板块         └─ NSDR休息                         └─ 隐私数据
-└─ 建议行动板块
-```
-
-### 最适合解决的问题
-用户想在一页内看到完整的「今天」全貌 — 压力状态、身体指标、生活记录、运动情况。适合每天愿意花 30 秒扫一遍各项数据的用户。饮品记录页功能最完整（水滴可视化 + 条目编辑 + 多类别说明）。
-
-### 权衡点
-首屏信息量最大，需要滚动看完所有板块。小印章角色存在感最低，陪伴气质需要靠整体版式和配色来传达。编辑式左边框在深色模式下需要额外验证可读性。
-
----
-
-## 六张核心页面对比
-
-| 页面 | 方案 A | 方案 B | 方案 C |
-|------|--------|--------|--------|
-| 首页·平稳 | 结论卡居首，角色小型 | 角色大图+对话卡 | 分栏板块+小印章 |
-| 首页·偏高 | 暖色卡片，角色半闭眼 | 角色安静趴下 | 暖色左边框，数据↓↑ |
-| 首页·无数据 | 进度条+清单 | 角色好奇等待 | 灰色边框+进度条 |
-| 饮品记录 | 底部弹层 2×2 | 底部弹层+狗拿杯 | 独立页面+水滴可视化 |
-| 呼吸练习 | 深色沉浸+圆环+猫 | 浅蓝+猫在圆心+同心圆 | 蓝色渐变+印章猫 |
-| 趋势历史 | 7日柱状图+列表 | 波形图+每日卡 | 日历条+柱状图+列表 |
-
----
-
-## 组件样例覆盖
-
-每套方案中已体现的关键组件：
-- **按钮**：主按钮（蓝色胶囊 48px）、次按钮（浅蓝底）、幽灵按钮（纯文字+箭头）
-- **状态标签**：平稳（蓝底蓝字）、偏高（暖底暖字）、数据不足（灰底灰字）
-- **证据摘要行**：图标 + 指标名 + 数值 + 趋势文字
-- **饮品输入控件**：步进器（+/−）、快捷添加芯片、条目编辑/删除
-- **导航**：Tab Bar（3栏 B / 4栏 A/C），带 SVG 图标和选中态
-- **图表**：柱状图（蓝=平稳/橙=偏高/灰=无数据）、进度段（呼吸组数）
-
----
-
-## 角色微动效建议
-
-| 场景 | 动作 | 发生时机 | 静态替代 |
-|------|------|----------|----------|
-| 首页·平稳 | 猫尾轻摇，狗尾晃动 | 首次加载完成后 2s | 尾巴保持自然弯曲 |
-| 首页·偏高 | 猫半闭眼慢呼吸，狗趴更低 | 结论卡出现时 | 半闭眼静止姿态 |
-| 呼吸·吸气 | 猫腹部膨胀 | 与吸气计时同步 | 腹部保持膨胀态 |
-| 呼吸·呼气 | 猫腹部收缩 | 与呼气计时同步 | 腹部保持正常态 |
-| 饮品记录 | 狗短暂抬头看杯 | 添加一笔后 | 无动画，狗保持正常 |
-| 完成练习 | 猫狗碰爪/轻点头 | 完成页出现时 1次 | 静止碰爪姿态 |
-
-所有动效需提供关闭入口，尊重系统「减少动态效果」设置。
-
----
-
-## 推荐方案：B「猫狗陪伴日常」（加入 C 的信息组织优点）
-
-### 推荐理由
-
-1. **最能体现品牌差异**：压力管理类 App 大多是仪表盘 + 折线图。方寸的独特卖点是猫狗陪伴，方案 B 把这个资产用到了最大
-2. **呼吸引导体验最好**：猫在同心圆中心闭眼跟随呼吸，比纯几何圆环更容易让用户放松和跟随
-3. **状态传达最直观**：角色姿态变化（放松/安静/好奇）比颜色标签更快被感知
-4. **语言更贴合产品气质**："一起来做"比"开始"更像伙伴而非指令
-
-### 建议从 C 吸收的元素
-- 首页下半区可参考 C 的分栏组织方式，让身体信号和生活记录更结构化
-- 饮品记录采用 C 的水滴可视化和完整条目列表，功能更完善
-- 趋势页的日历条 + 柱状图双层导航，查找某一天更直观
-
-### 主要取舍
-- 角色占首屏空间较大 → 建议在角色和结论之间允许滑动折叠，二次进入时角色可以缩小
-- 三栏合并信息多 → 「我的」内部可用分组标题清晰隔开趋势/记录/设置
-- 角色姿态需要足够丰富 → 深化阶段需要定义 8-10 种基础姿态覆盖所有页面状态
-
----
-
-## 文件清单
-
-```
-proposal-a/
-  01-home-calm.html      首页·平稳
-  02-home-elevated.html  首页·偏高
-  03-home-nodata.html    首页·无数据
-  04-beverage.html       饮品记录弹层
-  05-breathing.html      呼吸练习进行中
-  06-trends.html         趋势与历史
-
-proposal-b/
-  01-home-calm.html      首页·平稳
-  02-home-elevated.html  首页·偏高
-  03-home-nodata.html    首页·无数据
-  04-beverage.html       饮品记录弹层
-  05-breathing.html      呼吸练习进行中
-  06-trends.html         趋势回顾
-
-proposal-c/
-  01-home-calm.html      首页·平稳
-  02-home-elevated.html  首页·偏高
-  03-home-nodata.html    首页·无数据
-  04-beverage.html       饮品记录页
-  05-breathing.html      呼吸练习进行中
-  06-trends.html         趋势与历史
-```
-
-每个 HTML 文件均为自包含页面，可在浏览器中直接打开查看，iPhone 15 Pro 尺寸（393×852px）。
-
-===== END FILE =====
-
-===== FILE: docs/ARCHITECTURE.md =====
-# 架构与数据流
-
-## 原生
-
-`InnerBalance.xcodeproj` 包含 iOS App、Watch App、App 单元测试与 UI 测试，通过相邻的 `InnerBalanceCore` Swift Package 共享类型安全的领域模型和逻辑。最低 iOS 18、watchOS 11，Swift 6 并发检查。
-
-```text
-HealthKitRepository → HomeViewModel → FangcunTodayView
-                                    ├→ FangcunEvidenceDetail
-                                    └→ FangcunDiary（日状态快照）
-
-FangcunDrinkSheet → FangcunDiary（UserDefaults Codable）
-                   └→ FangcunTrendsView
-
-今日 / 练习库 → PracticeLaunch → PracticeSessionViewModel
-                              ├→ 共享时钟 → 文字、触感、呼吸角色
-                              ├→ PracticeAudioController → AudioCoordinator
-                              └→ CompletionSaveController → SwiftData / Health write queue
-```
-
-原来的 SwiftData schema 与既有用户数据保留。新饮品、日状态快照使用独立本机存档，损坏存档不静默覆盖。撤销按操作保存最近状态，咖啡因估值记在每条记录中，改变设置不会重算旧记录。
-
-音频 session 的激活 / 停用可能同步阻塞，因此通过串行后台队列执行。UI 控制器处理任务取消和迟到的准备结果，避免退出后重新激活状态。AVAudioEngine 与 UI 协调仍由现有控制层管理。
-
-角色使用原画资源与 Metal 局部采样变形。练习中胸腹变化取自同一个呼吸阶段时钟；有限动作结束后停帧；不可见、后台或减少动态时不持续播放。
-
-## 网页
-
-React、Tailwind、Framer Motion、Lucide 与 Vite。页面、可复用组件、数据模型与 Tokens 位于 `web/src/`。入口有应用、角色工作室和品牌工作室三个。无后端，Mock 健康数据和 localStorage 状态均为演示；不会同步用户的真实 HealthKit 数据。
-
-## 公共仓库与本机项目
-
-这是从已验证工作区整理出的独立源码项目。Xcode 中的个人 DEVELOPMENT_TEAM 已清空，签名文件、手机标识、健康数据与构建缓存未纳入。Bundle Identifier 保留历史配置供理解引用关系，其他开发者真机运行需选择自己的签名配置。
-
-图片、SVG 和本地语音作为普通文件纳入 Git；无需 LFS。完整路径索引和源码分卷用于远程 AI 阅读。原始 `.xcresult` 和开发安装回执留在本机，仓库中仅存可公开的验证摘要与模拟器截图。
-
-===== END FILE =====
-
-===== FILE: docs/CURRENT_DESIGN.md =====
-# 当前设计方向 · 2026-09-18
-
-## 版画日常与情境陪伴
-
-主体为轻版画日常风格，结合情境姿态。暖纸白 `#FAF9F5`、版画蓝 `#1B355A` 与克制的橙色点缀；原生深色使用独立色值而非简单反相。卡片、按钮、留白与字体服从手机阅读和 Dynamic Type。
-
-“方寸”指内心的一小片空间，也指繁忙日常中留给自己的余地。当前标志为带开口的环抱形，保留呼吸的空隙。已淘汰“方”字加方框的字面做法。完整寓意与应用见 `web/docs/` 品牌文档、`web/brand-studio.html`。
-
-## 角色定案
-
-主角色使用 `web/public/characters/v4/` 的确认稿。猫咪圆润、短肢、蓝色线条和橙色耳部；小狗已重新设计为圆脸垂耳，避免旧版比例问题。呼吸猫咪沿用 v3 的闭眼坐姿。图像必须保持原有特征，不能为了写 SVG 而改成几何占位图。
-
-| 情景 | 角色 | 动作 |
-| --- | --- | --- |
-| 平稳 | 猫狗相伴 | 低频、轻微的头部和尾巴动作 |
-| 偏高 / 休息 | 小狗单独趴着 | 安静的胸腹起伏 |
-| 数据不足 | 猫咪单独观察 | 小幅歪头、好奇观察 |
-| 饮品记录 | 小狗与水杯 | 记录后有限次点头，不持续表演 |
-| 呼吸练习 | 猫咪独处 | 胸腹与练习时钟同步，暂停冻结 |
-| 完整完成 | 猫狗碰爪 | 有限的庆祝动作 |
-| 提前结束 | 休息小狗 | 平静陪伴，不用失败反馈 |
-
-## 交互原则
-
-- 首页先看到结论、依据和开始入口。取消强制的预设状态标签。
-- 保留真实数据边界：压力 / 负荷判断必须有可查看依据，未知不能包装成平稳。
-- 饮品半屏弹层支持复合增减和撤销，不让轻记录变成问卷。
-- 5 分钟练习直接开始；暂停、继续、安全退出和保存都属于完整验收。
-- 支持系统及 App 内减少动态效果；角色不抢夺主操作的注意力。
-- 深色与大字不能只改背景和字体变量，仍需查看真实页面布局。
-
-## 历史材料
-
-`design/proposals/`、`design/claude-proposal-c/` 与 `docs/design/fangcun-companions/` 保留早期探索，包括未采用稿。它们用于对比，不能覆盖当前 v4 角色、品牌规范与原生页面。用户原始完整规格保留原文，未实现项不应被描述为已完成。
-
-## 2026-09-19 体验与饮品关怀 V2
-
-沿用 v4 原画及 v3 呼吸图。首页以明确恢复结论或限定范围建议开头，默认解释页最多两个理由和三个简单指标，工程字段进入设置诊断。取消猫狗观看/重播入口；有限场景动作由提交成功或页面状态驱动。饮品剂量、酒精度、时间可编辑，关怀最多一张卡，通知默认关闭。最新截图、动作录像和人工待验项目见 `plans/fangcun-experience-v2/REVIEW.md`。
-
-===== END FILE =====
-
-===== FILE: docs/archive/product-marketing-20260809.md =====
-# Product Marketing Context
-
-*Last updated: 2026-08-09*
-
-## Product Overview
-
-**One-liner:** 为长期佩戴 Apple Watch 的用户，自动发现身体压力，解释最可能的来源，推荐一次合适的恢复练习，并说明这次练习是否有效。
-
-**What it does:** App 从 Apple Health 读取用户授权的 Apple Watch 健康数据，结合个人基线、睡眠和运动背景估算身体压力负荷。它不会把 HRV 当作心理诊断，而是在数据足够时推荐生理性叹息、NSDR、冥想或身体扫描，并比较干预前后的生理和主观变化。
-
-**Product category:** Health & Fitness / Apple Watch stress and recovery
-
-**Product type:** iPhone App + Apple Watch companion App；Apple Watch 必需，AirPods 可选。
-
-**Business model:** 待验证。初步假设为免费下载体验核心闭环，订阅解锁长期趋势、个体化推荐与完整练习内容；不采用健康数据广告变现。
-
-## Target Audience
-
-**Primary audience:** 长期佩戴 Apple Watch、愿意查看健康数据、工作压力较高，并希望得到简单行动建议的资深苹果用户。
-
-**Primary use case:** 用户感觉累、紧张或状态异常时，希望快速知道身体是否确有负荷、可能来自哪里，以及现在做什么最合适。
-
-**Jobs to be done:**
-
-- 不研究复杂指标，也能知道自己现在是否适合继续硬撑。
-- 在两三分钟内得到一个明确、可执行的恢复动作。
-- 逐渐发现哪种恢复方法在什么状态下最适合自己。
-
-**Use cases:**
-
-- 工作期间出现持续高唤醒，Watch 给出一次克制提醒并启动生理性叹息。
-- 睡眠不足或训练后恢复偏弱，App 推荐 NSDR，而不是误报心理压力。
-- 用户主观紧张但数据不明显，App 接受主观校准并推荐冥想或身体扫描。
-- 练习结束后，根据可用数据和用户一秒反馈显示“有效、暂不明显或数据不足”。
-
-## Problems & Pain Points
-
-**Core problem:** Apple Watch 已经采集大量身体信号，但普通用户无法把这些数据变成可信、及时的恢复行动。
-
-**Why alternatives fall short:**
-
-- 多数产品只提供压力分数、图表和频繁提醒。
-- 综合健康 App 功能过多，用户每天需要理解大量指标。
-- 部分产品把 HRV 过度解释成实时心理压力。
-- 呼吸与冥想常被做成内容库，和用户当下状态没有连接。
-- 很少有产品证明某次干预是否真的适合这个用户。
-
-**Emotional tension:** 用户既担心身体在透支，也担心手表数据不准；他不想被更多数字制造焦虑，只想得到一个可信行动。
-
-## Competitive Landscape
-
-**Direct:** StressWatch、Stress Monitor for Watch、Harvee。
-
-**Secondary:** Welltory、Bevel、Athlytic、WHOOP、Oura。
-
-**Indirect:** Apple Vitals、Mindfulness、普通冥想/呼吸 App，以及完全忽略身体信号。
-
-## Differentiation
-
-**Key differentiators:**
-
-- 检测、来源解释、干预和效果验证形成闭环。
-- 明确区分身体压力、主观压力和运动负荷。
-- 每次只推荐一个动作，不让用户浏览庞大内容库。
-- 显示数据时间与置信度，不伪装成连续医疗级压力监控。
-- 逐步学习“对这个用户真正有效的方法”。
-
-**Why customers choose us:** 比 Apple 原生多一层解释和行动，比综合健康 App 更简单，比普通冥想 App 更个体化。
-
-## Objections
-
-| Objection | Response |
-|---|---|
-| Apple Watch 真的能测压力吗？ | 不声称测量心理压力；使用多个身体信号估算身体负荷，并显示数据置信度。 |
-| Apple 已有 Vitals 和 Mindfulness，为什么还需要它？ | 原生功能提供数据和练习，但没有自动把当下状态、可能来源、最佳动作和前后效果串起来。 |
-| 又是一个让我焦虑的分数吗？ | 默认不用精确压力分轰炸用户，限制提醒频率，每次提醒都附带可执行动作。 |
-
-**Anti-persona:** 没有 Apple Watch 的用户；需要医疗诊断或紧急心理支持的人；只追求训练成绩和复杂运动负荷分析的人。
-
-## Customer Language
-
-**How they describe the problem:**
-
-- “我今天到底是累，还是只是心情不好？”
-- “手表采了这么多数据，但我不知道现在应该做什么。”
-- “我不想看十张图，只想知道怎样快点缓下来。”
-- “这个练习到底对我有没有用？”
-
-**Words to use:** 身体压力、身体负荷、可能来源、个人基线、最近可靠状态、恢复练习、对你有效。
-
-**Words to avoid:** 诊断焦虑、读懂情绪、医疗级实时压力、治愈、保证降低压力。
-
-## Brand Voice
-
-**Tone:** 克制、可信、安静、有同理心。
-
-**Style:** 先给结论，再解释依据；少数字、少警报、少医学术语。
-
-**Personality:** calm, precise, private, Apple-native.
-
-## Product Scope
-
-**Core interventions:** 生理性叹息、延长呼气、NSDR、冥想、身体扫描。
-
-**Supporting body practice:** 凯格尔。作为独立身体练习提供首次指导和安全提示，不参与压力升高时的自动推荐。
-
-**V1 non-goals:** 训练计划、热量、体重、股票行情、专注计时、社交社区、AI 聊天首页、庞大课程库。
-
-## Proof Points
-
-**External evidence:** StressWatch 的 App Store 评分量和编辑推荐证明 Apple Watch 压力管理存在市场；WHOOP 验证了“检测—呼吸—变化反馈”的产品价值；生理性叹息已有随机对照研究支持，但产品文案必须准确描述研究剂量和限制。
-
-**Product proof to establish:**
-
-- 用户是否能在 10 秒内理解当前状态和下一步。
-- 推荐练习完成率及完成后的主观改善率。
-- 14 日和 30 日留存。
-- 用户是否逐步找到一种稳定有效的个人恢复方式。
-
-## Goals
-
-**Primary business goal:** 先验证小而忠诚的 Apple Watch 用户群是否愿意持续使用并付费，不以覆盖所有 iPhone 用户为目标。
-
-**Key conversion action:** 首次授权 HealthKit 后完成一次推荐练习，并查看一次可信的前后结果。
-
-**Initial success metrics:**
-
-- 首次核心闭环完成率 ≥ 50%。
-- 首周至少完成 3 次练习的激活用户比例 ≥ 30%。
-- 第 30 天仍有至少一次有效使用的用户比例 ≥ 15%。
-- 高压力提醒关闭率与通知投诉率保持低位。
-
-**Current metrics:** 尚未上线，待 TestFlight 验证。
-
-===== END FILE =====
-
-===== FILE: docs/design/fangcun-companions/BLOCKED.md =====
-# BLOCKED
-
-无。
-
-===== END FILE =====
-
-===== FILE: docs/design/fangcun-companions/PROGRESS.md =====
-# 方寸陪伴角色探索进度
-目标（已暂停）：原计划交付三套原创陪伴角色并给出唯一推荐；用户于 2026-08-28 要求先不继续，现有材料全部保留，待用户重新启动。
-顺序：基线 → A 圆糯矢量 → B 柔软绒感 → C 弧面共生 → 行为草案 → 比较推荐 → 完整校验。
-状态：任务 0 已完成；五个受保护源文件 SHA-256 已记录并首次核对一致。
-状态：任务 1 三轮概念板已封存；用户否决降低萌感与单张拼板做法，`concept-a-refined.png` 只留追溯，不再作为后续参考。
-状态：任务 2 已采纳用户提供的 A 系统六图：正面锚点、比例花纹、转面、六状态、三档简化、五套动效；均为 2048×1152 并无损归档。
-状态：任务 3 已按最新硬反馈重评；唯一推荐改为 A 圆糯矢量（38/40），B 为 32/40，C 为 37/40。
-最大风险：A 的基础猫狗轮廓仍偏通用；后续必须锁定焦橙头斑、深青尾端、一折一垂耳、单侧肩斑、两种尾形与约 12% 身高差。
-约束记录：第一眼极萌不得降低；成年感只由动作、留白、节奏和语言承担；不命名、不画 App 页面、不修改白名单外文件。
-完成校验：六图均 2048×1152 且副本哈希全 OK；五项受保护基线全 OK，18 个文件均在白名单，A/B/C 正文 304/326/384 字符，`BLOCKED.md` 为“无”。
-
-===== END FILE =====
-
-===== FILE: docs/design/fangcun-companions/a-system/README.md =====
-# A 方向角色系统基准
-
-## 决策
-
-- 第一视觉卖点是“极度可爱、极萌”；不得再以成年用户为由缩小眼睛、减淡腮红或削弱圆润感。
-- 成年感由克制的动作、留白、节奏和语言承担，不由降低角色萌感承担。
-- 本目录六张图由用户从其他 Agent 提供，本任务只做无损归档和一致性审查，不冒充原创生成来源。
-- `concept-a-refined.png` 是被用户否决的试验，只保留追溯，不得作为后续身份或风格参考。
-
-## 身份源优先级
-
-1. `猫狗正面角色锚点.webp`：正面脸型、眼睛、腮红、整体比例与主配色。
-2. `猫狗身高比例与固定花纹图.png`：猫狗约 12% 身高差、固定色块与尾端记号。
-3. `猫狗转面表.png`：正面、侧面、背面轮廓与花纹延续。
-4. `猫狗六状态表情表.png`：六种状态的眼睑、眉形、嘴角变化；不得改动耳型和花纹。
-5. `猫狗三档简化测试.png`：44pt、88pt、176pt 的删减层级。
-6. `猫狗五套基础动效关键帧.png`：眨眼、呼吸、耳动、尾动、触碰的基础动作语法。
-
-## 不可漂移特征
-
-- 猫：焦橙头斑、奶油 W 形脸、大颗暖棕豆眼、暖腮红、略不对称竖耳、大前爪、粗短逗号尾及深青尾端记号。
-- 狗：蜜糖黄主色、奶油脸胸、大颗暖棕豆眼、暖腮红、一折一垂耳、深青折耳与单侧肩斑、大前爪、钝卷尾；整体比猫约高 12%。
-- 共用色：焦橙 `#E96F3F`、蜜糖黄 `#E6A63B`、奶油 `#FFF0D2`、深青 `#397B80`。
-
-## 当前边界
-
-- 六张均为 2048×1152 的探索/说明图，不是 App 页面或正式上架资产。
-- 44pt 图是视觉删减方案，不等于已经在真实 SwiftUI 44pt 容器中通过像素级测试。
-- 六状态文案“有触动/绷着/有点累/说不清”分别对应原任务的“感动/紧绷/疲惫/不确定”，角色只陪伴呈现，不替用户认定状态。
-
-===== END FILE =====
-
-===== FILE: docs/design/fangcun-companions/character-directions.md =====
-# 方寸猫狗角色行为草案
-
-## A｜圆糯矢量
-
-第一眼极萌是硬约束，成年感只由克制动作、留白与语言承担。猫为焦橙团子头、奶油 W 形圆颊、大颗暖棕豆眼、暖腮红、略不对称竖耳、大前爪和带深青尾端记号的粗短逗号尾；狗为蜜糖黄圆头、大颗豆眼与暖腮红、一折一垂耳、深青折耳和单侧肩斑、大前爪及钝卷尾，站高约比猫高 12%。猫先观察内心，狗先稳住行动，以并肩、轻靠和爪碰相处。平静闭眼，清醒聚瞳，感动增下眼高光，紧绷直嘴，有点累沉眼，不确定偏头挑眉；耳型、花纹和比例不随表情改变。眨眼、呼吸、耳动、尾动、触碰各用三帧以内；Reduce Motion 改静态姿态或 8% 透明度。44pt 保留头斑、折耳、肩斑和尾形；深色加奶油边，黑白靠竖耳逗号尾与折垂耳钝卷尾区分。
-
-## B｜柔软绒感
-
-猫为灰蓝低云团、奶油面胸、三瓣陶红颊绒、超大前爪和三节紫羽尾；狗为陶红长软垫身、奶油短口鼻、深青双瓣耳、超大前爪和小桨尾。两者用暖棕椭圆眼与小鼻嘴；深棕粗线略抖，在绒边和身体转折只画数根短毛线。猫敏感但不脆弱，狗沉稳且不替用户判断，以借肩和尾覆背支持。平静全身松落，清醒提耳开眼，有触动增下眼高光，绷着收耳直嘴，有点累贴地，说不清异耳挑眉。建立参考/稳定/留意/偏高用观察趴、舒展趴、缩步、伏低休息。叹息吹颊绒；节律呼吸起背线；冥想收尾；NSDR摊开；凯格尔由狗自然呼吸并小幅收放重心。动画用慢眨、绒边呼吸、耳落、羽尾搭靠、触碰压缩和动作线；Reduce Motion 改姿态或淡入。44pt 绒层减为两级；深色保留蓝橙块，黑白靠高羽尾与长低狗身区分。
-
-## C｜弧面共生
-
-猫为珊瑚橙梨弧身、墨青圆端外展耳、奶油 W 形脸、大前爪和点端丝尾；狗为玉青宽拱身、奶油短口鼻、陶橙一折一弧耳、短粗爪和钝端半环尾。两者用暖棕椭圆眼、短眉与颊点；深梅棕轮廓保留变线宽、轻抖和弧线转折排线。猫围绕内在感受留白，狗提供身体节奏，以尾端相触而非拥抱。平静弧线对称闭眼，清醒开眼提耳，有触动双点靠近，绷着耳弧收窄，有点累整体下移，说不清破坏对称。建立参考/稳定/留意/偏高用点光缓聚、平衡站姿、尾弧内收、身体降拱，不拟病。叹息双段扩弧；节律呼吸让上下弧往复；冥想定点慢眨；NSDR转横卧弧；凯格尔由狗以底部短弧收放。可动眼、耳弧、尾端、触点涟漪和动作线；Reduce Motion 改静态弧位或 8% 透明度。44pt 保留点尾猫与拱体狗；深色呈珠宝色块，黑白辨识最强。
-
-> 所有姿态只呈现“可供用户选择的陪伴线索”，不替用户认定情绪，也不把身体状态解释为疾病。
-
-===== END FILE =====
-
-===== FILE: docs/design/fangcun-companions/generation-notes.md =====
-# 概念板生成与验收记录
-
-## 生成方式与轮次
-
-- 使用 Codex 内置 `image_gen`，输出为原创 2D 概念探索；第 3 轮只抽取用户参考图的高层画法，不复制其中角色、品种、花纹、配饰、姿势、文字或水印。
-- 第 1 轮：A 首稿误生成人物，定向修订只替换该格；B/C 首稿结构通过。领导随后否决整体视觉，明确指出“第一眼不够可爱、颜色不够吸引”。
-- 第 2 轮：A/B/C 均重做眼距、脸颊、口鼻、短爪与色块；仍被认为不够接近用户期待的手绘可爱风格。
-- 第 3 轮：依据八张用户参考图，统一改为深棕变线宽、轻微手抖、扁平亮色、胖短低重心、大爪、短排线与动作小短线；A/B/C 骨架和全部验收模块保持。累计使用 **3/3** 轮，修订到此停止。
-- 内置结果复制到本目录后，以 `sips -Z 2560` 统一长边；A/B 为 2560×1601，C 为 2560×1707。未制作 App 页面或正式上架资产。
-- 概念轮封存后，用户明确要求按“缩眼、减腮红、固定非对称耳与色块、强化逗号尾和大爪”先试一次；因此新增 `concept-a-refined.png`（2560×1601）作为 **A 方向定型试验**，不计作第四套广度探索，也不覆盖 `concept-a.png`。生成工具未明确披露 GPT Image 2，故角色系统 Skill 只用于身份锁定清单，实际图片使用 Codex 内置 `image_gen`。
-
-## A 方向定型试验（已否决）
-
-用户明确否决“为了成年感而缩眼、减腮红”的处理，并指出单张综合板不足以证明角色系统。`concept-a-refined.png` 仅保留追溯，不得再作为身份或风格参考；以下提示词与观察均不再代表当前方向。
-
-以 `concept-a.png` 为唯一身份与版式参考，重绘原创“焦橙猫＋蜜糖狗”：深可可变线宽、轻微手抖、干净扁平色，成年向且一眼可爱。猫固定为矮圆梨体、宽 W 奶油脸、焦橙头肩、右耳略内倾但双耳永远竖立、较小暖棕椭圆眼、大并爪和粗短逗号尾；狗固定为低长椭圆体、蜜糖黄身体、奶油口鼻胸腹、左侧青色前折耳、右侧蜜糖垂耳、左肩青色侧斑、大爪和钝弯尾。腮红减少 20%，禁用默认吐舌、闪光大眼、爱心、花朵、服装和配饰。板面保留正面与 3/4 全身、并排、猫爪轻搭狗爪、奶油/石墨双主题、猫狗各六表情和黑白剪影；所有视图严格锁定耳型、耳色、花纹与尾型。配色为焦橙 `#E96F3F`、蜜糖 `#E6A63B`、奶油 `#FFF0D2`、Logo 青 `#397B80`、深可可 `#432E2B`；禁止文字、水印、现有 IP 相似、明确猫狗品种、诊断暗示、App UI 与 Logo 重设计。
-
-试验稿历史观察：猫耳、狗耳与肩斑在六表情中基本锁定，但缩眼、低腮红削弱了核心萌感；狗的全身仍偏直立，互动也更接近抱臂而非严格的“爪搭爪”。
-
-## 用户提供的 A 方向系统图
-
-用户从其他 Agent 提供六张 2048×1152 系统图，本任务已无损复制到 `a-system/`，并以 `manifest.sha256` 记录来源副本哈希。六张分别覆盖正面锚点、身高与固定花纹、转面、六状态、44/88/176pt 简化和眨眼/呼吸/耳动/尾动/触碰关键帧；它们取代综合概念板，成为 A 方向的当前身份基准。文件内文字只作为设计说明，不进入 App；详细优先级和不可漂移项见 `a-system/README.md`。
-
-## 第 3 轮用户参考
-
-参考文件为 `小伊Design.jpeg`、`Simple Drawing of a Puppy 🐶 Happy and in love with you forever.jpeg`、`855824735485884770.jpeg`、`_ (1).jpeg`、`512988213827913780.jpeg`、`532058143501317059.jpeg`、`893120169859120208.jpeg`、`_.jpeg`。仅借鉴：深棕手绘粗线、平涂橙/奶油/灰蓝、胖短体重、肉垫特写、趴卧重量和稀疏动作线。明确排除：柯基或特定猫品种、项圈、铃铛、花、爱心、鱼、具体花纹、具体姿势、文字与水印。
-
-## 最终提示词骨架
-
-所有方向共用：成年苹果用户、原创 2D、极度可爱但不幼儿化；一猫一狗身份一致；四个单体全身角度、并排、自然互动、六列猫狗双头像表情、奶油/石墨双主题、黑白剪影；禁止文字、服装、人物、疾病或诊断暗示、现有 IP 相似、Logo 重设计、UI 页面、3D、写实与水印。
-
-- **A 圆糯矢量：** 焦橙团子猫与蜜糖狗，奶油大脸大爪、不对称灰蓝块、轻靠互动；轮廓最简，手绘短线最少。
-- **B 柔软绒感：** 灰蓝云团猫与陶红软垫狗，三瓣颊绒、超大前爪、紫羽尾、深青瓣耳；借肩与尾覆背，身体压缩最明显。
-- **C 弧面共生：** 珊瑚梨弧猫与玉青拱体狗，墨青外展耳、点端丝尾、陶橙弧耳和钝端半环尾；尾端轻触并呼应暖上弧、青下弧与中央点，但不组成新 Logo。
-
-## 视觉验收矩阵
-
-| 文件 | 单体全身 | 正面与 3/4 | 并排关系 | 自然互动 | 猫狗各 6 表情 | 奶油/石墨预览 | 黑白剪影 | 长边 ≥ 2048 |
-|---|---|---|---|---|---|---|---|---|
-| `concept-a.png` | 通过 | 通过 | 通过 | 猫轻靠狗 | 通过 | 通过 | 通过 | 2560 |
-| `concept-b.png` | 通过 | 通过 | 通过 | 借肩、尾覆背 | 通过 | 通过 | 通过 | 2560 |
-| `concept-c.png` | 通过 | 通过 | 通过 | 尾端轻触 | 通过 | 通过 | 通过 | 2560 |
-
-三套的身体轴、轮廓骨架、表面语言与互动机制均不同；不是同一底图换色，也不是仅更换耳朵。
-
-第 3 轮第一眼验收：A 最轻快直给；B 最有触感和身体重量；C 在手绘可爱、颜色记忆与品牌弧面之间最平衡。三套使用同一线条家族，但身体轴、轮廓骨架、互动方式和配色主次均不同，不是参考角色复刻，也不是同一底图换色。
-
-===== END FILE =====
-
-===== FILE: docs/design/fangcun-companions/recommendation.md =====
-# 方寸猫狗方向比较与推荐
-
-评分基于三轮概念板、用户“不能降低萌感”的最新硬反馈，以及 A 方向新增的正面锚点、转面、固定花纹、六状态、三档简化和五套动效六张系统图；“极度可爱”按第一眼反应计分，成年感不再通过缩眼或减腮红取得。1 为弱，5 为强。
-
-| 维度 | A 圆糯矢量 | B 柔软绒感 | C 弧面共生 |
-|---|---:|---:|---:|
-| 原创性 | 4 | 4 | 5 |
-| 极度可爱 | 5 | 5 | 4 |
-| 成年用户接受度 | 4 | 4 | 4 |
-| 与现有 Logo 一致性 | 5 | 3 | 5 |
-| SwiftUI 可实现性 | 5 | 3 | 4 |
-| 小尺寸辨识度 | 5 | 4 | 5 |
-| 深浅色适应 | 5 | 5 | 5 |
-| 长期扩展能力 | 5 | 4 | 5 |
-| **总分 / 40** | **38** | **32** | **37** |
-
-## 唯一推荐：A 圆糯矢量
-
-A 已由一张通用萌宠概念板推进成可追溯的角色系统：焦橙头斑与深青尾端固定猫的身份，一折一垂耳与单侧深青肩斑固定狗的身份，约 12% 身高差和两种尾形保证黑白轮廓区分；同一身份已经覆盖正面、侧背面、六状态、44/88/176pt 和五类基础动效。焦橙、蜜糖、奶油先给出最强第一眼萌感，深青记号再与现有 Logo 建立颜色联系。大眼与腮红保留，成年接受度由克制的陪伴动作、无幼儿腔文案和不诊断用户来保证。综合最新用户反馈与可验证系统完整度，A 改为唯一推荐。
-
-## 淘汰理由
-
-1. **不选 B：** 低趴重量、大爪和羽尾的触感强，但绒边、颊绒、尾羽与身体压缩需要最多图层；44pt 删减幅度和 SwiftUI 动效成本最高，也尚未形成与 A 同等级的身份锚点和转面证据。
-2. **不选 C：** 弧面骨架的原创性与 Logo 关联仍最强，但第一眼萌感不及当前 A，且尚未验证六状态、三档简化和五类动效中的身份稳定；继续并行会分散唯一角色系统的定型。
-
-本结论仅推荐角色探索方向；不命名、不延展 App 页面，也不构成正式上架资产决策。
-
-===== END FILE =====
-
-===== FILE: docs/design/fangcun-native-redesign-20260918.md =====
-# 方寸原生界面改版 · 2026-09-18
-
-## 已确认的设计来源
-
-以 `web` 的已确认界面、v4 猫狗原画与「留一方余地」标志为准。实现为 SwiftUI 原生页面，不嵌入网页、不在手机里展示网页 Mock 健康数据。
-
-## 页面与交互
-
-| 网页设计 | 原生实现 | 数据与行为 |
-| --- | --- | --- |
-| 今日首页 | FangcunTodayView | 直接读取 HomeViewModel 的真实身体评估；取消首页预设心情选择；数据不足保持未知 |
-| 依据摘要与详情 | FangcunEvidenceDetail | 睡眠、恢复、指标来源、测量时间、基线质量与近期训练；保留现有 HealthKit 权限范围 |
-| 猫狗情景 | FangcunCompanion / Metal distortion shader | 平稳双角色、偏高小狗独处、数据不足猫咪观察、饮品小狗点头、呼吸猫咪、完整结束碰爪 |
-| 饮品半屏记录 | FangcunDrinkSheet / FangcunDiary | 250 ml 白水、美式、甜拿铁、啤酒和含糖饮料；咖啡因可设；增减与最近 50 次撤销；按日保存 |
-| 一键练习 | PracticeLaunch.startsImmediately | 首页和练习页直接开始 300 秒双吸一呼，沿用既有计时、触感、音频、保存与 HealthKit 协调器 |
-| 呼吸动效 | BreathingFieldPlayer | 同一个练习时钟驱动文字、呼吸阶段和猫咪胸腹；暂停冻结；保留 1 分钟准备页入口和其他练习 |
-| 完成与提前结束 | PracticeCompletionScreens | 提前结束使用趴下的小狗，完整完成使用双角色；保留实际练习时长与自愿反馈 |
-| 历史与趋势 | FangcunTrendsView | 最近 7 天状态快照；点击日期查看睡眠、训练、已保存练习和饮品；未知日期不伪造 |
-| 深色与较大字号 | FangcunDisplayPreferences / SettingsView | 页头快捷切换；设置页完整开关；字号不低于系统无障碍偏好；减少动态效果与系统设置取并集 |
-
-## 原画与动效
-
-七张图片逐字节复制原文件，SHA-256 对应关系保存在交付目录 `character-asset-manifest.json`。不重新绘制猫狗，不修改源 PNG。Metal 采样变形沿用网页里的头部、胸腹及尾巴区域，脚底和纸面边缘固定。有限的点头、碰爪在完成后停止帧时钟，呼吸场景使用练习时钟；页面不可见或后台时暂停。
-
-## 数据与兼容
-
-- 原有 SwiftData 模型与用户记录保留；没有更改数据模型 schema，也没有卸载 App。
-- 饮品和身体快照使用独立的本机 UserDefaults Codable 存档，损坏数据不自动覆盖；其他日期的记录不会因今日增减被删除。
-- 饮品是预估生活线索，不凭单次摄入重写健康压力结论；总液体包含记录的饮品，酒精不等于补水建议。
-- 身体趋势从本次改版开始积累，已有练习记录通过原有 SwiftData 查询继续展示。没有导入网页示例历史。
-- 默认首页没有演示切换器；仅 `--ui-testing` 加 `--preview-state=...` 时支持截图测试场景，测试使用临时饮品存储与内存 SwiftData。
-
-## 回滚与证据
-
-修改前整份 App 源码、UI 测试和工程备份位于 `docs/verification/backup-015734`。旧的首页等实现仍保留在源码中但不作为主入口。既有 iOSWatchApp 项目与外部工具改动未覆盖。
-
-公开验证摘要和截图位于 `docs/verification`，以 `STATUS.md` 为准。签名包、原始设备回执和测试日志留在开发者本机。
-
-## 本轮验证与安装状态
-
-- 原生 App 与随附 Watch target 构建成功；核心目录 1 项、真机记录/计时 7 项通过。
-- 三种首页情景、深色与较大字号 UI 检查通过。原完整流程测试发现音频准备阻塞主线程，改为后台串行准备并处理取消后的迟到结果；6 项音频测试通过。
-- 修复后，首页 → 饮品增减/撤销 → 趋势 → 一键呼吸 → 暂停/继续 → 提前结束 → 保存 → 设置整条 UI 测试通过；另外开启动效后的阶段变化、暂停和结束测试通过。
-- 完整改版在 02:12 首次覆盖安装；手机重新连接后，最终音频与呼吸页面修复包也已覆盖安装并成功启动。
-- 独立公开项目再次构建通过，Core 64 项和网页模型 9 项测试通过；完整可公开结果见 `../verification/STATUS.md`。
 
 ===== END FILE =====

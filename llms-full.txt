@@ -1,6 +1,6 @@
 # 方寸：给 GPT / AI 的项目入口
 
-> 当前开发分支 `codex/fangcun-v1-m0-m1` 已完成 M2-R、M3，并实施体验与饮品关怀 v2。最新审阅入口为 [V2 REVIEW](docs/plans/fangcun-experience-v2/REVIEW.md)、[验收](docs/plans/fangcun-experience-v2/VERIFICATION.md) 和 [任务状态](docs/plans/fangcun-experience-v2/TASKS.md)。首页已经接入真实准备度及限定范围建议，饮品有独立关怀与主动开启的本地提醒。M4–M6 仍未展开。测试、真机安装、通知实际送达与人工体验验收分别登记；不要把实现或排程当成实测通过。
+> 当前开发分支 `codex/fangcun-v1-m0-m1` 的产品契约为 **分数优先 V3**，取代 V2 的首页结论路线。最新入口：[V3 REVIEW](docs/plans/fangcun-score-v3/REVIEW.md)、[实际验证](docs/plans/fangcun-score-v3/VERIFICATION.md)、[原规格](docs/plans/fangcun-score-v3/FANGCUN_SCORE_FIRST_SPEC_v3.0.md)。可靠睡眠可独立生成状态分；HRV、静息心率按各自资料和渐进权重参与。旧准备度仅保留历史与数据安全兼容。饮品、原画、练习和用户记录继续保留；不得把模型分数当作实时压力或医学标准。Watch/Widget/Live Activity 新功能阶段未展开。
 
 仓库：<https://github.com/yvain57-afk/fangcun>
 
@@ -30,7 +30,9 @@
 - `Features/Home/FangcunTodayView.swift`：新首页与依据详情。旧 `HomeView.swift` 保留但不是根入口。
 - `Features/Home/FangcunDrinkSheet.swift`、`FangcunDrinkEditor.swift`、`Persistence/FangcunDiary.swift`：剂量、酒精度、可撤销且幂等的饮品命令与旧档兼容。
 - `Features/Home/BeverageCareCoordinator.swift`、`CareNotificationClient.swift`：本机关怀回执、主动开启的通知、默认锁屏隐私。Core 的 `BeverageCareEngine`、`CareAttentionPolicy`、`CareNotificationPlanner` 不做 IO。
-- `Features/Readiness/DayGuidancePresentation.swift`：普通人结论与工程诊断分层；少量数据保留限定范围。
+- `Features/Readiness/ReadinessCoordinator.swift`：独立数值引擎、逐指标发布、磁盘快照和失败保留。
+- `Features/Readiness/DailyStatusViews.swift`、`DailyStatusHistoryView.swift`：整数状态分、实际构成权重、数值历史和旧记录分离。
+- `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/`：V3 睡眠/HRV/RHR 提取、参数、引擎、版本化快照与最小跨端 DTO。
 - `Features/Home/FangcunTrendsView.swift`：周视图与真实已存记录。
 - `DesignSystem/FangcunCompanion.swift`、同名 Metal shader：确认原画的局部动效。
 - `Features/Practice/PracticeSessionView.swift`：练习完整流程；`PracticeAudioCoordinator.swift` 将可能阻塞的音频 session 准备移出主线程。
@@ -51,7 +53,7 @@
 
 保留原有健康权限边界、SwiftData 数据与用户记录。不添加遥测、账户、在线 AI 或新网络调用，除非另有授权。验证受影响的 iOS / watchOS 编译和相关交互。角色与产品审美参考 `docs/CURRENT_DESIGN.md`，先读现有代码再改。
 
-# 当前设计方向 · 2026-09-18
+# 当前设计方向 · 2026-09-20
 
 ## 版画日常与情境陪伴
 
@@ -90,6 +92,10 @@
 
 沿用 v4 原画及 v3 呼吸图。首页以明确恢复结论或限定范围建议开头，默认解释页最多两个理由和三个简单指标，工程字段进入设置诊断。取消猫狗观看/重播入口；有限场景动作由提交成功或页面状态驱动。饮品剂量、酒精度、时间可编辑，关怀最多一张卡，通知默认关闭。最新截图、动作录像和人工待验项目见 `plans/fangcun-experience-v2/REVIEW.md`。
 
+## 2026-09-20 分数优先 V3（当前契约）
+
+首页先显示整数状态分、等级、日期和一个真实可执行动作。375 分钟可靠睡眠、480 分钟目标，在没有 HRV 时也得到 78 分；不沿用旧模型的整体评估门槛。详情默认展示实际参与的维度及权重，方法说明需主动展开。夜间、情境与反馈改变建议，不改变分数。旧历史单独保留，不回填数值。原画、饮品关怀、五分钟练习与记录继续保留。实际图片与动作记录见 [V3 REVIEW](plans/fangcun-score-v3/REVIEW.md)。上方 V2 文案描述为历史方案，不能覆盖 V3。
+
 # 架构与数据流
 
 ## 原生
@@ -97,9 +103,14 @@
 `InnerBalance.xcodeproj` 包含 iOS App、Watch App、App 单元测试与 UI 测试，通过相邻的 `InnerBalanceCore` Swift Package 共享类型安全的领域模型和逻辑。最低 iOS 18、watchOS 11，Swift 6 并发检查。
 
 ```text
-HealthKitRepository → HomeViewModel → FangcunTodayView
-                                    ├→ FangcunEvidenceDetail
-                                    └→ FangcunDiary（日状态快照）
+ReadinessHealthKitProvider → ReadinessPipeline (completed metric / cursor transaction)
+                          → ScoreFeatureBuilder + ScoreCardioBuilder
+                          → DailyStatusScoreEngine → InsightsStore (versioned snapshots)
+                          → ReadinessCoordinator → FangcunTodayView
+                                                ├→ DailyStatusDetailView
+                                                └→ DailyStatusHistoryView
+
+Legacy ReadinessEngine / HomeViewModel remain for legacy diagnostics and records.
 
 FangcunDrinkSheet → FangcunDiary（UserDefaults Codable）
                    └→ FangcunTrendsView
@@ -126,9 +137,13 @@ React、Tailwind、Framer Motion、Lucide 与 Vite。页面、可复用组件、
 
 图片、SVG 和本地语音作为普通文件纳入 Git；无需 LFS。完整路径索引和源码分卷用于远程 AI 阅读。原始 `.xcresult` 和开发安装回执留在本机，仓库中仅存可公开的验证摘要与模拟器截图。
 
+## V3 存储与同步边界
+
+InsightsStore schema 1 通过可选字段扩展数值快照、当前指针、删除审计与本地手动睡眠。旧记录保留；删除依赖会修订/撤回当前结果，失败读取保留原有仍有效快照。查询时间不参与输入指纹。HealthKit 手动选源、晚到资料、目标和规律性变更均受 generation/CAS 保护。手机只向协商 score-v3 的端发送最小摘要；旧端撤回旧准备度摘要，不把数值映射成旧等级。本轮未新增 Watch 页面或后台能力。
+
 # 当前交付与验证状态
 
-最新入口：[2026-09-19 V2 审阅与实际状态](../plans/fangcun-experience-v2/REVIEW.md)。下面保留 2026-09-18 的历史记录，不代表当前阶段或安装版本。
+最新入口：[2026-09-20 V3 分数优先审阅](../plans/fangcun-score-v3/REVIEW.md)。当前手机安装版 **1.0.0（2026092002）**，13 个数据文件和偏好覆盖前后一致。手机锁屏导致启动被拒绝，真实 HealthKit 刷新未验证。Core162、App198、UI54个独立用例经完整测试和分批复验均有通过证据，Watch 模拟器编译通过；详细失败历史、最终退出码和证据见 [V3 验证](../plans/fangcun-score-v3/VERIFICATION.md)。以下为历史记录，不代表当前阶段或安装版本。
 
 最新开发分支已完成 v1.0 任务书的 M0 基线及 M1 数据语义修复，iPhone 安装版为 **1.0.0 (2026091802)**。Core 67、App 31、UI 7 项测试通过。详见 [本轮验收](../plans/fangcun-v1/VERIFICATION.md)、[任务状态](../plans/fangcun-v1/TASKS.md) 和 [截图](../plans/fangcun-v1/SCREENSHOTS.md)。M0 的物理 Watch 能力验证仍待设备，M2–M6 未实施。
 

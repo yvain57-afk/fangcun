@@ -178,7 +178,7 @@ public actor InsightsStore {
 
   public func selectSleep(_ episodeID: String) throws {
     guard state.episodes.contains(where: { $0.id == episodeID }) else { throw InsightsStoreError.invalidTransaction }
-    var next = state; next.manualSleepID = episodeID; next.currentAssessmentID = nil; next.currentStatusID = nil
+    var next = state; next.manualSleepID = episodeID; next.manualStatusSleep = nil; next.currentAssessmentID = nil; next.currentStatusID = nil
     try commit(next, expectedGeneration: state.generation)
   }
 

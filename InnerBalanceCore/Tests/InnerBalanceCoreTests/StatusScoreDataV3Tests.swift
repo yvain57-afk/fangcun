@@ -69,6 +69,14 @@ import Testing
     var awake = a; awake.id = UUID(); awake.stage = .awake
     #expect(try DailyStatusScoreEngine.evaluate(features([a,awake]).input).displayScore == nil)
   }
+  @Test func displayedHRVUsesTheSameLogRepresentativeAsScoring() throws {
+    var rows = (0...3).map { row(.sleep,day:$0) } + (1...3).map { row(.hrvSDNN,day:$0,value:50) }
+    rows.append(row(.hrvSDNN,value:25))
+    var high = row(.hrvSDNN,value:100); high.start = high.start.addingTimeInterval(-3600); high.end = high.end.addingTimeInterval(-3600); rows.append(high)
+    let f = try features(rows)
+    #expect(abs((f.displayValues["hrv"] ?? 0)-50) < 1e-8)
+    #expect(abs(f.input.hrvDeviation ?? 1) < 1e-8)
+  }
   @Test func invalidAndInterventionHRVRowsDoNotContaminateUsableSamples() throws {
     var rows = (0...3).flatMap { [row(.sleep,day:$0),row(.hrvSDNN,day:$0,value:50)] }
     var bad = row(.hrvSDNN,value: .nan); bad.start = bad.start.addingTimeInterval(-3600); bad.end = bad.end.addingTimeInterval(-3600); rows.append(bad)
@@ -100,6 +108,25 @@ import Testing
     again.redact([dependent.uuidString])
     #expect(again.currentStatus == nil && again.statusScores?.count == 1)
     #expect(again.statusDeletionAudit?.count == 2)
+  }
+  @Test func explicitHealthSleepSelectionSupersedesManualOverrideWithoutErasingHistory() async throws {
+    let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at:dir) }
+    let store = try InsightsStore(directory:dir)
+    try await store.saveManualStatusSleep(.init(minutes:60,end:now.addingTimeInterval(-3600),recordedAt:now))
+    var s = await store.snapshot()
+    let manual = try #require(try ScoreFeatureBuilder.build(snapshot:s,now:now,calendar:calendar,configuration:.init()))
+    try s.recordStatus(manual,configuration:.init(),now:now)
+    let row = row(.sleep); s.ledger.samples[row.id.uuidString] = row
+    s.sources = state([row]).sources
+    s.episodes = SleepEpisodeBuilder.build(samples:[row],sourceKey:row.sourceKey,calendar:calendar,now:now).episodes
+    let episode = try #require(s.episodes.first)
+    try await store.commit(s,expectedGeneration:s.generation)
+    try await store.selectSleep(episode.id)
+    let selected = await store.snapshot()
+    #expect(selected.manualStatusSleep == nil && selected.statusScores?.count == 1)
+    let health = try #require(try ScoreFeatureBuilder.build(snapshot:selected,now:now,calendar:calendar,configuration:.init()))
+    #expect(!health.manual && health.input.sleepMinutes == 375)
   }
   @Test func manualZeroIsRealZeroAndSurvivesDiskWithoutHealthWrite() async throws {
     let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

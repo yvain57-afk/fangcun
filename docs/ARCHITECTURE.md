@@ -5,9 +5,14 @@
 `InnerBalance.xcodeproj` 包含 iOS App、Watch App、App 单元测试与 UI 测试，通过相邻的 `InnerBalanceCore` Swift Package 共享类型安全的领域模型和逻辑。最低 iOS 18、watchOS 11，Swift 6 并发检查。
 
 ```text
-HealthKitRepository → HomeViewModel → FangcunTodayView
-                                    ├→ FangcunEvidenceDetail
-                                    └→ FangcunDiary（日状态快照）
+ReadinessHealthKitProvider → ReadinessPipeline (completed metric / cursor transaction)
+                          → ScoreFeatureBuilder + ScoreCardioBuilder
+                          → DailyStatusScoreEngine → InsightsStore (versioned snapshots)
+                          → ReadinessCoordinator → FangcunTodayView
+                                                ├→ DailyStatusDetailView
+                                                └→ DailyStatusHistoryView
+
+Legacy ReadinessEngine / HomeViewModel remain for legacy diagnostics and records.
 
 FangcunDrinkSheet → FangcunDiary（UserDefaults Codable）
                    └→ FangcunTrendsView
@@ -33,3 +38,7 @@ React、Tailwind、Framer Motion、Lucide 与 Vite。页面、可复用组件、
 这是从已验证工作区整理出的独立源码项目。Xcode 中的个人 DEVELOPMENT_TEAM 已清空，签名文件、手机标识、健康数据与构建缓存未纳入。Bundle Identifier 保留历史配置供理解引用关系，其他开发者真机运行需选择自己的签名配置。
 
 图片、SVG 和本地语音作为普通文件纳入 Git；无需 LFS。完整路径索引和源码分卷用于远程 AI 阅读。原始 `.xcresult` 和开发安装回执留在本机，仓库中仅存可公开的验证摘要与模拟器截图。
+
+## V3 存储与同步边界
+
+InsightsStore schema 1 通过可选字段扩展数值快照、当前指针、删除审计与本地手动睡眠。旧记录保留；删除依赖会修订/撤回当前结果，失败读取保留原有仍有效快照。查询时间不参与输入指纹。HealthKit 手动选源、晚到资料、目标和规律性变更均受 generation/CAS 保护。手机只向协商 score-v3 的端发送最小摘要；旧端撤回旧准备度摘要，不把数值映射成旧等级。本轮未新增 Watch 页面或后台能力。

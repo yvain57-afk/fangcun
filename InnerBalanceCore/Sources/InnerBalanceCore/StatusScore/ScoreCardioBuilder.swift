@@ -31,7 +31,7 @@ enum ScoreCardioBuilder {
         if history.count >= configuration.minimumHistoryDays, let center = BodyLoadEngine.median(history.compactMap(\.value)),
           let mad = BodyLoadEngine.median(history.compactMap(\.value).map({ abs($0-center) })) {
           bundle.input.hrvDeviation = (center-value)/max(configuration.hrvScaleFloor,configuration.madMultiplier*mad)
-          bundle.displayValues["hrv"] = h.displayValue; bundle.measuredAt["hrv"] = h.latestMeasuredAt
+          bundle.displayValues["hrv"] = exp(value); bundle.measuredAt["hrv"] = h.latestMeasuredAt
           ids.formUnion(h.sampleIDs); ids.formUnion(history.flatMap(\.sampleIDs))
           // Sleep intervals used to admit both current and historical HRV are also deletion dependencies.
           ids.formUnion(current.sampleIDs); ids.formUnion(nights.flatMap(\.sampleIDs))

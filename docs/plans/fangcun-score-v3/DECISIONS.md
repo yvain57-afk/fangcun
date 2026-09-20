@@ -10,3 +10,8 @@
 8. Score-v3 is a minimal negotiated DTO. Legacy Watch receives readiness revocation, not a mapping from number to an old level. No Watch/Widget/Live Activity UI or new backend/permissions were added.
 9. V3 explicitly authorizes replacement of obsolete homepage UI expectations. Four former test files are archived verbatim under `legacy-ui-contracts/`; current tests check numeric identity, records, feedback, scroll/hit targets and independent measurement/query/calculation times. Core/App legacy safety assertions and original fixtures are unchanged.
 10. XCTest runs affected by host sleep are recorded as failed/invalid environment runs and rerun awake with process-scoped `caffeinate -i`. No permanent power preferences changed.
+
+11. Covered home content is hidden from accessibility during a full-screen practice/action, preventing duplicate resume buttons. Post-practice coordinate choices reuse their exact existing choice names when displayed on home; no saved feeling is relabeled into a score.
+12. Displayed HRV uses the same exp(log-median) representative as scoring. Explicitly selecting a HealthKit main-sleep episode supersedes an active manual override while preserving its historical snapshot. Both have raw/storage regressions.
+
+13. Final maximum-type visual inspection found toolbar symbol/wordmark overlap. Brand artwork and toolbar symbols keep intrinsic 20-point drawing size and 44-point hit targets; score, reason and all page content continue to follow Dynamic Type. UI regression checks the actual brand/control frames for overlap.
