@@ -12,6 +12,24 @@ actor ReadinessDemoProvider: ReadinessDataProviding {
   func changes(for metric: ReadinessMetric, cursor: HealthReadCursor?, now: Date) async throws -> ReadinessChangeBatch {
     if scenario == "failed" || failure { throw ReadinessReadFailure.queryFailed }
     let source = ReadinessSource(bundleID: "org.example.synthetic", name: "Synthetic Wearable Source With A Long English Display Name", samplingMethod: "system")
+    if ["scoreExpired","scoreNoCurrentHistory","scoreHRVOnly","scoreRHR"].contains(scenario) {
+      let end = Calendar.current.date(bySettingHour:7,minute:0,second:0,of:reference)!
+      let rows: [ReadinessSample]
+      if scenario == "scoreRHR" {
+        rows = (0...20).map { day in
+          let date = end.addingTimeInterval(-Double(day)*86400)
+          return ReadinessSample(id:UUID(uuidString:String(format:"00000000-0000-0000-0000-%012d",day+1))!,metric:.restingHeartRate,value:60,unit:"count/min",start:date,end:date,source:source,queriedAt:now)
+        }
+      } else if scenario == "scoreHRVOnly" {
+        rows = [.init(id:UUID(),metric:.hrvSDNN,value:50,unit:"ms",start:end,end:end,source:source,queriedAt:now)]
+      } else {
+        rows = (1...(scenario == "scoreExpired" ? 1:20)).map { day in
+          let date = end.addingTimeInterval(-Double(day)*86400)
+          return ReadinessSample(id:UUID(uuidString:String(format:"00000000-0000-0000-0000-%012d",day+1))!,metric:.sleep,unit:"category",stage:.asleep,start:date.addingTimeInterval(-375*60),end:date,source:source,queriedAt:now)
+        }
+      }
+      return .init(metric:metric,samples:cursor == nil ? rows.filter { $0.metric == metric }:[],cursor:.init(anchor:Data([1]),windowStart:now.addingTimeInterval(-35*86400)))
+    }
     if scenario.hasPrefix("scoreSleep") {
       let minutes = Double(scenario.dropFirst("scoreSleep".count)) ?? 375
       let end = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: reference)!
@@ -28,7 +46,7 @@ actor ReadinessDemoProvider: ReadinessDataProviding {
         let end = reference.addingTimeInterval(-(offset + (scenario == "awaitingData" ? 0.1 : 4))*3600)
         func id(_ n: Int) -> UUID { UUID(uuidString: String(format: "00000000-0000-0000-0000-%012d", day*100+n))! }
         rows.append(.init(id: id(1), metric: .sleep, unit: "category", stage: .asleep,
-          start: end.addingTimeInterval(-(day == 0 && ["reduced", "low", "sleepOnly"].contains(scenario) ? 5 : 8)*3600), end: end, source: source, queriedAt: now))
+          start: end.addingTimeInterval(-(day == 0 && scenario == "scoreFull240" ? 4 : day == 0 && ["reduced", "low", "sleepOnly"].contains(scenario) ? 5 : 8)*3600), end: end, source: source, queriedAt: now))
         for n in 0..<4 {
           let date = end.addingTimeInterval(-Double(n+1)*3600)
           rows.append(.init(id: id(10+n), metric: .hrvSDNN, value: day == 0 && scenario == "low" ? 20 : 50, unit: "ms", start: date, end: date, source: source, queriedAt: now))

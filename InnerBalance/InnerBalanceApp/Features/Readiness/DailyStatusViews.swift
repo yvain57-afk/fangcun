@@ -58,6 +58,7 @@ struct DailyStatusDetailView: View {
   let score: DailyStatusSnapshot
   var onStart: (() -> Void)?
   var actionTitle = "开始 2 分钟安静休息"
+  var lastQueryAt: Date?
   @State private var method = false
   var body: some View {
     ScrollView {
@@ -98,7 +99,14 @@ struct DailyStatusDetailView: View {
           Text("方寸状态分是睡眠及可用心率变化的日常指数，高分表示这些输入在本规则中表现较好。它不是测得的心理压力百分比或运动安全许可。缺失项目不参与加权。")
           Text("计算版本：\(score.modelVersion)").font(.caption)
           Text(score.features.manual ? "睡眠由你补记。" : "数据来自所选健康来源。").font(.caption)
-          Text(score.asOf, format: .dateTime.month().day().hour().minute()).font(.caption)
+          Text("评估基准："+score.asOf.formatted(.dateTime.month().day().hour().minute())).font(.caption)
+            .accessibilityIdentifier("status.time.asOf").accessibilityValue(score.asOf.ISO8601Format())
+          Text("本次计算："+score.createdAt.formatted(.dateTime.month().day().hour().minute())).font(.caption)
+            .accessibilityIdentifier("status.time.computed").accessibilityValue(score.createdAt.ISO8601Format())
+          if let lastQueryAt {
+            Text("最近查询："+lastQueryAt.formatted(.dateTime.month().day().hour().minute())).font(.caption)
+              .accessibilityIdentifier("status.time.query").accessibilityValue(lastQueryAt.ISO8601Format())
+          }
         }
       }.padding(20)
     }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)

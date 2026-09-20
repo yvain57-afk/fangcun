@@ -282,6 +282,9 @@ struct ReadinessSettingsView: View {
       }.accessibilityIdentifier("readiness.diagnostics")
       Toggle(FangcunCopy.text("readiness.enabled"), isOn: Binding(get: { owner.enabled }, set: { value in Task { await owner.setEnabled(value) } }))
       if owner.enabled {
+        Toggle("计入睡眠规律",isOn:Binding(get:{ owner.scoreConfiguration.regularityEnabled },set:{ value in Task { await owner.setRegularity(value) } }))
+          .accessibilityIdentifier("status.regularity")
+        Text("轮班或旅行时，可以关闭规律项。").font(.caption)
         Stepper(value: Binding(get: { owner.configuration.sleepTargetHours }, set: { value in Task { await owner.setTarget(value) } }), in: 7...10, step: 0.5) {
           Text(FangcunCopy.text("readiness.target", owner.configuration.sleepTargetHours))
         }.accessibilityIdentifier("readiness.target")

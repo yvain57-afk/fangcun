@@ -66,7 +66,9 @@ extension EnvironmentValues {
       let store = try? InsightsStore(directory: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
       if scenario.hasPrefix("score") {
         let date = ISO8601DateFormatter().date(from: args.contains("--score-night") ? "2026-09-20T15:22:00Z" : "2026-09-20T04:00:00Z")!
-        return .init(store: store, provider: ReadinessDemoProvider(scenario: scenario, now: date), defaults: UserDefaults(suiteName: UUID().uuidString)!, clock: { date })
+        let defaults = UserDefaults(suiteName:UUID().uuidString)!
+        if scenario == "scoreFull240" { defaults.set(false,forKey:"status-v3.regularity") }
+        return .init(store: store, provider: ReadinessDemoProvider(scenario: scenario, now: date), defaults: defaults, clock: { date })
       }
       return .init(store: store, provider: ReadinessDemoProvider(scenario: scenario),
         defaults: UserDefaults(suiteName: UUID().uuidString)!)
@@ -186,8 +188,14 @@ extension EnvironmentValues {
   func saveManualSleep(minutes: Double, end: Date) async {
     guard let store else { return }
     do {
+      requestVersion += 1
       try await store.saveManualStatusSleep(.init(minutes: minutes, end: end, recordedAt: clock()))
-      await refresh()
+      var value = await store.snapshot()
+      if let features = try ScoreFeatureBuilder.build(snapshot:value,now:clock(),calendar:.current,configuration:scoreConfiguration,interventions:interventions) {
+        try value.recordStatus(features,configuration:scoreConfiguration,now:clock())
+        snapshot = try await store.commit(value,expectedGeneration:value.generation)
+        errorKey = nil; tick(); await onStatusChange?(statusScore)
+      }
     } catch { errorKey = "readiness.storageError" }
   }
   func selectSource(_ key: String, metric: ReadinessMetric) async {

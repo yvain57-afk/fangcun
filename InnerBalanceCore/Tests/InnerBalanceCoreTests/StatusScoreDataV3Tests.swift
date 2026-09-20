@@ -27,6 +27,15 @@ import Testing
     try s.recordStatus(features(rows),configuration:.init(),now:now)
     #expect(s.currentStatus?.rawScore == 100 && s.currentStatus?.isValid == true)
   }
+  @Test func rawFourHoursWithMatureCardioMatches64WhenRegularityIsDisabled() throws {
+    var rows = (0...20).flatMap { [row(.sleep,day:$0,minutes:$0 == 0 ? 240:480),row(.hrvSDNN,day:$0,value:50),row(.restingHeartRate,day:$0,value:60)] }
+    for hour in [1,2] { var h = row(.hrvSDNN,value:50); h.start = h.start.addingTimeInterval(-Double(hour)*3600); h.end = h.end.addingTimeInterval(-Double(hour)*3600); rows.append(h) }
+    let config = StatusScoreConfiguration(regularityEnabled:false)
+    let f = try features(rows,config:config), result = try DailyStatusScoreEngine.evaluate(f.input,configuration:config)
+    #expect(result.displayScore == 64 && result.band == .low)
+    #expect(result.components.map(\.name) == ["sleep","hrv","rhr"])
+    #expect(result.components.map(\.normalizedWeight) == [0.6,0.25,0.15])
+  }
   @Test func rawRHRHistoryIndependentOfSleepAndDailyFallback() throws {
     let rows = (0...20).map { row(.restingHeartRate,day:$0,value:60) }
     let f = try features(rows)
@@ -143,6 +152,29 @@ import Testing
     let failed = try await pipeline.refresh(now:now.addingTimeInterval(7200),calendar:calendar,scoreConfiguration:.init())
     #expect(failed.currentStatus?.scoreID == final.currentStatus?.scoreID && failed.currentStatus?.asOf == final.currentStatus?.asOf)
     #expect(failed.statusReadFailed == true)
+  }
+  @Test func completedSleepPaginationSelectsSourceBeforePublishingAndFaultDoesNotAdvanceCursor() async throws {
+    struct Pages: ReadinessDataProviding {
+      let first: [ReadinessSample]; let last: [ReadinessSample]
+      func changes(for metric:ReadinessMetric,cursor:HealthReadCursor?,now:Date) async throws -> ReadinessChangeBatch {
+        if metric == .sleep {
+          return .init(metric:metric,samples:cursor == nil ? first:last,
+            cursor:.init(anchor:Data([cursor == nil ? 1:2]),windowStart:now.addingTimeInterval(-35*86400)),hasMore:cursor == nil)
+        }
+        return .init(metric:metric,samples:[],cursor:.init(anchor:Data([1]),windowStart:now.addingTimeInterval(-35*86400)))
+      }
+    }
+    let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at:dir) }
+    let provider = Pages(first:[row(.sleep,minutes:240,source:"first-page")],last:(0...3).map { row(.sleep,day:$0,minutes:480,source:"later-pages") })
+    let store = try InsightsStore(directory:dir), pipeline = ReadinessPipeline(provider:provider,store:store)
+    await store.injectNextFault(.beforePublish)
+    await #expect(throws:InsightsStoreError.self) { try await pipeline.refresh(now:now,calendar:calendar,scoreConfiguration:.init()) }
+    #expect(await store.snapshot().ledger.cursors.isEmpty)
+    let result = try await pipeline.refresh(now:now,calendar:calendar,scoreConfiguration:.init())
+    #expect(result.currentStatus?.displayScore == 100)
+    #expect(result.sources[ReadinessMetric.sleep.rawValue]?.sourceKey == provider.last.first?.sourceKey)
+    #expect(result.statusScores?.allSatisfy { $0.displayScore == 100 } == true)
   }
   @Test func scoreDTORejectsBadBoundsUnknownVersionAndCarriesNoSamples() async throws {
     var s = state([row(.sleep)])

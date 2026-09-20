@@ -1,83 +1,54 @@
 import XCTest
 
+/// Raw-provider UI contract migrated to score-v3. Legacy workout/measurement gates stay in HomeEvidencePipelineTests.
 final class HomeEvidencePipelineUITests: XCTestCase {
   @MainActor func testHistoryFailureAndLimitedEvidence() {
-    verify([("noCurrentHistory", "insufficient"), ("failed", "insufficient"),
-      ("sleepOnly", "limited"), ("oneCardio", "limited")])
+    verify("scoreNoCurrentHistory",score:nil)
+    verify("failed",score:nil)
+    verify("scoreSleep375",score:"78")
+    verify("scoreHRVOnly",score:nil)
   }
-
   @MainActor func testQualifiedEvidenceAndWorkoutProtection() {
-    verify([("steady", "steady"), ("watch", "watch"), ("elevated", "elevated"),
-      ("workoutProtected", "limited")])
+    verify("scoreSleep480",score:"100")
+    verify("scoreSleep240",score:"50")
+    verify("scoreRHR",score:"85")
+    verify("scoreFull240",score:"64")
   }
-
   @MainActor func testPreviousSleepAndIncompleteBaselines() {
-    verify([("previousSleep", "insufficient"), ("baselineBuilding", "limited"),
-      ("unreliablePair", "limited")])
+    let old = launch("scoreExpired")
+    XCTAssertTrue(old.staticTexts["status.empty"].waitForExistence(timeout:10))
+    XCTAssertFalse(old.staticTexts["status.score"].exists)
+    XCTAssertFalse(old.staticTexts["昨晚"].exists)
+    old.terminate()
+    verify("oneDay",score:"100")
+    verify("scoreHRVOnly",score:nil)
   }
-
   @MainActor func testMeasurementTimeDoesNotBecomeQueryTime() {
-    continueAfterFailure = false
-    let app = launch("stale")
-    expectState("insufficient", app)
-    let measured = Date(timeIntervalSince1970: 1_789_704_000 - 37 * 3_600).ISO8601Format()
-    let fetched = Date(timeIntervalSince1970: 1_789_704_000 - 60).ISO8601Format()
-    XCTAssertEqual(app.staticTexts["today.measuredAt"].value as? String, measured)
-    capture("m1-stale-measurement", app)
-    let detail = app.buttons["today.evidence"]
-    for _ in 0..<5 where !detail.isHittable { app.scrollViews.firstMatch.swipeUp() }
-    detail.tap()
-    XCTAssertTrue(app.staticTexts["evidence.fetchedAt"].waitForExistence(timeout: 5))
-    XCTAssertEqual(app.staticTexts["evidence.fetchedAt"].value as? String, fetched)
-    XCTAssertEqual(app.staticTexts["evidence.computedAt"].value as? String,
-      Date(timeIntervalSince1970: 1_789_704_000).ISO8601Format())
-    capture("m1-time-detail", app)
+    let app = launch("scoreSleep375")
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:10))
+    let asOf = app.staticTexts["status.cycle"].value as? String
+    XCTAssertNotNil(asOf)
+    app.buttons["today.evidence"].tap(); app.buttons["status.method"].tap()
+    let time = app.staticTexts["status.time.asOf"]
+    for _ in 0..<6 where !time.isHittable { app.swipeUp() }
+    XCTAssertEqual(time.value as? String,asOf)
+    XCTAssertEqual(app.staticTexts["status.time.query"].value as? String,"2026-09-20T04:00:00Z")
+    XCTAssertEqual(app.staticTexts["status.time.computed"].value as? String,"2026-09-20T04:00:00Z")
+    XCTAssertNotEqual(asOf,app.staticTexts["status.time.query"].value as? String)
   }
-
-  @MainActor private func verify(_ cases: [(String, String)]) {
-    continueAfterFailure = false
-    for (fixture, state) in cases {
-      let app = launch(fixture)
-      expectState(state, app)
-      if fixture == "failed" {
-        XCTAssertEqual(app.staticTexts["today.measuredAt"].value as? String, "none")
-      }
-      if fixture == "workoutProtected" {
-        XCTAssertTrue(app.staticTexts["today.evidenceSummary"].label.contains("不将它们解释为正常"))
-      }
-      if fixture == "previousSleep" {
-        let detail = app.buttons["today.evidence"]
-        for _ in 0..<5 where !detail.isHittable { app.scrollViews.firstMatch.swipeUp() }
-        XCTAssertTrue(detail.label.contains("最近主睡眠"))
-        XCTAssertTrue(detail.label.contains("9月16日"))
-        XCTAssertFalse(detail.label.contains("昨晚"))
-      }
-      capture("m1-" + fixture, app)
-      app.terminate()
-    }
+  @MainActor private func verify(_ fixture:String,score:String?) {
+    let app = launch(fixture)
+    if let score { XCTAssertTrue(app.staticTexts[score].waitForExistence(timeout:12)) }
+    else { XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12)); XCTAssertFalse(app.staticTexts["status.score"].exists) }
+    XCTAssertFalse(app.staticTexts["有限线索"].exists)
+    XCTAssertTrue(app.buttons["today.start"].exists)
+    let a = XCTAttachment(screenshot:app.screenshot()); a.name = "v3-raw-"+fixture; a.lifetime = .keepAlways; add(a)
+    app.terminate()
   }
-
-  @MainActor private func launch(_ fixture: String) -> XCUIApplication {
+  @MainActor private func launch(_ fixture:String)->XCUIApplication {
+    continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "--health-fixture=\(fixture)",
-      "-fangcun.dark", fixture == "watch" ? "YES" : "NO",
-      "-fangcun.largeType", fixture == "oneCardio" ? "YES" : "NO",
-      "-fangcun.reduceMotion", "YES"]
-    // No --preview-state: the UI must derive its conclusion from the raw provider data.
-    app.launch()
-    return app
-  }
-
-  @MainActor private func expectState(_ state: String, _ app: XCUIApplication) {
-    let conclusion = app.staticTexts["today.conclusion"]
-    XCTAssertTrue(conclusion.waitForExistence(timeout: 10))
-    let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(
-      predicate: NSPredicate(format: "value == %@", state), object: conclusion)], timeout: 8)
-    XCTAssertEqual(result, .completed)
-  }
-
-  @MainActor private func capture(_ name: String, _ app: XCUIApplication) {
-    let attachment = XCTAttachment(screenshot: app.screenshot())
-    attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+    app.launchArguments = ["--ui-testing","--readiness-fixture="+fixture,"-fangcun.dark","NO","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
+    app.launch(); return app
   }
 }

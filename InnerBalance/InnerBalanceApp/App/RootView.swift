@@ -82,15 +82,17 @@ struct RootView: View {
         latestPractice: latestPractice,
         isUITesting: isUITesting,
         onStart: {
-          guard recovery?.canStart != false else { return }
+          guard recovery?.canStart != false, selectedPractice == nil else { return }
           selectedPracticeWasRecommended = true
           selectedPractice = PracticeLaunch(kind: .physiologicalSigh, duration: 300, startsImmediately: true)
         },
         onCheckIn: { isShowingCheckIn = true },
         onSuggestedPractice: { kind, duration in
           guard recovery?.canStart != false else { return }
-          selectedPractice = PracticeLaunch(kind: kind, duration: duration)
-        }
+          selectedPractice = PracticeLaunch(kind: kind, duration: duration, startsImmediately: true)
+        },
+        hasOngoingPractice: selectedPractice != nil,
+        recentFeeling: latestCheckIn.record
       )
       .tabItem { Label("今日", systemImage: "house") }
       .tag(Tab.now)

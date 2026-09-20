@@ -26,6 +26,8 @@ enum ScoreCardioBuilder {
             episode: episode, now: current.start, interventions: interventions, excludingIDs: Set(h.sampleIDs), configuration: policy)
         }.filter { $0.value != nil && $0.sampleCount > 0 }
         bundle.input.hrvDays = history.count; bundle.input.hrvSamples = h.sampleCount; bundle.input.hrvHours = h.coveredHours
+        ids.formUnion(h.sampleIDs); ids.formUnion(history.flatMap(\.sampleIDs)); ids.formUnion(nights.flatMap(\.sampleIDs))
+        bundle.sourceSegments["hrv"] = hSource?.segmentID
         if history.count >= configuration.minimumHistoryDays, let center = BodyLoadEngine.median(history.compactMap(\.value)),
           let mad = BodyLoadEngine.median(history.compactMap(\.value).map({ abs($0-center) })) {
           bundle.input.hrvDeviation = (center-value)/max(configuration.hrvScaleFloor,configuration.madMultiplier*mad)
@@ -54,6 +56,7 @@ enum ScoreCardioBuilder {
         calendar.startOfDay(for: $0.end)
       }.values.compactMap { $0.max { $0.end == $1.end ? $0.id.uuidString < $1.id.uuidString : $0.end < $1.end } }
       bundle.input.rhrDays = history.count
+      ids.insert(r.id); ids.formUnion(history.map(\.id)); bundle.sourceSegments["rhr"] = rSource?.segmentID
       if history.count >= configuration.minimumHistoryDays, let center = BodyLoadEngine.median(history.compactMap(\.value)),
         let mad = BodyLoadEngine.median(history.compactMap(\.value).map({ abs($0-center) })) {
         bundle.input.rhrDeviation = (value-center)/max(configuration.rhrScaleFloor,configuration.madMultiplier*mad)

@@ -6,7 +6,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-disabled",
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]
@@ -15,67 +15,44 @@ final class CheckInFlowUITests: XCTestCase {
   }
 
   @MainActor
-  func testHomeLeadsWithOneStressDecision() {
+  func testHomeLeadsWithOneScoreAndAction() {
     let app = launchApp()
-
-    XCTAssertTrue(app.otherElements["home.brandPoint"].waitForExistence(timeout: 2))
-    XCTAssertTrue(app.staticTexts["home.date"].exists)
-    XCTAssertFalse(app.staticTexts["方寸"].exists)
-    XCTAssertTrue(app.staticTexts["当前压力"].exists)
-    XCTAssertEqual(app.staticTexts["home.stressConclusion"].label, "还没判断")
-    XCTAssertFalse(app.descendants(matching: .any)["home.stressSource"].exists)
-    XCTAssertTrue(app.staticTexts["下一步"].exists)
-    XCTAssertTrue(app.buttons["判断压力与来源"].exists)
-    XCTAssertTrue(app.staticTexts["现在怎样"].exists)
-    XCTAssertTrue(app.buttons["home.echo.state.calm"].exists)
-    XCTAssertFalse(app.staticTexts["收藏摘句"].exists)
-    XCTAssertFalse(app.staticTexts["原始出处待考"].exists)
-    XCTAssertFalse(app.staticTexts["此刻的一句"].exists)
-    XCTAssertTrue(app.descendants(matching: .any)["home.trainingSummary"].exists)
-    XCTAssertFalse(app.staticTexts["今日一事"].exists)
-    XCTAssertFalse(app.staticTexts["今日足迹"].exists)
+    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"home.brandPoint").firstMatch.waitForExistence(timeout:5))
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    XCTAssertEqual(app.staticTexts["status.band"].label,"良好")
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
+    XCTAssertEqual(app.buttons.matching(identifier:"today.start").count,1)
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
+    XCTAssertFalse(app.staticTexts["当前压力"].exists)
+    XCTAssertFalse(app.staticTexts["有限线索"].exists)
   }
 
   @MainActor
   func testStatusNeedsNoWritingAndDoesNotCreateAChoreList() {
     let app = launchApp()
-
-    let calm = app.buttons["home.echo.state.calm"]
-    XCTAssertTrue(calm.waitForExistence(timeout: 3))
-    reveal(calm, in: app)
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    XCTAssertEqual(app.textFields.count,0)
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
     XCTAssertFalse(app.buttons["补一句"].exists)
-    XCTAssertEqual(app.textFields.count, 0)
-    calm.tap()
-    XCTAssertTrue(calm.isSelected)
     XCTAssertFalse(app.staticTexts["今日足迹"].exists)
-    XCTAssertFalse(app.buttons["home.startRecommendation"].exists)
-    XCTAssertTrue(app.staticTexts["现在怎么做"].exists)
-    XCTAssertTrue(app.staticTexts["照常进行，不需要额外练习。"].exists)
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
   }
 
   @MainActor
-  func testEchoImmediatelyPersonalizesTheSentenceAndRecoveryAction() {
+  func testExplicitNoBreathingChoiceChangesActionOnly() {
     let app = launchApp()
-    let sentence = app.staticTexts["home.dailyReflection"]
-    var seenSentences: Set<String> = []
-
-    for state in ["calm", "clear", "moved", "tense", "tired", "uncertain"] {
-      let button = app.buttons["home.echo.state.\(state)"]
-      reveal(button, in: app)
-      button.tap()
-      XCTAssertTrue(sentence.waitForExistence(timeout: 2))
-      XCTAssertTrue(
-        seenSentences.insert(sentence.label).inserted,
-        "Every selected state must visibly receive a different sentence"
-      )
-    }
-
-    let tense = app.buttons["home.echo.state.tense"]
-    reveal(tense, in: app)
-    tense.tap()
-    let action = app.buttons["开始 · 生理性叹息"]
-    XCTAssertTrue(action.waitForExistence(timeout: 2))
-    XCTAssertTrue(app.staticTexts["现在做这个"].exists)
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap()
+    let toggle = app.switches["这次不做呼吸练习"]
+    XCTAssertTrue(toggle.waitForExistence(timeout:5))
+    if toggle.value as? String != "1" { toggle.coordinate(withNormalizedOffset:CGVector(dx:0.93,dy:0.5)).tap() }
+    XCTAssertEqual(toggle.value as? String,"1")
+    app.buttons["完成"].tap()
+    expectation(for:NSPredicate(format:"label CONTAINS %@","安静休息"),evaluatedWith:app.buttons["today.start"])
+    waitForExpectations(timeout:5)
+    XCTAssertTrue(app.staticTexts["100"].exists)
+    // Reset only the explicit preference this test changed.
+    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap(); app.switches["这次不做呼吸练习"].tap(); app.buttons["完成"].tap()
   }
 
   @MainActor
@@ -100,7 +77,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-disabled",
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -131,63 +108,28 @@ final class CheckInFlowUITests: XCTestCase {
   func testHomeResponseRemainsReachableAtAccessibilityTextSizes() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = [
-      "--ui-testing", "--readiness-disabled",
-      "-UIPreferredContentSizeCategoryName",
-      "UICTContentSizeCategoryAccessibilityXXXL",
-    ]
+    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep480","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL"]
     app.launch()
-
-    let tense = app.buttons["home.echo.state.tense"]
-    for _ in 0..<8 {
-      if tense.exists && tense.isHittable { break }
-      app.scrollViews.firstMatch.swipeUp()
-    }
-    XCTAssertTrue(tense.exists)
-    XCTAssertTrue(tense.isHittable)
-    tense.tap()
-
-    let action = app.buttons["home.startRecommendation"]
-    for _ in 0..<8 {
-      if action.exists && action.isHittable { break }
-      app.scrollViews.firstMatch.swipeUp()
-    }
-    XCTAssertTrue(action.exists)
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    let action = app.buttons["today.start"]
+    for _ in 0..<8 where !action.isHittable { app.swipeUp() }
     XCTAssertTrue(action.isHittable)
+    XCTAssertGreaterThanOrEqual(action.frame.height,44)
   }
 
   @MainActor
   func testBottomChromeDoesNotInterceptHomeScroll() {
     let app = launchApp()
-    let tense = app.buttons["home.echo.state.tense"]
-    XCTAssertTrue(tense.waitForExistence(timeout: 3))
-    tense.tap()
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
     let tabBar = app.tabBars.firstMatch
-    XCTAssertTrue(tabBar.waitForExistence(timeout: 3))
-    XCTAssertLessThan(
-      tabBar.frame.height,
-      120,
-      "The tab bar must not expose an oversized opaque host surface"
-    )
-
-    let response = app.staticTexts["home.responseExplanation"]
-    XCTAssertTrue(response.waitForExistence(timeout: 3))
-
+    XCTAssertLessThan(tabBar.frame.height,120)
+    let response = app.buttons["today.drinks"]
+    XCTAssertTrue(response.exists)
     let initialY = response.frame.minY
-    let dragStart = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.80))
-    let dragEnd = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
-    dragStart.press(forDuration: 0.05, thenDragTo: dragEnd)
-
-    XCTAssertLessThan(
-      response.frame.minY,
-      initialY - 12,
-      "The lower screen area must pass vertical gestures through to the home scroll view"
-    )
-
+    app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.80)).press(forDuration:0.05,thenDragTo:app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.35)))
+    XCTAssertLessThan(response.frame.minY,initialY-12)
     let checkIn = app.buttons["home.checkIn"]
-    for _ in 0..<4 where !checkIn.isHittable {
-      app.scrollViews.firstMatch.swipeUp()
-    }
+    for _ in 0..<6 where !checkIn.isHittable { app.swipeUp() }
     XCTAssertTrue(checkIn.isHittable)
   }
 
@@ -195,7 +137,7 @@ final class CheckInFlowUITests: XCTestCase {
   func testFangcunNavigationUsesProductLanguage() {
     let app = launchApp()
 
-    XCTAssertTrue(app.tabBars.buttons["此刻"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.tabBars.buttons["今日"].waitForExistence(timeout: 2))
     XCTAssertTrue(app.tabBars.buttons["练习"].exists)
     XCTAssertTrue(app.tabBars.buttons["设置"].exists)
   }
@@ -251,7 +193,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-disabled",
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -273,7 +215,7 @@ final class CheckInFlowUITests: XCTestCase {
     let app = launchApp()
 
     app.tabBars.buttons["练习"].tap()
-    XCTAssertTrue(app.staticTexts["按压力状态选择"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.staticTexts["给自己留一点时间"].waitForExistence(timeout: 2))
 
     app.buttons["practice.physiologicalSigh.60"].tap()
 
@@ -291,11 +233,13 @@ final class CheckInFlowUITests: XCTestCase {
 
     app.tabBars.buttons["练习"].tap()
 
-    XCTAssertTrue(app.staticTexts["按压力状态选择"].waitForExistence(timeout: 2))
-    XCTAssertTrue(app.staticTexts["压力突然升高"].exists)
+    XCTAssertTrue(app.staticTexts["给自己留一点时间"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.buttons["practice.sigh.300"].exists)
+    XCTAssertTrue(app.buttons["practice.physiologicalSigh.60"].exists)
     XCTAssertTrue(app.staticTexts["压力中等，节奏偏快"].exists)
     XCTAssertTrue(app.staticTexts["压力较低，思绪占满"].exists)
     XCTAssertTrue(app.staticTexts["睡眠或训练透支"].exists)
+    reveal(app.staticTexts["专项训练，不用于即时减压"],in:app)
     XCTAssertTrue(app.staticTexts["专项训练，不用于即时减压"].exists)
   }
 
@@ -331,7 +275,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-disabled",
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -369,7 +313,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-disabled",
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
       "--ui-testing-practice-save-failure",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",

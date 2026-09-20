@@ -40,4 +40,38 @@ import InnerBalanceCore
     #expect(StatusPresentationPolicy.action(score:score,night:true,severe:true) == .safety)
     #expect(owner.statusScore?.scoreID == score.scoreID && owner.statusScore?.displayScore == 78)
   }
+  actor Gate: ReadinessDataProviding {
+    var entered = false
+    private var continuation: CheckedContinuation<Void,Never>?
+    private var released = false
+    func release() { released = true; continuation?.resume(); continuation = nil }
+    func changes(for metric:ReadinessMetric,cursor:HealthReadCursor?,now:Date) async throws -> ReadinessChangeBatch {
+      if !released { entered = true; await withCheckedContinuation { continuation = $0 } }
+      return .init(metric:metric,samples:[],cursor:cursor ?? .init(anchor:Data([1]),windowStart:now.addingTimeInterval(-35*86400)))
+    }
+  }
+  @Test func simultaneousTargetAndSourceChangeRejectsOldScoreIntent() async throws {
+    let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at:dir) }
+    let now = ISO8601DateFormatter().date(from:"2026-09-20T04:00:00Z")!
+    let store = try InsightsStore(directory:dir)
+    let seed = ReadinessPipeline(provider:ReadinessDemoProvider(scenario:"assessable",now:now),store:store)
+    _ = try await seed.refresh(now:now,calendar:.current,scoreConfiguration:.init())
+    let gate = Gate()
+    // Use one explicit provider owner for all coalesced requests.
+    let currentOwner = ReadinessCoordinator(store:store,provider:gate,defaults:UserDefaults(suiteName:UUID().uuidString)!,clock:{ now })
+    let first = Task { await currentOwner.refresh() }
+    while !(await gate.entered) { await Task.yield() }
+    let target = Task { await currentOwner.setTarget(9) }
+    while currentOwner.scoreConfiguration.sleepGoalMinutes != 540 { await Task.yield() }
+    let source = Task { await currentOwner.selectSource("missing-v3-selected-source",metric:.hrvSDNN) }
+    while await store.snapshot().sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey != "missing-v3-selected-source" { await Task.yield() }
+    await gate.release(); await first.value; await target.value; await source.value
+    let score = try #require(currentOwner.statusScore)
+    #expect(score.configuration.sleepGoalMinutes == 540)
+    #expect(!score.components.contains { $0.name == "hrv" })
+    #expect(currentOwner.snapshot.sources[ReadinessMetric.hrvSDNN.rawValue]?.sourceKey == "missing-v3-selected-source")
+    #expect(await store.snapshot().currentStatus?.scoreID == score.scoreID)
+  }
+
 }

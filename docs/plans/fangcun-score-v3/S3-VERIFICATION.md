@@ -1,0 +1,7 @@
+# S3 — consumer experience and UI contract migration
+
+Implemented: actual component disclosure/weights/measurement times, independent method explanation, v3 numeric history with legacy boundary/revisions, night and explicit context routing, manual sleep without HealthKit authorization, stopped-analysis resume action, separate latest feeling/context records, retained five-minute library entrance and local recovery actions/feedback. No artwork replacement or drink model rewrite.
+
+Validation available at this stage: four score-specific native UI flows passed in `s3-ui2` (raw78/rest, manual sleep, maximum-type dark, 23:22 short breathing/foreground); real one-minute completion, drink editor, V2 maximum-type drinks and context feedback passed. The same overnight run has six host-sleep crash/timeout failures and is not a clean aggregate. Final full suite and locator/contract migrations are recorded in VERIFICATION.md, rather than claiming the run passed.
+
+V3 explicitly replaces old availability enum/preset-state/always-five-minute home expectations. Original versions of four substantially changed UI files are preserved under legacy-ui-contracts. Current assertions retain saved record identifiers, exact feeling/context text, skip-vs-answer distinction, unchanged score, measurement/query/calculation distinction, 44-point targets, scroll and real session behavior. Existing Core/App data safety and old model golden fixtures are unchanged.

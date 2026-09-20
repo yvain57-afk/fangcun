@@ -4,12 +4,12 @@ final class ExperienceV2UITests: XCTestCase {
   @MainActor func testFirstExperienceDelivery() throws {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=assessable", "-AppleLanguages", "(zh-Hans)",
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-AppleLanguages", "(zh-Hans)",
       "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
     app.launch()
-    let conclusion = app.staticTexts["today.conclusion"]
+    let conclusion = app.staticTexts["status.band"]
     XCTAssertTrue(conclusion.waitForExistence(timeout: 12))
-    expectation(for: NSPredicate(format: "value == %@", "assessable"), evaluatedWith: conclusion)
+    expectation(for: NSPredicate(format: "label == %@", "良好"), evaluatedWith: conclusion)
     waitForExpectations(timeout: 12)
     XCTAssertFalse(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "看看它")).firstMatch.exists)
     capture("v2-home", app)
@@ -17,7 +17,7 @@ final class ExperienceV2UITests: XCTestCase {
     Thread.sleep(forTimeInterval: 3)
     for _ in 0..<5 where !app.buttons["today.evidence"].isHittable { app.swipeUp() }
     app.buttons["today.evidence"].tap()
-    XCTAssertTrue(app.staticTexts["readiness.detail.conclusion"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["status.detail.score"].waitForExistence(timeout: 5))
     XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
     XCTAssertFalse(app.staticTexts["readiness.baseline.reference"].exists)
     capture("v2-detail", app)

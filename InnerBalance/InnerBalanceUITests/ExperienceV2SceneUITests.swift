@@ -8,13 +8,13 @@ final class ExperienceV2SceneUITests: XCTestCase {
       "-fangcun.dark", dark ? "YES" : "NO", "-fangcun.largeType", large ? "YES" : "NO", "-fangcun.reduceMotion", "NO", "-fangcun.motionMode", motion]
     if large { app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"] }
     app.launch()
-    XCTAssertTrue(app.staticTexts["today.conclusion"].waitForExistence(timeout: 12))
+    XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 12))
     return app
   }
   @MainActor func testDistinctCurrentConclusionsAndSceneEntry() {
-    for (scenario, title) in [("assessable", "恢复接近平常"), ("reduced", "今天建议放缓一点"), ("low", "今天优先安排恢复"), ("insufficient", "今天的判断还没形成")] {
+    for (scenario, title) in [("scoreSleep480", "良好"), ("scoreSleep375", "尚可"), ("scoreSleep240", "偏低"), ("scoreSleep45", "优先休息")] {
       let app = launch(scenario)
-      expectation(for: NSPredicate(format: "label == %@", title), evaluatedWith: app.staticTexts["today.conclusion"])
+      expectation(for: NSPredicate(format: "label == %@", title), evaluatedWith: app.staticTexts["status.band"])
       waitForExpectations(timeout: 10)
       Thread.sleep(forTimeInterval: 2)
       capture("scene-" + scenario, app)
@@ -54,13 +54,13 @@ final class ExperienceV2SceneUITests: XCTestCase {
   }
   @MainActor func testOneDayDarkMaximumTypeHasScopedFactsAndNoPersonalRange() {
     let app = launch("oneDay", dark: true, large: true, motion: "static")
-    expectation(for: NSPredicate(format: "label == %@", "基于睡眠的今日建议"), evaluatedWith: app.staticTexts["today.conclusion"])
+    expectation(for: NSPredicate(format: "label == %@", "良好"), evaluatedWith: app.staticTexts["status.band"])
     waitForExpectations(timeout: 12)
     capture("scene-dark-large-home", app)
     reveal(app.buttons["today.evidence"], app); app.buttons["today.evidence"].tap()
-    XCTAssertTrue(app.staticTexts["readiness.detail.conclusion"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["status.detail.score"].waitForExistence(timeout: 5))
     capture("scene-dark-large-detail", app)
-    reveal(app.buttons["readiness.method"], app); app.buttons["readiness.method"].tap()
+    reveal(app.buttons["status.method"], app); app.buttons["status.method"].tap()
     XCTAssertFalse(app.staticTexts["readiness.baseline.reference"].exists)
     XCTAssertFalse(app.staticTexts["readiness.identity"].exists)
     app.navigationBars.buttons.firstMatch.tap()

@@ -6,22 +6,20 @@ final class FangcunAppearanceUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-disabled",
+      "--ui-testing", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]
     app.launch()
 
-    XCTAssertTrue(app.otherElements["home.brandPoint"].waitForExistence(timeout: 3))
+    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"home.brandPoint").firstMatch.waitForExistence(timeout: 3))
     capture("home-initial", from: app)
 
-    let calm = app.buttons["home.echo.state.calm"]
-    XCTAssertTrue(calm.waitForExistence(timeout: 3))
-    XCTAssertGreaterThanOrEqual(calm.frame.width, 44)
-    XCTAssertGreaterThanOrEqual(calm.frame.height, 44)
-    calm.tap()
-    XCTAssertTrue(calm.isSelected)
-    capture("home-selected", from: app)
+    XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
+    let action = app.buttons["today.start"]
+    XCTAssertGreaterThanOrEqual(action.frame.width,44)
+    XCTAssertGreaterThanOrEqual(action.frame.height,44)
+    XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
 
     app.tabBars.buttons["练习"].tap()
     let practice = app.buttons["practice.physiologicalSigh.60"]
@@ -69,7 +67,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     capture("practice-complete", from: app)
     app.buttons["practice.saved.done"].tap()
 
-    app.tabBars.buttons["此刻"].tap()
+    app.tabBars.buttons["今日"].tap()
     revealAndTapCheckIn(in: app)
     XCTAssertTrue(app.otherElements["checkIn.emotionField"].waitForExistence(timeout: 3))
     capture("check-in-compass", from: app)

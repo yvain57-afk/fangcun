@@ -29,8 +29,55 @@ final class StatusScoreV3UITests: XCTestCase {
     app.buttons["recovery.done"].tap()
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout: 5))
   }
+  @MainActor func testNightKeeps78AndStartsShortBreathingThenForegroundStillClean() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","--score-night","-fangcun.dark","YES","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
+    XCTAssertTrue(app.staticTexts["今晚早点收尾。"].exists)
+    XCTAssertTrue(app.buttons["today.start"].label.contains("2 分钟放松"))
+    assertClean(app); capture("v3-night-2322",app)
+    XCUIDevice.shared.press(.home); app.activate()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:5)); assertClean(app)
+    app.buttons["today.start"].tap()
+    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout:8))
+    capture("v3-night-real-breathing",app)
+    app.buttons["暂停练习"].tap()
+    XCTAssertTrue(app.buttons["继续练习"].exists)
+  }
+  @MainActor func testEmptyCanSaveActualSleepWithoutConnectingHealth() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=insufficient","-fangcun.dark","NO","-fangcun.largeType","NO"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12))
+    XCTAssertFalse(app.staticTexts["status.score"].exists); assertClean(app)
+    app.buttons["status.manual"].tap()
+    XCTAssertTrue(app.buttons["status.manual.save"].waitForExistence(timeout:5)); app.buttons["status.manual.save"].tap()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:8))
+    app.buttons["today.evidence"].tap()
+    app.buttons["status.method"].tap()
+    XCTAssertTrue(app.staticTexts["睡眠由你补记。"].exists)
+    capture("v3-manual-sleep",app)
+  }
+  @MainActor func testMaximumTypeDarkModeScoreAndActionRemainReachable() {
+    continueAfterFailure = false
+    let app = XCUIApplication()
+    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","-fangcun.dark","YES","-fangcun.largeType","YES","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL","-fangcun.reduceMotion","YES"]
+    app.launch()
+    XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
+    assertClean(app); capture("v3-dark-maximum-home",app)
+    let action = app.buttons["today.start"]
+    for _ in 0..<6 where !action.isHittable { app.swipeUp() }
+    XCTAssertTrue(action.isHittable); action.tap()
+    let start = app.buttons["recovery.start"]
+    XCTAssertTrue(start.waitForExistence(timeout:5))
+    for _ in 0..<6 where !start.isHittable { app.swipeUp() }
+    XCTAssertTrue(start.isHittable)
+  }
   @MainActor private func assertClean(_ app: XCUIApplication) {
-    for phrase in ["有限线索","有限资料","初步参考","基于睡眠的今日建议","不是整体恢复结论","不代表整体状态"] {
+    for phrase in ["有限线索","有限资料","初步参考","基于睡眠的今日建议","不是整体恢复结论","不代表整体状态","这条建议只基于已有线索","不是完整恢复结论","仍需更多线索","资料不足以判断"] {
       XCTAssertFalse(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", phrase)).firstMatch.exists)
     }
   }

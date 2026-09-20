@@ -3,9 +3,9 @@ final class RecoveryActionUITests: XCTestCase {
   @MainActor func testLocalActionPauseEarlyEndSkipThenEditFeedback() throws {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=insufficient", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
+    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep375", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
     app.launch()
-    let suggestion = app.buttons["recovery.suggestion"]
+    let suggestion = app.buttons["today.start"]
     XCTAssertTrue(suggestion.waitForExistence(timeout: 10))
     for _ in 0..<4 where !suggestion.isHittable { app.swipeUp() }
     suggestion.tap()

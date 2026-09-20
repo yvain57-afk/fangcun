@@ -51,6 +51,8 @@ public struct DailyStatusSnapshot: Codable, Equatable, Sendable {
       && Set(components.map(\.name)).count == components.count && Set(components.map(\.name)).isSubset(of: ["sleep","hrv","rhr"])
       && components.allSatisfy { $0.effectiveWeight.isFinite && $0.effectiveWeight > 0 }
       && abs(components.reduce(0) { $0+$1.score*$1.normalizedWeight }-rawScore) < 1e-8
+      && abs(currentUntil.timeIntervalSince(asOf)-configuration.currentHours*3600) < 1e-6
+      && abs(validUntil.timeIntervalSince(asOf)-configuration.validHours*3600) < 1e-6
       && rawScore.isFinite && (0...100).contains(rawScore) && StatusBand.resolve(displayScore) == band
       && Int(floor(rawScore+0.5+1e-10)) == displayScore && modelVersion == "fangcun-status-3.0"
       && !components.isEmpty && components.allSatisfy { $0.score.isFinite && (0...100).contains($0.score) && $0.normalizedWeight.isFinite && $0.normalizedWeight > 0 }
