@@ -73,3 +73,5 @@ SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`�
 ## 2026-09-20 V3 补记
 
 本轮仅增加协商过的最小 score-v3 摘要和旧摘要撤回，未展开 Watch / Widget / Live Activity 新功能。最终 Watch 模拟器编译通过，不升级本表真机后台/送达的验证状态。iPhone 1.0.0（2026092002）版本回读确认、记录保留；锁屏启动被拒绝，真实 HealthKit 刷新未验证。见 [V3 实际验证](../fangcun-score-v3/VERIFICATION.md)。
+
+V3 真机解锁补验：Release2002 启动、真实健康查询、有效数值快照落盘与独立公式复算通过；启动后记录/偏好保留。未据此更新 Watch 后台或跨端送达状态。仅公开结论，设备、健康输入与存档留在本机。

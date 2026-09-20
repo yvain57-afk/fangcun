@@ -1559,8 +1559,8 @@
     },
     {
       "path": "ai/source-18.txt",
-      "bytes": 148822,
-      "sha256": "85392f54d61c954fad5c0a34d9dd7d13a4c59fc46df2341100c12780232c1c9e"
+      "bytes": 151302,
+      "sha256": "f35bc1749ba3f907b567f7292da0490b51c70507ec3fb3014d2f8a4e93dd80f6"
     },
     {
       "path": "ai/source-19.txt",
@@ -1809,8 +1809,8 @@
     },
     {
       "path": "ai/source-68.txt",
-      "bytes": 158954,
-      "sha256": "42ba9dc39e34d01578d6739007d027dec362c281a4c944a944b80ff9fdbae0f2"
+      "bytes": 159102,
+      "sha256": "4a6033934b2293d636d49e661555ff4ed580b2515d93d04232ab9945ead08ea6"
     },
     {
       "path": "ai/source-69.txt",
@@ -2644,8 +2644,8 @@
     },
     {
       "path": "docs/plans/fangcun-score-v3/REVIEW.md",
-      "bytes": 4375,
-      "sha256": "a6f99b80eb06091d091061e5f322ffb7722b9b346978649c2021b25f5618c0e5"
+      "bytes": 4669,
+      "sha256": "46466fff8398842d1f61bbe4fb9c8387c2fecc5d42e5430766e819d426b329b0"
     },
     {
       "path": "docs/plans/fangcun-score-v3/S1-VERIFICATION.md",
@@ -2679,13 +2679,13 @@
     },
     {
       "path": "docs/plans/fangcun-score-v3/TASKS.md",
-      "bytes": 1372,
-      "sha256": "00d91710fbb8d22559bc7ce25415841fd688ec402361d562432b21cae3fa1b83"
+      "bytes": 1501,
+      "sha256": "8bbe34be33eef266c679699e2693f5150594ea8a14fb1ee1a82409baadd321a1"
     },
     {
       "path": "docs/plans/fangcun-score-v3/VERIFICATION.md",
-      "bytes": 10942,
-      "sha256": "c1894b9ac1ca60917187f7f860411d564afc76d0d19d261d26410680f6b65192"
+      "bytes": 12523,
+      "sha256": "ca82085a976f83444cf6738d72f5b781c91c9f4fa4b24ee76aef33c8ed146466"
     },
     {
       "path": "docs/plans/fangcun-score-v3/VERIFICATION_NOTE.md",
@@ -2759,8 +2759,8 @@
     },
     {
       "path": "docs/plans/fangcun-score-v3/evidence/test-results.json",
-      "bytes": 8389,
-      "sha256": "80d43b5505bbb527f3f5392e0eefb2e566ced838a87ac78674ff3cb101f1276f"
+      "bytes": 8597,
+      "sha256": "fb0392b54f94087c85513b2300079ef929f08400ebd72e5381fd7d1f3695277f"
     },
     {
       "path": "docs/plans/fangcun-score-v3/legacy-ui-contracts/CheckInFlowUITests.swift.txt",
@@ -2809,8 +2809,8 @@
     },
     {
       "path": "docs/plans/fangcun-v1/CAPABILITIES.md",
-      "bytes": 7082,
-      "sha256": "36cb5bfcb311baf6651366fe82b94c892adde9c81bc76e31d9af7c0a532a8dd0"
+      "bytes": 7350,
+      "sha256": "0172a348d746168923d195b34e1aef68d427037a46a179d2996f5700ae4108b1"
     },
     {
       "path": "docs/plans/fangcun-v1/COPY_REVIEW.csv",
@@ -3739,8 +3739,8 @@
     },
     {
       "path": "docs/verification/STATUS.md",
-      "bytes": 4837,
-      "sha256": "c0727a4c5b8a0238f616f914fdc8ec4aed450087a1d9d32e332faace9d22eb37"
+      "bytes": 4985,
+      "sha256": "2b00eac3f7f40193646373cae9356e7d14a35f2c8f387fb1c86f19409de653cc"
     },
     {
       "path": "docs/verification/motion/43469171-776F-413B-8EBE-C71693ECC76F.png",
@@ -3809,8 +3809,8 @@
     },
     {
       "path": "llms-full.txt",
-      "bytes": 16784,
-      "sha256": "510fb3478eb0d4232497d0d6ca6ca8694de3e4f501760ec663336fc10032b7c2"
+      "bytes": 16932,
+      "sha256": "855b1d471a8f6775276c0b98fc67642a43eb77511b22191a39222f1b77e4a90b"
     },
     {
       "path": "llms.txt",

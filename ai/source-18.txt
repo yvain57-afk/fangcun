@@ -356,7 +356,7 @@ Core新增 `StatusScore/`：`StatusScoreConfiguration`、`SleepScoreEngine`、`C
 
 实际命令、正常退出码、失败原因及 V301–V328 对应证据见 [VERIFICATION.md](VERIFICATION.md)。Core **162** 项、App 全量 **198** 项通过；完整 UI 与后续复验合计 **54** 个独立用例均有最新通过证据，最终重点验收 **14** 项全部通过，命令正常退出 0、结果包可读取。Watch 模拟器编译和 iOS 签名 Release 通过。首轮和中间失败分别保留，未删除断言或跳过用例。
 
-手机回读确认已安装 **1.0.0（2026092002）**；安装回执曾连接中断，但之后独立读取版本成功。覆盖前后 **13 个应用数据文件逐字节一致，偏好值一致**，未卸载或清库。启动检查因手机锁屏被系统拒绝，因此真实健康数据刷新仍未验证。
+手机回读确认已安装 **1.0.0（2026092002）**；安装回执曾连接中断，但之后独立读取版本成功。覆盖前后 **13 个应用数据文件逐字节一致，偏好值一致**，未卸载或清库。此前启动检查被锁屏拒绝；用户解锁后，最终版本已成功启动，真实健康查询完成并落盘有效 V3 快照。独立参考规则复算与实际分数、等级一致；启动后原有练习、感受、日记录、旧评估及显示/饮品偏好保留，数据库检查正常。此核验不包含真机全部交互、夜间真实运行和 Watch 后台送达。
 
 原始 `.xcresult`、安装回执、设备标识、签名和健康存档仅保存在本机私有验收目录；仓库只包含合成画面、测试源代码和脱敏结果摘要。人工审美、三秒认知效率与真实健康场景不是自动化断言可替代的验收；Watch 真机后台和同步仍未验证。
 
@@ -876,7 +876,8 @@ V3 explicitly replaces old availability enum/preset-state/always-five-minute hom
 - [x] S3 implementation: component disclosure, numerical/legacy history, night/context/negative-feedback routing, manual sleep, resume analysis and separate subjective records; preserve drinks, artwork and practice behavior.
 - [x] S3 verification: complete UI suite plus focused reruns; all 54 unique UI cases have passing latest results. Final 198 App + 14 focused UI exited0 with a readable result.
 - [x] S4: Core162, App198, UI aggregate54, Watch simulator and signed Release passed; 1.0.0 (2026092002) verified on phone, 13 data files and preferences preserved. Screens/recordings and source index delivered on original branch.
-- [ ] Physical runtime acceptance: phone locked, launch denied; real HealthKit refresh and Watch background/delivery remain unverified. This device condition does not block independent S0–S4 delivery.
+- [x] Physical launch/data follow-up: user unlocked phone; launch and real health query succeeded, persisted V3 result matched independent replay, existing records/preferences retained.
+- [ ] Separate physical acceptance: full visual/interaction walkthrough, real nighttime behavior and Watch background/delivery remain unverified.
 
 The package's V301–V328 mapping and final evidence are recorded in VERIFICATION.md. No Watch/Widget/Live Activity feature phase follows this task.
 
@@ -939,7 +940,7 @@ Canonical working directory: `/Users/yvainair/Code/fangcun`.
 
 ## Local-only device receipt
 
-Final installed version2002 was confirmed by fresh device readback after the install connection error. All 13 Application Support files and the preference dictionary matched byte-for-byte / value-for-value before vs after this final overwrite, before launch. No uninstall or clear. System rejected launch while phone locked; unlock requested. Real score generation/HealthKit refresh, Watch delivery, notifications and subjective visual/comprehension acceptance remain unverified until independently checked. Final launch returned CoreDevice10002 with explicit locked/denied evidence; this is not counted as a successful runtime verification. No private health files, device identifiers, signing material or physical screenshots are in this repository.
+Final installed version2002 was confirmed by fresh device readback after the install connection error. All 13 Application Support files and the preference dictionary matched byte-for-byte / value-for-value before vs after this final overwrite, before launch. No uninstall or clear. System rejected launch while phone locked; unlock requested. At that initial check, real score generation/HealthKit refresh remained unverified; the unlocked-phone follow-up below supersedes those two statuses. Watch delivery, notifications and subjective visual/comprehension acceptance remain separate. Final launch returned CoreDevice10002 with explicit locked/denied evidence; this is not counted as a successful runtime verification. No private health files, device identifiers, signing material or physical screenshots are in this repository.
 
 ## Original contracts and fixture integrity
 
@@ -955,11 +956,19 @@ Final installed version2002 was confirmed by fresh device readback after the ins
 
 Latest result across the complete and focused runs: **54 distinct UI tests passed**, none skipped. This is aggregate coverage, not a claim that the original complete command passed. Final14 = CheckIn no-breathing preference/reset(1), water/coffee/alcohol/undo(1), appearance/privacy/full practice/check-in(1), redesign/motion/preferences/complete journey(4), saved feeling(1), original practice return tests(2), V3 sleep78/manual/night/maximum-type(4).
 
-Focused runs use the same `xcodebuild test` command above and `-only-testing:InnerBalanceTests` plus the class/method IDs in [test-results.json](evidence/test-results.json). Core162, App198, 24 unchanged numeric fixtures, unchanged legacy golden, Watch simulator build and signed iOS Release all passed. Original physical Watch/background, real HealthKit refresh and locked-phone launch remain separate unverified items. Maximum-type content scrolls; a single automated device size and synthetic data do not prove human three-second comprehension or every narrow-device layout.
+Focused runs use the same `xcodebuild test` command above and `-only-testing:InnerBalanceTests` plus the class/method IDs in [test-results.json](evidence/test-results.json). Core162, App198, 24 unchanged numeric fixtures, unchanged legacy golden, Watch simulator build and signed iOS Release all passed. Original physical Watch/background remains unverified. Real HealthKit refresh and phone launch were subsequently verified in the unlocked-phone follow-up below. Maximum-type content scrolls; a single automated device size and synthetic data do not prove human three-second comprehension or every narrow-device layout.
 
 ## Final media evidence
 
 The final screenshots and three recordings are from `s4-acceptance` synthetic simulator UI. simctl uses variable frame timestamps: cuts were selected by inspecting actual frames, not assuming wall-clock test timestamps equal video timestamps. Playback retains native speed; exported videos contain no device identifiers or private metadata. Home78 is a raw-provider fixture; water/coffee/alcohol/undo shows persisted feedback; breathing shows actual inhale/re-inhale/exhale clock and pause/exit. Files: `evidence/S4-home-action.mp4`, `S4-drinks.mp4`, `S4-breathing.mp4`. Appearance remains subject to human review.
+
+## Unlocked-phone follow-up
+
+After the user confirmed the phone was unlocked, the installed Release2002 app launched successfully (`devicectl device process launch`, exit0). Fresh app-container readback and installed-version readback all exited0. The successful-query timestamp advanced; a fresh, non-manual V3 score snapshot was persisted without a query-failure flag. Replaying its actual inputs with the package's independent reference evaluator matched the integer, raw value and band (Swift enum mapped to the reference's Chinese band labels).
+
+The copied database passed read-only `PRAGMA quick_check`. All pre-launch rows in the practice completion, cached check-in and daily-record tables remained present, old assessment identities were retained, and existing diary/display/scoring preferences matched. Only pass/fail conclusions are public; actual values, records, private copies and device receipts remain local. The initial band comparison in the local verification adapter compared enum text with translated labels; it was corrected to the explicit one-to-one label map. No product code or scoring parameter changed.
+
+This closes the earlier locked-launch and real-query/persisted-score verification gaps. It does not establish a physical visual walkthrough, true nighttime action acceptance, Watch delivery/background behavior, or medical validation. No source change or additional permissions were needed; code tests above remain applicable.
 
 ===== END FILE =====
 
@@ -1272,8 +1281,12 @@ Codex 请先执行 START_CODEX.md，以本包 v3.0 覆盖旧版本关于不给�
     "installedVersionReadback": "1.0.0 (2026092002)",
     "supportFilesPreserved": 13,
     "preferencesPreserved": true,
-    "launch": "blocked_locked",
-    "realHealthRefresh": "unverified"
+    "launch": "passed_after_user_unlock",
+    "realHealthRefresh": "passed_with_fresh_persisted_score",
+    "independentScoreReplay": "matched",
+    "postLaunchRecordsAndPreferences": "preserved",
+    "databaseIntegrity": "passed",
+    "physicalVisualWalkthrough": "unverified"
   }
 }
 
@@ -2637,6 +2650,8 @@ SDK 成功记录见 `evidence/*probe.txt`。物理 Watch 实验保持 `blocked`�
 ## 2026-09-20 V3 补记
 
 本轮仅增加协商过的最小 score-v3 摘要和旧摘要撤回，未展开 Watch / Widget / Live Activity 新功能。最终 Watch 模拟器编译通过，不升级本表真机后台/送达的验证状态。iPhone 1.0.0（2026092002）版本回读确认、记录保留；锁屏启动被拒绝，真实 HealthKit 刷新未验证。见 [V3 实际验证](../fangcun-score-v3/VERIFICATION.md)。
+
+V3 真机解锁补验：Release2002 启动、真实健康查询、有效数值快照落盘与独立公式复算通过；启动后记录/偏好保留。未据此更新 Watch 后台或跨端送达状态。仅公开结论，设备、健康输入与存档留在本机。
 
 ===== END FILE =====
 

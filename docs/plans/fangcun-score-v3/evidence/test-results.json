@@ -269,7 +269,11 @@
     "installedVersionReadback": "1.0.0 (2026092002)",
     "supportFilesPreserved": 13,
     "preferencesPreserved": true,
-    "launch": "blocked_locked",
-    "realHealthRefresh": "unverified"
+    "launch": "passed_after_user_unlock",
+    "realHealthRefresh": "passed_with_fresh_persisted_score",
+    "independentScoreReplay": "matched",
+    "postLaunchRecordsAndPreferences": "preserved",
+    "databaseIntegrity": "passed",
+    "physicalVisualWalkthrough": "unverified"
   }
 }

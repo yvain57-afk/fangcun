@@ -764,7 +764,7 @@ schemes:
 ===== FILE: docs/verification/STATUS.md =====
 # 当前交付与验证状态
 
-最新入口：[2026-09-20 V3 分数优先审阅](../plans/fangcun-score-v3/REVIEW.md)。当前手机安装版 **1.0.0（2026092002）**，13 个数据文件和偏好覆盖前后一致。手机锁屏导致启动被拒绝，真实 HealthKit 刷新未验证。Core162、App198、UI54个独立用例经完整测试和分批复验均有通过证据，Watch 模拟器编译通过；详细失败历史、最终退出码和证据见 [V3 验证](../plans/fangcun-score-v3/VERIFICATION.md)。以下为历史记录，不代表当前阶段或安装版本。
+最新入口：[2026-09-20 V3 分数优先审阅](../plans/fangcun-score-v3/REVIEW.md)。当前手机安装版 **1.0.0（2026092002）**，13 个数据文件和偏好覆盖前后一致。用户解锁后，启动及真实 HealthKit 刷新成功，有效 V3 分数已落盘且独立复算一致；启动后旧记录/偏好保留、数据库正常。真机完整交互及 Watch 后台/送达仍单列待验。Core162、App198、UI54个独立用例经完整测试和分批复验均有通过证据，Watch 模拟器编译通过；详细失败历史、最终退出码和证据见 [V3 验证](../plans/fangcun-score-v3/VERIFICATION.md)。以下为历史记录，不代表当前阶段或安装版本。
 
 最新开发分支已完成 v1.0 任务书的 M0 基线及 M1 数据语义修复，iPhone 安装版为 **1.0.0 (2026091802)**。Core 67、App 31、UI 7 项测试通过。详见 [本轮验收](../plans/fangcun-v1/VERIFICATION.md)、[任务状态](../plans/fangcun-v1/TASKS.md) 和 [截图](../plans/fangcun-v1/SCREENSHOTS.md)。M0 的物理 Watch 能力验证仍待设备，M2–M6 未实施。
 
