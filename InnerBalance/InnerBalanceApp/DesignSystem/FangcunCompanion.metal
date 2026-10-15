@@ -55,3 +55,31 @@ float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F
  float2 d=float2((p.x-.5)*.045,-.015)*expansion*mask*feet*neck;
  return position-d*size;
 }
+
+// Intact art: chest band reaches the silhouette, but head/ears/feet are fixed.
+[[ stitchable ]] float2 fangcunV4IntactBody(float2 position, float2 size, float pose, float expansion, float attention) {
+ float2 p=position/max(size,float2(1));
+ float2 d=0;
+ if(pose<1.5) {
+  float band=smoothstep(.48,.60,p.y)*(1-smoothstep(.70,.84,p.y));
+  float xgate=smoothstep(.20,.30,p.x)*(1-smoothstep(.86,.93,p.x));
+  float center=pose<.5?.56:.51;
+  d=float2((p.x-center)*.12,-.010)*band*xgate*expansion;
+ } else if(pose<2.5) {
+  float band=smoothstep(.53,.62,p.x)*(1-smoothstep(.83,.92,p.x));
+  float grounded=1-smoothstep(.60,.81,p.y);
+  d=float2(.004,-.038)*band*grounded*expansion;
+ } else if(pose<3.5) {
+  float band=smoothstep(.53,.62,p.x)*(1-smoothstep(.83,.93,p.x));
+  float grounded=smoothstep(.30,.40,p.y)*(1-smoothstep(.60,.72,p.y));
+  d=float2(.008,-.027)*band*grounded*expansion;
+ } else {
+  // The drawn paw and flag are one connected region. Abdomen never contracts.
+  float flag=(1-smoothstep(.23,.40,p.x))*smoothstep(.40,.49,p.y)*(1-smoothstep(.66,.77,p.y));
+  d.y=-.030*flag*expansion;
+ }
+ // A small, finite nod on a spoken return/face cue. No detached head layer.
+ float head=pose<1.5 ? fcHead(p,float2(.56,.32),float2(.31,.27)) : fcHead(p,float2(.30,.43),float2(.25,.28));
+ d.y+=.006*attention*head;
+ return position-d*size;
+}

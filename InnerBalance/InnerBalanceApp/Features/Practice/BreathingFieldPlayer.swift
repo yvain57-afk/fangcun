@@ -80,9 +80,8 @@ struct BreathingFieldPlayer: View {
       instruction: isPaused ? "先自然呼吸，准备好再继续" : instruction,
       remaining: sessionRemaining, accessibilityIdentifier: "practice.breathGuide",
       titleAccessibilityIdentifier: "practice.breathPhase", showsStageCard: false) {
-        PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: elapsed + sessionRemaining,
-          variantID: variantID, isActive: !isPaused)
-          .frame(maxWidth: 320).frame(height: 280)
+        PracticeVisualGuide(kind: kind, elapsed: elapsed, duration: elapsed + sessionRemaining,
+          variantID: variantID, isPaused: isPaused, reduceMotion: reduceMotion)
     }
   }
   private var instruction: String {

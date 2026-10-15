@@ -76,11 +76,7 @@ struct PracticeStageScaffold<Stage: View>: View {
             .font(.system(.largeTitle, design: .default, weight: .bold))
             .foregroundStyle(InnerBalanceTheme.ink)
             .multilineTextAlignment(.center)
-            .contentTransition(.opacity)
-            .animation(
-              .timingCurve(0.23, 1, 0.32, 1, duration: 0.18),
-              value: title
-            )
+            .contentTransition(.identity)
             .accessibilityIdentifier(titleAccessibilityIdentifier)
           Text(instruction)
             .font(.title3.weight(.medium))

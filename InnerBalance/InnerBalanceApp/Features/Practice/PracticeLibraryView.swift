@@ -238,9 +238,17 @@ struct PracticeMethodDetailView: View {
         Text(kind.outcomeTitle).font(.largeTitle.weight(.semibold))
         Text(kind.summary).font(.body).foregroundStyle(InnerBalanceTheme.mutedInk)
         TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !demoIsAnimating)) { context in
-          PracticeCompanionV4(kind: kind, elapsed: demonstration ? max(0, context.date.timeIntervalSince(demoStartedAt)) : 0,
-            duration: chosenDuration, variantID: kind == .balancedBreathing ? variantID : nil, isActive: demoIsAnimating)
-            .frame(height: 220).frame(maxWidth: .infinity)
+          let time = demonstration ? max(0, context.date.timeIntervalSince(demoStartedAt)) : 0
+          if demonstration && (PracticeTimeline.mode(for: kind) == .pacedBreath || kind == .kegel) {
+            PracticeVisualGuide(kind: kind, elapsed: time, duration: chosenDuration,
+              variantID: kind == .balancedBreathing ? variantID : nil,
+              reduceMotion: reduceMotion || systemReduceMotion)
+              .frame(maxWidth: .infinity)
+          } else {
+            PracticeCompanionV4(kind: kind, elapsed: time,
+              duration: chosenDuration, variantID: kind == .balancedBreathing ? variantID : nil, isActive: demoIsAnimating)
+              .frame(height: 220).frame(maxWidth: .infinity)
+          }
         }
         .onScrollVisibilityChange(threshold: 0.1) { demoVisible = $0 }
         Button(demonstration ? "停止示范" : "看看动作示范") { demoStartedAt = .now; demonstration.toggle() }

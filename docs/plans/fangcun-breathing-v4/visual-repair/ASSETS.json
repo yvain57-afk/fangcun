@@ -1,0 +1,38 @@
+[
+  {
+    "asset": "PracticeV4R-cat-sit",
+    "sha256": "917974617fc0597cfd477ad22e9c5385ad40613de62b9e1c306f830133f11fe0",
+    "bytes": 937224,
+    "processing": "original generated RGBA, copied without pixel edits"
+  },
+  {
+    "asset": "PracticeV4R-dog-sit",
+    "sha256": "516f9eeb4701a812ba06ad99a9c1a379ddbb30aa6866659f6cf474186bcae2a3",
+    "bytes": 812661,
+    "processing": "original generated RGBA, copied without pixel edits"
+  },
+  {
+    "asset": "PracticeV4R-cat-quiet",
+    "sha256": "a0fe7e193ef4971c146120d8b7b98a53d6746f0b8aa5842b41985bb388d9bb2b",
+    "bytes": 1099569,
+    "processing": "original generated RGBA, copied without pixel edits"
+  },
+  {
+    "asset": "PracticeV4R-dog-rest",
+    "sha256": "ba22df920b1ebff2356ae1855e1e1a03d7176da95f06c63b46c18c244d13e976",
+    "bytes": 1140957,
+    "processing": "original generated RGBA, copied without pixel edits"
+  },
+  {
+    "asset": "PracticeV4R-dog-coach",
+    "sha256": "3becec1fdb36449832253bea3dc3baf50c96a05247a60c5e98cf1850f0dac696",
+    "bytes": 974918,
+    "processing": "original generated RGBA, copied without pixel edits"
+  },
+  {
+    "asset": "PracticeV4R-dog-side",
+    "sha256": "03a5733cdd59e32034d9411bd5d733a932fa1d2a492bcb545bc72bbf235c2409",
+    "bytes": 903645,
+    "processing": "original generated RGBA, copied without pixel edits"
+  }
+]

@@ -1,0 +1,41 @@
+{
+  "unit": {
+    "result": "Passed",
+    "passedTests": 220,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 220
+  },
+  "final-unit": {
+    "result": "Passed",
+    "passedTests": 220,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 220
+  },
+  "visual-ui": {
+    "result": "Failed",
+    "passedTests": 2,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "totalTestCount": 3
+  },
+  "final-ui": {
+    "result": "Passed",
+    "passedTests": 3,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 3
+  },
+  "layout": {
+    "result": "Passed",
+    "passedTests": 2,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 2
+  },
+  "core": {
+    "passedTests": 167,
+    "failedTests": 0
+  }
+}

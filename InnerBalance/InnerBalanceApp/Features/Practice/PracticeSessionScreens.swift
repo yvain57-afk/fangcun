@@ -97,7 +97,7 @@ struct PracticePlayerScreen: View {
     while !Task.isCancelled, scenePhase == .active, viewModel.phase == .running {
       renderRevision &+= 1
       let interval = PracticeRenderCadence.interval(
-        snapshot: viewModel.timelineSnapshot, reduceMotion: suppressAnimation
+        snapshot: viewModel.timelineSnapshot, reduceMotion: suppressAnimation, kind: viewModel.plan.kind
       )
       do { try await Task.sleep(for: .seconds(interval)) } catch { return }
     }

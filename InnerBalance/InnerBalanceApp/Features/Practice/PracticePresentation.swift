@@ -111,11 +111,12 @@ enum PracticeTimelineCadence {
 
 /// UI-only scheduling. Phase labels and artwork always read the current VM snapshot.
 enum PracticeRenderCadence {
-  static func interval(snapshot: PracticeTimelineSnapshot, reduceMotion: Bool) -> TimeInterval {
+  static func interval(snapshot: PracticeTimelineSnapshot, reduceMotion: Bool, kind: PracticeKind? = nil) -> TimeInterval {
     let frame = 1.0 / 30
     // Align the low-frequency display to the real next cue, instead of delaying it by a second.
     let untilCue = max(frame, snapshot.phaseDuration - snapshot.elapsedInPhase)
     if reduceMotion { return min(1, untilCue) }
+    if kind == .diaphragmaticBreathing { return frame }
     switch snapshot.timelineMode {
     case .pacedBreath, .pelvicFloor:
       return frame
