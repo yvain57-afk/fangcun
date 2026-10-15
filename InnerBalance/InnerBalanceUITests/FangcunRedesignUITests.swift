@@ -6,8 +6,8 @@ final class FangcunRedesignUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480"]
-    app.launch()
-    app.tabBars.buttons["设置"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    openDailySettings(app)
     let labels = ["深色模式", "较大字号", "减少动态效果"]
     for label in labels {
       let toggle = app.switches[label]
@@ -19,8 +19,8 @@ final class FangcunRedesignUITests: XCTestCase {
       XCTAssertEqual(toggle.value as? String, "1", "Immediate value: \(label)")
     }
     app.terminate()
-    app.launch()
-    app.tabBars.buttons["设置"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    openDailySettings(app)
     for label in labels { XCTAssertEqual(app.switches[label].value as? String, "1", "Relaunch value: \(label)") }
     capture("preferences-relaunch", app)
     // Keep the shared simulator preferences neutral for subsequent visual tests.
@@ -37,7 +37,7 @@ final class FangcunRedesignUITests: XCTestCase {
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
     app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["status.band"].waitForExistence(timeout: 15))
     XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
     XCTAssertTrue(app.buttons["today.start"].isHittable)
@@ -69,7 +69,7 @@ final class FangcunRedesignUITests: XCTestCase {
     XCTAssertTrue(pause.waitForExistence(timeout: 4))
     app.buttons["结束"].tap()
     app.buttons["practice.finish.confirm"].firstMatch.tap()
-    let finish = app.buttons["先完成"]
+    let finish = app.buttons["practice.feedback.skip"]
     XCTAssertTrue(finish.waitForExistence(timeout: 6))
     reveal(finish, app)
     finish.tap()
@@ -77,7 +77,7 @@ final class FangcunRedesignUITests: XCTestCase {
     XCTAssertTrue(done.waitForExistence(timeout: 8))
     capture("redesign-completion", app)
     done.tap()
-    app.tabBars.buttons["设置"].tap()
+    openDailySettings(app)
     XCTAssertTrue(app.switches["深色模式"].waitForExistence(timeout: 5))
     capture("redesign-settings", app)
   }
@@ -88,12 +88,12 @@ final class FangcunRedesignUITests: XCTestCase {
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
     app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout: 12))
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
     app.buttons["today.start"].tap()
     XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 10))
-    XCTAssertTrue(app.staticTexts["双吸一呼"].exists)
+    XCTAssertTrue(app.staticTexts["舒缓紧张"].exists)
     let exhale = NSPredicate(format: "label == %@", "呼气")
     expectation(for: exhale, evaluatedWith: app.staticTexts["practice.breathPhase"])
     waitForExpectations(timeout: 12)
@@ -103,7 +103,7 @@ final class FangcunRedesignUITests: XCTestCase {
     capture("redesign-breathing-paused", app)
     app.buttons["结束"].tap()
     app.buttons["practice.finish.confirm"].firstMatch.tap()
-    XCTAssertTrue(app.buttons["先完成"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["practice.feedback.skip"].waitForExistence(timeout: 5))
   }
 
   @MainActor
@@ -112,7 +112,7 @@ final class FangcunRedesignUITests: XCTestCase {
     let app = XCUIApplication()
     for state in ["480", "240", "45"] {
       app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep\(state)", "-fangcun.dark", state == "240" ? "YES" : "NO", "-fangcun.largeType", state == "45" ? "YES" : "NO", "-fangcun.reduceMotion", "YES"]
-      app.launch()
+      app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
       XCTAssertTrue(app.staticTexts["status.band"].waitForExistence(timeout: 10))
       XCTAssertEqual(app.staticTexts["status.band"].label, state == "480" ? "良好" : state == "240" ? "偏低" : "优先休息")
       capture("redesign-\(state)", app)

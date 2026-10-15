@@ -1,0 +1,49 @@
+{
+  "title": "Test - InnerBalance",
+  "result": "Failed",
+  "totalTestCount": 220,
+  "passedTests": 217,
+  "failedTests": 3,
+  "skippedTests": 0,
+  "expectedFailures": 0,
+  "statistics": [
+    {
+      "subtitle": "66 test runs",
+      "title": "11 tests ran with dynamic parameters"
+    }
+  ],
+  "exitCode": 65,
+  "rawResultBundle": ".build/v4-verification/app-and-v4.xcresult",
+  "start": "2026-10-15T12:33:40.074000+08:00",
+  "finish": "2026-10-15T12:43:43.369000+08:00",
+  "platforms": [
+    {
+      "modelName": "iPhone 16",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testFailures": [
+    {
+      "targetName": "InnerBalanceTests",
+      "testIdentifierString": "PracticePresentationTests/kegelUsesAPlainBodyPracticeDescription()",
+      "testName": "凯格尔只说明练习本身，不解释它和压力的关系",
+      "failureText": "Expectation failed: PracticeKind.kegel.summary == \"轻收 4 秒、完全放松 8 秒，同时保持自然呼吸。\"\nPracticeKind.kegel.summary → \"练习盆底肌的收紧、保持与放松，逐步增强盆底控制。\""
+    },
+    {
+      "targetName": "InnerBalanceTests",
+      "testIdentifierString": "FangcunResponseLoopTests/unselectedStartingValueStaysAbsent()",
+      "testName": "The unselected starting default is not treated as user input",
+      "failureText": "Crash: InnerBalance"
+    },
+    {
+      "targetName": "InnerBalanceUITests",
+      "testIdentifierString": "BreathingHubV4UITests/testSaveFailureRetriesWithoutFalseSuccessOrDuplicateRecord()",
+      "testName": "testSaveFailureRetriesWithoutFalseSuccessOrDuplicateRecord()",
+      "failureText": "XCTAssertEqual failed: (\"3\") is not equal to (\"1\")"
+    }
+  ],
+  "runtimeWarnings": [
+    "[Internal] Thread running at User-interactive quality-of-service class waiting on a lower QoS thread running at Default quality-of-service class. Investigate ways to avoid priority inversions"
+  ]
+}

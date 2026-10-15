@@ -7,7 +7,7 @@ final class ExperienceV2SceneUITests: XCTestCase {
     app.launchArguments = ["--ui-testing", "--readiness-fixture=" + scenario, "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN",
       "-fangcun.dark", dark ? "YES" : "NO", "-fangcun.largeType", large ? "YES" : "NO", "-fangcun.reduceMotion", "NO", "-fangcun.motionMode", motion]
     if large { app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"] }
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 12))
     return app
   }
@@ -40,12 +40,12 @@ final class ExperienceV2SceneUITests: XCTestCase {
   }
   @MainActor func testActualMinuteCompletesBeforePawTouchSaveScreen() {
     let app = launch("assessable")
-    app.tabBars.buttons["练习"].tap()
+    app.tabBars.buttons["呼吸"].tap()
     app.buttons["practice.physiologicalSigh.60"].tap()
     XCTAssertTrue(app.buttons["practice.prepare.start"].waitForExistence(timeout: 5))
     app.buttons["practice.prepare.start"].tap()
     XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 5))
-    let finish = app.buttons["先完成"]
+    let finish = app.buttons["practice.feedback.skip"]
     XCTAssertTrue(finish.waitForExistence(timeout: 70))
     reveal(finish, app); finish.tap()
     XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout: 6))

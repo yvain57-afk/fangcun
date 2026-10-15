@@ -4,7 +4,7 @@ final class RecoveryActionUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep375", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     let suggestion = app.buttons["today.start"]
     XCTAssertTrue(suggestion.waitForExistence(timeout: 10))
     for _ in 0..<4 where !suggestion.isHittable { app.swipeUp() }
@@ -19,7 +19,7 @@ final class RecoveryActionUITests: XCTestCase {
     XCTAssertTrue(app.buttons["recovery.skip"].waitForExistence(timeout: 5))
     app.buttons["recovery.skip"].tap()
     XCTAssertTrue(app.buttons["recovery.done"].waitForExistence(timeout: 5)); app.buttons["recovery.done"].tap()
-    app.tabBars.buttons["设置"].tap()
+    openDailySettings(app)
     app.buttons["行动与反馈记录"].tap()
     let record = app.buttons.matching(identifier: "recovery.history.record")
     XCTAssertEqual(record.count, 1); record.firstMatch.tap()
@@ -28,9 +28,18 @@ final class RecoveryActionUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["recovery.feedback.current"].label.contains("不舒服"))
     app.navigationBars.buttons.firstMatch.tap()
     app.navigationBars.buttons.firstMatch.tap()
-    app.tabBars.buttons["今日"].tap()
+    app.buttons["settings.done"].tap()
+    app.tabBars.buttons["日常"].tap()
     for _ in 0..<5 where !suggestion.isHittable { app.swipeDown() }
     XCTAssertTrue(suggestion.label.contains("座位舒展"))
+    // The separate close affordance must also return to a fully interactive Daily screen.
+    suggestion.tap()
+    XCTAssertTrue(app.buttons["recovery.start"].waitForExistence(timeout: 5))
+    let close = app.navigationBars.buttons["关闭"]
+    XCTAssertTrue(close.waitForExistence(timeout: 5)); XCTAssertTrue(close.isHittable); close.tap()
+    XCTAssertFalse(app.buttons["recovery.start"].exists)
+    openDailySettings(app)
+    app.buttons["settings.done"].tap()
     let shot = XCTAttachment(screenshot: app.screenshot()); shot.name = "m303-feedback"; shot.lifetime = .keepAlways; add(shot)
   }
 }

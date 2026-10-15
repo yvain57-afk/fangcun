@@ -6,7 +6,7 @@ final class ExperienceV2UITests: XCTestCase {
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-AppleLanguages", "(zh-Hans)",
       "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     let conclusion = app.staticTexts["status.band"]
     XCTAssertTrue(conclusion.waitForExistence(timeout: 12))
     expectation(for: NSPredicate(format: "label == %@", "良好"), evaluatedWith: conclusion)

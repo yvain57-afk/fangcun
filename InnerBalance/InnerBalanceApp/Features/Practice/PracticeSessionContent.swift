@@ -49,7 +49,7 @@ struct PracticeSessionContent: View {
         onSave: onSave
       )
     case .saved:
-      PracticeSavedScreen(detail: savedDetail,
+      PracticeSavedScreen(detail: savedDetail, kind: viewModel.plan.kind, actualDuration: viewModel.actualDuration ?? 0,
         scene: (viewModel.actualDuration ?? 0) >= viewModel.duration - 1 ? .complete : .rest,
         onDone: onDone)
     }

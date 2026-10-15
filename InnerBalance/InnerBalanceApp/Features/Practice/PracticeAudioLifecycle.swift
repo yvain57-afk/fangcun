@@ -27,6 +27,7 @@ struct PracticeAudioLifecycle: ViewModifier {
           let rawValue = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
           AVAudioSession.InterruptionType(rawValue: rawValue) == .began
         else { return }
+        audio.stop()
         viewModel.handleInterruption()
       }
       .onReceive(

@@ -4,12 +4,23 @@ public enum PracticeBreathPhase: Equatable, Sendable {
   case inhale
   case topUp
   case exhale
+  case holdAfterInhale, holdAfterExhale
+  case leftInhale, rightExhale, rightInhale, leftExhale
+  case contract, release, natural
 
   public var title: String {
     switch self {
     case .inhale: "吸气"
     case .topUp: "再轻吸一口"
     case .exhale: "呼气"
+    case .holdAfterInhale, .holdAfterExhale: "轻松停留"
+    case .leftInhale: "左侧吸气"
+    case .rightInhale: "右侧吸气"
+    case .leftExhale: "左侧呼气"
+    case .rightExhale: "右侧呼气"
+    case .contract: "轻轻收紧"
+    case .release: "完全放松"
+    case .natural: "自然呼吸"
     }
   }
 }
@@ -34,49 +45,7 @@ public enum PracticeBreathGuide {
     for kind: PracticeKind,
     elapsed: TimeInterval
   ) -> PracticeBreathState {
-    let elapsed = max(0, elapsed)
-    switch kind {
-    case .physiologicalSigh:
-      let position = elapsed.truncatingRemainder(dividingBy: 12)
-      if position < 3 {
-        return PracticeBreathState(
-          phase: .inhale,
-          phaseDuration: 3,
-          elapsedInPhase: position
-        )
-      }
-      if position < 5 {
-        return PracticeBreathState(
-          phase: .topUp,
-          phaseDuration: 2,
-          elapsedInPhase: position - 3
-        )
-      }
-      return PracticeBreathState(
-        phase: .exhale,
-        phaseDuration: 7,
-        elapsedInPhase: position - 5
-      )
-    case .pacedBreathing:
-      let position = elapsed.truncatingRemainder(dividingBy: 10)
-      if position < 4 {
-        return PracticeBreathState(
-          phase: .inhale,
-          phaseDuration: 4,
-          elapsedInPhase: position
-        )
-      }
-      return PracticeBreathState(
-        phase: .exhale,
-        phaseDuration: 6,
-        elapsedInPhase: position - 4
-      )
-    case .meditation, .nsdr, .kegel:
-      return PracticeBreathState(
-        phase: .inhale,
-        phaseDuration: 1,
-        elapsedInPhase: 0
-      )
-    }
+    let snapshot = PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: PracticeCatalog.protocol(for: kind)?.defaultDuration ?? 300)
+    return PracticeBreathState(phase: snapshot.phase ?? .natural, phaseDuration: snapshot.phaseDuration, elapsedInPhase: snapshot.elapsedInPhase)
   }
 }

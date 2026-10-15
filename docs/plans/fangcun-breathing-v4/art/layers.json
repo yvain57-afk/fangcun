@@ -1,0 +1,442 @@
+[
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-torso-cat",
+    "crop" : [
+      75,
+      85,
+      510,
+      535
+    ],
+    "source" : "art\/torso-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-torso-dog",
+    "crop" : [
+      655,
+      85,
+      500,
+      535
+    ],
+    "source" : "art\/torso-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-torso-cat-side",
+    "crop" : [
+      90,
+      660,
+      500,
+      485
+    ],
+    "source" : "art\/torso-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-torso-dog-side",
+    "crop" : [
+      570,
+      700,
+      640,
+      455
+    ],
+    "source" : "art\/torso-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-poster",
+    "crop" : [
+      35,
+      30,
+      360,
+      380
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-head",
+    "crop" : [
+      425,
+      110,
+      315,
+      285
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-closed",
+    "crop" : [
+      795,
+      110,
+      330,
+      285
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-body",
+    "crop" : [
+      1170,
+      120,
+      350,
+      280
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-paw-left",
+    "crop" : [
+      170,
+      480,
+      150,
+      220
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-paw-right",
+    "crop" : [
+      465,
+      480,
+      150,
+      220
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-tail",
+    "crop" : [
+      815,
+      465,
+      200,
+      230
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-exhale",
+    "crop" : [
+      1150,
+      435,
+      375,
+      290
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-flower",
+    "crop" : [
+      90,
+      770,
+      205,
+      230
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-leaf",
+    "crop" : [
+      405,
+      800,
+      200,
+      190
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-mat",
+    "crop" : [
+      660,
+      770,
+      430,
+      230
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-cat-crouch",
+    "crop" : [
+      1130,
+      720,
+      400,
+      290
+    ],
+    "source" : "art\/cat-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-poster",
+    "crop" : [
+      35,
+      25,
+      380,
+      380
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-head",
+    "crop" : [
+      420,
+      110,
+      330,
+      270
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-closed",
+    "crop" : [
+      805,
+      110,
+      325,
+      270
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-body",
+    "crop" : [
+      1175,
+      130,
+      330,
+      270
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-ear-left",
+    "crop" : [
+      40,
+      445,
+      300,
+      245
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-ear-right",
+    "crop" : [
+      460,
+      445,
+      260,
+      245
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-paw-left",
+    "crop" : [
+      870,
+      445,
+      170,
+      245
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-paw-right",
+    "crop" : [
+      1205,
+      445,
+      170,
+      245
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-tail",
+    "crop" : [
+      155,
+      765,
+      190,
+      200
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-flag",
+    "crop" : [
+      455,
+      725,
+      280,
+      280
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-leaf",
+    "crop" : [
+      795,
+      785,
+      245,
+      190
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-dog-crouch",
+    "crop" : [
+      1105,
+      740,
+      410,
+      260
+    ],
+    "source" : "art\/dog-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-poster",
+    "crop" : [
+      40,
+      120,
+      445,
+      250
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-body",
+    "crop" : [
+      490,
+      145,
+      340,
+      225
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-closed",
+    "crop" : [
+      855,
+      145,
+      275,
+      235
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-head",
+    "crop" : [
+      1210,
+      145,
+      280,
+      235
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-paw",
+    "crop" : [
+      70,
+      445,
+      300,
+      190
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-legs",
+    "crop" : [
+      445,
+      455,
+      270,
+      185
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-ear-left",
+    "crop" : [
+      850,
+      425,
+      220,
+      210
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-ear-right",
+    "crop" : [
+      1220,
+      425,
+      210,
+      210
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-blanket",
+    "crop" : [
+      20,
+      720,
+      375,
+      225
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-pillow",
+    "crop" : [
+      405,
+      780,
+      340,
+      170
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-prone",
+    "crop" : [
+      750,
+      720,
+      370,
+      225
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  },
+  {
+    "alpha" : "original RGBA preserved; cream not keyed out",
+    "asset" : "PracticeV4-rest-crouch",
+    "crop" : [
+      1130,
+      670,
+      395,
+      300
+    ],
+    "source" : "art\/rest-atlas-source.png"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "method": "time-warped log-mel spectral distance; lower means closer, not proof of voice identity",
+  "distances": {
+    "xiaoyi": 0.2274894743152746,
+    "xiaoxiao": 0.1475678048122451
+  }
+}

@@ -8,6 +8,7 @@ struct PracticeActiveStage: View {
   let remaining: TimeInterval
   let isPaused: Bool
   let reduceMotion: Bool
+  var variantID: String? = nil
 
   var body: some View {
     switch PracticeStageKind.for(kind) {
@@ -17,15 +18,18 @@ struct PracticeActiveStage: View {
         elapsed: elapsed,
         sessionRemaining: remaining,
         isPaused: isPaused,
-        reduceMotion: reduceMotion
+        reduceMotion: reduceMotion,
+        variantID: variantID
       )
     case .settling:
       SettlingStagePlayer(
         kind: kind,
+        duration: duration,
         elapsed: elapsed,
         remaining: remaining,
         isPaused: isPaused,
-        reduceMotion: reduceMotion
+        reduceMotion: reduceMotion,
+        variantID: variantID
       )
     case .bodyScan:
       BodyScanStagePlayer(
@@ -34,15 +38,18 @@ struct PracticeActiveStage: View {
         elapsed: elapsed,
         remaining: remaining,
         isPaused: isPaused,
-        reduceMotion: reduceMotion
+        reduceMotion: reduceMotion,
+        variantID: variantID
       )
     case .pelvicFloor:
       PelvicFloorStagePlayer(
         kind: kind,
+        duration: duration,
         elapsed: elapsed,
         remaining: remaining,
         isPaused: isPaused,
-        reduceMotion: reduceMotion
+        reduceMotion: reduceMotion,
+        variantID: variantID
       )
     }
   }

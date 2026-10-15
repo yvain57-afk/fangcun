@@ -1,0 +1,1758 @@
+{
+  "schemaVersion": 1,
+  "runtime": "native SwiftUI sprites plus local Metal torso deformation; no network assets",
+  "artProduction": {
+    "source": "Built-in image generation, preserving user-approved Fangcun cat/dog references",
+    "referenceFiles": [
+      "web/public/characters/v4/duo-calm.png",
+      "web/public/characters/v4/dog-rest.png"
+    ],
+    "prompts": "art/PRODUCTION_PROMPTS.json",
+    "extraction": "scripts/art/slice_practice_atlas.swift; original RGBA retained; no white keying",
+    "rightsNote": "本轮生成与既有用户认可素材的来源记录；不把生产来源等同于第三方商业许可保证。",
+    "sources": [
+      {
+        "file": "docs/plans/fangcun-breathing-v4/art/cat-atlas-source.png",
+        "sha256": "a4ef9445e2d6cd23159ad504a85c836f83acb3a271daf40edb5f14896e58f031"
+      },
+      {
+        "file": "docs/plans/fangcun-breathing-v4/art/dog-atlas-source.png",
+        "sha256": "5f1a33a82278046753477caf68c8e3eb7dc9a9145dda72aa3746184cbd5944d2"
+      },
+      {
+        "file": "docs/plans/fangcun-breathing-v4/art/rest-atlas-source.png",
+        "sha256": "20e4f431f54c478b1830855edefd601472c5afeca82f3aff62b88751c659936d"
+      },
+      {
+        "file": "docs/plans/fangcun-breathing-v4/art/torso-atlas-source.png",
+        "sha256": "f9441a54cfa24c1ea09ca9ccdd5d1ac93b204cf4d0b0e636c43ab46e61987c79"
+      }
+    ]
+  },
+  "scenes": {
+    "physiologicalSigh": {
+      "character": "cat",
+      "props": [
+        "cat-flower"
+      ],
+      "action": "anchored torso main inhale 0.82; top-up 0.18; exhale; subtle head and flower response"
+    },
+    "pacedBreathing": {
+      "character": "resting dog",
+      "props": [
+        "rest-pillow"
+      ],
+      "action": "prone pose, anchored 4/6 torso movement, quiet eyes"
+    },
+    "balancedBreathing": {
+      "character": "cat and dog",
+      "props": [
+        "cat-mat"
+      ],
+      "action": "two separate rigs driven by the same 5/5 or 4/4 timeline"
+    },
+    "boxBreathing": {
+      "character": "cat",
+      "props": [
+        "cat-mat"
+      ],
+      "action": "four phase cues; held torso during both holds; pause releases instruction"
+    },
+    "diaphragmaticBreathing": {
+      "character": "side lying dog",
+      "props": [
+        "rest-pillow"
+      ],
+      "action": "paw at lower ribs; natural breathing without paced countdown; human tutorial remains separate"
+    },
+    "alternateNostrilBreathing": {
+      "character": "dog",
+      "props": [
+        "dog-leaf",
+        "cat-leaf"
+      ],
+      "action": "user left/right/right/left cues, localized head and ear movement"
+    },
+    "meditation": {
+      "character": "cat",
+      "props": [
+        "cat-leaf"
+      ],
+      "action": "quiet seated pose; brief return-of-attention cue, no continuous pursuit loop"
+    },
+    "nsdr": {
+      "character": "side lying dog",
+      "props": [
+        "rest-blanket",
+        "rest-pillow"
+      ],
+      "action": "script focus drives face/shoulder/abdomen/legs separately; static between cues"
+    },
+    "kegel": {
+      "character": "dog",
+      "props": [
+        "dog-flag"
+      ],
+      "action": "flag 4 seconds contract / 8 seconds release; torso does not imply breath holding"
+    }
+  },
+  "layerCount": 40,
+  "layers": [
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-torso-cat",
+      "crop": [
+        75,
+        85,
+        510,
+        535
+      ],
+      "source": "art/torso-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-torso-cat.imageset/Artwork.png",
+      "sha256": "be6bccc406c64ae9044fbc6534469281be6efcb54f959a9ee43b9627e0473826",
+      "bytes": 252477
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-torso-dog",
+      "crop": [
+        655,
+        85,
+        500,
+        535
+      ],
+      "source": "art/torso-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-torso-dog.imageset/Artwork.png",
+      "sha256": "dc64411889361ed7342ce21a435e3d9e1dcc6cf750bf5ecc6919dbceb959ca93",
+      "bytes": 282217
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-torso-cat-side",
+      "crop": [
+        90,
+        660,
+        500,
+        485
+      ],
+      "source": "art/torso-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-torso-cat-side.imageset/Artwork.png",
+      "sha256": "5088ca73ab0f7e8d9e85e288c15ce9823dd090e39ece438d025b4e6d4166d306",
+      "bytes": 243380
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-torso-dog-side",
+      "crop": [
+        570,
+        700,
+        640,
+        455
+      ],
+      "source": "art/torso-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-torso-dog-side.imageset/Artwork.png",
+      "sha256": "5f11e77c31bce741f68347ebfdf292069275ebfbf4ee4ce607e3877ee7ea35c8",
+      "bytes": 254261
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-poster",
+      "crop": [
+        35,
+        30,
+        360,
+        380
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-poster.imageset/Artwork.png",
+      "sha256": "7c01fa413badfec566eb4ea979afe2b68c7c07091854f5406802ce3e2e4fd633",
+      "bytes": 232205
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-head",
+      "crop": [
+        425,
+        110,
+        315,
+        285
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-head.imageset/Artwork.png",
+      "sha256": "86e5d6034492f95b995f24c12e65bd2b5234a27bd2ff6cee020ad7713c6de18d",
+      "bytes": 149568
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-closed",
+      "crop": [
+        795,
+        110,
+        330,
+        285
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-closed.imageset/Artwork.png",
+      "sha256": "9f43a5991540785b2c75db3879c7bbb55c4abea9ef43946cfa3562982b850a1e",
+      "bytes": 155435
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-body",
+      "crop": [
+        1170,
+        120,
+        350,
+        280
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-body.imageset/Artwork.png",
+      "sha256": "c1734c34fcacb564cfd3dba387aa9427898531d5f63c65b1051fa2c80a3235c7",
+      "bytes": 152885
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-paw-left",
+      "crop": [
+        170,
+        480,
+        150,
+        220
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-paw-left.imageset/Artwork.png",
+      "sha256": "5fcd70585ae0f2d82051b7cc73d5e1c73ffc9cba4d43848c2001fc2ce5296075",
+      "bytes": 56865
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-paw-right",
+      "crop": [
+        465,
+        480,
+        150,
+        220
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-paw-right.imageset/Artwork.png",
+      "sha256": "3a4a01cd4f24a3a2744490bdde0673b3902c1fc98dab37fb381a688805c8139e",
+      "bytes": 57367
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-tail",
+      "crop": [
+        815,
+        465,
+        200,
+        230
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-tail.imageset/Artwork.png",
+      "sha256": "8576528ca5ebb89fd2cbe48306522f126042150606e6c9e85896e14a2ef7ebb3",
+      "bytes": 76233
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-exhale",
+      "crop": [
+        1150,
+        435,
+        375,
+        290
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-exhale.imageset/Artwork.png",
+      "sha256": "4811e072a744242abcf81ee39a338e461e69ad13d72863b09b62d41a69a8335c",
+      "bytes": 169048
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-flower",
+      "crop": [
+        90,
+        770,
+        205,
+        230
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-flower.imageset/Artwork.png",
+      "sha256": "5561a2505b6584154a228099951ec1087feb4ed08044f5ae88408f435998fdf3",
+      "bytes": 87206
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-leaf",
+      "crop": [
+        405,
+        800,
+        200,
+        190
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-leaf.imageset/Artwork.png",
+      "sha256": "e6ef30d4386f1b1a025a194b3c6270afbff1742b3d81fc570eb38af4499c5eb3",
+      "bytes": 65661
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-mat",
+      "crop": [
+        660,
+        770,
+        430,
+        230
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-mat.imageset/Artwork.png",
+      "sha256": "cbfa80ff637ced35a74315ce797b1ce37f01c8f29df0816a1c961b65d140afc2",
+      "bytes": 186087
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-cat-crouch",
+      "crop": [
+        1130,
+        720,
+        400,
+        290
+      ],
+      "source": "art/cat-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-cat-crouch.imageset/Artwork.png",
+      "sha256": "eba0c7b2f5318be08b9040ea2df94ed36593af6cbf1e742900ce10839a98c88a",
+      "bytes": 197673
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-poster",
+      "crop": [
+        35,
+        25,
+        380,
+        380
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-poster.imageset/Artwork.png",
+      "sha256": "3b0fc41eae6e883dfbb4834aa31645b4af2a5a141f47bae047d6f3c096ba0a6b",
+      "bytes": 241335
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-head",
+      "crop": [
+        420,
+        110,
+        330,
+        270
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-head.imageset/Artwork.png",
+      "sha256": "4b0835ad16b9fcb914b9a4bb0773add76c86bc093d9fc10011cc1282e460079e",
+      "bytes": 134188
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-closed",
+      "crop": [
+        805,
+        110,
+        325,
+        270
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-closed.imageset/Artwork.png",
+      "sha256": "547cf449e427cb4c68452b878071ff878d6d64702f2496f8b1399e5b3bf7d978",
+      "bytes": 134242
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-body",
+      "crop": [
+        1175,
+        130,
+        330,
+        270
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-body.imageset/Artwork.png",
+      "sha256": "121576fe63c200ffdcc98ef3017a784b4fa4f536a17df333aacf87dbdad1066d",
+      "bytes": 138360
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-ear-left",
+      "crop": [
+        40,
+        445,
+        300,
+        245
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-ear-left.imageset/Artwork.png",
+      "sha256": "2aab80cb7d1eb6db8d60273c6925ca6a935b4adb8dcd90bd44e7119a619d0adb",
+      "bytes": 109613
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-ear-right",
+      "crop": [
+        460,
+        445,
+        260,
+        245
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-ear-right.imageset/Artwork.png",
+      "sha256": "d776d767ea437b21a622296c811d1def43879e76c50cb3b3157966782dd9f092",
+      "bytes": 117584
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-paw-left",
+      "crop": [
+        870,
+        445,
+        170,
+        245
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-paw-left.imageset/Artwork.png",
+      "sha256": "f094e0c9d812a2222b8cbecfe0f5f806b9ebb10ee4e11fc8007ddcf5a941445f",
+      "bytes": 69912
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-paw-right",
+      "crop": [
+        1205,
+        445,
+        170,
+        245
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-paw-right.imageset/Artwork.png",
+      "sha256": "1de30c34bd06c6f16b519e0c3736d10f1379562154e346ef12dab7b57604e9af",
+      "bytes": 69805
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-tail",
+      "crop": [
+        155,
+        765,
+        190,
+        200
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-tail.imageset/Artwork.png",
+      "sha256": "38c011dd52c79ce71a1d64c3236515ddf2910b195ba6c14cb6872d2150bce4c5",
+      "bytes": 61842
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-flag",
+      "crop": [
+        455,
+        725,
+        280,
+        280
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-flag.imageset/Artwork.png",
+      "sha256": "43f1fdcbcb527156ae13e793690374edcaaea3f80e7a30115c7edb63ac1d86f8",
+      "bytes": 132237
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-leaf",
+      "crop": [
+        795,
+        785,
+        245,
+        190
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-leaf.imageset/Artwork.png",
+      "sha256": "278da948a57d7c37d575bad4433033f2b631fd121622bf8081b7c3d1de52e287",
+      "bytes": 87276
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-dog-crouch",
+      "crop": [
+        1105,
+        740,
+        410,
+        260
+      ],
+      "source": "art/dog-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-dog-crouch.imageset/Artwork.png",
+      "sha256": "7cad4742c81ec4b0b1e397199f856a24893094924209aa2386ea024686f46c65",
+      "bytes": 190527
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-poster",
+      "crop": [
+        40,
+        120,
+        445,
+        250
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-poster.imageset/Artwork.png",
+      "sha256": "aa27c2d57c3eb5317e4f1758780764cc49077bf52a213a102e99355f4523ea82",
+      "bytes": 195501
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-body",
+      "crop": [
+        490,
+        145,
+        340,
+        225
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-body.imageset/Artwork.png",
+      "sha256": "748c5a9bbb692df66413e5bfdd56d9fd81aa490556f2a2f34eaefb18ce79ff30",
+      "bytes": 115070
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-closed",
+      "crop": [
+        855,
+        145,
+        275,
+        235
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-closed.imageset/Artwork.png",
+      "sha256": "a90a8ef61a8c18999896f9239651a907290f0445331414d2a5849a1aa932047a",
+      "bytes": 105662
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-head",
+      "crop": [
+        1210,
+        145,
+        280,
+        235
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-head.imageset/Artwork.png",
+      "sha256": "fe2d6abc271c7e84c8ceee2c65006ebe6c29d2ce0214dd174b783ceb1d35122a",
+      "bytes": 105916
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-paw",
+      "crop": [
+        70,
+        445,
+        300,
+        190
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-paw.imageset/Artwork.png",
+      "sha256": "63219a6a07f18e7a3a0ac59061e03d5849969a671fbf96d0e5224f6ada99b412",
+      "bytes": 86701
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-legs",
+      "crop": [
+        445,
+        455,
+        270,
+        185
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-legs.imageset/Artwork.png",
+      "sha256": "b10cb29970df9baa8bc78c6859cdf05cbb0eb2259a923ae816a031de59b93765",
+      "bytes": 83317
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-ear-left",
+      "crop": [
+        850,
+        425,
+        220,
+        210
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-ear-left.imageset/Artwork.png",
+      "sha256": "0fb39dcbc97273d7ac621fceaaa891a7cf55a377a8ab1ee9d66222349790d8b7",
+      "bytes": 71588
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-ear-right",
+      "crop": [
+        1220,
+        425,
+        210,
+        210
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-ear-right.imageset/Artwork.png",
+      "sha256": "9fd67c761a968f8388769d2a0b6c3886d0102a9e0ee686df62c533b542b17fba",
+      "bytes": 79017
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-blanket",
+      "crop": [
+        20,
+        720,
+        375,
+        225
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-blanket.imageset/Artwork.png",
+      "sha256": "b31a83071716cec5f7149f829b9a648fc2f113b00547a44198a7f449bcfe40f6",
+      "bytes": 158935
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-pillow",
+      "crop": [
+        405,
+        780,
+        340,
+        170
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-pillow.imageset/Artwork.png",
+      "sha256": "11524bb3a240183b32d62db95f17fce06c89d42b8c0073fc199940cb91c1eaf5",
+      "bytes": 101838
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-prone",
+      "crop": [
+        750,
+        720,
+        370,
+        225
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-prone.imageset/Artwork.png",
+      "sha256": "4501ba11e4c2db36d849def5bc5d3260baa56b017ac447d73e39da8a7c92acf5",
+      "bytes": 121168
+    },
+    {
+      "alpha": "original RGBA preserved; cream not keyed out",
+      "asset": "PracticeV4-rest-crouch",
+      "crop": [
+        1130,
+        670,
+        395,
+        300
+      ],
+      "source": "art/rest-atlas-source.png",
+      "file": "InnerBalance/InnerBalanceApp/Assets.xcassets/PracticeV4-rest-crouch.imageset/Artwork.png",
+      "sha256": "d2aae8afd8eca2bb58e74a7b0605d790d4686ce99fa5c0eecd1d2078a95eddb5",
+      "bytes": 199381
+    }
+  ],
+  "audioProduction": {
+    "source": "Edge TTS build-time production; offline bundled M4A",
+    "newVoice": "zh-CN-XiaoxiaoNeural",
+    "originalVoiceIdentifier": "unknown; legacy zhixingnv is a local pack name",
+    "reference": "AUDIO_PRODUCTION.json",
+    "rightsNote": "记录生成服务与原文件来源，未进行独立的第三方授权审查。App运行时无Edge调用。"
+  },
+  "audio": [
+    {
+      "resource": "practice_sigh_inhale",
+      "text": "用鼻子，轻轻吸气。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_inhale.m4a",
+      "durationSeconds": 2.966,
+      "meanVolumeDB": -25.1,
+      "peakVolumeDB": -10.5,
+      "sha256": "c4cf9b5042a036cdc12cc311cbda86ffb6d1825b2a0139889a4b9b0d7267db42"
+    },
+    {
+      "resource": "practice_sigh_top_up",
+      "text": "再补一小口。",
+      "windowSeconds": 2,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_top_up.m4a",
+      "durationSeconds": 1.833,
+      "meanVolumeDB": -25.5,
+      "peakVolumeDB": -10.5,
+      "sha256": "f6f2b19ef94bb8e151e4675cefb46d6bcd36b48996dd3fa00be5f48a659970ab"
+    },
+    {
+      "resource": "practice_sigh_exhale",
+      "text": "慢慢呼出去。",
+      "windowSeconds": 7,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_exhale.m4a",
+      "durationSeconds": 2.033,
+      "meanVolumeDB": -25.3,
+      "peakVolumeDB": -10.9,
+      "sha256": "0c56bd36ef3c14b18af11203d8ee33bb274a52afb372683fe0fbcdd90311b81f"
+    },
+    {
+      "resource": "practice_v4_paced_inhale",
+      "text": "慢慢吸气。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_paced_inhale.m4a",
+      "durationSeconds": 1.808005,
+      "meanVolumeDB": -26.3,
+      "peakVolumeDB": -10.7,
+      "sha256": "f413157eaac7de415337637b4bb17884ee93c7474fdab0873290b99b49b71180"
+    },
+    {
+      "resource": "practice_v4_paced_exhale",
+      "text": "把呼气放长。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_paced_exhale.m4a",
+      "durationSeconds": 2.269002,
+      "meanVolumeDB": -25.8,
+      "peakVolumeDB": -9.1,
+      "sha256": "396801ca86f58a2ccf0e27549623063f6b9f02394961e61e4bb3db787bac8ace"
+    },
+    {
+      "resource": "practice_kegel_contract",
+      "text": "轻轻收紧，呼吸照常。",
+      "windowSeconds": 4,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_kegel_contract.m4a",
+      "durationSeconds": 3.133,
+      "meanVolumeDB": -24.9,
+      "peakVolumeDB": -11.0,
+      "sha256": "f8aa8b7dfb507f729a692114f360b984f604164e7296d2485d46fa8a3b2f1615"
+    },
+    {
+      "resource": "practice_v4_kegel_release",
+      "text": "完全放松。",
+      "windowSeconds": 8,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_kegel_release.m4a",
+      "durationSeconds": 1.681995,
+      "meanVolumeDB": -25.0,
+      "peakVolumeDB": -9.9,
+      "sha256": "12860542cb39bc73ebc22cd4ef5a17bc207b8949432688e71e6f3ed8dcc26283"
+    },
+    {
+      "resource": "practice_v4_hold",
+      "text": "轻松停留。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_hold.m4a",
+      "durationSeconds": 1.778005,
+      "meanVolumeDB": -25.1,
+      "peakVolumeDB": -9.9,
+      "sha256": "d8ad7905ff05d1045585fb06ba7b5cdfb1140e8fec282b7c01ea0fe702670597"
+    },
+    {
+      "resource": "practice_v4_left_inhale",
+      "text": "左侧吸气。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_left_inhale.m4a",
+      "durationSeconds": 1.778005,
+      "meanVolumeDB": -25.6,
+      "peakVolumeDB": -9.2,
+      "sha256": "1e185c7b374cf65cb0999875c03bbaa4490631e42f70f9dfd9627f41d736b7b9"
+    },
+    {
+      "resource": "practice_v4_right_exhale",
+      "text": "右侧呼气。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_right_exhale.m4a",
+      "durationSeconds": 1.801995,
+      "meanVolumeDB": -25.3,
+      "peakVolumeDB": -8.5,
+      "sha256": "092b7609f7ee92b68b4699cde1610895ceadbaecbf9ad9fad3aaca5e7b20e564"
+    },
+    {
+      "resource": "practice_v4_right_inhale",
+      "text": "右侧吸气。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_right_inhale.m4a",
+      "durationSeconds": 1.801995,
+      "meanVolumeDB": -25.5,
+      "peakVolumeDB": -8.2,
+      "sha256": "d94f8d00313b2d127177355d8d390d928555f21dc42df344ab3ece65eb76bad6"
+    },
+    {
+      "resource": "practice_v4_left_exhale",
+      "text": "左侧呼气。",
+      "windowSeconds": 3,
+      "type": "phase",
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_left_exhale.m4a",
+      "durationSeconds": 1.753991,
+      "meanVolumeDB": -25.6,
+      "peakVolumeDB": -9.5,
+      "sha256": "c2ab3f95fd308cfc066359709f71d35f263d46f2334df2a8c6397e10532e588d"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_0",
+      "text": "找个可以躺稳的位置，把身体交给床面或垫子。接下来，跟着声音休息。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 0,
+      "endSeconds": 30,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_0.m4a",
+      "durationSeconds": 7.51,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -7.1,
+      "sha256": "e151dd502afe3fbd03ccb17d90cccd64003c0bb75bff0acfa464a544d116f253"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_1",
+      "text": "轻轻闭眼，或把视线放低。你不用一直看屏幕。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 30,
+      "endSeconds": 60,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_1.m4a",
+      "durationSeconds": 5.5,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -7.0,
+      "sha256": "adc71ccf770173f01d9d4e0e1687cc044019f71f85d44f2604af67db89608d10"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_2",
+      "text": "松开眼周，让下颌和舌头都轻松一点。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 60,
+      "endSeconds": 90,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_2.m4a",
+      "durationSeconds": 4.516009,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -9.4,
+      "sha256": "fea94efabf656daf94043adc0c8082f40060e7834cb3186b7b6e8f5a5ca2a718"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_3",
+      "text": "让两侧肩膀落下来。背部的重量，交给下面的支撑。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 90,
+      "endSeconds": 130,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_3.m4a",
+      "durationSeconds": 5.9,
+      "meanVolumeDB": -24.1,
+      "peakVolumeDB": -9.7,
+      "sha256": "8c41e36e2c19c1cf292ae3ae9b6a6100a86480d30c86da9881418d45bc1c48b0"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_4",
+      "text": "注意上臂、前臂，再到双手。让手指自然弯着。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 130,
+      "endSeconds": 170,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_4.m4a",
+      "durationSeconds": 5.7,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.9,
+      "sha256": "42104d11da37ee316ba34dc24f041e1980a704e78fe9ae035e6397572419c629"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_5",
+      "text": "感受手掌的重量。现在不用抓住任何东西。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 170,
+      "endSeconds": 210,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_5.m4a",
+      "durationSeconds": 4.900998,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.2,
+      "sha256": "5d80a85c231d1b14fe94b7691ea7e7238e0ced703e520ff575a14e44dd133797"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_6",
+      "text": "留意一口自然呼吸。让空气自己进来，再出去。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 210,
+      "endSeconds": 250,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_6.m4a",
+      "durationSeconds": 5.311995,
+      "meanVolumeDB": -23.7,
+      "peakVolumeDB": -5.3,
+      "sha256": "d0e1547c3c159f5a7c9006694e61cef76a24a490dfff10ab0454dd921fbee5f8"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_7",
+      "text": "腹部不用收紧。让腰腹得到支撑，随着自然呼吸轻轻移动。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 250,
+      "endSeconds": 290,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_7.m4a",
+      "durationSeconds": 6.519002,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -7.6,
+      "sha256": "a3d8a15f3b22f8ebc65435ef12a2796a92fe26aaafa1ab86e5a8b05dc51afc61"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_8",
+      "text": "感受骨盆与垫子接触的位置，把重量放下。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 290,
+      "endSeconds": 330,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_8.m4a",
+      "durationSeconds": 4.418005,
+      "meanVolumeDB": -23.7,
+      "peakVolumeDB": -8.1,
+      "sha256": "88533d5497ecafdc554bd09289a75ed7c84e93e6f492820420be4cfe5edc3142"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_9",
+      "text": "注意大腿和小腿。让双腿休息，不用主动绷直。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 330,
+      "endSeconds": 370,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_9.m4a",
+      "durationSeconds": 5.7,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -10.1,
+      "sha256": "32f70e34ae54533e422ec2b3cc0d48361cdc04d331a6fc6858c122c13fcc0d0e"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_10",
+      "text": "脚踝放松，脚趾松开。感受双脚也被托住。",
+      "windowSeconds": 45,
+      "type": "segment",
+      "startSeconds": 370,
+      "endSeconds": 415,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_10.m4a",
+      "durationSeconds": 5.41,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -6.6,
+      "sha256": "db0a85b6395a1288511e4f4309ede3878bf95fd6878e8fbdb3453d5e51a328b2"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_11",
+      "text": "从头到脚感受整个身体。让支撑面接住你的重量。",
+      "windowSeconds": 45,
+      "type": "segment",
+      "startSeconds": 415,
+      "endSeconds": 460,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_11.m4a",
+      "durationSeconds": 5.916009,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.3,
+      "sha256": "5f35d5057841418b72364311f2ff5d5e80f5ad23213f418a9daed51cdced2b4c"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_12",
+      "text": "注意再一口自然的呼吸。不需要调整它。",
+      "windowSeconds": 50,
+      "type": "segment",
+      "startSeconds": 460,
+      "endSeconds": 510,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_12.m4a",
+      "durationSeconds": 4.5,
+      "meanVolumeDB": -24.0,
+      "peakVolumeDB": -9.6,
+      "sha256": "cc9f58afa6a9a000a197ef8c6342208b3f7ad6168917bf96ec63b88f6ef48625"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_13",
+      "text": "接下来安静待一会儿。听到声音，再慢慢回来。",
+      "windowSeconds": 60,
+      "type": "segment",
+      "startSeconds": 510,
+      "endSeconds": 570,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_13.m4a",
+      "durationSeconds": 5.2,
+      "meanVolumeDB": -24.6,
+      "peakVolumeDB": -9.5,
+      "sha256": "dc2095e027fe68e25d00635a8bd0c1ba7cb7dbf1d236865911b9af27efcda8cf"
+    },
+    {
+      "resource": "practice_v4_nsdr_600_14",
+      "text": "轻轻动动手指和脚趾。感受身边的空间，准备好时慢慢睁开眼睛。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 570,
+      "endSeconds": 600,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_600_14.m4a",
+      "durationSeconds": 7.6,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -8.7,
+      "sha256": "db9e3061cf23115d29f58d2856cba6f169c4de9aa6290ea037a8bc07c2d3f243"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_0",
+      "text": "找个可以躺稳的位置，把身体交给床面或垫子。这二十分钟，留给安静的休息。",
+      "windowSeconds": 45,
+      "type": "segment",
+      "startSeconds": 0,
+      "endSeconds": 45,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_0.m4a",
+      "durationSeconds": 8.0,
+      "meanVolumeDB": -24.1,
+      "peakVolumeDB": -7.4,
+      "sha256": "d7adaf4d7ecadc734dbfb0caaf96ae309e999e81a0d80789a1b29dae2f206669"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_1",
+      "text": "轻轻闭眼，或把视线放低。接下来不用看屏幕，听见声音时再跟随。",
+      "windowSeconds": 45,
+      "type": "segment",
+      "startSeconds": 45,
+      "endSeconds": 90,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_1.m4a",
+      "durationSeconds": 7.510998,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -6.8,
+      "sha256": "1d9a5d1994703fb4eca2f302339a40515daa66b8b39b52c90d524b93ca5076ac"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_2",
+      "text": "松开眼周，让下颌和舌头都轻松一点。",
+      "windowSeconds": 60,
+      "type": "segment",
+      "startSeconds": 90,
+      "endSeconds": 150,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_2.m4a",
+      "durationSeconds": 4.516009,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -9.4,
+      "sha256": "fea94efabf656daf94043adc0c8082f40060e7834cb3186b7b6e8f5a5ca2a718"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_3",
+      "text": "让两侧肩膀落下来。背部的重量，交给下面的支撑。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 150,
+      "endSeconds": 230,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_3.m4a",
+      "durationSeconds": 5.9,
+      "meanVolumeDB": -24.1,
+      "peakVolumeDB": -9.7,
+      "sha256": "8c41e36e2c19c1cf292ae3ae9b6a6100a86480d30c86da9881418d45bc1c48b0"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_4",
+      "text": "注意上臂、前臂，再到双手。让手指自然弯着。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 230,
+      "endSeconds": 310,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_4.m4a",
+      "durationSeconds": 5.7,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.9,
+      "sha256": "42104d11da37ee316ba34dc24f041e1980a704e78fe9ae035e6397572419c629"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_5",
+      "text": "感受手掌的重量。现在不用抓住任何东西。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 310,
+      "endSeconds": 390,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_5.m4a",
+      "durationSeconds": 4.900998,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.2,
+      "sha256": "5d80a85c231d1b14fe94b7691ea7e7238e0ced703e520ff575a14e44dd133797"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_6",
+      "text": "留意一口自然呼吸。让空气自己进来，再出去。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 390,
+      "endSeconds": 470,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_6.m4a",
+      "durationSeconds": 5.311995,
+      "meanVolumeDB": -23.7,
+      "peakVolumeDB": -5.3,
+      "sha256": "d0e1547c3c159f5a7c9006694e61cef76a24a490dfff10ab0454dd921fbee5f8"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_7",
+      "text": "腹部不用收紧。让腰腹得到支撑，随着自然呼吸轻轻移动。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 470,
+      "endSeconds": 550,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_7.m4a",
+      "durationSeconds": 6.519002,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -7.6,
+      "sha256": "a3d8a15f3b22f8ebc65435ef12a2796a92fe26aaafa1ab86e5a8b05dc51afc61"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_8",
+      "text": "感受骨盆与垫子接触的位置，把重量放下。",
+      "windowSeconds": 90,
+      "type": "segment",
+      "startSeconds": 550,
+      "endSeconds": 640,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_8.m4a",
+      "durationSeconds": 4.418005,
+      "meanVolumeDB": -23.7,
+      "peakVolumeDB": -8.1,
+      "sha256": "88533d5497ecafdc554bd09289a75ed7c84e93e6f492820420be4cfe5edc3142"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_9",
+      "text": "注意大腿和小腿。让双腿休息，不用主动绷直。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 640,
+      "endSeconds": 720,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_9.m4a",
+      "durationSeconds": 5.7,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -10.1,
+      "sha256": "32f70e34ae54533e422ec2b3cc0d48361cdc04d331a6fc6858c122c13fcc0d0e"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_10",
+      "text": "脚踝放松，脚趾松开。感受双脚也被托住。",
+      "windowSeconds": 90,
+      "type": "segment",
+      "startSeconds": 720,
+      "endSeconds": 810,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_10.m4a",
+      "durationSeconds": 5.41,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -6.6,
+      "sha256": "db0a85b6395a1288511e4f4309ede3878bf95fd6878e8fbdb3453d5e51a328b2"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_11",
+      "text": "从头到脚感受整个身体。让支撑面接住你的重量。",
+      "windowSeconds": 90,
+      "type": "segment",
+      "startSeconds": 810,
+      "endSeconds": 900,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_11.m4a",
+      "durationSeconds": 5.916009,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.3,
+      "sha256": "5f35d5057841418b72364311f2ff5d5e80f5ad23213f418a9daed51cdced2b4c"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_12",
+      "text": "留意呼吸，也留意身体与垫子的接触。现在不用做更多事情。",
+      "windowSeconds": 100,
+      "type": "segment",
+      "startSeconds": 900,
+      "endSeconds": 1000,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_12.m4a",
+      "durationSeconds": 6.6,
+      "meanVolumeDB": -24.3,
+      "peakVolumeDB": -8.5,
+      "sha256": "fc6ff1aabbb874057a51f829efaa1e824371be99a43a913c89771526d0751cef"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_13",
+      "text": "接下来安静待一会儿。念头出现，就让它过去。",
+      "windowSeconds": 100,
+      "type": "segment",
+      "startSeconds": 1000,
+      "endSeconds": 1100,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_13.m4a",
+      "durationSeconds": 5.0,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -9.2,
+      "sha256": "5fd98fa6b4d734fa9331aca5b7d6d63b0d2a5d623294bdccade3e5f6dc84dd6f"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_14",
+      "text": "再感受一次整个身体。保持舒服的姿势，先不用起身。",
+      "windowSeconds": 70,
+      "type": "segment",
+      "startSeconds": 1100,
+      "endSeconds": 1170,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_14.m4a",
+      "durationSeconds": 6.013991,
+      "meanVolumeDB": -24.0,
+      "peakVolumeDB": -7.9,
+      "sha256": "8b1d4162fe72d90147ccdb98d2e540cae2045e752b1eb74592e022a5d1ffd0d8"
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_15",
+      "text": "轻轻动动手指和脚趾。感受身边的空间，准备好时慢慢睁开眼睛。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 1170,
+      "endSeconds": 1200,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_nsdr_1200_15.m4a",
+      "durationSeconds": 7.6,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -8.7,
+      "sha256": "db9e3061cf23115d29f58d2856cba6f169c4de9aa6290ea037a8bc07c2d3f243"
+    },
+    {
+      "resource": "practice_v4_meditation_300_0",
+      "text": "找一个舒服、能坐稳的姿势。把手自然放好。",
+      "windowSeconds": 25,
+      "type": "segment",
+      "startSeconds": 0,
+      "endSeconds": 25,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_0.m4a",
+      "durationSeconds": 5.2,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -8.4,
+      "sha256": "a7bafe027c6c7fbfdc783f7aca8c7807cab6fb46fc246b3041adb3dcb8d5d49a"
+    },
+    {
+      "resource": "practice_v4_meditation_300_1",
+      "text": "感觉身体与椅子或垫子接触，先在这里停一下。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 25,
+      "endSeconds": 55,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_1.m4a",
+      "durationSeconds": 4.901995,
+      "meanVolumeDB": -23.6,
+      "peakVolumeDB": -7.6,
+      "sha256": "f2fa12e08058b18f405a0267f73def103e51265e96baeb33f3dd7106d2a7397c"
+    },
+    {
+      "resource": "practice_v4_meditation_300_2",
+      "text": "留意一口自然的呼吸。让呼吸按自己的节奏发生。",
+      "windowSeconds": 45,
+      "type": "segment",
+      "startSeconds": 55,
+      "endSeconds": 100,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_2.m4a",
+      "durationSeconds": 5.507007,
+      "meanVolumeDB": -23.9,
+      "peakVolumeDB": -5.4,
+      "sha256": "ed7926d1309a4f92a8df756d9334f9d7c8375a1455f465a18d084d23ca5a3195"
+    },
+    {
+      "resource": "practice_v4_meditation_300_3",
+      "text": "发现走神，就把注意力轻轻带回这一口呼吸。",
+      "windowSeconds": 45,
+      "type": "segment",
+      "startSeconds": 100,
+      "endSeconds": 145,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_3.m4a",
+      "durationSeconds": 4.903991,
+      "meanVolumeDB": -23.7,
+      "peakVolumeDB": -7.4,
+      "sha256": "f9f240e5b04babf7166d134487a0decb9392588dddfe1b861e28eedaf167ccfe"
+    },
+    {
+      "resource": "practice_v4_meditation_300_4",
+      "text": "念头可以来，也可以走。暂时不用跟着它继续想。",
+      "windowSeconds": 55,
+      "type": "segment",
+      "startSeconds": 145,
+      "endSeconds": 200,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_4.m4a",
+      "durationSeconds": 5.602993,
+      "meanVolumeDB": -24.7,
+      "peakVolumeDB": -9.1,
+      "sha256": "f5927287b10e8ced5a4960fd1eeaffaf4ff32dfc86d789a2e569867d8e42527a"
+    },
+    {
+      "resource": "practice_v4_meditation_300_5",
+      "text": "再感觉一次身体被托住。把注意力带回此刻。",
+      "windowSeconds": 60,
+      "type": "segment",
+      "startSeconds": 200,
+      "endSeconds": 260,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_5.m4a",
+      "durationSeconds": 5.312993,
+      "meanVolumeDB": -24.2,
+      "peakVolumeDB": -8.5,
+      "sha256": "8c5dbb4f6176c6bd1fb877b865dccab34d7e089c22734fe3b59b3afbe448846c"
+    },
+    {
+      "resource": "practice_v4_meditation_300_6",
+      "text": "留意接下来的几口自然呼吸。",
+      "windowSeconds": 25,
+      "type": "segment",
+      "startSeconds": 260,
+      "endSeconds": 285,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_6.m4a",
+      "durationSeconds": 3.210998,
+      "meanVolumeDB": -24.1,
+      "peakVolumeDB": -7.7,
+      "sha256": "48badf50f66e1faea0e9f20c9ca91895544f74a35416cde55261d8904a466e5b"
+    },
+    {
+      "resource": "practice_v4_meditation_300_7",
+      "text": "感受身边的声音，轻轻动动手。准备好后，带着这份注意继续今天。",
+      "windowSeconds": 15,
+      "type": "segment",
+      "startSeconds": 285,
+      "endSeconds": 300,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_300_7.m4a",
+      "durationSeconds": 7.608005,
+      "meanVolumeDB": -24.0,
+      "peakVolumeDB": -8.8,
+      "sha256": "0dc2a9049c01276219c252e926aa34762939d9ea5f6663d24eab57f7e7fa32ed"
+    },
+    {
+      "resource": "practice_v4_meditation_600_0",
+      "text": "找一个舒服、能坐稳的姿势。把手自然放好。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 0,
+      "endSeconds": 30,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_0.m4a",
+      "durationSeconds": 5.2,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -8.4,
+      "sha256": "a7bafe027c6c7fbfdc783f7aca8c7807cab6fb46fc246b3041adb3dcb8d5d49a"
+    },
+    {
+      "resource": "practice_v4_meditation_600_1",
+      "text": "感觉身体与椅子或垫子接触，先在这里停一下。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 30,
+      "endSeconds": 70,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_1.m4a",
+      "durationSeconds": 4.901995,
+      "meanVolumeDB": -23.6,
+      "peakVolumeDB": -7.6,
+      "sha256": "f2fa12e08058b18f405a0267f73def103e51265e96baeb33f3dd7106d2a7397c"
+    },
+    {
+      "resource": "practice_v4_meditation_600_2",
+      "text": "留意一口自然的呼吸。让呼吸按自己的节奏发生。",
+      "windowSeconds": 70,
+      "type": "segment",
+      "startSeconds": 70,
+      "endSeconds": 140,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_2.m4a",
+      "durationSeconds": 5.507007,
+      "meanVolumeDB": -23.9,
+      "peakVolumeDB": -5.4,
+      "sha256": "ed7926d1309a4f92a8df756d9334f9d7c8375a1455f465a18d084d23ca5a3195"
+    },
+    {
+      "resource": "practice_v4_meditation_600_3",
+      "text": "发现走神，就把注意力轻轻带回这一口呼吸。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 140,
+      "endSeconds": 220,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_3.m4a",
+      "durationSeconds": 4.903991,
+      "meanVolumeDB": -23.7,
+      "peakVolumeDB": -7.4,
+      "sha256": "f9f240e5b04babf7166d134487a0decb9392588dddfe1b861e28eedaf167ccfe"
+    },
+    {
+      "resource": "practice_v4_meditation_600_4",
+      "text": "念头可以来，也可以走。暂时不用跟着它继续想。",
+      "windowSeconds": 80,
+      "type": "segment",
+      "startSeconds": 220,
+      "endSeconds": 300,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_4.m4a",
+      "durationSeconds": 5.602993,
+      "meanVolumeDB": -24.7,
+      "peakVolumeDB": -9.1,
+      "sha256": "f5927287b10e8ced5a4960fd1eeaffaf4ff32dfc86d789a2e569867d8e42527a"
+    },
+    {
+      "resource": "practice_v4_meditation_600_5",
+      "text": "再感觉一次身体被托住。肩膀、下颌和双手都可以放松。",
+      "windowSeconds": 100,
+      "type": "segment",
+      "startSeconds": 300,
+      "endSeconds": 400,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_5.m4a",
+      "durationSeconds": 6.617007,
+      "meanVolumeDB": -24.3,
+      "peakVolumeDB": -8.4,
+      "sha256": "5f4d88d697be9ac2fa07b9a1e7ad1bc3b966567626f80d6bb3d78ace1de62941"
+    },
+    {
+      "resource": "practice_v4_meditation_600_6",
+      "text": "你注意到自己在想别的事，就已经有了回来的机会。再回到呼吸。",
+      "windowSeconds": 100,
+      "type": "segment",
+      "startSeconds": 400,
+      "endSeconds": 500,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_6.m4a",
+      "durationSeconds": 6.907007,
+      "meanVolumeDB": -24.0,
+      "peakVolumeDB": -8.2,
+      "sha256": "3c1b18a7e3e5b39a86d89b319a9e26a71024b0b128dd4a2d543e1d054474546a"
+    },
+    {
+      "resource": "practice_v4_meditation_600_7",
+      "text": "接下来留意几口自然呼吸，安静地待一会儿。",
+      "windowSeconds": 65,
+      "type": "segment",
+      "startSeconds": 500,
+      "endSeconds": 565,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_7.m4a",
+      "durationSeconds": 4.32,
+      "meanVolumeDB": -23.6,
+      "peakVolumeDB": -9.3,
+      "sha256": "d4a3c06862c492614cbdd3f8a67d43f6bc66f9bac84be525c6e7241add9b66bc"
+    },
+    {
+      "resource": "practice_v4_meditation_600_8",
+      "text": "感受身边的声音，轻轻动动手。准备好后，带着这份注意继续今天。",
+      "windowSeconds": 35,
+      "type": "segment",
+      "startSeconds": 565,
+      "endSeconds": 600,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_meditation_600_8.m4a",
+      "durationSeconds": 7.608005,
+      "meanVolumeDB": -24.0,
+      "peakVolumeDB": -8.8,
+      "sha256": "0dc2a9049c01276219c252e926aa34762939d9ea5f6663d24eab57f7e7fa32ed"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_0",
+      "text": "坐稳或舒适地躺好，一只手轻放腹部或下肋。",
+      "windowSeconds": 25,
+      "type": "segment",
+      "startSeconds": 0,
+      "endSeconds": 25,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_180_0.m4a",
+      "durationSeconds": 4.900998,
+      "meanVolumeDB": -23.9,
+      "peakVolumeDB": -8.6,
+      "sha256": "0bbdfa80192298f3b2cf461e97065315c1902bb19567d9bd1a427b4f0e7e1c56"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_1",
+      "text": "吸气时，感觉下肋和腹部轻轻展开。肩膀不需要抬起来。",
+      "windowSeconds": 25,
+      "type": "segment",
+      "startSeconds": 25,
+      "endSeconds": 50,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_180_1.m4a",
+      "durationSeconds": 6.4,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.0,
+      "sha256": "b3881a1a3dec9efaf696021f9e80ae9987af12465500ab1988f98c99805c8f38"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_2",
+      "text": "呼气时，让腹部自然回落，不要向里用力挤。",
+      "windowSeconds": 35,
+      "type": "segment",
+      "startSeconds": 50,
+      "endSeconds": 85,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_180_2.m4a",
+      "durationSeconds": 4.806009,
+      "meanVolumeDB": -24.3,
+      "peakVolumeDB": -9.8,
+      "sha256": "9a3999f894b1597e3cc37c6a682ec19aa8be9bee9e6ef2d33652dffeccf75fb8"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_3",
+      "text": "现在按自己的节奏呼吸，手只用来感受。",
+      "windowSeconds": 35,
+      "type": "segment",
+      "startSeconds": 85,
+      "endSeconds": 120,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_180_3.m4a",
+      "durationSeconds": 4.320998,
+      "meanVolumeDB": -24.1,
+      "peakVolumeDB": -9.1,
+      "sha256": "5dd02a5eb516e1c824c4b10f8625d33f3e31959d5647727a7078ba401d34cd50"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_4",
+      "text": "松开下颌和肩膀，继续轻柔呼吸。",
+      "windowSeconds": 35,
+      "type": "segment",
+      "startSeconds": 120,
+      "endSeconds": 155,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_180_4.m4a",
+      "durationSeconds": 4.0,
+      "meanVolumeDB": -24.6,
+      "peakVolumeDB": -8.8,
+      "sha256": "a69b6c1520397b22e2fb92095e147d396b35b865c013b469812b33deacdfb71f"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_5",
+      "text": "把手放回舒服的位置，继续几口自然呼吸。",
+      "windowSeconds": 20,
+      "type": "segment",
+      "startSeconds": 155,
+      "endSeconds": 175,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_180_5.m4a",
+      "durationSeconds": 4.610998,
+      "meanVolumeDB": -23.5,
+      "peakVolumeDB": -7.5,
+      "sha256": "a1620563e8bc0b98bc366d138d0f1ed510ee39959ed88d201ea0413f9f2746dc"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_6",
+      "text": "记住这份不费力的动作，慢慢结束练习。",
+      "windowSeconds": 5,
+      "type": "segment",
+      "startSeconds": 175,
+      "endSeconds": 180,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_180_6.m4a",
+      "durationSeconds": 4.516009,
+      "meanVolumeDB": -23.8,
+      "peakVolumeDB": -9.8,
+      "sha256": "dc2fdc621797e331f50cdf24fbafbd5a5cb312bbaa95f4f6baea33afebf45f6b"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_0",
+      "text": "坐稳或舒适地躺好，一只手轻放腹部或下肋。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 0,
+      "endSeconds": 30,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_300_0.m4a",
+      "durationSeconds": 4.900998,
+      "meanVolumeDB": -23.9,
+      "peakVolumeDB": -8.6,
+      "sha256": "0bbdfa80192298f3b2cf461e97065315c1902bb19567d9bd1a427b4f0e7e1c56"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_1",
+      "text": "吸气时，感觉下肋和腹部轻轻展开。肩膀不需要抬起来。",
+      "windowSeconds": 30,
+      "type": "segment",
+      "startSeconds": 30,
+      "endSeconds": 60,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_300_1.m4a",
+      "durationSeconds": 6.4,
+      "meanVolumeDB": -24.5,
+      "peakVolumeDB": -9.0,
+      "sha256": "b3881a1a3dec9efaf696021f9e80ae9987af12465500ab1988f98c99805c8f38"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_2",
+      "text": "呼气时，让腹部自然回落，不要向里用力挤。",
+      "windowSeconds": 60,
+      "type": "segment",
+      "startSeconds": 60,
+      "endSeconds": 120,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_300_2.m4a",
+      "durationSeconds": 4.806009,
+      "meanVolumeDB": -24.3,
+      "peakVolumeDB": -9.8,
+      "sha256": "9a3999f894b1597e3cc37c6a682ec19aa8be9bee9e6ef2d33652dffeccf75fb8"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_3",
+      "text": "现在按自己的节奏呼吸，手只用来感受。",
+      "windowSeconds": 65,
+      "type": "segment",
+      "startSeconds": 120,
+      "endSeconds": 185,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_300_3.m4a",
+      "durationSeconds": 4.320998,
+      "meanVolumeDB": -24.1,
+      "peakVolumeDB": -9.1,
+      "sha256": "5dd02a5eb516e1c824c4b10f8625d33f3e31959d5647727a7078ba401d34cd50"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_4",
+      "text": "松开下颌和肩膀，继续轻柔呼吸。",
+      "windowSeconds": 60,
+      "type": "segment",
+      "startSeconds": 185,
+      "endSeconds": 245,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_300_4.m4a",
+      "durationSeconds": 4.0,
+      "meanVolumeDB": -24.6,
+      "peakVolumeDB": -8.8,
+      "sha256": "a69b6c1520397b22e2fb92095e147d396b35b865c013b469812b33deacdfb71f"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_5",
+      "text": "把手放回舒服的位置，继续几口自然呼吸。",
+      "windowSeconds": 40,
+      "type": "segment",
+      "startSeconds": 245,
+      "endSeconds": 285,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_300_5.m4a",
+      "durationSeconds": 4.610998,
+      "meanVolumeDB": -23.5,
+      "peakVolumeDB": -7.5,
+      "sha256": "a1620563e8bc0b98bc366d138d0f1ed510ee39959ed88d201ea0413f9f2746dc"
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_6",
+      "text": "记住这份不费力的动作，慢慢结束练习。",
+      "windowSeconds": 15,
+      "type": "segment",
+      "startSeconds": 285,
+      "endSeconds": 300,
+      "status": "pass",
+      "voicePack": "zhixingnv",
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_v4_diaphragmaticBreathing_300_6.m4a",
+      "durationSeconds": 4.516009,
+      "meanVolumeDB": -23.8,
+      "peakVolumeDB": -9.8,
+      "sha256": "dc2fdc621797e331f50cdf24fbafbd5a5cb312bbaa95f4f6baea33afebf45f6b"
+    }
+  ],
+  "verificationBoundary": "Asset hashes/window/loudness verified; taste approval and real-device sound/haptics/lock-screen verification remain separate."
+}

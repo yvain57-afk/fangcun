@@ -7,6 +7,7 @@ final class PracticeCadenceController {
   var isEnabled = true
   private(set) var trigger = 0
   private var lastCueID: Int?
+  private var lastGeneration: Int?
 
   func run(_ viewModel: PracticeSessionViewModel) async {
     guard viewModel.phase == .running else { return }
@@ -15,16 +16,14 @@ final class PracticeCadenceController {
         viewModel.finish()
         return
       }
-      let cueID = PracticeHapticTimeline.cueID(
-        for: viewModel.plan.kind,
-        elapsed: viewModel.duration - viewModel.remainingTime,
-        duration: viewModel.duration
-      )
-      if isEnabled, cueID != lastCueID {
+      viewModel.checkpointIfNeeded()
+      let cueID = viewModel.timelineSnapshot.cueID
+      if isEnabled, cueID != lastCueID || lastGeneration != viewModel.timelineGeneration {
+        lastGeneration = viewModel.timelineGeneration
         lastCueID = cueID
         trigger += 1
       }
-      try? await Task.sleep(for: .milliseconds(250))
+      try? await Task.sleep(for: .milliseconds(25))
     }
   }
 }

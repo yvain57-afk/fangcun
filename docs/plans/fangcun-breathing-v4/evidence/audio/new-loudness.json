@@ -1,0 +1,358 @@
+{
+  "measurement": "ffmpeg loudnorm EBU R128 scan of encoded production m4a",
+  "rows": [
+    {
+      "resource": "practice_v4_paced_inhale",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -10.29
+    },
+    {
+      "resource": "practice_v4_paced_exhale",
+      "integratedLUFS": -24.04,
+      "truePeakDBTP": -9.1
+    },
+    {
+      "resource": "practice_v4_kegel_release",
+      "integratedLUFS": -23.98,
+      "truePeakDBTP": -9.87
+    },
+    {
+      "resource": "practice_v4_hold",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.84
+    },
+    {
+      "resource": "practice_v4_left_inhale",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -9.13
+    },
+    {
+      "resource": "practice_v4_right_exhale",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -8.53
+    },
+    {
+      "resource": "practice_v4_right_inhale",
+      "integratedLUFS": -24.03,
+      "truePeakDBTP": -8.12
+    },
+    {
+      "resource": "practice_v4_left_exhale",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.38
+    },
+    {
+      "resource": "practice_v4_nsdr_600_0",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -7.1
+    },
+    {
+      "resource": "practice_v4_nsdr_600_1",
+      "integratedLUFS": -24.06,
+      "truePeakDBTP": -6.97
+    },
+    {
+      "resource": "practice_v4_nsdr_600_2",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -9.36
+    },
+    {
+      "resource": "practice_v4_nsdr_600_3",
+      "integratedLUFS": -23.98,
+      "truePeakDBTP": -9.65
+    },
+    {
+      "resource": "practice_v4_nsdr_600_4",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -9.83
+    },
+    {
+      "resource": "practice_v4_nsdr_600_5",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.22
+    },
+    {
+      "resource": "practice_v4_nsdr_600_6",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -5.27
+    },
+    {
+      "resource": "practice_v4_nsdr_600_7",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -7.55
+    },
+    {
+      "resource": "practice_v4_nsdr_600_8",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -8.12
+    },
+    {
+      "resource": "practice_v4_nsdr_600_9",
+      "integratedLUFS": -24.1,
+      "truePeakDBTP": -10.05
+    },
+    {
+      "resource": "practice_v4_nsdr_600_10",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -6.54
+    },
+    {
+      "resource": "practice_v4_nsdr_600_11",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -9.25
+    },
+    {
+      "resource": "practice_v4_nsdr_600_12",
+      "integratedLUFS": -23.97,
+      "truePeakDBTP": -9.63
+    },
+    {
+      "resource": "practice_v4_nsdr_600_13",
+      "integratedLUFS": -24.05,
+      "truePeakDBTP": -9.44
+    },
+    {
+      "resource": "practice_v4_nsdr_600_14",
+      "integratedLUFS": -23.96,
+      "truePeakDBTP": -8.67
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_0",
+      "integratedLUFS": -24.07,
+      "truePeakDBTP": -7.31
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_1",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -6.76
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_2",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -9.36
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_3",
+      "integratedLUFS": -23.98,
+      "truePeakDBTP": -9.65
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_4",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -9.83
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_5",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.22
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_6",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -5.27
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_7",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -7.55
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_8",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -8.12
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_9",
+      "integratedLUFS": -24.1,
+      "truePeakDBTP": -10.05
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_10",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -6.54
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_11",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -9.25
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_12",
+      "integratedLUFS": -23.85,
+      "truePeakDBTP": -8.5
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_13",
+      "integratedLUFS": -23.85,
+      "truePeakDBTP": -9.13
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_14",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -7.88
+    },
+    {
+      "resource": "practice_v4_nsdr_1200_15",
+      "integratedLUFS": -23.96,
+      "truePeakDBTP": -8.67
+    },
+    {
+      "resource": "practice_v4_meditation_300_0",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.37
+    },
+    {
+      "resource": "practice_v4_meditation_300_1",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -7.61
+    },
+    {
+      "resource": "practice_v4_meditation_300_2",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -5.43
+    },
+    {
+      "resource": "practice_v4_meditation_300_3",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -7.39
+    },
+    {
+      "resource": "practice_v4_meditation_300_4",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.05
+    },
+    {
+      "resource": "practice_v4_meditation_300_5",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.5
+    },
+    {
+      "resource": "practice_v4_meditation_300_6",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -7.65
+    },
+    {
+      "resource": "practice_v4_meditation_300_7",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.83
+    },
+    {
+      "resource": "practice_v4_meditation_600_0",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.37
+    },
+    {
+      "resource": "practice_v4_meditation_600_1",
+      "integratedLUFS": -24.0,
+      "truePeakDBTP": -7.61
+    },
+    {
+      "resource": "practice_v4_meditation_600_2",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -5.43
+    },
+    {
+      "resource": "practice_v4_meditation_600_3",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -7.39
+    },
+    {
+      "resource": "practice_v4_meditation_600_4",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.05
+    },
+    {
+      "resource": "practice_v4_meditation_600_5",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.39
+    },
+    {
+      "resource": "practice_v4_meditation_600_6",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.21
+    },
+    {
+      "resource": "practice_v4_meditation_600_7",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.34
+    },
+    {
+      "resource": "practice_v4_meditation_600_8",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.83
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_0",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.61
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_1",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -8.98
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_2",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.8
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_3",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.11
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_4",
+      "integratedLUFS": -24.04,
+      "truePeakDBTP": -8.78
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_5",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -7.51
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_180_6",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.71
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_0",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -8.61
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_1",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -8.98
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_2",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.8
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_3",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.11
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_4",
+      "integratedLUFS": -24.04,
+      "truePeakDBTP": -8.78
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_5",
+      "integratedLUFS": -24.02,
+      "truePeakDBTP": -7.51
+    },
+    {
+      "resource": "practice_v4_diaphragmaticBreathing_300_6",
+      "integratedLUFS": -24.01,
+      "truePeakDBTP": -9.71
+    }
+  ],
+  "minimumLUFS": -24.1,
+  "maximumLUFS": -23.85,
+  "peakMaximumDBTP": -5.27
+}

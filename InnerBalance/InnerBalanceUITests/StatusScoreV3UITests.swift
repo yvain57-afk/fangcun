@@ -5,7 +5,7 @@ final class StatusScoreV3UITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep375", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["尚可"].waitForExistence(timeout: 12))
     XCTAssertTrue(app.staticTexts["78"].exists)
     XCTAssertTrue(app.buttons["today.start"].isHittable)
@@ -34,7 +34,7 @@ final class StatusScoreV3UITests: XCTestCase {
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","--score-night","-fangcun.dark","YES","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
     app.launchArguments += ["-status-v3.avoidBreathing", "NO"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
     XCTAssertTrue(app.staticTexts["今晚早点收尾。"].exists)
     XCTAssertTrue(app.buttons["today.start"].label.contains("2 分钟放松"))
@@ -51,7 +51,7 @@ final class StatusScoreV3UITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing","--readiness-fixture=insufficient","-fangcun.dark","NO","-fangcun.largeType","NO"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12))
     XCTAssertFalse(app.staticTexts["status.score"].exists); assertClean(app)
     app.buttons["status.manual"].tap()
@@ -66,13 +66,13 @@ final class StatusScoreV3UITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","-fangcun.dark","YES","-fangcun.largeType","YES","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL","-fangcun.reduceMotion","YES"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
-    let sizeControl = app.buttons["切换大字号"]
-    let appearanceControl = app.buttons["切换深浅色模式"]
-    let brand = app.descendants(matching: .any).matching(identifier: "home.brandPoint").firstMatch
-    XCTAssertLessThanOrEqual(brand.frame.maxX, sizeControl.frame.minX)
-    XCTAssertLessThanOrEqual(sizeControl.frame.maxX, appearanceControl.frame.minX)
+    let settingsControl = app.buttons["daily.settings"]
+    let brand = app.descendants(matching: .any).matching(identifier: "daily.title").firstMatch
+    XCTAssertLessThanOrEqual(brand.frame.maxX, settingsControl.frame.minX)
+    XCTAssertGreaterThanOrEqual(settingsControl.frame.width, 44)
+    XCTAssertGreaterThanOrEqual(settingsControl.frame.height, 44)
     assertClean(app); capture("v3-dark-maximum-home",app)
     let action = app.buttons["today.start"]
     for _ in 0..<6 where !action.isHittable { app.swipeUp() }

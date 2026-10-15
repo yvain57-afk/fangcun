@@ -275,6 +275,7 @@ private struct WatchPracticeSessionView: View {
     case .meditation: return "注意一次自然呼吸"
     case .nsdr: return "感受身体的支撑"
     case .kegel: return Int(elapsed) % 12 < 4 ? "轻轻收紧" : "完全放松"
+    default: return "请在 iPhone 上进行这项练习"
     }
   }
 
@@ -295,7 +296,7 @@ private struct WatchPracticeSessionView: View {
   }
 
   private func startPractice() async {
-    guard !isStarting else { return }
+    guard !isStarting, plan.kind.isLegacyWatchExecutable else { return }
     isStarting = true
     if evidenceRequested {
       let startedEvidence = await evidenceSession.start()
@@ -417,6 +418,10 @@ extension PracticeKind {
     case .meditation: "冥想放松"
     case .nsdr: "NSDR"
     case .kegel: "凯格尔"
+    case .balancedBreathing: "均衡慢呼吸"
+    case .boxBreathing: "方块呼吸"
+    case .diaphragmaticBreathing: "膈肌呼吸"
+    case .alternateNostrilBreathing: "交替鼻孔呼吸"
     }
   }
 
@@ -427,6 +432,7 @@ extension PracticeKind {
     case .meditation: "5 / 10 分钟"
     case .nsdr: "10 / 20 分钟·疲惫"
     case .kegel: "盆底肌收紧与放松·3 分钟"
+    default: "在 iPhone 上练习"
     }
   }
 
@@ -437,6 +443,7 @@ extension PracticeKind {
     case .meditation: "把注意力放在呼吸和支撑感上。"
     case .nsdr: "请躺下或半躺，确保暂时不需要驾驶。"
     case .kegel: "保持自然呼吸，不在排尿时练习。"
+    default: "这项新方法请在 iPhone 上进行。"
     }
   }
 
@@ -447,6 +454,7 @@ extension PracticeKind {
     case .meditation: "figure.mind.and.body"
     case .nsdr: "bed.double.fill"
     case .kegel: "figure.core.training"
+    default: "iphone"
     }
   }
 }

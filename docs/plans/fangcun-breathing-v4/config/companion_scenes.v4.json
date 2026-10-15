@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "1.0",
+  "status": "animation_direction_not_rendered_assets",
+  "coordinateSpace": "normalized_1000_square",
+  "timingAuthority": "practice_session_timeline",
+  "sceneCount": 9,
+  "scenes": [
+    {
+      "id": "cat_flower_sigh",
+      "practiceID": "physiologicalSigh",
+      "title": "小猫闻花，轻轻叹气",
+      "lead": "cat",
+      "support": "small_flower",
+      "rigs": [
+        "cat_seated_three_quarter"
+      ],
+      "entrySeconds": 2.4,
+      "entry": "猫坐稳，尾尖绕到前爪外侧，低头看一眼小花；不提前播放吸气指令。",
+      "phases": [
+        {
+          "key": "inhale",
+          "seconds": 3,
+          "action": "胸腹局部展开至主吸位置，鼻尖轻靠近花，头前倾约1度，脚不动。"
+        },
+        {
+          "key": "topUp",
+          "seconds": 2,
+          "action": "胸腹再增加极小幅度；鼻尖轻抬，主吸与补吸的两层动作清楚分开。"
+        },
+        {
+          "key": "exhale",
+          "seconds": 7,
+          "action": "嘴型轻松张开，肩背和胸腹缓缓落回，眼睛放软，花只轻偏一次。"
+        }
+      ],
+      "completion": "保存成功后慢眨眼一次，尾尖轻收；不跳跃。",
+      "avoid": [
+        "整图缩放",
+        "补吸动作大于主吸",
+        "鼓腮猛吹",
+        "每轮重新坐下"
+      ],
+      "naturalBreath": false
+    },
+    {
+      "id": "dog_pillow_exhale",
+      "practiceID": "pacedBreathing",
+      "title": "小狗枕爪，慢慢放下",
+      "lead": "dog",
+      "support": "soft_pillow",
+      "rigs": [
+        "dog_prone_front"
+      ],
+      "entrySeconds": 3.0,
+      "entry": "前爪放好，下巴落在爪上，垂耳自然垂下，姿势落稳。",
+      "phases": [
+        {
+          "key": "inhale",
+          "seconds": 4,
+          "action": "侧胸缓慢展开，下巴和前爪持续接触；眼皮只在必要时轻动。"
+        },
+        {
+          "key": "exhale",
+          "seconds": 6,
+          "action": "胸腹慢慢回落，软垫局部轻压，耳根放软；狗始终趴着。"
+        }
+      ],
+      "completion": "保持安静趴卧；暗屏/睡前不播放额外声音，不唤醒屏幕。",
+      "avoid": [
+        "每10秒起身再趴下",
+        "摇尾不停",
+        "打呼或大声哈欠",
+        "反复头部大起伏"
+      ],
+      "naturalBreath": false
+    },
+    {
+      "id": "duo_settled_breath",
+      "practiceID": "balancedBreathing",
+      "title": "猫狗并肩，同步安定",
+      "lead": "duo",
+      "support": "shared_mat",
+      "rigs": [
+        "cat_seated_front",
+        "dog_seated_front"
+      ],
+      "entrySeconds": 2.6,
+      "entry": "狗先坐稳，猫在旁边轻靠近；相互看一眼后各自面向前方。",
+      "phases": [
+        {
+          "key": "inhale",
+          "seconds": 5,
+          "action": "同一时钟驱动两只角色胸腹展开，幅度各异但相位相同。"
+        },
+        {
+          "key": "exhale",
+          "seconds": 5,
+          "action": "两者同时平稳回落，脚与坐垫锚点不漂移。"
+        }
+      ],
+      "completion": "保存后两者各轻点头一次；不把点头当成练习的必做动作。",
+      "avoid": [
+        "猫吸狗呼",
+        "错相位交错呼吸",
+        "全身同步变大",
+        "为可爱改变秒拍"
+      ],
+      "naturalBreath": false,
+      "variantRule": "4/4完全由方法配置驱动，不能把5秒写死在动画中。"
+    },
+    {
+      "id": "cat_four_corners",
+      "practiceID": "boxBreathing",
+      "title": "小猫守着四角坐垫",
+      "lead": "cat",
+      "support": "four_corner_mat",
+      "rigs": [
+        "cat_seated_front"
+      ],
+      "entrySeconds": 2.0,
+      "entry": "猫轻抬一只前爪，放在四角坐垫旁，注意前方；角点作为小型教学标记。",
+      "phases": [
+        {
+          "key": "inhale",
+          "seconds": 3,
+          "action": "胸腹展开；前爪在阶段开始时轻点第一角一次，随后落稳。"
+        },
+        {
+          "key": "holdAfterInhale",
+          "seconds": 3,
+          "action": "胸腹保持展开位置，第二角提示；脸放松，绝不鼓腮憋红。"
+        },
+        {
+          "key": "exhale",
+          "seconds": 3,
+          "action": "胸腹平缓回落，第三角提示，尾巴保持安静。"
+        },
+        {
+          "key": "holdAfterExhale",
+          "seconds": 3,
+          "action": "胸腹保持回落位置，第四角提示；不在停留时继续呼吸形变。"
+        }
+      ],
+      "completion": "收回前爪，放松坐稳；保存成功才显示记录完成。",
+      "avoid": [
+        "停留时仍起伏",
+        "紧张表情",
+        "把方框做成取代角色的主画面",
+        "憋气挑战奖励"
+      ],
+      "naturalBreath": false
+    },
+    {
+      "id": "dog_soft_belly",
+      "practiceID": "diaphragmaticBreathing",
+      "title": "小狗侧躺，软软肚皮",
+      "lead": "dog",
+      "support": "small_mat",
+      "rigs": [
+        "dog_side_lying"
+      ],
+      "entrySeconds": 3.0,
+      "entry": "狗用真实关键姿势从坐姿转到侧躺；前爪轻搭腹部旁，不能把立绘直接旋转90度。",
+      "phases": [],
+      "completion": "安静抬眼，前爪放回舒适位置；不做腹肌发力动作。",
+      "avoid": [
+        "固定倒计时强迫自然呼吸",
+        "压肚皮",
+        "肚子气球式膨大",
+        "暗示测到用户胸腹"
+      ],
+      "naturalBreath": true,
+      "tutorial": "独立动作示范中展示下肋/腹部轻开合；清楚标“动作示范，按自己的节奏”。正式练习不使用固定吸呼倒计时。",
+      "eventMotion": "随身体部位语音将前爪轻放下肋外侧或松回；慢眨眼和耳朵小调整低频出现。"
+    },
+    {
+      "id": "dog_two_leaves",
+      "practiceID": "alternateNostrilBreathing",
+      "title": "小狗看叶子，左右有序",
+      "lead": "dog",
+      "support": "two_leaf_markers",
+      "rigs": [
+        "dog_seated_front"
+      ],
+      "entrySeconds": 2.0,
+      "entry": "两侧各一片小叶子，小狗稳坐中间；教学明确左右均指用户自己。",
+      "phases": [
+        {
+          "key": "leftInhale",
+          "seconds": 3,
+          "action": "注意左叶，轻轻吸气，文字“左侧吸气”。"
+        },
+        {
+          "key": "rightExhale",
+          "seconds": 3,
+          "action": "换到右叶，轻轻呼气，文字“右侧呼气”。"
+        },
+        {
+          "key": "rightInhale",
+          "seconds": 3,
+          "action": "保持看右叶，仅改变吸呼动作，不能再换边。"
+        },
+        {
+          "key": "leftExhale",
+          "seconds": 3,
+          "action": "回到左叶，轻轻呼气，文字“左侧呼气”。"
+        }
+      ],
+      "completion": "回到中间，慢眨眼一次。",
+      "avoid": [
+        "左右左右错误顺序",
+        "宠物捂鼻代替人手教学",
+        "镜像翻转导致文字和手势不符",
+        "切侧增加强制屏息"
+      ],
+      "naturalBreath": false
+    },
+    {
+      "id": "cat_leaf_attention",
+      "practiceID": "meditation",
+      "title": "小猫放下叶子，回到此刻",
+      "lead": "cat",
+      "support": "single_leaf",
+      "rigs": [
+        "cat_seated_three_quarter"
+      ],
+      "entrySeconds": 3.0,
+      "entry": "猫看一眼慢慢飘落的叶子，将前爪收好，坐稳闭眼。",
+      "phases": [],
+      "completion": "随收束语音微睁眼、伸一下前爪，再落回；保存反馈克制。",
+      "avoid": [
+        "追逐叶子小游戏",
+        "满屏飘叶",
+        "30秒机械循环表演",
+        "把冥想做固定呼吸配速"
+      ],
+      "naturalBreath": true,
+      "eventMotion": "只有注意力回归语音点触发一次小动作：眼睛轻开、看向前爪，再闭眼。其余时间安静相伴。"
+    },
+    {
+      "id": "dog_blanket_rest",
+      "practiceID": "nsdr",
+      "title": "小狗盖好，安心休息",
+      "lead": "dog",
+      "support": "cat_pillow_assist_optional",
+      "rigs": [
+        "dog_side_lying",
+        "cat_seated_three_quarter"
+      ],
+      "entrySeconds": 4.0,
+      "entry": "小狗把前爪放好，侧身躺稳；小猫可轻推枕头到旁边后安静停住。采用真实姿势过渡。",
+      "phases": [],
+      "completion": "最后30秒按结束模式缓缓回到身体；安静结束模式保持休息，不弹跳、不叫醒。",
+      "avoid": [
+        "每25秒重复同一六段语音",
+        "20分钟宠物循环表演",
+        "宣传替代睡眠",
+        "假装测出疲劳清零"
+      ],
+      "naturalBreath": true,
+      "eventMotion": "身体扫描到脸、肩、腹部、腿部时，对应区域做一次微小放松动作；非当前区域稳定，后续长停顿中不催用户看屏幕。"
+    },
+    {
+      "id": "dog_gentle_coach",
+      "practiceID": "kegel",
+      "title": "小狗教练，收放分明",
+      "lead": "dog",
+      "support": "small_signal_flag",
+      "rigs": [
+        "dog_seated_front"
+      ],
+      "entrySeconds": 2.0,
+      "entry": "狗坐稳，一只前爪轻搭小旗杆；旁边有独立准确的盆底动作示意。",
+      "phases": [
+        {
+          "key": "contract",
+          "seconds": 4,
+          "action": "前爪在0.35秒内轻举小旗并保持；身体不绷紧、不夹腿，文字“轻轻收紧，保持自然呼吸”。"
+        },
+        {
+          "key": "release",
+          "seconds": 8,
+          "action": "0.4秒内缓缓落旗，耳朵和表情放软，留足完全放松的8秒。"
+        }
+      ],
+      "completion": "完成15轮后小狗收旗、轻点头；展示实际轮次，不给肌力分数。",
+      "avoid": [
+        "鼓腹憋气",
+        "夹腿顶胯示范",
+        "把收紧等同吸气",
+        "省略放松段",
+        "不断催加练"
+      ],
+      "naturalBreath": true
+    }
+  ]
+}

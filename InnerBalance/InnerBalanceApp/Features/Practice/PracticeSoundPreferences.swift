@@ -22,14 +22,9 @@ final class PracticeSoundPreferences {
 
   init(defaults: UserDefaults = .standard) {
     self.defaults = defaults
-    if defaults.string(forKey: Key.voicePack) != PracticeVoiceAssets.selectedPackID {
-      preferredMode = .guided
-      defaults.set(PracticeSoundMode.guided.rawValue, forKey: Key.mode)
-      defaults.set(PracticeVoiceAssets.selectedPackID, forKey: Key.voicePack)
-    } else {
-      preferredMode =
-        defaults.string(forKey: Key.mode).flatMap(PracticeSoundMode.init(rawValue:)) ?? .guided
-    }
+    // A new asset pack must not overwrite a person's existing mute/rhythm choice.
+    preferredMode = defaults.string(forKey: Key.mode).flatMap(PracticeSoundMode.init(rawValue:)) ?? .guided
+    defaults.set(PracticeVoiceAssets.selectedPackID, forKey: Key.voicePack)
     ambienceEnabled =
       defaults.object(forKey: Key.ambience) == nil
       ? true
@@ -38,5 +33,14 @@ final class PracticeSoundPreferences {
 
   func mode(hasVoiceAssets: Bool) -> PracticeSoundMode {
     PracticeSoundMode.resolved(preferredMode, hasVoiceAssets: hasVoiceAssets)
+  }
+}
+
+/// Independent layers retain zero as an intentional mute. No new key resets old preferences.
+enum PracticeAudioLevels {
+  static func read(_ layer: String, defaults: UserDefaults = .standard) -> Float {
+    let key = "practice.sound.volume." + layer
+    guard defaults.object(forKey: key) != nil else { return 1 }
+    return Float(min(1, max(0, defaults.double(forKey: key))))
   }
 }

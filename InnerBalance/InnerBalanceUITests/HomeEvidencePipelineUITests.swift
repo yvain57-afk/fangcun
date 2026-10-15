@@ -49,6 +49,6 @@ final class HomeEvidencePipelineUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing","--readiness-fixture="+fixture,"-fangcun.dark","NO","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
-    app.launch(); return app
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap(); return app
   }
 }

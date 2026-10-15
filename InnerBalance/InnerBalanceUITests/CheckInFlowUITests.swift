@@ -10,14 +10,14 @@ final class CheckInFlowUITests: XCTestCase {
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     return app
   }
 
   @MainActor
   func testHomeLeadsWithOneScoreAndAction() {
     let app = launchApp()
-    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"home.brandPoint").firstMatch.waitForExistence(timeout:5))
+    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"daily.title").firstMatch.waitForExistence(timeout:5))
     XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
     XCTAssertEqual(app.staticTexts["status.band"].label,"良好")
     XCTAssertTrue(app.buttons["today.start"].isHittable)
@@ -42,7 +42,7 @@ final class CheckInFlowUITests: XCTestCase {
   func testExplicitNoBreathingChoiceChangesActionOnly() {
     let app = launchApp()
     XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
-    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap()
+    openDailyActions(app)
     let toggle = app.switches["这次不做呼吸练习"]
     XCTAssertTrue(toggle.waitForExistence(timeout:5))
     if toggle.value as? String != "1" { toggle.coordinate(withNormalizedOffset:CGVector(dx:0.93,dy:0.5)).tap() }
@@ -52,7 +52,7 @@ final class CheckInFlowUITests: XCTestCase {
     waitForExpectations(timeout:5)
     XCTAssertTrue(app.staticTexts["100"].exists)
     // Reset only the explicit preference this test changed.
-    app.buttons["选择练习"].tap(); app.buttons["recovery.change"].tap()
+    openDailyActions(app)
     let reset = app.switches["这次不做呼吸练习"]
     reset.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
     XCTAssertEqual(reset.value as? String, "0")
@@ -63,13 +63,8 @@ final class CheckInFlowUITests: XCTestCase {
   func testPacedBreathingLeadsWithTheCurrentBreathPhase() {
     let app = launchApp()
 
-    app.tabBars.buttons["练习"].tap()
-    let practice = app.buttons["practice.pacedBreathing.180"]
-    XCTAssertTrue(practice.waitForExistence(timeout: 3))
-    practice.tap()
-    let start = app.buttons["开始 3 分钟练习"]
-    XCTAssertTrue(start.waitForExistence(timeout: 3))
-    start.tap()
+    openV4Method("pacedBreathing", app: app)
+    app.buttons["practice.pacedBreathing.300"].tap()
 
     let guide = app.descendants(matching: .any)["practice.breathGuide"]
     XCTAssertTrue(guide.waitForExistence(timeout: 3))
@@ -85,21 +80,10 @@ final class CheckInFlowUITests: XCTestCase {
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
 
-    app.tabBars.buttons["练习"].tap()
-    let practice = app.buttons["practice.pacedBreathing.180"]
-    XCTAssertTrue(practice.waitForExistence(timeout: 3))
-    for _ in 0..<6 where !practice.isHittable {
-      app.scrollViews.firstMatch.swipeUp()
-    }
-    XCTAssertTrue(practice.isHittable)
-    practice.tap()
-    let start = app.buttons["开始 3 分钟练习"]
-    XCTAssertTrue(start.waitForExistence(timeout: 3))
-    for _ in 0..<4 where !start.isHittable {
-      app.scrollViews.firstMatch.swipeUp()
-    }
+    openV4Method("pacedBreathing", app: app)
+    let start = app.buttons["practice.pacedBreathing.300"]
     XCTAssertTrue(start.isHittable)
     start.tap()
 
@@ -113,7 +97,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep480","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
     let action = app.buttons["today.start"]
     for _ in 0..<8 where !action.isHittable { app.swipeUp() }
@@ -141,9 +125,11 @@ final class CheckInFlowUITests: XCTestCase {
   func testFangcunNavigationUsesProductLanguage() {
     let app = launchApp()
 
-    XCTAssertTrue(app.tabBars.buttons["今日"].waitForExistence(timeout: 2))
-    XCTAssertTrue(app.tabBars.buttons["练习"].exists)
-    XCTAssertTrue(app.tabBars.buttons["设置"].exists)
+    XCTAssertTrue(app.tabBars.buttons["日常"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.tabBars.buttons["呼吸"].exists)
+    XCTAssertFalse(app.tabBars.buttons["设置"].exists)
+    XCTAssertTrue(app.buttons["daily.settings"].exists)
+    XCTAssertEqual(app.tabBars.buttons.count, 2)
   }
 
   @MainActor
@@ -201,7 +187,7 @@ final class CheckInFlowUITests: XCTestCase {
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
 
     revealAndTapCheckIn(in: app)
     chooseHighNegativePosition(in: app)
@@ -218,8 +204,8 @@ final class CheckInFlowUITests: XCTestCase {
   func testPracticeLibraryOpensARealSession() {
     let app = launchApp()
 
-    app.tabBars.buttons["练习"].tap()
-    XCTAssertTrue(app.staticTexts["给自己留一点时间"].waitForExistence(timeout: 2))
+    app.tabBars.buttons["呼吸"].tap()
+    XCTAssertTrue(app.staticTexts["呼吸与身心练习"].waitForExistence(timeout: 2))
 
     app.buttons["practice.physiologicalSigh.60"].tap()
 
@@ -235,23 +221,23 @@ final class CheckInFlowUITests: XCTestCase {
   func testPracticeLibraryStartsFromTheOutcomeInsteadOfAPlainCatalog() {
     let app = launchApp()
 
-    app.tabBars.buttons["练习"].tap()
+    app.tabBars.buttons["呼吸"].tap()
 
-    XCTAssertTrue(app.staticTexts["给自己留一点时间"].waitForExistence(timeout: 2))
-    XCTAssertTrue(app.buttons["practice.sigh.300"].exists)
+    XCTAssertTrue(app.staticTexts["呼吸与身心练习"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.buttons["hub.quickStart"].exists)
     XCTAssertTrue(app.buttons["practice.physiologicalSigh.60"].exists)
-    XCTAssertTrue(app.staticTexts["压力中等，节奏偏快"].exists)
-    XCTAssertTrue(app.staticTexts["压力较低，思绪占满"].exists)
-    XCTAssertTrue(app.staticTexts["睡眠或训练透支"].exists)
-    reveal(app.staticTexts["专项训练，不用于即时减压"],in:app)
-    XCTAssertTrue(app.staticTexts["专项训练，不用于即时减压"].exists)
+    XCTAssertTrue(app.staticTexts["睡前放松"].exists)
+    XCTAssertTrue(app.staticTexts["减少分心"].exists)
+    XCTAssertTrue(app.staticTexts["恢复精力"].exists)
+    reveal(app.staticTexts["盆底控制"],in:app)
+    XCTAssertTrue(app.staticTexts["盆底控制"].exists)
   }
 
   @MainActor
   func testPracticeOffersHandsFreeSoundAndHapticGuidance() {
     let app = launchApp()
 
-    app.tabBars.buttons["练习"].tap()
+    app.tabBars.buttons["呼吸"].tap()
     app.buttons["practice.physiologicalSigh.60"].tap()
 
     XCTAssertTrue(app.buttons["开始 1 分钟练习"].waitForExistence(timeout: 5))
@@ -267,7 +253,7 @@ final class CheckInFlowUITests: XCTestCase {
   func testPracticePreparationIsScrollableForLargeContent() {
     let app = launchApp()
 
-    app.tabBars.buttons["练习"].tap()
+    app.tabBars.buttons["呼吸"].tap()
     app.buttons["practice.physiologicalSigh.60"].tap()
 
     XCTAssertTrue(app.scrollViews["practice.preparation"].waitForExistence(timeout: 5))
@@ -283,9 +269,9 @@ final class CheckInFlowUITests: XCTestCase {
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
 
-    app.tabBars.buttons["练习"].tap()
+    app.tabBars.buttons["呼吸"].tap()
     app.buttons["practice.physiologicalSigh.60"].tap()
     let start = app.buttons["开始 1 分钟练习"]
     XCTAssertTrue(start.waitForExistence(timeout: 3))
@@ -301,8 +287,8 @@ final class CheckInFlowUITests: XCTestCase {
     confirmEnd.tap()
 
     XCTAssertFalse(app.staticTexts["和刚才比"].exists)
-    tapPracticeChoice("平和", in: app)
-    tapPracticeChoice("保留现在的感受", in: app)
+    tapPracticeChoice("更舒服", in: app)
+    tapPracticeChoice("保留这次感受", in: app)
 
     let done = app.buttons["practice.saved.done"]
     XCTAssertTrue(done.waitForExistence(timeout: 3))
@@ -322,19 +308,11 @@ final class CheckInFlowUITests: XCTestCase {
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
 
-    app.tabBars.buttons["练习"].tap()
-    let kegel = app.buttons["practice.kegel.180"]
-    for _ in 0..<8 where !kegel.isHittable {
-      app.scrollViews.firstMatch.swipeUp()
-    }
-    XCTAssertTrue(kegel.isHittable)
-    kegel.tap()
-
-    let start = app.buttons["开始 3 分钟练习"]
-    XCTAssertTrue(start.waitForExistence(timeout: 3))
-    start.tap()
+    openV4Method("kegel", app: app)
+    let start = app.buttons["practice.kegel.180"]
+    XCTAssertTrue(start.waitForExistence(timeout: 3)); XCTAssertTrue(start.isHittable); start.tap()
     XCTAssertTrue(
       app.descendants(matching: .any)["practice.pelvicFloorStage"].waitForExistence(timeout: 5)
     )
@@ -349,9 +327,9 @@ final class CheckInFlowUITests: XCTestCase {
     XCTAssertTrue(saveAlert.waitForExistence(timeout: 5))
     saveAlert.buttons["稍后处理"].tap()
 
-    let completionScroll = app.scrollViews["practice.completionOnly.scroll"]
+    let completionScroll = app.scrollViews["practice.comparison.scroll"]
     XCTAssertTrue(completionScroll.waitForExistence(timeout: 3))
-    let save = app.buttons["记录本次完成"]
+    let save = app.buttons["practice.feedback.skip"]
     XCTAssertTrue(save.waitForExistence(timeout: 3))
     if !save.isHittable {
       completionScroll.swipeUp()
@@ -388,7 +366,7 @@ final class CheckInFlowUITests: XCTestCase {
     XCTAssertTrue(button.waitForExistence(timeout: 3))
     XCTAssertTrue(button.isHittable)
     button.tap()
-    if label != "保留这次变化" && label != "保留现在的感受" {
+    if label != "保留这次变化" && label != "保留这次感受" {
       expectation(
         for: NSPredicate(format: "selected == true"),
         evaluatedWith: button

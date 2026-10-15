@@ -27,6 +27,8 @@ public enum PracticeHapticCadence {
       let cycle = Int(elapsed / 10)
       let phase = elapsed.truncatingRemainder(dividingBy: 10) < 4 ? 0 : 1
       return cycle * 2 + phase
+    case .balancedBreathing, .boxBreathing, .alternateNostrilBreathing, .diaphragmaticBreathing:
+      return PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: 300).cueID
     case .meditation:
       return Int(elapsed / 10)
     case .nsdr:

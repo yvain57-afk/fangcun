@@ -64,6 +64,14 @@ import Foundation
         drink.beverageDetails != nil, !peerCapabilities.contains("beverage-v2") {
         lastError = "peer_beverage_upgrade_required"; continue
       }
+      if event.kind == .session, !event.deleted,
+        let record = try? JSONDecoder().decode(RecoverySession.self, from: event.payload),
+        case .practice(let kind) = record.action,
+        (!kind.isLegacyWatchExecutable || record.protocolVersion == 4),
+        !peerCapabilities.contains("practice-record-v4") {
+        // Keep the exact method locally until the peer can decode it. Never rename it to a legacy method.
+        lastError = "peer_practice_upgrade_required"; continue
+      }
       do {
         try await store.attempted(event.eventID, now: now)
         let packet = SyncPacket(origin: state.installationID, role: role, event: event)
@@ -141,7 +149,11 @@ import Foundation
         }
       }
       guard await store.snapshot().peerInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
-      if let capabilities = packet.capabilities { peerCapabilities = Set(capabilities) }
+      if packet.hello {
+        // A reinstall/downgrade may retain the same installation ID. Its fresh handshake
+        // is authoritative, including an absent legacy capability list.
+        peerCapabilities = Set(packet.capabilities ?? [])
+      } else if let capabilities = packet.capabilities { peerCapabilities = Set(capabilities) }
       if let event = packet.event {
         guard event.originInstallationID == packet.originInstallationID else { throw SyncStore.Failure.peer }
         let ack = try await store.receive(event)

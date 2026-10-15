@@ -49,4 +49,25 @@ import InnerBalanceCore
     #expect(owner.records.first?.feedback?.helpfulness == .uncomfortable)
     #expect(owner.records.first?.endReason == .legacyUnknown)
   }
+  @Test func v4ProjectionKeepsTrueMethodPartialEndAndLaterFeedback() async throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let owner = RecoveryCoordinator(store: try RecoveryStore(directory: directory))
+    let start = Date(timeIntervalSince1970: 1000)
+    var record = PracticeCompletionRecord(sessionID: "v4-projection", practiceKind: .balancedBreathing, plannedDuration: 300, actualDuration: 20, startedAt: start, endedAt: start.addingTimeInterval(20), beforeRating: nil, afterRating: nil, metadata: .init(timelineVariantID: "easy_4_4", sceneID: "duo_settled_breath", completionStatus: "endedEarly", completedCycles: 2, activeIntervals: [.init(start: start, end: start.addingTimeInterval(20))]))
+    await owner.importPractice(record)
+    #expect(owner.records.first?.protocolVersion == 4)
+    #expect(owner.records.first?.action == .practice(.balancedBreathing))
+    #expect(owner.records.first?.endReason == .endedEarly)
+    #expect(owner.records.first?.feedback == nil)
+    record.metadata?.subjectiveFeedback = "不舒服"
+    await owner.importPractice(record)
+    await owner.importPractice(record)
+    #expect(owner.records.count == 1)
+    #expect(owner.records.first?.activeDuration == 20)
+    #expect(owner.records.first?.feedback?.helpfulness == .uncomfortable)
+    #expect(owner.records.first?.feedback?.revision == 1)
+    #expect(owner.uncomfortable.contains(.practice(.balancedBreathing)))
+  }
+
 }

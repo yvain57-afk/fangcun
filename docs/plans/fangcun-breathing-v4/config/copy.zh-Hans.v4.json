@@ -1,0 +1,161 @@
+{
+  "brand": "方寸",
+  "subtitle": "呼吸与身心练习",
+  "navigation": [
+    "呼吸",
+    "日常"
+  ],
+  "home": {
+    "headline": "从一口呼吸开始",
+    "section": "全部练习",
+    "count": "9 项",
+    "filters": [
+      "全部",
+      "放松",
+      "专注",
+      "休息",
+      "身体训练"
+    ],
+    "resume": "继续这次练习",
+    "change": "换个练习",
+    "duration": "练习时长",
+    "start": "开始练习",
+    "history": "查看练习记录",
+    "emptyHealthNotShown": true
+  },
+  "session": {
+    "pause": "暂停",
+    "paused": "已暂停，先自然呼吸",
+    "resume": "准备好了，继续",
+    "end": "结束练习",
+    "exitTitle": "结束这次练习？",
+    "exitKeep": "结束并保留已练时间",
+    "exitCancel": "继续练习",
+    "savePending": "正在保存练习",
+    "saveSuccess": "练习已记录",
+    "saveFailed": "暂时没能保存，请重试",
+    "partial": "本次练习提前结束",
+    "feedbackTitle": "此刻感觉怎样？",
+    "feedbackOptions": [
+      "更舒服",
+      "差不多",
+      "不舒服"
+    ],
+    "feedbackSkip": "暂不记录",
+    "audio": [
+      "语音引导",
+      "仅节奏",
+      "静音"
+    ],
+    "eyeClosed": "跟随声音，可以少看屏幕",
+    "silentLock": "静音时锁屏会暂停练习",
+    "displaySettings": "显示与声音"
+  },
+  "daily": {
+    "title": "日常",
+    "practice": "练习记录",
+    "body": "身体状态",
+    "drinks": "饮品与关怀",
+    "feelings": "感受记录",
+    "lightActions": "轻行动",
+    "settings": "设置",
+    "health": "Apple 健康",
+    "noData": "暂未获得可用数据",
+    "manageHealth": "管理健康数据",
+    "retrySync": "重试同步",
+    "localSaved": "已保存在本机",
+    "queuedSync": "健康同步稍后重试"
+  },
+  "practiceCopy": {
+    "physiologicalSigh": {
+      "benefitTitle": "舒缓紧张",
+      "methodTitle": "生理性叹息",
+      "subtitle": "双吸一呼",
+      "summary": "用两次轻吸和一次长呼，放慢急促的呼吸，松开紧绷感。",
+      "bestFor": "突然紧张、忙碌间隙，或想先缓一缓。",
+      "completion": "完成了一段舒缓呼吸练习。",
+      "howTo": "轻轻鼻吸 → 再补一小口 → 用嘴慢慢呼出。",
+      "safety": "轻柔呼吸，不必吸满；头晕或不舒服时停止，恢复自然呼吸。"
+    },
+    "pacedBreathing": {
+      "benefitTitle": "睡前放松",
+      "methodTitle": "节律呼吸",
+      "subtitle": "延长呼气",
+      "summary": "把呼气放长，让身体慢下来，为休息和入睡做准备。",
+      "bestFor": "睡前、一天结束后，或需要安静下来的时刻。",
+      "completion": "完成了一段睡前放松练习。",
+      "howTo": "轻轻吸气 4 秒 → 慢慢呼气 6 秒，全程不屏息。",
+      "safety": "不追求深吸或用力呼尽；节奏吃力时停止，恢复自然呼吸。"
+    },
+    "balancedBreathing": {
+      "benefitTitle": "稳住节奏",
+      "methodTitle": "均衡慢呼吸",
+      "subtitle": "等时吸呼",
+      "summary": "用均匀的吸气和呼气，练习稳定、从容的呼吸节奏。",
+      "bestFor": "日常固定练习、工作间隙，或喜欢简单节拍的时候。",
+      "completion": "完成了一段均衡呼吸练习。",
+      "howTo": "吸气与呼气一样长；默认各 5 秒，也可选各 4 秒。",
+      "safety": "轻柔呼吸，不必吸满；不舒服时停止。"
+    },
+    "boxBreathing": {
+      "benefitTitle": "进入专注",
+      "methodTitle": "方块呼吸",
+      "subtitle": "四段节拍",
+      "summary": "跟随吸、停、呼、停四段节拍，把注意力收回到眼前。",
+      "bestFor": "工作、阅读、演讲准备之前。",
+      "completion": "完成了一段专注呼吸练习。",
+      "howTo": "吸气 3 秒 → 停留 3 秒 → 呼气 3 秒 → 停留 3 秒。",
+      "safety": "含短暂停留。无需忍耐憋气；不舒服时恢复自然呼吸，可换均衡慢呼吸。"
+    },
+    "diaphragmaticBreathing": {
+      "benefitTitle": "轻松呼吸",
+      "methodTitle": "膈肌呼吸",
+      "subtitle": "腹部与下肋",
+      "summary": "学会用腹部和下肋轻柔呼吸，减少肩颈带着用力。",
+      "bestFor": "想学会不费力的呼吸，或先熟悉身体动作。",
+      "completion": "完成了一段呼吸动作练习。",
+      "howTo": "手轻放腹部或下肋，感受吸气时轻轻展开、呼气时回落；按自己的节奏。",
+      "safety": "不故意鼓大肚子，不压腹部，不强行深吸；不适时停止。"
+    },
+    "alternateNostrilBreathing": {
+      "benefitTitle": "静心收神",
+      "methodTitle": "交替鼻孔呼吸",
+      "subtitle": "左右交替",
+      "summary": "在左右鼻孔交替中集中注意，暂时放下纷乱的思绪。",
+      "bestFor": "可以空出一只手，想做一段专注的静心练习。",
+      "completion": "完成了一段交替鼻孔呼吸。",
+      "howTo": "左侧吸 → 右侧呼 → 右侧吸 → 左侧呼；轻轻换边，不屏息。",
+      "safety": "鼻塞或鼻部不舒服时换其他方法；手指轻放，不压迫鼻子。"
+    },
+    "meditation": {
+      "benefitTitle": "减少分心",
+      "methodTitle": "冥想",
+      "subtitle": "注意力回归",
+      "summary": "练习发现走神、放下念头，再把注意力带回当下。",
+      "bestFor": "思绪很多、难以停下，或想练习注意力。",
+      "completion": "完成了一段注意力练习。",
+      "howTo": "感受身体被托住 → 留意自然呼吸 → 走神后温和地回来。",
+      "safety": "可以睁眼练习；不舒服时看看周围并结束。"
+    },
+    "nsdr": {
+      "benefitTitle": "恢复精力",
+      "methodTitle": "NSDR",
+      "subtitle": "躺式引导休息",
+      "summary": "通过躺式放松和身体扫描缓解疲惫，让身心获得一段深度休息。",
+      "bestFor": "午间、工作之后，或需要躺下歇一会儿。",
+      "completion": "完成了一段 NSDR 深度休息。",
+      "howTo": "躺稳 → 跟随声音扫描身体 → 安静休息 → 缓缓回来。",
+      "safety": "在安全、能休息的地方使用；不在驾驶或操作设备时练习，不能代替正常睡眠。"
+    },
+    "kegel": {
+      "benefitTitle": "盆底控制",
+      "methodTitle": "凯格尔",
+      "subtitle": "收紧与完全放松",
+      "summary": "练习盆底肌的收紧、保持与放松，逐步增强盆底控制。",
+      "bestFor": "主动选择盆底肌训练，且已经了解正确动作。",
+      "completion": "完成了一段盆底控制练习。",
+      "howTo": "轻收 4 秒 → 完全放松 8 秒，始终自然呼吸。",
+      "safety": "不在排尿时练习；腹部、臀部和大腿保持放松。盆底持续紧张、疼痛、排尿排便异常或产后术后恢复中，先咨询专业人员。"
+    }
+  }
+}

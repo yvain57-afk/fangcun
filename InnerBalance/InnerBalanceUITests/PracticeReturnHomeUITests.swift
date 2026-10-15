@@ -12,7 +12,7 @@ final class PracticeReturnHomeUITests: XCTestCase {
     XCTAssertTrue(confirmEnd.waitForExistence(timeout: 3))
     confirmEnd.tap()
 
-    let skip = app.buttons["先完成"]
+    let skip = app.buttons["practice.feedback.skip"]
     XCTAssertTrue(skip.waitForExistence(timeout: 5))
     for _ in 0..<4 where !skip.isHittable {
       app.scrollViews.firstMatch.swipeUp()
@@ -23,9 +23,10 @@ final class PracticeReturnHomeUITests: XCTestCase {
     XCTAssertTrue(done.waitForExistence(timeout: 5))
     done.tap()
 
-    let now = app.tabBars.buttons["今日"]
+    let now = app.tabBars.buttons["呼吸"]
     XCTAssertTrue(now.waitForExistence(timeout: 5))
     XCTAssertTrue(now.isSelected)
+    app.tabBars.buttons["日常"].tap()
     let saved = app.descendants(matching: .any)["today.latestPractice"].firstMatch
     reveal(saved, app)
     XCTAssertTrue(saved.exists)
@@ -39,14 +40,14 @@ final class PracticeReturnHomeUITests: XCTestCase {
     let app = launchPracticeFromLibrary()
     app.buttons["practice.close"].tap()
 
-    let practice = app.tabBars.buttons["练习"]
+    let practice = app.tabBars.buttons["呼吸"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))
     XCTAssertTrue(practice.isSelected)
-    XCTAssertTrue(app.buttons["practice.sigh.300"].exists)
+    XCTAssertTrue(app.buttons["hub.quickStart"].exists)
     XCTAssertFalse(app.buttons["暂停练习"].exists)
-    app.tabBars.buttons["今日"].tap()
+    app.tabBars.buttons["日常"].tap()
     XCTAssertFalse(app.descendants(matching: .any)["today.latestPractice"].exists)
-    app.tabBars.buttons["练习"].tap()
+    app.tabBars.buttons["呼吸"].tap()
     let launch = app.buttons["practice.physiologicalSigh.60"]
     reveal(launch, app)
     launch.tap()
@@ -64,8 +65,8 @@ final class PracticeReturnHomeUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--readiness-disabled"]
-    app.launch()
-    let practice = app.tabBars.buttons["练习"]
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    let practice = app.tabBars.buttons["呼吸"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))
     practice.tap()
     let launch = app.buttons["practice.physiologicalSigh.60"]

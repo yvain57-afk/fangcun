@@ -366,20 +366,20 @@ struct FangcunResponseLoopTests {
   @Test("The unselected starting default is not treated as user input")
   @MainActor
   func unselectedStartingValueStaysAbsent() throws {
-    let clock = FangcunTestClock(
-      values: [
-        Date(timeIntervalSince1970: 1_788_000_000),
-        Date(timeIntervalSince1970: 1_788_000_030),
-      ])
+    let clock = FangcunTestClock(now: Date(timeIntervalSince1970: 1_788_000_000))
     let viewModel = PracticeSessionViewModel(
       plan: PracticeCatalog.protocol(for: .physiologicalSigh)!,
       duration: 60,
-      now: { clock.next() }
+      now: { clock.now }
     )
 
     viewModel.start(beforeRating: nil)
+    clock.now = Date(timeIntervalSince1970: 1_788_000_030)
     viewModel.finish()
     let record = try #require(viewModel.makeCompletion(sessionID: "no-default-rating"))
+
+    #expect(record.actualDuration == 30)
+    #expect(record.metadata?.activeIntervals.reduce(0) { $0 + $1.duration } == 30)
 
     #expect(record.beforeRating == nil)
     #expect(record.afterRating == nil)
@@ -495,14 +495,11 @@ private final class FangcunRecordingHealthWriter: HealthWriting {
   }
 }
 
-private final class FangcunTestClock: @unchecked Sendable {
-  private var values: [Date]
+@MainActor
+private final class FangcunTestClock {
+  var now: Date
 
-  init(values: [Date]) {
-    self.values = values
-  }
-
-  func next() -> Date {
-    values.removeFirst()
+  init(now: Date) {
+    self.now = now
   }
 }

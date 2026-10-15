@@ -4,9 +4,11 @@ import SwiftUI
 enum BreathingFieldPresentation {
   static func targetExpansion(for phase: PracticeBreathPhase, kind: PracticeKind) -> Double {
     switch phase {
-    case .inhale: kind == .physiologicalSigh ? 0.82 : 1
+    case .inhale, .leftInhale, .rightInhale: kind == .physiologicalSigh ? 0.82 : 1
     case .topUp: 1
-    case .exhale: 0.28
+    case .exhale, .leftExhale, .rightExhale, .holdAfterExhale, .release: 0.28
+    case .holdAfterInhale, .contract: 1
+    case .natural: 0.5
     }
   }
 
@@ -24,9 +26,10 @@ enum BreathingFieldPresentation {
 
   static func startExpansion(for phase: PracticeBreathPhase, kind _: PracticeKind) -> Double {
     switch phase {
-    case .inhale: 0.28
+    case .inhale, .leftInhale, .rightInhale, .holdAfterExhale, .release: 0.28
     case .topUp: 0.82
-    case .exhale: 1
+    case .exhale, .leftExhale, .rightExhale, .holdAfterInhale, .contract: 1
+    case .natural: 0.5
     }
   }
 
@@ -67,121 +70,28 @@ struct BreathingFieldPlayer: View {
   let sessionRemaining: TimeInterval
   let isPaused: Bool
   let reduceMotion: Bool
-
-  private var state: PracticeBreathState {
-    PracticeBreathGuide.state(for: kind, elapsed: elapsed)
+  var variantID: String? = nil
+  private var snapshot: PracticeTimelineSnapshot {
+    PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: elapsed + sessionRemaining, variantID: variantID)
   }
-
   var body: some View {
-    PracticeStageScaffold(
-      eyebrow: kind == .physiologicalSigh ? "双吸一呼" : "舒缓呼吸",
-      title: isPaused ? "已暂停" : state.phase.title,
-      instruction: isPaused ? "准备好后，从这里接着来" : instruction,
-      remaining: sessionRemaining,
-      accessibilityIdentifier: "practice.breathGuide",
-      titleAccessibilityIdentifier: "practice.breathPhase",
-      showsStageCard: false
-    ) {
-      ZStack {
-        ForEach([0.82, 1.0, 1.18], id: \.self) { scale in
-          Circle().stroke(InnerBalanceTheme.strongFill.opacity(0.09), lineWidth: 1)
-            .scaleEffect(scale * (0.86 + (reduceMotion ? 0.12 : BreathingFieldPresentation.currentExpansion(for: state, kind: kind) * 0.14)))
-        }
-        FangcunCompanion(scene: .breathe,
-          breath: reduceMotion ? 0 : BreathingFieldPresentation.currentExpansion(for: state, kind: kind),
-          paused: isPaused)
-          .frame(width: 210, height: 210)
-          .clipShape(Circle())
-      }.frame(width: 260, height: 260)
-
+    PracticeStageScaffold(eyebrow: kind.outcomeTitle,
+      title: isPaused ? "已暂停" : snapshot.phase?.title ?? "自然呼吸",
+      instruction: isPaused ? "先自然呼吸，准备好再继续" : instruction,
+      remaining: sessionRemaining, accessibilityIdentifier: "practice.breathGuide",
+      titleAccessibilityIdentifier: "practice.breathPhase", showsStageCard: false) {
+        PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: elapsed + sessionRemaining,
+          variantID: variantID, isActive: !isPaused)
+          .frame(maxWidth: 320).frame(height: 280)
     }
   }
-
   private var instruction: String {
-    switch (kind, state.phase) {
-    case (.physiologicalSigh, .inhale): "用鼻子轻轻吸气"
-    case (.physiologicalSigh, .topUp): "再补一小口"
-    case (.physiologicalSigh, .exhale): "松开嘴唇，慢慢呼尽"
-    case (.pacedBreathing, .inhale): "轻轻吸气，不必吸满"
-    case (.pacedBreathing, .exhale): "让呼气比吸气更长"
-    default: "跟着场域的开合呼吸"
-    }
-  }
-}
-
-private struct BreathingOrbField: View {
-  let expansion: Double
-  let phase: PracticeBreathPhase
-  let reduceMotion: Bool
-
-  var body: some View {
-    ZStack {
-      ForEach(Array([0.72, 0.90, 1.08].enumerated()), id: \.offset) { index, scale in
-        Circle()
-          .stroke(
-            InnerBalanceTheme.hairline.opacity(0.72 + Double(index) * 0.12),
-            lineWidth: 1
-          )
-          .scaleEffect(scale * (0.82 + expansion * 0.16))
-      }
-      Circle()
-        .fill(InnerBalanceTheme.subtleFill.opacity(0.82))
-        .frame(width: 184, height: 184)
-        .scaleEffect(0.68 + expansion * 0.30)
-      Circle()
-        .stroke(
-          InnerBalanceTheme.emphasis.opacity(phaseStrokeOpacity),
-          lineWidth: phaseLineWidth
-        )
-        .frame(width: 142, height: 142)
-        .scaleEffect(0.72 + expansion * 0.26)
-      Circle()
-        .fill(InnerBalanceTheme.strongFill.opacity(phaseCoreOpacity))
-        .frame(width: 54, height: 54)
-        .scaleEffect(0.82 + expansion * 0.22)
-      Circle()
-        .fill(InnerBalanceTheme.elevatedSurface)
-        .frame(width: 16, height: 16)
-        .overlay { Circle().stroke(InnerBalanceTheme.hairline, lineWidth: 1) }
-    }
-    .frame(width: 260, height: 260)
-    .opacity(reduceMotion ? phaseOpacity : 1)
-    .animation(
-      .timingCurve(0.23, 1, 0.32, 1, duration: 0.20),
-      value: phase
-    )
-    .accessibilityHidden(true)
-  }
-
-  private var phaseLineWidth: CGFloat {
-    switch phase {
-    case .inhale: 2
-    case .topUp: 4
-    case .exhale: 1
-    }
-  }
-
-  private var phaseStrokeOpacity: Double {
-    switch phase {
-    case .inhale: 0.72
-    case .topUp: 1
-    case .exhale: 0.52
-    }
-  }
-
-  private var phaseCoreOpacity: Double {
-    switch phase {
-    case .inhale: 0.78
-    case .topUp: 1
-    case .exhale: 0.58
-    }
-  }
-
-  private var phaseOpacity: Double {
-    switch phase {
-    case .inhale: 0.72
-    case .topUp: 1
-    case .exhale: 0.48
+    switch snapshot.phase {
+    case .inhale, .rightInhale, .leftInhale: "轻轻吸气，不必吸满"
+    case .topUp: "再补一小口，比刚才更轻"
+    case .exhale, .rightExhale, .leftExhale: kind == .pacedBreathing ? "让呼气比吸气更长" : "轻柔、慢慢地呼出"
+    case .holdAfterInhale, .holdAfterExhale: "轻松停留，不用忍耐憋气；不舒服就自然呼吸"
+    default: "跟随自己的舒适节奏"
     }
   }
 }

@@ -2,10 +2,12 @@ import SwiftUI
 import InnerBalanceCore
 
 struct SettingsView: View {
+  @Environment(\.dismiss) private var dismiss
   @Environment(\.careOwner) private var care
   @Environment(\.phoneSync) private var sync
   @Environment(\.recoveryOwner) private var recovery
   @Environment(\.readinessOwner) private var readiness
+  @State private var practiceSound = PracticeSoundPreferences()
   @AppStorage("fangcun.dark") private var dark = false
   @AppStorage("fangcun.largeType") private var large = false
   @AppStorage("fangcun.reduceMotion") private var reduced = false
@@ -35,8 +37,13 @@ struct SettingsView: View {
           Toggle(isOn: $reduced) { Label("减少动态效果", systemImage: "leaf") }
         } header: { Text("舒服的方式，由你决定") }
         .listRowBackground(InnerBalanceTheme.surface)
+        Section("声音引导") {
+          PracticeSoundControls(mode: Binding(get: { practiceSound.mode(hasVoiceAssets: PracticeVoiceAssets.isAvailable(for: .physiologicalSigh)) }, set: { practiceSound.preferredMode = $0 }),
+            ambienceEnabled: Binding(get: { practiceSound.ambienceEnabled }, set: { practiceSound.ambienceEnabled = $0 }),
+            voiceAvailable: PracticeVoiceAssets.isAvailable(for: .physiologicalSigh))
+        }.listRowBackground(InnerBalanceTheme.surface)
         Section {
-          NavigationLink { if let readiness, readiness.enabled { ReadinessHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: { Label("历史与趋势", systemImage: "chart.bar") }
+          NavigationLink { if let readiness, readiness.enabled { DailyStatusHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: { Label("历史与趋势", systemImage: "chart.bar") }
           Stepper(value: $coffeeMg, in: 0...500, step: 10) {
             VStack(alignment: .leading, spacing: 4) {
               Text("每杯咖啡因约 \(coffeeMg) mg")
@@ -106,6 +113,7 @@ struct SettingsView: View {
       .scrollContentBackground(.hidden)
       .background(InnerBalanceTheme.canvas)
       .navigationTitle("设置")
+      .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.accessibilityIdentifier("settings.done") } }
       .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
     }
   }

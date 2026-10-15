@@ -10,9 +10,9 @@ final class FangcunAppearanceUITests: XCTestCase {
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
 
-    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"home.brandPoint").firstMatch.waitForExistence(timeout: 3))
+    XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"daily.title").firstMatch.waitForExistence(timeout: 3))
     capture("home-initial", from: app)
 
     XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
@@ -21,7 +21,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     XCTAssertGreaterThanOrEqual(action.frame.height,44)
     XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
 
-    app.tabBars.buttons["练习"].tap()
+    app.tabBars.buttons["呼吸"].tap()
     let practice = app.buttons["practice.physiologicalSigh.60"]
     XCTAssertTrue(practice.waitForExistence(timeout: 3))
     capture("practice-library", from: app)
@@ -62,12 +62,14 @@ final class FangcunAppearanceUITests: XCTestCase {
     )
     capture("practice-comparison", from: app)
 
-    app.buttons["先完成"].tap()
+    let skip = app.buttons["practice.feedback.skip"]
+    for _ in 0..<8 where !skip.isHittable { app.swipeUp() }
+    XCTAssertTrue(skip.isHittable); skip.tap()
     XCTAssertTrue(app.scrollViews["practice.saved.scroll"].waitForExistence(timeout: 3))
     capture("practice-complete", from: app)
     app.buttons["practice.saved.done"].tap()
 
-    app.tabBars.buttons["今日"].tap()
+    app.tabBars.buttons["日常"].tap()
     revealAndTapCheckIn(in: app)
     XCTAssertTrue(app.otherElements["checkIn.emotionField"].waitForExistence(timeout: 3))
     capture("check-in-compass", from: app)
@@ -83,7 +85,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     XCTAssertTrue(done.waitForExistence(timeout: 3))
     done.tap()
 
-    app.tabBars.buttons["设置"].tap()
+    openDailySettings(app)
     XCTAssertTrue(app.staticTexts["设置"].waitForExistence(timeout: 3))
     capture("settings", from: app)
 

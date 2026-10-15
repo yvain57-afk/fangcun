@@ -81,7 +81,7 @@ public struct SyncPacket: Codable, Sendable {
   public var acknowledgement: SyncAcknowledgement?
   public var summary: ReadinessSummaryDTO?
   public var statusSummary: DailyStatusSummaryDTO?
-  public var capabilities: [String]? = ["beverage-v2", "score-v3"]
+  public var capabilities: [String]? = ["beverage-v2", "score-v3", "practice-record-v4"]
   public var hello = false
   public init(origin: String, role: String, event: SyncEvent? = nil, acknowledgement: SyncAcknowledgement? = nil,
     summary: ReadinessSummaryDTO? = nil, hello: Bool = false, statusSummary: DailyStatusSummaryDTO? = nil) {

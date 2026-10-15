@@ -1,0 +1,23 @@
+{
+  "title": "Test - InnerBalance",
+  "result": "Passed",
+  "totalTestCount": 1,
+  "passedTests": 1,
+  "failedTests": 0,
+  "skippedTests": 0,
+  "expectedFailures": 0,
+  "statistics": [],
+  "exitCode": 0,
+  "rawResultBundle": ".build/v4-verification/recovery-native-button-tap.xcresult",
+  "start": "2026-10-15T13:38:24.112000+08:00",
+  "finish": "2026-10-15T13:39:05.297000+08:00",
+  "platforms": [
+    {
+      "modelName": "iPhone 16",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testFailures": [],
+  "runtimeWarnings": []
+}

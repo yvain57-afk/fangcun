@@ -9,6 +9,7 @@ final class PracticeAudioController {
   private var configuredKind: PracticeKind?
   private var configuredPlan: PracticeAudioPlan?
   private var lastMomentID: Int?
+  private var lastTimelineGeneration: Int?
   private var generation = 0
   private var isRecoveringConfiguration = false
   private var configurationRecoveryTask: Task<Void, Never>?
@@ -28,20 +29,25 @@ final class PracticeAudioController {
     let plan = PracticeAudioPlan.make(mode: mode, ambienceEnabled: ambienceEnabled)
     switch viewModel.phase {
     case .running:
-      _ = await prepareIfNeeded(kind: viewModel.plan.kind, plan: plan)
+      guard await prepareIfNeeded(kind: viewModel.plan.kind, plan: plan) else {
+        if !Task.isCancelled { viewModel.handleInterruption() }
+        return
+      }
       while !Task.isCancelled && viewModel.phase == .running {
-        let moment = PracticeAudioTimeline.moment(
-          for: viewModel.plan.kind,
-          elapsed: viewModel.duration - viewModel.remainingTime,
-          duration: viewModel.duration
-        )
-        if moment.id != lastMomentID {
+        guard viewModel.remainingTime > 0 else {
+          coordinator.pause()
+          return
+        }
+        let moment = PracticeAudioTimeline.moment(for: viewModel.plan.kind, snapshot: viewModel.timelineSnapshot)
+        if moment.id != lastMomentID || lastTimelineGeneration != viewModel.timelineGeneration {
+          lastTimelineGeneration = viewModel.timelineGeneration
           lastMomentID = moment.id
           coordinator.play(moment)
         }
-        try? await Task.sleep(for: .milliseconds(250))
+        try? await Task.sleep(for: .milliseconds(25))
       }
     case .paused:
+      lastMomentID = nil
       coordinator.pause()
     case .ready, .comparison, .saved:
       stop()
@@ -56,6 +62,7 @@ final class PracticeAudioController {
     configuredKind = nil
     configuredPlan = nil
     lastMomentID = nil
+    lastTimelineGeneration = nil
     canContinueInBackground = false
   }
 

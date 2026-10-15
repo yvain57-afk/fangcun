@@ -43,11 +43,25 @@ extension EnvironmentValues {
   }
   func importPractice(_ record: PracticeCompletionRecord) async {
     if await store?.isDeleted(record.sessionID) == true { return }
-    if records.contains(where: { $0.sessionID == record.sessionID }) { return }
-    var value = RecoverySession(sessionID: record.sessionID, action: .practice(record.practiceKind),
-      plannedDuration: record.plannedDuration, startedAt: record.startedAt, originDevice: "iPhone")
-    value.activeDuration = record.actualDuration; value.endedAt = record.endedAt; value.endReason = .legacyUnknown
-    _ = await save(value)
+    let helpfulness: RecoveryHelpfulness? = switch record.metadata?.subjectiveFeedback {
+    case "更舒服": .helpful
+    case "差不多": .unchanged
+    case "不舒服": .uncomfortable
+    default: nil
+    }
+    if !records.contains(where: { $0.sessionID == record.sessionID }) {
+      var value = RecoverySession(sessionID: record.sessionID, action: .practice(record.practiceKind),
+        plannedDuration: record.plannedDuration, startedAt: record.startedAt, originDevice: "iPhone",
+        protocolVersion: record.metadata == nil ? 1 : 4)
+      value.activeDuration = record.actualDuration; value.endedAt = record.endedAt
+      value.endReason = record.metadata == nil ? .legacyUnknown : record.actualDuration >= record.plannedDuration ? .completed : .endedEarly
+      guard await save(value) else { return }
+    }
+    // Reconcile after the store round-trip too: completion and feedback callbacks may overlap.
+    if let helpfulness, let saved = records.first(where: { $0.sessionID == record.sessionID }),
+      saved.feedback?.helpfulness != helpfulness {
+      _ = await feedback(record.sessionID, helpfulness)
+    }
   }
   func feedback(_ id: String, _ value: RecoveryHelpfulness?) async -> Bool {
     guard let store else { return false }

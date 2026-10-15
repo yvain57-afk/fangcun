@@ -44,3 +44,14 @@ float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F
  half paper=smoothstep(half(.90),half(.985),low)*(1-smoothstep(half(.035),half(.08),high-low));
  return color*(1-paper);
 }
+
+// V4 torso-only deformation: top overlap and bottom feet are anchored. The input
+// is an authored separate torso sprite, never the complete character raster.
+[[ stitchable ]] float2 fangcunV4Torso(float2 position, float2 size, float expansion) {
+ float2 p=position/max(size,float2(1));
+ float mask=fcArea(p,float2(.5,.48),float2(.52,.48));
+ float feet=1-smoothstep(.70,.90,p.y);
+ float neck=smoothstep(.08,.25,p.y);
+ float2 d=float2((p.x-.5)*.045,-.015)*expansion*mask*feet*neck;
+ return position-d*size;
+}

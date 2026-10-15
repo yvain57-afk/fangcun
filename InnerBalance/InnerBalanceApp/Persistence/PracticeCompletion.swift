@@ -11,6 +11,15 @@ struct PracticeCompletionRecord: Equatable, Sendable {
   let endedAt: Date
   let beforeRating: Int?
   let afterRating: Int?
+  var metadata: PracticeSessionMetadata?
+
+  nonisolated init(sessionID: String, practiceKind: PracticeKind, plannedDuration: TimeInterval, actualDuration: TimeInterval, startedAt: Date, endedAt: Date, beforeRating: Int?, afterRating: Int?, metadata: PracticeSessionMetadata? = nil) {
+    self.sessionID = sessionID; self.practiceKind = practiceKind
+    self.plannedDuration = plannedDuration; self.actualDuration = actualDuration
+    self.startedAt = startedAt; self.endedAt = endedAt
+    self.beforeRating = beforeRating; self.afterRating = afterRating
+    self.metadata = metadata
+  }
 
   var subjectiveChange: Int {
     guard let beforeRating, let afterRating else { return 0 }
@@ -26,7 +35,7 @@ struct PracticeCompletionRecord: Equatable, Sendable {
       sessionID: sessionID, practiceKind: practiceKind,
       plannedDuration: plannedDuration, actualDuration: actualDuration,
       startedAt: startedAt, endedAt: endedAt,
-      beforeRating: nil, afterRating: nil
+      beforeRating: nil, afterRating: nil, metadata: metadata
     )
   }
 }
@@ -72,6 +81,7 @@ final class StoredPracticeCompletion {
   var endedAt: Date
   var beforeRating: Int?
   var afterRating: Int?
+  var protocolMetadata: Data?
   var mindfulWriteResultRawValue: String
   var postWriteResultRawValue: String = "failed_to_queue"
 
@@ -88,6 +98,7 @@ final class StoredPracticeCompletion {
     endedAt = record.endedAt
     beforeRating = record.beforeRating
     afterRating = record.afterRating
+    protocolMetadata = record.metadata.flatMap { try? JSONEncoder().encode($0) }
     mindfulWriteResultRawValue = Self.rawValue(for: mindfulWriteResult)
     postWriteResultRawValue = Self.rawValue(for: postWriteResult)
   }
@@ -104,12 +115,21 @@ final class StoredPracticeCompletion {
     endedAt = record.endedAt
     beforeRating = record.beforeRating
     afterRating = record.afterRating
+    protocolMetadata = record.metadata.flatMap { try? JSONEncoder().encode($0) }
     mindfulWriteResultRawValue = Self.rawValue(for: mindfulWriteResult)
     postWriteResultRawValue = Self.rawValue(for: postWriteResult)
   }
 
   var record: PracticeCompletionRecord? {
     guard let practiceKind = PracticeKind(rawValue: practiceKindRawValue) else { return nil }
+    let metadata: PracticeSessionMetadata?
+    if let protocolMetadata {
+      // Preserve unreadable bytes; never reinterpret a damaged V4 record as legacy and
+      // fabricate one continuous HealthKit interval spanning its pauses.
+      guard let decoded = try? JSONDecoder().decode(PracticeSessionMetadata.self, from: protocolMetadata),
+        decoded.protocolVersion == PracticeTimeline.protocolVersion else { return nil }
+      metadata = decoded
+    } else { metadata = nil }
     return PracticeCompletionRecord(
       sessionID: sessionID,
       practiceKind: practiceKind,
@@ -118,7 +138,8 @@ final class StoredPracticeCompletion {
       startedAt: startedAt,
       endedAt: endedAt,
       beforeRating: beforeRating,
-      afterRating: afterRating
+      afterRating: afterRating,
+      metadata: metadata
     )
   }
 
@@ -211,6 +232,9 @@ final class PracticeCompletionStore: PracticeCompletionStoring {
       predicate: #Predicate { $0.sessionID == sessionID }
     )
     if let existing = try modelContext.fetch(descriptor).first {
+      guard existing.protocolMetadata == nil || existing.record != nil else {
+        throw CocoaError(.fileReadCorruptFile)
+      }
       existing.update(
         record: record,
         mindfulWriteResult: mindfulWriteResult,
@@ -265,6 +289,7 @@ final class PracticeCompletionCoordinator {
   private let store: any PracticeCompletionStoring
   private let feedbackStore: any PracticeFeedbackStoring
   private let healthWriter: HealthWriteCoordinator
+  private var inFlightCompletions: [String: Task<PracticeCompletionOutcome, Error>] = [:]
 
   init(
     store: any PracticeCompletionStoring,
@@ -279,6 +304,14 @@ final class PracticeCompletionCoordinator {
   func saveCompletion(
     _ record: PracticeCompletionRecord
   ) async throws -> PracticeCompletionOutcome {
+    if let task = inFlightCompletions[record.sessionID] { return try await task.value }
+    let task = Task { @MainActor in try await self.persistCompletion(record) }
+    inFlightCompletions[record.sessionID] = task
+    defer { inFlightCompletions[record.sessionID] = nil }
+    return try await task.value
+  }
+
+  private func persistCompletion(_ record: PracticeCompletionRecord) async throws -> PracticeCompletionOutcome {
     if let existing = try store.completion(sessionID: record.sessionID),
       record.practiceKind == .kegel || existing.mindfulWriteResult != .failedToQueue
     {
@@ -309,7 +342,12 @@ final class PracticeCompletionCoordinator {
       )
     }
 
-    let mindfulResult = await healthWriter.saveMindfulSession(mindfulSession(for: record))
+    var mindfulResult: HealthWriteResult = .saved
+    for interval in mindfulSessions(for: record) {
+      let result = await healthWriter.saveMindfulSession(interval)
+      if result == .failedToQueue { mindfulResult = .failedToQueue }
+      else if result == .queued && mindfulResult != .failedToQueue { mindfulResult = .queued }
+    }
     do {
       try store.save(
         record,
@@ -421,19 +459,33 @@ final class PracticeCompletionCoordinator {
     try store.latestRecord()
   }
 
-  private func mindfulSession(for record: PracticeCompletionRecord) -> MindfulSessionRecord {
-    MindfulSessionRecord(
-      syncIdentifier: "com.yvainair.innerbalance.mindful.\(record.sessionID)",
-      syncVersion: 1,
-      sessionID: record.sessionID,
-      practiceType: record.practiceKind.rawValue,
-      protocolVersion: 1,
-      startDate: record.endedAt.addingTimeInterval(-record.actualDuration),
-      endDate: record.endedAt,
-      origin: .iPhone,
-      evidenceMode: .subjective,
-      heartRateEvidence: nil
-    )
+  /// V4 writes each confirmed active interval. Stable IDs make queued retries idempotent.
+  private func mindfulSessions(for record: PracticeCompletionRecord) -> [MindfulSessionRecord] {
+    let legacy = record.metadata == nil
+    let intervals = record.metadata?.activeIntervals ?? [
+      PracticeActiveInterval(start: record.endedAt.addingTimeInterval(-record.actualDuration), end: record.endedAt)
+    ]
+    return intervals.enumerated().compactMap { index, interval in
+      guard interval.duration > 0 else { return nil }
+      return MindfulSessionRecord(
+        syncIdentifier: "com.yvainair.innerbalance.mindful.\(record.sessionID)" + (legacy ? "" : ".interval.\(index)"),
+        syncVersion: 1, sessionID: record.sessionID, practiceType: record.practiceKind.rawValue,
+        protocolVersion: legacy ? 1 : 4,
+        startDate: interval.start, endDate: interval.end, origin: .iPhone,
+        evidenceMode: .subjective, heartRateEvidence: nil
+      )
+    }
+  }
+
+  func saveSelectedFeedback(_ record: PracticeCompletionRecord, feedback: String) async throws -> PracticeCompletionOutcome {
+    _ = try await saveCompletion(record.withoutFeedback)
+    guard let snapshot = try store.completion(sessionID: record.sessionID) else {
+      throw PracticeCompletionSaveError.localPersistenceFailed
+    }
+    var updated = snapshot.record
+    updated.metadata?.subjectiveFeedback = feedback
+    try store.save(updated, mindfulWriteResult: snapshot.mindfulWriteResult, postWriteResult: snapshot.postWriteResult)
+    return PracticeCompletionOutcome(mindfulWriteResult: snapshot.mindfulWriteResult, postWriteResult: nil, savedRecord: updated)
   }
 
   private func postState(

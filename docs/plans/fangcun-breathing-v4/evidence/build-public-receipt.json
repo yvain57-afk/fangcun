@@ -1,0 +1,16 @@
+{
+  "bundleID": "com.yvainair.InnerBalance",
+  "version": "1.0",
+  "build": "2026101502",
+  "minimumOS": "18.0",
+  "archive": "Fangcun-V4-Delivery2.xcarchive",
+  "signingVerificationExit": 0,
+  "requiredVoicesFound": 74,
+  "ipaSHA256": "6ff7ceac47d5b24b216a89e8ef9bec4ec07141b193e0e5da66ce73c101036a9a",
+  "ipaBytes": 20758518,
+  "exportMethod": "debugging",
+  "deviceInstall": "deferred_by_user",
+  "testflightOrStoreUpload": false,
+  "productionSourceSHA256": "208839114306d80acfaec0cc0bad059d1a1a48785371f2e6d53e8b31b6a8903d",
+  "productionSourceFileCount": 362
+}

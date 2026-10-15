@@ -1,0 +1,131 @@
+{
+  "baseline": "772644826638a420e79450716ab869cf87472d09",
+  "allUnchanged": true,
+  "files": [
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_kegel_contract.m4a",
+      "unchanged": true,
+      "sha256": "f8aa8b7dfb507f729a692114f360b984f604164e7296d2485d46fa8a3b2f1615"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_kegel_release.m4a",
+      "unchanged": true,
+      "sha256": "2a47735d8468f6541b39c2b57652c5cdd6a1df07ea8f5d56f070b40b794787a9"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_breath.m4a",
+      "unchanged": true,
+      "sha256": "addcdf424517e5625706d7569b72904484cd7ca85e8aa26b2486585a69a03960"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_return.m4a",
+      "unchanged": true,
+      "sha256": "c9f6c7c8a34c447fd7ea052c566f01a74b3f2b4d7c8dc98130498782d055b607"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_meditation_support.m4a",
+      "unchanged": true,
+      "sha256": "23738ab152eb10c6f741f2558e9475bc0f451046b9b82167ae2b5c6915f17051"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_belly.m4a",
+      "unchanged": true,
+      "sha256": "06cecb967735e2eec66a17720d27187aec11951a59b68dd5b899af6ff92a7128"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_breath.m4a",
+      "unchanged": true,
+      "sha256": "d8fce5ac7e97953589a81e9bc8a025fc00af8c8e70780edf56cda079a14c833f"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_face.m4a",
+      "unchanged": true,
+      "sha256": "09c09a9157084daa3265254231f34fc9e62f32a7ce384f91e7591bc9a5442609"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_legs.m4a",
+      "unchanged": true,
+      "sha256": "d97964125e8be5cf79f70844b0043d308fa0474bbdb39b271495148a9b5f2b1d"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_return.m4a",
+      "unchanged": true,
+      "sha256": "2c8daa38604e79ba3b7f847beae4e98b79b7c64ac587cf00b1e83f38bc69b976"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_nsdr_shoulders.m4a",
+      "unchanged": true,
+      "sha256": "79f4cc55336d11c44a5b90e259942492ac3963453c05cbc6d44ecc29b39ee7a3"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_paced_exhale.m4a",
+      "unchanged": true,
+      "sha256": "cddbeb0952f23df2025aab4098370c8fa2b393ebaa0a316a077af344c6aaa3c8"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_paced_inhale.m4a",
+      "unchanged": true,
+      "sha256": "455309ed6422d077878f99ef5d72f7ca466571bbded7b5ecfc9f00de9c16619e"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_exhale.m4a",
+      "unchanged": true,
+      "sha256": "0c56bd36ef3c14b18af11203d8ee33bb274a52afb372683fe0fbcdd90311b81f"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_inhale.m4a",
+      "unchanged": true,
+      "sha256": "c4cf9b5042a036cdc12cc311cbda86ffb6d1825b2a0139889a4b9b0d7267db42"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceApp/PracticeVoice/practice_sigh_top_up.m4a",
+      "unchanged": true,
+      "sha256": "f6f2b19ef94bb8e151e4675cefb46d6bcd36b48996dd3fa00be5f48a659970ab"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusScoreEngine.swift",
+      "unchanged": true,
+      "sha256": "2f8363a2a74f5e3c7a6aa89d0fe69edc65e2cb4b188a35cae537725f8b4b0569"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSnapshot.swift",
+      "unchanged": true,
+      "sha256": "420028f9f1daf4a9a2e3c3f2d278a13b5accce97a53d58f3f8da1dcc3c31f56f"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSummaryDTO.swift",
+      "unchanged": true,
+      "sha256": "e380a6c90e276292a0a7628f44bfed3c37d7d13c32f1b901a752434de5a5a300"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreCardioBuilder.swift",
+      "unchanged": true,
+      "sha256": "f30f9ce07f71c4d0339ab0d019fd2fa802dd3801dab643e54f9e79904a68489c"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreFeatureBuilder.swift",
+      "unchanged": true,
+      "sha256": "b673ba382691fe6bdc9f540130ec72b4bda8f35f0fa57ef37f639fd1d0fcfe02"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusPresentationPolicy.swift",
+      "unchanged": true,
+      "sha256": "c2f275a5f3f2440b5a078481bbdf69d568dde4ddd929b0f440008943282a83e1"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusScoreConfiguration.swift",
+      "unchanged": true,
+      "sha256": "ad34318d1e25b2318a2cf423f9da7985326490b5d4bcbbcbb16597dc78a8e064"
+    },
+    {
+      "file": "docs/plans/fangcun-score-v3/SCORE_V3_FIXTURES.json",
+      "unchanged": true,
+      "sha256": "2fc90dadcdc4fc14d55b62b94ae662db1e93338e1c981117d6904f06caa27c28"
+    },
+    {
+      "file": "docs/plans/fangcun-score-v3/SCORE_POLICY_v3.json",
+      "unchanged": true,
+      "sha256": "0ae450fe48cb38a6fe80cea41d2bebf4e2ae3c6b49c3afe6cee32971a7d99282"
+    }
+  ]
+}

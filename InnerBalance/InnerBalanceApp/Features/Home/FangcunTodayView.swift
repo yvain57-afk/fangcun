@@ -6,6 +6,8 @@ struct FangcunTodayView: View {
   let authorization: HealthAuthorizationCoordinator
   let latestPractice: PracticeCompletionRecord?
   let isUITesting: Bool
+  var onSettings: () -> Void = {}
+  var onRecords: () -> Void = {}
   let onStart: () -> Void
   let onCheckIn: () -> Void
   var onSuggestedPractice: (PracticeKind, TimeInterval) -> Void = { _, _ in }
@@ -61,6 +63,11 @@ struct FangcunTodayView: View {
       ScrollView {
         VStack(spacing: 20) {
           header
+          Button(action: onRecords) {
+            HStack { Label("练习记录", systemImage: "clock.arrow.circlepath"); Spacer(); Image(systemName: "chevron.right") }
+              .font(.headline).fangcunPaperCard()
+          }.buttonStyle(.plain).accessibilityIdentifier("daily.records")
+          Text("身体状态").font(.headline).frame(maxWidth: .infinity, alignment: .leading)
           HStack {
             Text(statusNow, format: .dateTime.month().day().weekday(.wide)).font(.caption)
             Spacer()
@@ -126,6 +133,9 @@ struct FangcunTodayView: View {
           Button("想补充一下自己的感受") { onCheckIn() }
             .accessibilityIdentifier("home.checkIn")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).frame(minHeight: 44)
+          Button { choosing = true } label: {
+            HStack { Label("轻行动", systemImage: "leaf"); Spacer(); Text("休息 · 舒展").font(.caption); Image(systemName: "chevron.right") }.fangcunPaperCard()
+          }.buttonStyle(.plain).accessibilityIdentifier("daily.lightActions")
           Text("不必把每一天，都过得很用力。")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 18)
         }.padding(.horizontal, 20).padding(.top, 14)
@@ -136,7 +146,10 @@ struct FangcunTodayView: View {
       .toolbar(.hidden, for: .navigationBar)
       .refreshable { await refresh() }
       .onChange(of: care?.pendingRoute, initial: true) { _, route in
-        if route == "record" { drinks = true; care?.pendingRoute = nil }
+        if route == "record", !hasOngoingPractice { drinks = true; care?.pendingRoute = nil }
+      }
+      .onChange(of: hasOngoingPractice) { _, ongoing in
+        if !ongoing, care?.pendingRoute == "record" { drinks = true; care?.pendingRoute = nil }
       }
       .sheet(isPresented: $manualSleep) { if let readiness { ManualStatusSleepView(owner:readiness) } }
       .sheet(isPresented: $choosing) { actionChoices }
@@ -162,22 +175,14 @@ struct FangcunTodayView: View {
 
   private var header: some View {
     HStack {
-      HStack(spacing: 10) {
-        FangcunBrandMark(size: 34)
-        VStack(alignment: .leading, spacing: 2) {
-          // The wordmark and toolbar symbols are artwork; page text follows Dynamic Type.
-          Text("方寸").font(.system(size: 20, weight: .semibold)).tracking(2)
-          Text("FANGCUN").font(.system(size: 8)).tracking(1.5)
-        }
-      }.accessibilityElement(children: .combine).accessibilityIdentifier("home.brandPoint")
+      VStack(alignment: .leading, spacing: 4) {
+        Text("日常").font(.title.weight(.semibold)).accessibilityIdentifier("daily.title")
+        Text("照顾身体，也留意自己的感受。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+      }
       Spacer()
-      Button { largeType.toggle() } label: { Image(systemName: "textformat.size").frame(width: 44, height: 44) }.accessibilityLabel("切换大字号")
-      Button { dark.toggle() } label: { Image(systemName: dark ? "sun.max" : "moon").frame(width: 44, height: 44) }.accessibilityLabel("切换深浅色模式")
-      Menu {
-        Button("开始 5 分钟呼吸", action: onStart).disabled(recovery?.canStart == false)
-        Button("换个方式") { choosing = true }.accessibilityIdentifier("recovery.change")
-      } label: { Image(systemName: "ellipsis").frame(width: 44, height: 44) }.accessibilityLabel("选择练习")
-    }.font(.system(size: 20)).foregroundStyle(InnerBalanceTheme.strongFill)
+      Button(action: onSettings) { Image(systemName: "gearshape").frame(width: 44, height: 44) }
+        .accessibilityLabel("设置").accessibilityIdentifier("daily.settings")
+    }.foregroundStyle(InnerBalanceTheme.strongFill)
   }
   private var hero: some View {
     Group {
@@ -185,7 +190,7 @@ struct FangcunTodayView: View {
       else {
         VStack(alignment: .leading, spacing: 12) {
           Text("今日状态").font(.subheadline)
-          Text(primaryAction == .resumeReading ? "状态分析已暂停" : readiness?.errorKey != nil ? "连接暂时中断" : readiness?.connected == false ? "连接 Apple 健康，查看今日状态" : "同步今日数据")
+          Text(primaryAction == .resumeReading ? "状态分析已暂停" : "暂未获得可用数据")
             .font(.title2.weight(.semibold)).accessibilityIdentifier("status.empty")
           FangcunCompanion(scene: .curious, paused: drinks).frame(width: 96, height: 80)
         }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()

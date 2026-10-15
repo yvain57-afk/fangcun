@@ -6,7 +6,7 @@ import Testing
 struct PracticeCatalogTests {
   @Test("Build 1 contains the five approved practices and Kegel is never automatic")
   func buildOneCatalogIsComplete() throws {
-    #expect(PracticeCatalog.buildOne.map(\.kind) == PracticeKind.allCases)
+    #expect(PracticeCatalog.buildOne.map(\.kind) == [.physiologicalSigh, .pacedBreathing, .meditation, .nsdr, .kegel])
 
     let sigh = try #require(PracticeCatalog.protocol(for: .physiologicalSigh))
     #expect(sigh.durationOptions == [60, 300])

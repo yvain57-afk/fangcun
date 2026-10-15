@@ -58,13 +58,13 @@ struct PracticePresentationTests {
     #expect(!detail.contains("变化"))
   }
 
-  @Test("练习库先说明适用场景")
+  @Test("V4练习库先说明训练用途，旧评分模型不参与首页选择")
   func practiceLibraryUsesSituationLanguage() {
-    #expect(PracticeKind.physiologicalSigh.outcomeTitle == "压力突然升高")
-    #expect(PracticeKind.pacedBreathing.outcomeTitle == "压力中等，节奏偏快")
-    #expect(PracticeKind.meditation.outcomeTitle == "压力较低，思绪占满")
-    #expect(PracticeKind.nsdr.outcomeTitle == "睡眠或训练透支")
-    #expect(PracticeKind.kegel.outcomeTitle == "专项训练，不用于即时减压")
+    #expect(PracticeKind.physiologicalSigh.outcomeTitle == "舒缓紧张")
+    #expect(PracticeKind.pacedBreathing.outcomeTitle == "睡前放松")
+    #expect(PracticeKind.meditation.outcomeTitle == "减少分心")
+    #expect(PracticeKind.nsdr.outcomeTitle == "恢复精力")
+    #expect(PracticeKind.kegel.outcomeTitle == "盆底控制")
   }
 
   @Test("五种练习都有完整且可读的功能说明")
@@ -90,7 +90,7 @@ struct PracticePresentationTests {
   @Test("静心、身体扫描和凯格尔都有独立的可视节奏")
   func nonBreathingStageStatesFollowTheirOwnCadence() {
     #expect(PracticeStageState.make(kind: .meditation, elapsed: 31).focusIndex == 1)
-    #expect(PracticeStageState.make(kind: .nsdr, elapsed: 46).focusIndex == 1)
+    #expect(PracticeStageState.make(kind: .nsdr, elapsed: 96).focusIndex == 1)
     #expect(PracticeStageState.make(kind: .kegel, elapsed: 2).intensity == 0.5)
     #expect(PracticeStageState.make(kind: .kegel, elapsed: 8).intensity == 0.5)
   }
@@ -117,6 +117,29 @@ struct PracticePresentationTests {
       PracticeTimelineCadence.interval(
         kind: .nsdr, phase: .paused, reduceMotion: false) == 1
     )
+  }
+
+  @Test("V4 自然引导只在新段动作时高频刷新，静止时按真实下个提示边界唤醒")
+  func v4NaturalRenderingCadenceFollowsActualCue() {
+    for kind: PracticeKind in [.meditation, .diaphragmaticBreathing, .nsdr] {
+      let duration: TimeInterval = kind == .nsdr ? 600 : 300
+      let segments = PracticeTimeline.segments(for: kind, duration: duration)
+      let segment = segments[1]
+      let movement = PracticeTimeline.snapshot(kind: kind, elapsed: segment.start + 1, duration: duration)
+      let quiet = PracticeTimeline.snapshot(kind: kind, elapsed: segment.start + 3, duration: duration)
+      let beforeCue = PracticeTimeline.snapshot(kind: kind, elapsed: segment.end - 0.15, duration: duration)
+      let nextCue = PracticeTimeline.snapshot(kind: kind, elapsed: segment.end, duration: duration)
+      #expect(PracticeRenderCadence.interval(snapshot: movement, reduceMotion: false) == 1.0 / 30)
+      #expect(PracticeRenderCadence.interval(snapshot: quiet, reduceMotion: false) == 1)
+      #expect(abs(PracticeRenderCadence.interval(snapshot: beforeCue, reduceMotion: false) - 0.15) < 0.001)
+      #expect(PracticeRenderCadence.interval(snapshot: nextCue, reduceMotion: false) == 1.0 / 30)
+      #expect(PracticeRenderCadence.interval(snapshot: movement, reduceMotion: true) == 1)
+    }
+    for kind: PracticeKind in [.physiologicalSigh, .pacedBreathing, .balancedBreathing, .boxBreathing, .alternateNostrilBreathing, .kegel] {
+      let snapshot = PracticeTimeline.snapshot(kind: kind, elapsed: 3.5, duration: 300)
+      #expect(PracticeRenderCadence.interval(snapshot: snapshot, reduceMotion: false) == 1.0 / 30)
+      #expect(PracticeRenderCadence.interval(snapshot: snapshot, reduceMotion: true) <= 1)
+    }
   }
 
   @Test("呼吸场域用弧面开合表达相位，而不是倒计时")
@@ -184,10 +207,14 @@ struct PracticePresentationTests {
 
   @Test("凯格尔只说明练习本身，不解释它和压力的关系")
   func kegelUsesAPlainBodyPracticeDescription() {
+    // V4 separates the card's purpose from its actionable 4/8 training instructions.
     #expect(
       PracticeKind.kegel.summary
-        == "轻收 4 秒、完全放松 8 秒，同时保持自然呼吸。"
+        == "练习盆底肌的收紧、保持与放松，逐步增强盆底控制。"
     )
+    #expect(PracticeKind.kegel.steps == "轻收 4 秒 → 完全放松 8 秒，始终自然呼吸。")
+    #expect(!PracticeKind.kegel.summary.contains("压力"))
+    #expect(!PracticeKind.kegel.steps.contains("屏息"))
   }
 
   @Test("凯格尔使用完成记录而不是主观调节证据")
@@ -224,10 +251,10 @@ struct PracticePresentationTests {
       PracticeAudioTimeline.cue(for: .pacedBreathing, elapsed: 4) == .pacedExhale
     )
     #expect(
-      PracticeAudioTimeline.cue(for: .meditation, elapsed: 31) == .meditationBreath
+      PracticeAudioTimeline.moment(for: .meditation, elapsed: 31, duration: 300).voiceResourceName == "practice_v4_meditation_300_1"
     )
     #expect(
-      PracticeAudioTimeline.cue(for: .nsdr, elapsed: 46) == .nsdrShoulders
+      PracticeAudioTimeline.moment(for: .nsdr, elapsed: 46, duration: 600).voiceResourceName == "practice_v4_nsdr_600_1"
     )
     #expect(
       PracticeAudioTimeline.cue(for: .kegel, elapsed: 4) == .kegelRelease
@@ -260,12 +287,14 @@ struct PracticePresentationTests {
     #expect(PracticeAudioTimeline.moment(for: .nsdr, elapsed: 181).shouldSpeak)
   }
 
-  @Test("NSDR 引导不会留下超过半分钟的空白")
+  @Test("V4 NSDR 按完整段落只播一次，不以循环填满安静时间")
   func nsdrGuidanceAdvancesWithinThirtySeconds() {
     let opening = PracticeAudioTimeline.moment(for: .nsdr, elapsed: 1)
-    let nextGuidance = PracticeAudioTimeline.moment(for: .nsdr, elapsed: 29)
+    let nextGuidance = PracticeAudioTimeline.moment(for: .nsdr, elapsed: 30)
 
     #expect(opening.id != nextGuidance.id)
+    #expect(PracticeAudioTimeline.moment(for: .nsdr, elapsed: 29).id == opening.id)
+    #expect(nextGuidance.voiceResourceName == "practice_v4_nsdr_600_1")
   }
 
   @Test("NSDR 身体扫描之间穿插轻柔呼吸提示")
@@ -273,7 +302,7 @@ struct PracticePresentationTests {
     let nsdrCues = PracticeAudioCue.allCases.filter { $0.rawValue.hasPrefix("nsdr") }
 
     #expect(nsdrCues.contains { $0.spokenText.contains("呼气") })
-    #expect(PracticeAudioTimeline.cue(for: .nsdr, elapsed: 51) == .nsdrBreath)
+    #expect(PracticeAudioTimeline.cue(for: .nsdr, elapsed: 215) == .nsdrBreath)
   }
 
   @Test("NSDR 在结束前把用户温和带回而不是突然停下")
@@ -295,15 +324,15 @@ struct PracticePresentationTests {
     #expect(state.cue == audio.cue)
     #expect(state.id == audio.id)
     #expect(
-      PracticeKind.nsdr.cue(elapsed: elapsed, duration: 600) == audio.cue.spokenText)
+      PracticeKind.nsdr.cue(elapsed: elapsed, duration: 600) == PracticeTimeline.snapshot(kind: .nsdr, elapsed: elapsed, duration: 600).segment?.text)
     #expect(visual.focusIndex == (state.focusIndex ?? -1))
     #expect(
       PracticeHapticTimeline.cueID(for: .nsdr, elapsed: elapsed, duration: 600) == audio.id)
   }
 
-  @Test("NSDR 在第 25 秒聚焦肩膀，并在最后 30 秒统一进入返回阶段")
+  @Test("V4 NSDR 在第 90 秒聚焦肩膀，并在最后 30 秒统一进入返回阶段")
   func nsdrVisualFocusAndReturnAreActionable() {
-    let shoulders = PracticeBodyScanState.make(elapsed: 30, duration: 600)
+    let shoulders = PracticeBodyScanState.make(elapsed: 90, duration: 600)
     #expect(shoulders.cue == .nsdrShoulders)
     #expect(shoulders.focusIndex == 1)
     #expect(!shoulders.isReturning)
@@ -403,7 +432,7 @@ struct PracticePresentationTests {
     #expect(preferences.mode(hasVoiceAssets: false) == .rhythmOnly)
   }
 
-  @Test("知性女声首次启用时打开语音，之后尊重用户选择")
+  @Test("启用语音包保留已有声音偏好，之后尊重用户选择")
   @MainActor
   func selectedVoicePackActivatesGuidanceOnlyOnce() throws {
     let suiteName = "PracticePresentationTests.selectedVoicePackActivatesGuidanceOnlyOnce"
@@ -413,7 +442,7 @@ struct PracticePresentationTests {
     defaults.set(PracticeSoundMode.rhythmOnly.rawValue, forKey: "practice.sound.mode")
 
     let activated = PracticeSoundPreferences(defaults: defaults)
-    #expect(activated.preferredMode == .guided)
+    #expect(activated.preferredMode == .rhythmOnly)
 
     activated.preferredMode = .silent
     let reopened = PracticeSoundPreferences(defaults: defaults)

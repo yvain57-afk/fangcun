@@ -3,6 +3,7 @@ import SwiftUI
 
 struct PracticeSessionView: View {
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.scenePhase) private var scenePhase
   @Environment(\.fangcunReduceMotion) private var reduceMotion
   @State private var viewModel: PracticeSessionViewModel
   @State private var beforeRating = -1.0
@@ -17,6 +18,8 @@ struct PracticeSessionView: View {
   @State private var postValence = 0.0
   @State private var postArousal = 0.0
   @State private var hasPostPosition = false
+  @State private var isEntering = false
+  @State private var entryStartedAt = Date.now
 
   private let diagnostics: any LocalDiagnosticsRecording
   private let startsImmediately: Bool
@@ -33,7 +36,7 @@ struct PracticeSessionView: View {
   ) {
     let plan = PracticeCatalog.protocol(for: launch.kind)!
     _viewModel = State(
-      initialValue: PracticeSessionViewModel(plan: plan, duration: launch.duration))
+      initialValue: PracticeSessionViewModel(plan: plan, duration: launch.duration, variantID: launch.variantID, checkpoint: launch.restoredCheckpoint))
     _saving = State(
       initialValue: PracticeCompletionSaveController(
         coordinator: coordinator,
@@ -50,6 +53,10 @@ struct PracticeSessionView: View {
     NavigationStack {
       ZStack {
         PracticeSessionAtmosphere(kind: viewModel.plan.kind)
+        if isEntering {
+          PracticeEntryScreen(kind: viewModel.plan.kind, duration: viewModel.duration, variantID: viewModel.variantID, startedAt: entryStartedAt, entryDuration: entryDuration, onSkip: finishEntry)
+            .padding(FangcunLayout.pageHorizontalPadding)
+        } else {
         PracticeSessionContent(
           viewModel: viewModel,
           beforeRating: $beforeRating,
@@ -73,7 +80,7 @@ struct PracticeSessionView: View {
           reduceMotion: reduceMotion,
           isSaving: saving.isSaving,
           savedDetail: savedDetail,
-          onStart: startPractice,
+          onStart: beginEntry,
           onFinish: { showFinishConfirmation = true },
           onSave: { Task { await saveCompletion() } },
           onDone: {
@@ -91,6 +98,7 @@ struct PracticeSessionView: View {
             )
         )
         .padding(FangcunLayout.pageHorizontalPadding)
+        }
       }
       .navigationTitle("")
       .navigationBarTitleDisplayMode(.inline)
@@ -109,7 +117,14 @@ struct PracticeSessionView: View {
       .timingCurve(0.23, 1, 0.32, 1, duration: 0.22),
       value: PracticeScreenIdentity.for(viewModel.phase)
     )
-    .onAppear { if startsImmediately && viewModel.phase == .ready { startPractice() } }
+    .onAppear { if startsImmediately && viewModel.phase == .ready { beginEntry() } }
+    .task(id: isEntering) {
+      guard isEntering else { return }
+      do { try await Task.sleep(for: .seconds(entryDuration)) } catch { return }
+      guard !Task.isCancelled, scenePhase == .active else { return }
+      finishEntry()
+    }
+    .onChange(of: scenePhase) { _, phase in if phase != .active { isEntering = false } }
     .task(id: viewModel.phase) { await runSessionPhase() }
     .modifier(
       PracticeAudioLifecycle(
@@ -133,7 +148,28 @@ struct PracticeSessionView: View {
     .sensoryFeedback(.impact(weight: .light), trigger: cadence.trigger)
   }
 
+  private var entryDuration: TimeInterval {
+    switch viewModel.plan.kind {
+    case .physiologicalSigh: 2.4
+    case .pacedBreathing: 3
+    case .balancedBreathing: 2.6
+    case .nsdr: 4
+    default: 3
+    }
+  }
+  private func beginEntry() {
+    guard viewModel.phase == .ready, !isEntering else { return }
+    entryStartedAt = .now
+    isEntering = true
+  }
+  private func finishEntry() {
+    guard isEntering, viewModel.phase == .ready else { return }
+    isEntering = false
+    startPractice()
+  }
+
   private func startPractice() {
+    PracticeHubPreferences.markLearned(viewModel.plan.kind)
     diagnostics.record(.practiceStarted)
     if wasRecommended { diagnostics.record(.recommendationAccepted) }
     let selectedRating =
@@ -148,18 +184,8 @@ struct PracticeSessionView: View {
   }
 
   private func saveCompletion() async {
-    if PracticeFeedbackPolicy.canSave(
-      beforeRating: viewModel.beforeRating,
-      changeChoice: changeChoice,
-      hasPostPosition: hasPostPosition
-    ) {
-      await saving.save(
-        viewModel: viewModel,
-        afterRating: afterRating,
-        postValence: postValence,
-        postArousal: postArousal,
-        hasPostPosition: hasPostPosition
-      )
+    if let changeChoice {
+      await saving.saveSelectedFeedback(viewModel: viewModel, feedback: changeChoice.title)
     } else {
       await saving.skipFeedback(viewModel: viewModel)
     }

@@ -1,0 +1,32 @@
+{
+  "title": "Test - InnerBalance",
+  "result": "Failed",
+  "totalTestCount": 2,
+  "passedTests": 1,
+  "failedTests": 1,
+  "skippedTests": 0,
+  "expectedFailures": 0,
+  "statistics": [],
+  "exitCode": 65,
+  "rawResultBundle": ".build/v4-verification/native-capture-final.xcresult",
+  "start": "2026-10-15T12:54:09.724000+08:00",
+  "finish": "2026-10-15T13:07:34.994000+08:00",
+  "platforms": [
+    {
+      "modelName": "iPhone 16",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testFailures": [
+    {
+      "targetName": "InnerBalanceUITests",
+      "testIdentifierString": "PracticeV4CaptureUITests/testCaptureNinePracticeScenes()",
+      "testName": "testCaptureNinePracticeScenes()",
+      "failureText": "Test exceeded execution time allowance of 10 minutes"
+    }
+  ],
+  "runtimeWarnings": [
+    "[Internal] Thread running at User-interactive quality-of-service class waiting on a lower QoS thread running at Default quality-of-service class. Investigate ways to avoid priority inversions"
+  ]
+}

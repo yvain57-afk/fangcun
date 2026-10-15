@@ -31,10 +31,11 @@ final class ReadinessHomeUITests: XCTestCase {
     app.buttons["today.start"].tap()
     XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout:10))
     app.buttons["结束"].tap(); app.buttons["practice.finish.confirm"].firstMatch.tap()
-    let skip = app.buttons["先完成"]
+    let skip = app.buttons["practice.feedback.skip"]
     XCTAssertTrue(skip.waitForExistence(timeout:6)); reveal(skip,app); skip.tap()
     XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout:8)); app.buttons["practice.saved.done"].tap()
-    XCTAssertTrue(app.tabBars.buttons["今日"].isSelected)
+    XCTAssertTrue(app.tabBars.buttons["呼吸"].isSelected)
+    app.tabBars.buttons["日常"].tap()
     reveal(app.staticTexts["today.latestPractice"],app)
     XCTAssertFalse((app.staticTexts["today.latestPractice"].value as? String ?? "").isEmpty)
     for _ in 0..<6 where !app.staticTexts["100"].isHittable { app.swipeDown() }
@@ -57,7 +58,7 @@ final class ReadinessHomeUITests: XCTestCase {
     }
     capture("v3-home-"+scenario,app)
     // Diagnostic data and time labels remain reachable separately from the consumer score screen.
-    app.tabBars.buttons["设置"].tap(); app.buttons["恢复参考与来源"].tap()
+    openDailySettings(app); app.buttons["恢复参考与来源"].tap()
     app.buttons["readiness.diagnostics"].tap()
     XCTAssertTrue(app.staticTexts["readiness.identity"].waitForExistence(timeout:5))
     reveal(app.staticTexts["readiness.time.attempt"],app)
@@ -67,7 +68,7 @@ final class ReadinessHomeUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing","--readiness-fixture="+scenario,"-AppleLanguages","(zh-Hans)","-AppleLocale","zh_CN","-fangcun.dark",large ? "YES":"NO","-fangcun.largeType",large ? "YES":"NO","-fangcun.reduceMotion","YES"]
-    app.launch(); return app
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap(); return app
   }
   @MainActor private func reveal(_ item:XCUIElement,_ app:XCUIApplication) {
     for _ in 0..<8 where !item.isHittable { app.swipeUp() }; XCTAssertTrue(item.isHittable)

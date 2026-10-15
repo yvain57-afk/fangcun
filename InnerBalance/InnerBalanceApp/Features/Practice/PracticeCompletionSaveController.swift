@@ -8,7 +8,7 @@ final class PracticeCompletionSaveController {
   private let coordinator: PracticeCompletionCoordinator
   private let diagnostics: any LocalDiagnosticsRecording
   private let onSaved: (PracticeCompletionRecord, StateOfMindRecord?) -> Void
-  private let sessionID: String
+  private let sessionID: String?
   private var completionSaved = false
   private var completionDiagnosticRecorded = false
 
@@ -20,7 +20,7 @@ final class PracticeCompletionSaveController {
   init(
     coordinator: PracticeCompletionCoordinator,
     diagnostics: any LocalDiagnosticsRecording,
-    sessionID: String = UUID().uuidString,
+    sessionID: String? = nil,
     onSaved: @escaping (PracticeCompletionRecord, StateOfMindRecord?) -> Void
   ) {
     self.coordinator = coordinator
@@ -31,7 +31,7 @@ final class PracticeCompletionSaveController {
 
   func saveCompletion(viewModel: PracticeSessionViewModel) async {
     guard !isSaving, !completionSaved,
-      let record = viewModel.makeCompletion(sessionID: sessionID)
+      let record = viewModel.makeCompletion(sessionID: sessionID ?? viewModel.sessionID)
     else { return }
 
     isSaving = true
@@ -40,9 +40,7 @@ final class PracticeCompletionSaveController {
     do {
       let outcome = try await coordinator.saveCompletion(record)
       acceptCompletion(record, outcome: outcome)
-      if PracticeCompletionMode.for(viewModel.plan.kind) == .completionOnly {
-        viewModel.markSaved()
-      }
+      viewModel.clearDraft()
     } catch {
       saveErrorMessage = Self.localSaveError
     }
@@ -60,7 +58,7 @@ final class PracticeCompletionSaveController {
     guard mode == .subjectiveComparison, hasPostPosition,
       let record = viewModel.makeCompletion(
         afterRating: Int(afterRating.rounded()),
-        sessionID: sessionID
+        sessionID: sessionID ?? viewModel.sessionID
       )
     else { return }
 
@@ -69,7 +67,7 @@ final class PracticeCompletionSaveController {
     defer { isSaving = false }
     do {
       if !completionSaved,
-        let initialRecord = viewModel.makeCompletion(sessionID: sessionID)
+        let initialRecord = viewModel.makeCompletion(sessionID: sessionID ?? viewModel.sessionID)
       {
         let initialOutcome = try await coordinator.saveCompletion(initialRecord)
         acceptCompletion(initialRecord, outcome: initialOutcome)
@@ -99,7 +97,7 @@ final class PracticeCompletionSaveController {
     defer { isSaving = false }
     do {
       if !completionSaved,
-        let record = viewModel.makeCompletion(sessionID: sessionID)
+        let record = viewModel.makeCompletion(sessionID: sessionID ?? viewModel.sessionID)
       {
         let outcome = try await coordinator.saveCompletion(record)
         acceptCompletion(record, outcome: outcome)
@@ -109,6 +107,22 @@ final class PracticeCompletionSaveController {
     } catch {
       saveErrorMessage = Self.localSaveError
     }
+  }
+
+  func saveSelectedFeedback(viewModel: PracticeSessionViewModel, feedback: String) async {
+    guard !isSaving, !hasSavedFeedback,
+      ["更舒服", "差不多", "不舒服"].contains(feedback),
+      let record = viewModel.makeCompletion(sessionID: sessionID ?? viewModel.sessionID) else { return }
+    isSaving = true
+    saveErrorMessage = nil
+    defer { isSaving = false }
+    do {
+      let outcome = try await coordinator.saveSelectedFeedback(record, feedback: feedback)
+      viewModel.setFeedback(feedback)
+      acceptCompletion(record, outcome: outcome)
+      hasSavedFeedback = true
+      viewModel.markSaved()
+    } catch { saveErrorMessage = Self.localSaveError }
   }
 
   private func acceptCompletion(

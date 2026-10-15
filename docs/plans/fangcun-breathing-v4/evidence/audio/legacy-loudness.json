@@ -1,0 +1,82 @@
+[
+  {
+    "resource": "practice_nsdr_legs",
+    "integratedLUFS": -24.03,
+    "truePeakDBTP": -10.18
+  },
+  {
+    "resource": "practice_meditation_support",
+    "integratedLUFS": -24.78,
+    "truePeakDBTP": -10.89
+  },
+  {
+    "resource": "practice_sigh_top_up",
+    "integratedLUFS": -24.11,
+    "truePeakDBTP": -10.45
+  },
+  {
+    "resource": "practice_meditation_return",
+    "integratedLUFS": -25.03,
+    "truePeakDBTP": -10.88
+  },
+  {
+    "resource": "practice_nsdr_breath",
+    "integratedLUFS": -24.99,
+    "truePeakDBTP": -10.3
+  },
+  {
+    "resource": "practice_kegel_release",
+    "integratedLUFS": -22.81,
+    "truePeakDBTP": -10.97
+  },
+  {
+    "resource": "practice_sigh_inhale",
+    "integratedLUFS": -24.07,
+    "truePeakDBTP": -10.51
+  },
+  {
+    "resource": "practice_paced_inhale",
+    "integratedLUFS": -22.75,
+    "truePeakDBTP": -9.38
+  },
+  {
+    "resource": "practice_nsdr_shoulders",
+    "integratedLUFS": -25.03,
+    "truePeakDBTP": -10.81
+  },
+  {
+    "resource": "practice_sigh_exhale",
+    "integratedLUFS": -24.13,
+    "truePeakDBTP": -10.88
+  },
+  {
+    "resource": "practice_paced_exhale",
+    "integratedLUFS": -25.8,
+    "truePeakDBTP": -10.78
+  },
+  {
+    "resource": "practice_nsdr_return",
+    "integratedLUFS": -25.14,
+    "truePeakDBTP": -11.53
+  },
+  {
+    "resource": "practice_nsdr_face",
+    "integratedLUFS": -25.15,
+    "truePeakDBTP": -10.96
+  },
+  {
+    "resource": "practice_kegel_contract",
+    "integratedLUFS": -23.65,
+    "truePeakDBTP": -10.97
+  },
+  {
+    "resource": "practice_meditation_breath",
+    "integratedLUFS": -24.37,
+    "truePeakDBTP": -10.93
+  },
+  {
+    "resource": "practice_nsdr_belly",
+    "integratedLUFS": -24.27,
+    "truePeakDBTP": -10.98
+  }
+]

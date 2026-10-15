@@ -4,7 +4,7 @@ final class DrinkEditorUITests: XCTestCase {
   @MainActor func testCapacityEditingUndoAndQuickLogShareTheSameRecords() {
     continueAfterFailure = false
     let app = XCUIApplication(); app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO"]
-    app.launch()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     let drinks = app.buttons["today.drinks"]
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
     reveal(drinks, app); drinks.tap()

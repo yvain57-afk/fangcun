@@ -17,7 +17,6 @@ struct RootView: View {
   private enum Tab: Hashable {
     case now
     case practice
-    case settings
   }
 
   @Environment(\.careOwner) private var care
@@ -28,7 +27,12 @@ struct RootView: View {
   @Environment(\.scenePhase) private var scenePhase
   @State private var diary: FangcunDiary
   @State private var homeViewModel: HomeViewModel
-  @State private var selectedTab = Tab.now
+  @State private var selectedTab = Tab.practice
+  @State private var hubGeneration = 0
+  @State private var showingUnfinishedPractice = false
+  @State private var showingSettings = false
+  @State private var showingRecords = false
+  @State private var deferredCareRoute = false
   @State private var isShowingCheckIn = false
   @State private var latestCheckIn = LatestCheckInViewState(record: nil)
   @State private var latestStressContext: StateOfMindRecord?
@@ -76,48 +80,60 @@ struct RootView: View {
 
   var body: some View {
     TabView(selection: $selectedTab) {
+      PracticeLibraryView(onStart: { launch in
+        guard selectedPractice == nil else { return }
+        selectedPracticeWasRecommended = false
+        requestPractice(launch)
+      }, onRecords: { selectedTab = .now; showingRecords = true }, latestPractice: latestPractice)
+      .id(hubGeneration)
+      .tabItem { Label("呼吸", systemImage: "wind") }
+      .tag(Tab.practice)
+
       FangcunTodayView(
         model: homeViewModel,
         authorization: authorizationCoordinator,
         latestPractice: latestPractice,
         isUITesting: isUITesting,
+        onSettings: { showingSettings = true },
+        onRecords: { showingRecords = true },
         onStart: {
           guard recovery?.canStart != false, selectedPractice == nil else { return }
           selectedPracticeWasRecommended = true
-          selectedPractice = PracticeLaunch(kind: .physiologicalSigh, duration: 300, startsImmediately: true)
+          requestPractice(PracticeLaunch(kind: .physiologicalSigh, duration: 300, startsImmediately: true))
         },
         onCheckIn: { isShowingCheckIn = true },
         onSuggestedPractice: { kind, duration in
           guard recovery?.canStart != false else { return }
-          selectedPractice = PracticeLaunch(kind: kind, duration: duration, startsImmediately: true)
+          requestPractice(PracticeLaunch(kind: kind, duration: duration, startsImmediately: true))
         },
         hasOngoingPractice: selectedPractice != nil,
         recentFeeling: latestCheckIn.record
       )
-      .tabItem { Label("今日", systemImage: "house") }
+      .tabItem { Label("日常", systemImage: "sun.max") }
       .tag(Tab.now)
 
-      PracticeLibraryView(onStart: {
-        guard recovery?.canStart != false else { return }
-        selectedPracticeWasRecommended = false
-        selectedPractice = $0
-      })
-      .tabItem {
-        Label("练习", systemImage: "wind")
-      }
-      .tag(Tab.practice)
 
-      SettingsView(
-        authorizationCoordinator: authorizationCoordinator,
-        homeViewModel: homeViewModel,
-        healthRepository: healthRepository,
-        isUITesting: isUITesting,
-        diagnosticsAvailable: Self.diagnosticsAvailable
-      )
-      .tabItem {
-        Label("设置", systemImage: "gearshape.fill")
+    }
+    .alert("还有一段未处理的练习", isPresented: $showingUnfinishedPractice) {
+      Button("先处理上次练习") {
+        if let checkpoint = PracticeHubPreferences.resumableCheckpoint() {
+          selectedPractice = .init(kind: checkpoint.kind, duration: checkpoint.duration,
+            variantID: checkpoint.variantID, restoredCheckpoint: checkpoint)
+        }
       }
-      .tag(Tab.settings)
+      Button("暂时不开始", role: .cancel) {}
+    } message: {
+      Text("你已练过的时间仍然保留。先继续或结束上次练习，再开始新的方法。")
+    }
+    .sheet(isPresented: $showingSettings) {
+      SettingsView(authorizationCoordinator: authorizationCoordinator, homeViewModel: homeViewModel,
+        healthRepository: healthRepository, isUITesting: isUITesting, diagnosticsAvailable: Self.diagnosticsAvailable)
+    }
+    .sheet(isPresented: $showingRecords) {
+      NavigationStack {
+        PracticeRecordsView()
+          .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { showingRecords = false }.accessibilityIdentifier("practice.history.done") } }
+      }
     }
     .environment(diary)
     .tint(InnerBalanceTheme.strongFill)
@@ -147,7 +163,7 @@ struct RootView: View {
         ),
         diagnostics: SwiftDataLocalDiagnosticsRecorder(modelContext: modelContext),
         wasRecommended: selectedPracticeWasRecommended,
-        onReturnToHome: { selectedTab = .now }
+        onReturnToHome: { hubGeneration += 1; selectedTab = deferredCareRoute ? .now : .practice }
       ) { record, postCheckIn in
         latestPractice = record
         Task { await recovery?.importPractice(record) }
@@ -161,7 +177,14 @@ struct RootView: View {
       await refreshLocalState()
     }
     .task { care?.refresh(events: diary.allEntries.map(\.beverage)) }
-    .onChange(of: care?.pendingRoute) { _, route in if route != nil { selectedTab = .now } }
+    .onChange(of: care?.pendingRoute) { _, route in
+      guard route != nil else { return }
+      if selectedPractice != nil { deferredCareRoute = true }
+      else { selectedTab = .now }
+    }
+    .onChange(of: selectedPractice) { _, launch in
+      if launch == nil, deferredCareRoute { selectedTab = .now; deferredCareRoute = false }
+    }
     .onChange(of: diary.allEntries) { _, _ in
       care?.refresh(events: diary.allEntries.map(\.beverage))
       if let recovery { Task { await sync?.publishRecords(diary: diary, recovery: recovery) } }
@@ -175,6 +198,13 @@ struct RootView: View {
       guard phase == .active else { return }
       Task { await refreshLocalState() }
     }
+  }
+
+  private func requestPractice(_ launch: PracticeLaunch) {
+    guard selectedPractice == nil else { return }
+    if launch.restoredCheckpoint == nil, PracticeHubPreferences.resumableCheckpoint() != nil {
+      showingUnfinishedPractice = true
+    } else { selectedPractice = launch }
   }
 
   private func refreshLocalState() async {
@@ -236,6 +266,9 @@ struct RootView: View {
 
   private func makePracticeCompletionStore() -> any PracticeCompletionStoring {
     #if DEBUG
+      if ProcessInfo.processInfo.arguments.contains("--ui-testing-practice-save-failure-once") {
+        return UITestingFailOncePracticeCompletionStore(store: PracticeCompletionStore(modelContext: modelContext))
+      }
       if shouldFailPracticeSaveForUITesting {
         return UITestingFailingPracticeCompletionStore()
       }
@@ -281,6 +314,18 @@ struct RootView: View {
     }
 
     func latestRecord() throws -> PracticeCompletionRecord? { nil }
+  }
+
+  @MainActor
+  private final class UITestingFailOncePracticeCompletionStore: PracticeCompletionStoring {
+    private let store: any PracticeCompletionStoring
+    private var didFail = false
+    init(store: any PracticeCompletionStoring) { self.store = store }
+    func save(_ record: PracticeCompletionRecord, mindfulWriteResult: HealthWriteResult, postWriteResult: HealthWriteResult) throws {
+      if !didFail { didFail = true; throw UITestingPracticeSaveError.forcedFailure }
+      try store.save(record, mindfulWriteResult: mindfulWriteResult, postWriteResult: postWriteResult)
+    }
+    func latestRecord() throws -> PracticeCompletionRecord? { try store.latestRecord() }
   }
 
   private enum UITestingPracticeSaveError: Error {

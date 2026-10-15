@@ -5,6 +5,9 @@ struct PracticeSoundControls: View {
   @Binding var mode: PracticeSoundMode
   @Binding var ambienceEnabled: Bool
   let voiceAvailable: Bool
+  @AppStorage("practice.sound.volume.voice") private var voiceVolume = 1.0
+  @AppStorage("practice.sound.volume.cue") private var cueVolume = 1.0
+  @AppStorage("practice.sound.volume.ambience") private var ambienceVolume = 1.0
 
   var body: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(4)) {
@@ -28,12 +31,21 @@ struct PracticeSoundControls: View {
         }
       }
 
+      if !voiceAvailable {
+        Label("完整语音尚未就绪，可跟随文字练习", systemImage: "text.bubble")
+          .font(.footnote)
+          .foregroundStyle(InnerBalanceTheme.mutedInk)
+          .accessibilityIdentifier("practice.sound.voiceUnavailable")
+      }
       if mode.supportsAmbience {
+        if mode == .guided { volumeSlider("语音音量", value: $voiceVolume) }
+        volumeSlider("节拍音量", value: $cueVolume)
+        if ambienceEnabled { volumeSlider("环境声音量", value: $ambienceVolume) }
         Toggle("环境声·锁屏继续", isOn: $ambienceEnabled)
           .font(.subheadline.weight(.semibold))
           .tint(InnerBalanceTheme.strongFill)
           .padding(.vertical, FangcunLayout.spacing(2))
-          .accessibilityHint("开启后练习在锁屏时仍会继续播放")
+          .accessibilityHint("有可用且开启的环境声时可锁屏继续；声音中断会暂停")
       } else {
         Label("声音已关闭", systemImage: "speaker.slash.fill")
           .font(.subheadline.weight(.semibold))
@@ -44,6 +56,14 @@ struct PracticeSoundControls: View {
     .fangcunLevelOneSurface(cornerRadius: FangcunLayout.spacing(5))
     .sensoryFeedback(.selection, trigger: mode.rawValue)
     .accessibilityIdentifier("practice.sound.controls")
+  }
+
+  private func volumeSlider(_ label: String, value: Binding<Double>) -> some View {
+    VStack(alignment: .leading, spacing: 4) {
+      Text(label).font(.caption)
+      Slider(value: value, in: 0...1).accessibilityLabel(label)
+        .accessibilityValue(value.wrappedValue == 0 ? "静音" : "\(Int(value.wrappedValue * 100))%")
+    }
   }
 
   @ViewBuilder private var modeButtons: some View {

@@ -1,0 +1,85 @@
+{
+  "kind": "planning_and_handoff_only",
+  "files": [
+    {
+      "path": "00_先读_交付边界.md",
+      "bytes": 2915,
+      "sha256": "0eae0b50ff2a6aefa68d14e4317aef01835d09074b4813fcb18d4f6c281e5a70"
+    },
+    {
+      "path": "01_产品与交互规格.md",
+      "bytes": 8353,
+      "sha256": "6c14a55f1d721ce8680f20414f684e4c2cfebe2c57df74ca84dba267b22a7205"
+    },
+    {
+      "path": "02_九项练习与功能文案.md",
+      "bytes": 7730,
+      "sha256": "0129c2843268570753a1bfef383b108d83141b0a9a4e6f187c3b2d8a1655b0de"
+    },
+    {
+      "path": "03_猫狗动作导演与素材规范.md",
+      "bytes": 11854,
+      "sha256": "842b1233b6554b15e99e0cae8b06b8b6f1cd0232a96ded7549c95605a8ff310e"
+    },
+    {
+      "path": "04_音频与节拍规格.md",
+      "bytes": 4119,
+      "sha256": "88b84319d0d170facb0f1625e7dbd669c049ee0552626d097d07b4f2906dc296"
+    },
+    {
+      "path": "05_工程实现与兼容.md",
+      "bytes": 9533,
+      "sha256": "a3e6467cec1f2d4ee1593e48f0eab09c6d68dfe83811a0be9d0a6f8fadf6b8f6"
+    },
+    {
+      "path": "06_整版验收与交付清单.md",
+      "bytes": 7177,
+      "sha256": "a62668c2ba3702a46bbbdc6475daee64bf192cc6b99da938e2aa4c0d96ea1f99"
+    },
+    {
+      "path": "07_资料与核对范围.md",
+      "bytes": 2497,
+      "sha256": "9fadff0896fa8d2e159f72e721e19d356f7a24c760d519e24f5fdf01b624d90d"
+    },
+    {
+      "path": "CODEX_执行提示词.md",
+      "bytes": 2811,
+      "sha256": "90735552ca1db778848a3854ac8ceeb5093486796b91fc23f95fc0ac4cab475d"
+    },
+    {
+      "path": "SPEC_VALIDATION.txt",
+      "bytes": 279,
+      "sha256": "29c7bc11a002617e8cdfe2e80b5c3dca071fd435d57b93e122a9c331f9bb615e"
+    },
+    {
+      "path": "config/companion_scenes.v4.json",
+      "bytes": 10077,
+      "sha256": "1f2b77bfbe47716dcf27399f67deeb5cab3ca3bd9d9e82edf931660db234f3e0"
+    },
+    {
+      "path": "config/copy.zh-Hans.v4.json",
+      "bytes": 6954,
+      "sha256": "12a5574f10abaeead47a37ae77533172fffba481087bdc6c1284b866ad251451"
+    },
+    {
+      "path": "config/guided_scripts.zh-Hans.v4.json",
+      "bytes": 14616,
+      "sha256": "2126fae9cd372bcb5d0454c6a5fb899a74eada69d7750b8dd03fb24a22bf1260"
+    },
+    {
+      "path": "config/practices.v4.json",
+      "bytes": 13682,
+      "sha256": "3448ad81f8bc7bc0a6616685563ab8fa827e7ef74556098bed16763c9fb8d9ec"
+    },
+    {
+      "path": "reference/方寸App现状与设计细节_GPT规划版.md",
+      "bytes": 37112,
+      "sha256": "4effa37194fbf4d97e69efded070d266b8a20250e77f152ce87091b9a26eeed4"
+    },
+    {
+      "path": "validate_spec.py",
+      "bytes": 2980,
+      "sha256": "3e1abae221c3b14865dbf2ac42d78b174b4bfca5c24c5568cc0c05a7baaed57e"
+    }
+  ]
+}

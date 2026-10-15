@@ -124,6 +124,8 @@ struct RecoveryRecommendationCard: View {
     switch practice {
     case .physiologicalSigh: "先缓 1 分钟"
     case .pacedBreathing: "呼吸 3 分钟"
+    case .balancedBreathing: "呼吸 5 分钟"
+    case .boxBreathing, .diaphragmaticBreathing, .alternateNostrilBreathing: "开始 3 分钟"
     case .meditation: "安静 5 分钟"
     case .nsdr: "躺下休息 10 分钟"
     case .kegel: "开始 3 分钟"
@@ -148,6 +150,10 @@ struct RecoveryRecommendationCard: View {
     switch practice {
     case .physiologicalSigh: "1 分钟 · 双重吸气后延长呼气"
     case .pacedBreathing: "3 或 5 分钟 · 跟随节奏呼吸"
+    case .balancedBreathing: "3 或 5 分钟 · 均匀吸气和呼气"
+    case .boxBreathing: "3 或 5 分钟 · 吸、停、呼、停四段节拍"
+    case .diaphragmaticBreathing: "3 或 5 分钟 · 下肋和腹部轻柔呼吸"
+    case .alternateNostrilBreathing: "3 或 5 分钟 · 左右鼻孔交替，不屏息"
     case .meditation: "5 或 10 分钟 · 安静地放松注意力"
     case .nsdr: "10 或 20 分钟 · 躺下完成深度休息"
     case .kegel: "3 分钟 · 盆底肌收紧与放松"

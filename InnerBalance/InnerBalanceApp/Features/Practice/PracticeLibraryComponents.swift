@@ -112,45 +112,12 @@ struct PracticeFieldGlyph: View {
   let size: CGFloat
 
   var body: some View {
-    ZStack {
-      Circle().fill(InnerBalanceTheme.subtleFill)
-      Circle().strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1)
-      switch PracticeStageKind.for(kind) {
-      case .breathing:
-        HStack(spacing: FangcunLayout.spacing(2)) {
-          Capsule()
-            .fill(InnerBalanceTheme.strongFill)
-            .frame(width: size * 0.16, height: size * 0.52)
-          Capsule()
-            .stroke(InnerBalanceTheme.emphasis, lineWidth: 3)
-            .frame(width: size * 0.16, height: size * 0.52)
-        }
-      case .settling:
-        ForEach([0.62, 0.42, 0.22], id: \.self) { scale in
-          Circle()
-            .stroke(InnerBalanceTheme.emphasis.opacity(1.15 - scale), lineWidth: 2)
-            .frame(width: size * scale, height: size * scale)
-        }
-      case .bodyScan:
-        VStack(spacing: size * 0.06) {
-          ForEach(0..<4) { index in
-            Capsule()
-              .fill(InnerBalanceTheme.strongFill.opacity(0.34 + Double(index) * 0.18))
-              .frame(width: size * (0.28 + CGFloat(index) * 0.09), height: 4)
-          }
-        }
-      case .pelvicFloor:
-        ZStack {
-          Capsule().stroke(InnerBalanceTheme.emphasis, lineWidth: 2)
-            .frame(width: size * 0.42, height: size * 0.60)
-          Capsule().fill(InnerBalanceTheme.strongFill.opacity(0.82))
-            .frame(width: size * 0.18, height: size * 0.32)
-        }
-      }
-    }
-    .frame(width: size, height: size)
-    .accessibilityHidden(true)
+    PracticeCompanionV4(kind: kind, elapsed: 0, duration: kind.v4DefaultDuration,
+      variantID: nil, isActive: false)
+      .frame(width: size, height: size)
+      .accessibilityHidden(true)
   }
+
 }
 
 private struct PracticeLaunchButtonStyle: ButtonStyle {

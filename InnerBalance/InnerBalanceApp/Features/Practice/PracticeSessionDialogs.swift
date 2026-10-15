@@ -59,7 +59,6 @@ private struct PracticeSessionDialogs: ViewModifier {
       .confirmationDialog("正在进行练习", isPresented: $showExit) {
         Button(PracticeSessionDialogCopy.finishActionTitle, action: onFinish)
           .accessibilityIdentifier(PracticeSessionDialogCopy.finishActionID)
-        Button("直接离开，不记录", action: onDiscard)
         Button("继续练习", role: .cancel) {}
       } message: {
         Text(PracticeSessionDialogCopy.finishMessage)

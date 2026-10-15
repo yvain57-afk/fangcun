@@ -125,7 +125,7 @@ public actor SyncStore {
     switch event.kind {
     case .session:
       let value = try JSONDecoder().decode(RecoverySession.self, from: event.payload)
-      guard value.protocolVersion == 1 else { throw Failure.unknownProtocol }
+      guard [1, 4].contains(value.protocolVersion) else { throw Failure.unknownProtocol }
       guard value.sessionID == event.entityID, value.activeDuration.isFinite, value.activeDuration >= 0 else { throw Failure.invalid }
     case .drink:
       let value = try JSONDecoder().decode(SyncedDrink.self, from: event.payload)

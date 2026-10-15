@@ -1,0 +1,30 @@
+{
+  "title": "Test - InnerBalance",
+  "result": "Passed",
+  "totalTestCount": 216,
+  "passedTests": 216,
+  "failedTests": 0,
+  "skippedTests": 0,
+  "expectedFailures": 0,
+  "statistics": [
+    {
+      "subtitle": "75 test runs",
+      "title": "12 tests ran with dynamic parameters"
+    }
+  ],
+  "exitCode": 0,
+  "rawResultBundle": ".build/v4-verification/final-app.xcresult",
+  "start": "2026-10-15T12:58:42.247000+08:00",
+  "finish": "2026-10-15T13:04:04.861000+08:00",
+  "platforms": [
+    {
+      "modelName": "iPhone 16",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testFailures": [],
+  "runtimeWarnings": [
+    "[Internal] Thread running at User-interactive quality-of-service class waiting on a lower QoS thread running at Default quality-of-service class. Investigate ways to avoid priority inversions"
+  ]
+}
