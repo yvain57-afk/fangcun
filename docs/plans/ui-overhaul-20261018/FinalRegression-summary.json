@@ -1,0 +1,19 @@
+{
+  "result": "Failed",
+  "passedTests": 224,
+  "failedTests": 1,
+  "skippedTests": 0,
+  "totalTestCount": 225,
+  "statistics": [
+    {
+      "subtitle": "75 test runs",
+      "title": "12 tests ran with dynamic parameters"
+    }
+  ],
+  "testFailures": [
+    {
+      "test": "OverhaulInteractionUITests/testMaximumTypeKeepsPrimaryControlsReachable()",
+      "reason": "XCTAssertTrue failed"
+    }
+  ]
+}

@@ -84,6 +84,6 @@ struct PhoneSyncStatusView: View {
       if let error = owner.errorKey { Text(FangcunCopy.text(error)) }
       if owner.service?.sharedCache.file == nil { Text(FangcunCopy.text("sync.groupUnavailable")) }
       Button(FangcunCopy.text("sync.retry")) { Task { await owner.retry() } }
-    }.navigationTitle(FangcunCopy.text("sync.title"))
+    }.fangcunCleanList().navigationTitle(FangcunCopy.text("sync.title"))
   }
 }

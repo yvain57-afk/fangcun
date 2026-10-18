@@ -18,6 +18,8 @@ struct FangcunDrinkEditor: View {
   @State private var abvKnown = true
   @State private var feedback: String?
   @State private var editingLegacy = false
+  private enum InputField: Hashable { case volume, name, dose, abv }
+  @FocusState private var inputField: InputField?
   private var details: BeverageDetails { .init(displayName: name.isEmpty ? kind.title : name,
     caffeinePresence: caffeinePresence, caffeineMethod: doseMethod, caffeineDose: doseMethod == .unknown ? nil : dose,
     alcoholPresence: alcoholPresence, abvPercent: abvKnown ? abv : nil) }
@@ -32,9 +34,20 @@ struct FangcunDrinkEditor: View {
           }.disabled(selectedID != nil).id("drink.editor.top")
           DatePicker(FangcunCopy.text("diary.time"), selection: $consumedAt, in: earliest...Date.now)
             .accessibilityIdentifier("drinks.edit.time")
+          ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+              ForEach([150, 250, 350, 500], id: \.self) { amount in
+                Button { inputField = nil; volume = amount } label: {
+                  Text("\(amount) ml").font(.caption.monospacedDigit().weight(.semibold))
+                    .padding(.horizontal, 12).frame(minHeight: 44)
+                    .background(volume == amount ? InnerBalanceTheme.subtleFill : InnerBalanceTheme.surface, in: Capsule())
+                }.buttonStyle(.plain).accessibilityIdentifier("drinks.volume.\(amount)")
+              }
+            }
+          }
           TextField(FangcunCopy.text("diary.volume"), value: $volume, format: .number)
-            .keyboardType(.numberPad).accessibilityIdentifier("drinks.edit.volume")
-          TextField(FangcunCopy.text("drink.name"), text: $name)
+            .keyboardType(.numberPad).focused($inputField, equals: .volume).accessibilityIdentifier("drinks.edit.volume")
+          TextField(FangcunCopy.text("drink.name"), text: $name).focused($inputField, equals: .name)
           if editingLegacy { Text(FangcunCopy.text("drink.legacy")) }
           else {
             Picker(FangcunCopy.text("drink.caffeinePresence"), selection: $caffeinePresence) {
@@ -44,24 +57,17 @@ struct FangcunDrinkEditor: View {
               Picker(FangcunCopy.text("drink.doseMethod"), selection: $doseMethod) {
                 ForEach([BeverageDoseMethod.perServing, .per100ML, .unknown], id: \.self) { Text(FangcunCopy.text("drink.dose." + $0.rawValue)).tag($0) }
               }
-              if doseMethod != .unknown { TextField(FangcunCopy.text("drink.doseMG"), value: $dose, format: .number).keyboardType(.decimalPad) }
+              if doseMethod != .unknown { TextField(FangcunCopy.text("drink.doseMG"), value: $dose, format: .number).keyboardType(.decimalPad).focused($inputField, equals: .dose) }
             }
             Picker(FangcunCopy.text("drink.alcoholPresence"), selection: $alcoholPresence) {
               ForEach([BeveragePresence.no, .yes, .unknown], id: \.self) { Text(FangcunCopy.text("drink.presence." + $0.rawValue)).tag($0) }
             }
             if alcoholPresence == .yes {
               Toggle(FangcunCopy.text("drink.abvKnown"), isOn: $abvKnown)
-              if abvKnown { TextField(FangcunCopy.text("drink.abv"), value: $abv, format: .number).keyboardType(.decimalPad) }
+              if abvKnown { TextField(FangcunCopy.text("drink.abv"), value: $abv, format: .number).keyboardType(.decimalPad).focused($inputField, equals: .abv) }
             }
           }
-          Button(FangcunCopy.text(selectedID == nil ? "diary.add" : "diary.save")) {
-            let result: DrinkCommandResult
-            if let selectedID { result = diary.edit(selectedID, consumedAt: consumedAt, volumeML: volume, details: editingLegacy ? nil : details) }
-            else { result = diary.add(kind, at: consumedAt, volumeML: volume, details: details) }
-            feedback = FangcunCopy.text(result.receipt == nil ? "drink.failed" : "drink.saved")
-            if result.receipt != nil { selectedID = nil; editingLegacy = false; resetDefaults() }
-          }.accessibilityIdentifier("drinks.edit.save")
-            .disabled(!(10...3000).contains(volume) || diary.storageMessage != nil)
+
           if let feedback { Text(feedback).accessibilityIdentifier("drinks.edit.feedback") }
           Button(FangcunCopy.text("diary.undo")) { _ = diary.undo() }.disabled(!diary.canUndo)
           if let selectedID {
@@ -91,14 +97,35 @@ struct FangcunDrinkEditor: View {
               }
             }.accessibilityIdentifier("drinks.edit.entry.\(entry.id)")
           }
-        }
+        }.id("drink.editor.records")
       }.scrollContentBackground(.hidden).background(InnerBalanceTheme.canvas)
         .foregroundStyle(InnerBalanceTheme.ink).tint(InnerBalanceTheme.strongFill)
-        .navigationTitle(FangcunCopy.text("diary.manage"))
+        .safeAreaInset(edge: .bottom) {
+          saveButton(proxy: proxy).buttonStyle(InnerBalancePrimaryButtonStyle())
+            .padding(16).background(InnerBalanceTheme.canvas)
+        }
+        .fangcunCleanList().navigationTitle(FangcunCopy.text("diary.manage"))
         .toolbar { Button(FangcunCopy.text("diary.done")) { dismiss() } }
         .onChange(of: kind) { _, value in if selectedID == nil { volume = value.fluid; resetDefaults() } }
       }
     }
+  }
+  private func saveButton(proxy: ScrollViewProxy) -> some View {
+    Button(FangcunCopy.text(selectedID == nil ? "diary.add" : "diary.save")) {
+      inputField = nil
+      let result: DrinkCommandResult
+      if let selectedID {
+        result = diary.edit(selectedID, consumedAt: consumedAt, volumeML: volume, details: editingLegacy ? nil : details)
+      } else {
+        result = diary.add(kind, at: consumedAt, volumeML: volume, details: details)
+      }
+      feedback = FangcunCopy.text(result.receipt == nil ? "drink.failed" : "drink.saved")
+      if result.receipt != nil {
+        selectedID = nil; editingLegacy = false; resetDefaults()
+        withAnimation { proxy.scrollTo("drink.editor.records", anchor: .top) }
+      }
+    }.accessibilityIdentifier("drinks.edit.save")
+      .disabled(!(10...3000).contains(volume) || diary.storageMessage != nil)
   }
   private func resetDefaults() {
     let d = FangcunDiary.defaultDetails(kind, caffeine: coffeeMg)

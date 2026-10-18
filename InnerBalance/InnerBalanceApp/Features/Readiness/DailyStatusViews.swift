@@ -28,7 +28,7 @@ struct DailyStatusHero: View {
   let night: Bool
   var covered = false
   @Environment(\.dynamicTypeSize) private var typeSize
-  @ScaledMetric(relativeTo: .largeTitle) private var numberSize = 60.0
+  @ScaledMetric(relativeTo: .largeTitle) private var numberSize = 56.0
   private var p: DailyStatusPresentation { .init(score: score, now: now) }
   var body: some View {
     VStack(alignment: .leading, spacing: 12) {
@@ -44,7 +44,10 @@ struct DailyStatusHero: View {
           Text(score.band.title).font(.title3.weight(.semibold)).accessibilityIdentifier("status.band")
         }
         if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
-        FangcunCompanion(scene: p.scene, paused: covered).frame(width: 112, height: 86)
+        if !typeSize.isAccessibilitySize {
+          PracticeCompanionV4(kind: p.scene == .calm ? .balancedBreathing : .nsdr, elapsed: 0, duration: 300, isActive: false)
+            .frame(width: 135, height: 110)
+        }
       }
       Text(p.reason).font(.subheadline).fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("status.reason")
       if night { Text("今晚早点收尾。").font(.subheadline).accessibilityIdentifier("status.arrangement") }

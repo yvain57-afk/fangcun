@@ -13,8 +13,13 @@ struct PracticePreparationScreen: View {
     ScrollView {
       VStack(alignment: .leading, spacing: FangcunLayout.spacing(7)) {
         PracticePreparationHero(kind: viewModel.plan.kind, duration: viewModel.duration)
-        PracticeIntroductionCard(kind: viewModel.plan.kind)
-        PracticeHumanInstruction(kind: viewModel.plan.kind)
+        ProportionalPhaseBar(kind: viewModel.plan.kind, variantID: viewModel.variantID)
+        Text(viewModel.plan.kind.steps).font(.body).foregroundStyle(InnerBalanceTheme.ink)
+        Text(viewModel.plan.kind.preparation).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+        DisclosureGroup("动作要领与详细说明") {
+          PracticeIntroductionCard(kind: viewModel.plan.kind)
+          PracticeHumanInstruction(kind: viewModel.plan.kind)
+        }
         Text("引导设置")
           .font(.title3.weight(.semibold))
           .foregroundStyle(InnerBalanceTheme.ink)
@@ -68,6 +73,7 @@ struct PracticePlayerScreen: View {
       if isResuming { Text("准备好，先自然呼吸…").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 12).accessibilityIdentifier("practice.resumePreparation") }
       PracticeTransportControls(
         isPaused: viewModel.phase == .paused,
+        remaining: viewModel.remainingTime,
         onTogglePause: togglePause,
         onFinish: { isResuming = false; onFinish() }
       )

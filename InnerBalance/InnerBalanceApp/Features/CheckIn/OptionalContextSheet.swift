@@ -84,10 +84,13 @@ struct OptionalContextSheet: View {
 
   private var savedHeader: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-      Image(systemName: "checkmark.circle.fill")
-        .font(.system(size: 38))
-        .foregroundStyle(InnerBalanceTheme.strongFill)
-        .accessibilityHidden(true)
+      HStack {
+        Label("这一刻，已留住", systemImage: "checkmark.circle.fill")
+          .font(.caption.weight(.semibold)).foregroundStyle(Color("FangcunExhale"))
+        Spacer()
+        PracticeCompanionV4(kind: .meditation, elapsed: 0, duration: 300, isActive: false)
+          .frame(width: 92, height: 80).accessibilityHidden(true)
+      }
       Text("已记录此刻")
         .font(.title.weight(.semibold))
       if let record = viewModel.savedRecord, record.unclassified {

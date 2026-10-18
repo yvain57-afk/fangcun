@@ -12,7 +12,6 @@ struct PracticeCompanionV4: View {
   var completionProgress = 0.0
   var reduceMotionOverride = false
   @Environment(\.accessibilityReduceMotion) private var systemReduced
-  @Environment(\.scenePhase) private var appPhase
   @AppStorage("fangcun.reduceMotion") private var reduceMotion = false
   @AppStorage("fangcun.motionMode") private var motionMode = "standard"
 
@@ -20,11 +19,9 @@ struct PracticeCompanionV4: View {
     PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: duration, variantID: variantID)
   }
   private var motion: PracticeVisualMotion { .init(kind: kind, snapshot: snapshot) }
-  private var animated: Bool {
-    isActive && appPhase == .active && !systemReduced && !reduceMotion && !reduceMotionOverride
-      && motionMode != "static" && !ProcessInfo.processInfo.isLowPowerModeEnabled
+  private var strength: Double {
+    (systemReduced || reduceMotion || reduceMotionOverride || motionMode == "static" || ProcessInfo.processInfo.isLowPowerModeEnabled) ? 0 : (motionMode == "gentle" ? 0.55 : 1)
   }
-  private var strength: Double { animated ? (motionMode == "gentle" ? 0.55 : 1) : 0 }
   private var expansion: Double {
     if kind == .diaphragmaticBreathing {
       // Labelled visual demonstration only, never a prescribed breathing pace.
@@ -32,6 +29,9 @@ struct PracticeCompanionV4: View {
     }
     if kind == .nsdr && snapshot.segment?.focus == "belly" {
       return -0.2 * PracticeVisualMotion.eased(snapshot.segmentElapsed / 2.4)
+    }
+    if kind == .meditation || kind == .nsdr {
+      return 0.25 * (1 - cos(elapsed / 8 * 2 * .pi)) / 2
     }
     return motion.expansion
   }
@@ -66,7 +66,7 @@ struct PracticeCompanionV4: View {
       character("cat-sit", size: w * 0.53, warp: 0).position(x: w * 0.27, y: h * 0.52)
       character("dog-sit", size: w * 0.55, warp: 1).position(x: w * 0.73, y: h * 0.54)
     case .pacedBreathing, .nsdr:
-      character("dog-rest", size: w * 0.98, warp: 2, aspect: 2)
+      character("v5-dog-sleep", size: w * 1.12, warp: 6)
         .position(x: w * 0.50, y: h * 0.57)
     case .diaphragmaticBreathing:
       character("dog-side", size: w * 0.96, warp: 3).position(x: w * 0.50, y: h * 0.51)
@@ -77,7 +77,7 @@ struct PracticeCompanionV4: View {
         .rotationEffect(.degrees(snapshot.phase == .exhale ? -6 * sin(min(1, snapshot.elapsedInPhase / 2) * .pi) * strength : 0), anchor: .bottom)
         .position(x: w * 0.83, y: h * 0.55)
     case .meditation:
-      character("cat-quiet", size: min(w * 0.83, h * 1.08), warp: 0)
+      character("v5-cat-loaf", size: min(w * 0.96, h * 1.2), warp: 5)
         .position(x: w * 0.50, y: h * 0.50)
       prop("cat-leaf", width: w * 0.10, height: h * 0.12)
         .position(x: w * 0.84, y: h * 0.77)
@@ -88,10 +88,10 @@ struct PracticeCompanionV4: View {
       character("dog-sit", size: min(w * 0.79, h * 1.06), warp: 1)
         .position(x: w * 0.50, y: h * 0.50)
       prop("dog-leaf", width: w * 0.09, height: h * 0.13)
-        .opacity(!isActive || motion.side == -1 ? 1 : 0.28)
+        .opacity(motion.side == -1 ? 1 : 0.28)
         .position(x: w * 0.10, y: h * 0.56)
       prop("cat-leaf", width: w * 0.09, height: h * 0.13)
-        .opacity(!isActive || motion.side == 1 ? 1 : 0.28)
+        .opacity(motion.side == 1 ? 1 : 0.28)
         .position(x: w * 0.90, y: h * 0.56)
     case .kegel:
       character("dog-coach", size: min(w * 0.87, h * 1.08), warp: 4)
@@ -100,7 +100,7 @@ struct PracticeCompanionV4: View {
   }
 
   private func character(_ name: String, size: CGFloat, warp: Float, aspect: CGFloat = 1) -> some View {
-    Image("PracticeV4R-" + name).resizable().aspectRatio(contentMode: .fit)
+    Image(name.hasPrefix("v5-") ? "PracticeV5-" + String(name.dropFirst(3)) : "PracticeV4R-" + name).resizable().aspectRatio(contentMode: .fit)
       .frame(width: size, height: size / aspect)
       .visualEffect { content, geometry in
         content.distortionEffect(
@@ -122,7 +122,7 @@ struct PracticeCompanionV4: View {
     case .boxBreathing: "小猫安稳坐着，停留时身体保持"
     case .diaphragmaticBreathing: "小狗前爪放在下肋，腹部轻轻起伏；动作示范，按自己的节奏"
     case .alternateNostrilBreathing: "小狗和左右叶子，左右均指你自己"
-    case .meditation: "小猫闭眼坐稳，安静陪伴"
+    case .meditation: "小猫蜷卧闭眼，安静陪伴"
     case .nsdr: "小狗枕爪休息，跟随身体扫描放松"
     case .kegel: "小狗用旗子提示轻收与完全放松，呼吸照常"
     }

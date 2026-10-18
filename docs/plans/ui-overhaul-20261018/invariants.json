@@ -1,0 +1,16 @@
+{
+  "baseline": "b882c02b23091776488b6518089cbd6d91832a5c",
+  "protectedPaths": [
+    "InnerBalanceCore",
+    "InnerBalance/InnerBalanceApp/Persistence",
+    "InnerBalance/InnerBalanceApp/Health",
+    "InnerBalance/InnerBalanceApp/Features/Practice/PracticeSessionDraftStore.swift",
+    "InnerBalance/InnerBalanceApp/InnerBalance.entitlements",
+    "InnerBalance/InnerBalanceWatch/InnerBalanceWatch.entitlements"
+  ],
+  "changedProtectedFiles": [],
+  "timelines": {
+    "InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeTimeline.swift": "145dfb472340f9209eea147888c9d91a7baaeff576cc1792f6500d697dbcfeb1",
+    "InnerBalanceCore/Sources/InnerBalanceCore/Practice/PracticeCatalog.swift": "39a1cb91263cf5bf959a85a08c40e8ec8437c26883eac39ed33b79965adbcbaa"
+  }
+}

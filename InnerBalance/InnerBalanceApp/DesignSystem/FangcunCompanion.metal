@@ -73,10 +73,17 @@ float fcGesture(float t,float d) { if(t<=0 || t>=d) return 0; float s=sin(M_PI_F
   float band=smoothstep(.53,.62,p.x)*(1-smoothstep(.83,.93,p.x));
   float grounded=smoothstep(.30,.40,p.y)*(1-smoothstep(.60,.72,p.y));
   d=float2(.008,-.027)*band*grounded*expansion;
- } else {
+ } else if(pose<4.5) {
   // The drawn paw and flag are one connected region. Abdomen never contracts.
   float flag=(1-smoothstep(.23,.40,p.x))*smoothstep(.40,.49,p.y)*(1-smoothstep(.66,.77,p.y));
   d.y=-.030*flag*expansion;
+ }
+ else if(pose<5.5) {
+  float band=smoothstep(.43,.57,p.y)*(1-smoothstep(.78,.87,p.y));
+  d.x=(p.x-.53)*.07*band*expansion;
+ } else {
+  float band=smoothstep(.56,.68,p.x)*(1-smoothstep(.85,.94,p.x));
+  d.y=-.025*band*smoothstep(.38,.46,p.y)*(1-smoothstep(.65,.74,p.y))*expansion;
  }
  // A small, finite nod on a spoken return/face cue. No detached head layer.
  float head=pose<1.5 ? fcHead(p,float2(.56,.32),float2(.31,.27)) : fcHead(p,float2(.30,.43),float2(.25,.28));

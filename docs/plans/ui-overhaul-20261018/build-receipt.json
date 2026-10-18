@@ -1,0 +1,14 @@
+{
+  "bundleID": "com.yvainair.InnerBalance",
+  "version": "1.0.0",
+  "build": "2026101906",
+  "codesignVerifyExit": 0,
+  "exportMethod": "debugging",
+  "profileExpires": "2027-10-04T08:54:21Z",
+  "registeredDevicesOnly": true,
+  "ipaBytes": 26728397,
+  "ipaSHA256": "dbc7a7a4770773d3942bc496927228925ead0faed1497372a326d4f1556773fc",
+  "productSourceDigest": "750df3f091fd2dbe861044eb01b44a708a53ee5fadb1ae23871653d5e4fdabf0",
+  "phoneInstallVerified": false,
+  "testFlightUploaded": false
+}

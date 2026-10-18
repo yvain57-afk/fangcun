@@ -39,9 +39,14 @@ extension XCTestCase {
   @MainActor func openV4Method(_ id: String, app: XCUIApplication) {
     app.tabBars.buttons["呼吸"].tap()
     let card = app.buttons["hub.method." + id]
-    for _ in 0..<16 where !card.isHittable { app.swipeUp() }
+    for _ in 0..<20 {
+      if card.isHittable { break }
+      if card.exists && card.frame.height > 0 && card.frame.maxY < 80 { app.swipeDown() } else { app.swipeUp() }
+    }
     XCTAssertTrue(card.isHittable)
     card.tap()
+    XCTAssertTrue(app.buttons["practice.demo"].waitForExistence(timeout: 5), "Method detail must actually open")
+
   }
 }
 
@@ -133,6 +138,10 @@ final class BreathingHubV4UITests: XCTestCase {
     for (method, teaching) in [("diaphragmaticBreathing", "diaphragm"), ("alternateNostrilBreathing", "nostrils"), ("kegel", "pelvicFloor")] {
       for _ in 0..<12 where !app.buttons["hub.quickStart"].isHittable { app.swipeDown() }
       openV4Method(method, app: app)
+      let disclosure = app.buttons["动作要领与注意事项"]
+      for _ in 0..<8 where !disclosure.isHittable { app.swipeUp() }
+      XCTAssertTrue(disclosure.isHittable)
+      disclosure.tap()
       let instruction = app.descendants(matching: .any)["practice.teaching." + teaching].firstMatch
       for _ in 0..<10 where !instruction.isHittable { app.swipeUp() }
       XCTAssertTrue(instruction.exists)

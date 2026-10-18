@@ -15,9 +15,10 @@ struct SettlingStagePlayer: View {
       title: isPaused ? "已暂停" : kind == .diaphragmaticBreathing ? "按自己的节奏呼吸" : "让注意力落下来",
       instruction: isPaused ? "先自然呼吸，准备好再继续" : state.segment?.text ?? kind.steps,
       remaining: remaining, accessibilityIdentifier: "practice.settlingStage", showsStageCard: false) {
-        VStack(spacing: 8) {
+        VStack(spacing: 16) {
           PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: duration, variantID: variantID,
             isActive: !isPaused, reduceMotionOverride: reduceMotion).frame(maxWidth: 320).frame(height: 250)
+          PracticeGuidedProgress(kind: kind, elapsed: elapsed, duration: duration)
           if kind == .diaphragmaticBreathing {
             Text("腹部起伏为动作示范 · 按自己的节奏")
               .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
@@ -41,8 +42,11 @@ struct BodyScanStagePlayer: View {
       title: isPaused ? "已暂停" : state.segment?.focus == "return" ? "慢慢回到此刻" : "把重量交给支撑面",
       instruction: isPaused ? "先自然呼吸，准备好再继续" : state.segment?.text ?? kind.steps,
       remaining: remaining, accessibilityIdentifier: "practice.bodyScanStage", showsStageCard: false) {
-        PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: duration, variantID: variantID,
-          isActive: !isPaused).frame(maxWidth: 320).frame(height: 280)
+        VStack(spacing: 16) {
+          PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: duration, variantID: variantID,
+            isActive: !isPaused, reduceMotionOverride: reduceMotion).frame(maxWidth: 320).frame(height: 260)
+          PracticeGuidedProgress(kind: kind, elapsed: elapsed, duration: duration)
+        }
     }
   }
 }

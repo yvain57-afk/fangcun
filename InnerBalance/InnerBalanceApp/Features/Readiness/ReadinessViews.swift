@@ -70,7 +70,7 @@ struct ReadinessDetailView: View {
           }.font(.caption).padding(.top, 10)
         }
       }.padding(20)
-    }.background(InnerBalanceTheme.canvas).navigationTitle(FangcunCopy.text("readiness.why"))
+    }.background(InnerBalanceTheme.canvas).fangcunCleanList().navigationTitle(FangcunCopy.text("readiness.why"))
   }
 }
 
@@ -139,7 +139,7 @@ struct ReadinessDiagnosticsView: View {
           Text(FangcunCopy.text("readiness.contextBoundary"))
         }
       }
-    }.navigationTitle(FangcunCopy.text("readiness.why"))
+    }.fangcunCleanList().navigationTitle(FangcunCopy.text("readiness.why"))
       .scrollContentBackground(.hidden).background(InnerBalanceTheme.canvas)
   }
   private func time(_ key: String, _ date: Date?) -> some View {
@@ -239,7 +239,7 @@ struct ReadinessHistoryView: View {
         ReadinessDayContext(date: selected, snapshot: owner.snapshot)
         Button(FangcunCopy.text("readiness.refresh")) { Task { await owner.refresh() } }
       }.padding(20)
-    }.background(InnerBalanceTheme.canvas).navigationTitle(FangcunCopy.text("readiness.history"))
+    }.background(InnerBalanceTheme.canvas).fangcunCleanList().navigationTitle(FangcunCopy.text("readiness.history"))
   }
 }
 
@@ -317,9 +317,10 @@ struct ReadinessSettingsView: View {
         if let error = owner.errorKey { Text(FangcunCopy.text(error)) }
         Text(FangcunCopy.text("readiness.boundary"))
       }
-    }.navigationTitle(FangcunCopy.text("readiness.settings"))
-      .confirmationDialog(FangcunCopy.text("readiness.clearExplanation"), isPresented: $clearConfirmation, titleVisibility: .visible) {
-        Button(FangcunCopy.text("readiness.clear"), role: .destructive) { Task { await owner.stop(clear: true) } }
+    }.fangcunCleanList().navigationTitle(FangcunCopy.text("readiness.settings"))
+      .sheet(isPresented: $clearConfirmation) {
+        FangcunDataConfirmation(title: FangcunCopy.text("readiness.clearExplanation"), actionTitle: FangcunCopy.text("readiness.clear"),
+          onCancel: { clearConfirmation = false }, onConfirm: { clearConfirmation = false; Task { await owner.stop(clear: true) } })
       }
   }
 }

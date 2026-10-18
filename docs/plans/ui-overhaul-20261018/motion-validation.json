@@ -1,0 +1,92 @@
+[
+  {
+    "kind": "physiologicalSigh",
+    "file": "physiologicalSigh.mp4",
+    "duration": 32.736667,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "pacedBreathing",
+    "file": "pacedBreathing.mp4",
+    "duration": 32.62,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "balancedBreathing",
+    "file": "balancedBreathing.mp4",
+    "duration": 32.603333,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "boxBreathing",
+    "file": "boxBreathing.mp4",
+    "duration": 32.623333,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "diaphragmaticBreathing",
+    "file": "diaphragmaticBreathing.mp4",
+    "duration": 32.626667,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "alternateNostrilBreathing",
+    "file": "alternateNostrilBreathing.mp4",
+    "duration": 32.596667,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "meditation",
+    "file": "meditation.mp4",
+    "duration": 32.46,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "nsdr",
+    "file": "nsdr.mp4",
+    "duration": 32.588333,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  },
+  {
+    "kind": "kegel",
+    "file": "kegel.mp4",
+    "duration": 32.608333,
+    "width": 1206,
+    "height": 2622,
+    "codec": "h264",
+    "decodeExit": 0,
+    "recordingExit": 0
+  }
+]

@@ -33,7 +33,12 @@ struct FangcunDesignSystemTests {
     for case let fileURL as URL in enumerator where fileURL.pathExtension == "swift" {
       let source = try String(contentsOf: fileURL, encoding: .utf8)
       for token in bannedTokens where source.contains(token) {
-        violations.append("\(fileURL.lastPathComponent): \(token)")
+        // One explicitly approved volume field behind the mascot; other UI remains flat.
+        if token == "RadialGradient(", fileURL.lastPathComponent == "FangcunPracticeDesign.swift" {
+          #expect(source.components(separatedBy: token).count == 2)
+        } else {
+          violations.append("\(fileURL.lastPathComponent): \(token)")
+        }
       }
     }
 
@@ -79,18 +84,18 @@ struct FangcunDesignSystemTests {
   @Test("The warm paper palette is accessible in both appearances")
   @MainActor
   func approvedPaperPalette() throws {
-    // Native mapping of the approved blue/paper contract; see M3-PRE-CONTRACT.md.
+    // Approved overhaul palette; SPEC.md supersedes the earlier M3-PRE visual values. Contrast gates remain unchanged.
     let expected: [String: (light: UInt32, dark: UInt32)] = [
       "AccentColor": (0x1B355A, 0x9BB9DE),
-      "FangcunAccent": (0x1B355A, 0x9BB9DE),
-      "FangcunAccentWash": (0xEEF2F5, 0x283748),
-      "FangcunBackground": (0xFAF9F5, 0x141A22),
-      "FangcunButtonText": (0xFFFFFF, 0x142239),
-      "FangcunCard": (0xFFFFFF, 0x1E2631),
-      "FangcunPrimaryText": (0x253244, 0xEDF2F6),
-      "FangcunRaisedCard": (0xFFFFFF, 0x232E3C),
-      "FangcunSecondaryText": (0x677483, 0xACB9C8),
-      "FangcunWarmHighlight": (0xC26D54, 0xE49A82),
+      "FangcunAccent": (0x1B355A, 0xB4CCE9),
+      "FangcunAccentWash": (0xE6EBEE, 0x20344C),
+      "FangcunBackground": (0xFAF9F5, 0x0B1320),
+      "FangcunButtonText": (0xFAF9F5, 0x0B1320),
+      "FangcunCard": (0xF2EFE9, 0x132033),
+      "FangcunPrimaryText": (0x1B355A, 0xE6EDF5),
+      "FangcunRaisedCard": (0xFFFFFF, 0x1A2B44),
+      "FangcunSecondaryText": (0x526580, 0xA7B8CF),
+      "FangcunWarmHighlight": (0x9C5138, 0xEBA58E),
     ]
 
     for (name, pair) in expected {

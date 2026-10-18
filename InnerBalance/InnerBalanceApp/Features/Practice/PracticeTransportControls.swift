@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PracticeTransportControls: View {
   let isPaused: Bool
+  let remaining: TimeInterval
   let onTogglePause: () -> Void
   let onFinish: () -> Void
 
@@ -14,7 +15,13 @@ struct PracticeTransportControls: View {
       }
       .buttonStyle(PracticeQuietControlStyle())
 
-      Spacer()
+      Spacer(minLength: 8)
+      Text(PracticeDurationFormatter.clock(remaining))
+        .font(.footnote.monospacedDigit().weight(.medium))
+        .foregroundStyle(InnerBalanceTheme.mutedInk)
+        .accessibilityLabel("剩余 \(PracticeDurationFormatter.clock(remaining))")
+        .accessibilityIdentifier("practice.remaining")
+      Spacer(minLength: 8)
 
       Button(action: onTogglePause) {
         Image(systemName: isPaused ? "play.fill" : "pause.fill")

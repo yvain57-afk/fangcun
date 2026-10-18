@@ -18,20 +18,14 @@ struct FangcunDrinkSheet: View {
   private var cupML: Int { care?.preferences.cupML ?? 250 }
 
   var body: some View {
-    Group {
-      if typeSize.isAccessibilitySize {
-        ScrollView {
-          VStack(alignment: .leading, spacing: 24) { header; rows; summary }
-        }
-      } else {
-        VStack(spacing: 8) { header; ScrollView { rows }; summary }
-      }
+    ScrollView {
+      VStack(alignment: .leading, spacing: 16) { header; rows; summary }
     }
     .padding(.horizontal, 20).padding(.top, 18).padding(.bottom, 8)
     .foregroundStyle(InnerBalanceTheme.ink).tint(InnerBalanceTheme.strongFill)
     .background(InnerBalanceTheme.canvas)
     .sheet(isPresented: $editing) { FangcunDrinkEditor() }
-    .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.fraction(0.55), .large])
+    .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.fraction(0.72), .large])
     .presentationDragIndicator(.visible)
     .presentationCornerRadius(28)
   }
@@ -52,7 +46,9 @@ struct FangcunDrinkSheet: View {
   }
   private var rows: some View {
     VStack(spacing: typeSize.isAccessibilitySize ? 28 : 3) {
-      ForEach(kinds) { kind in drinkRow(kind) }
+      LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: typeSize.isAccessibilitySize ? 1 : 2), spacing: 10) {
+        ForEach(kinds) { kind in drinkRow(kind) }
+      }
       Toggle("咖啡是甜拿铁（同时记糖饮）", isOn: $sweetCoffee).font(.caption).padding(.vertical, 6)
       Button(FangcunCopy.text("diary.manage")) { editing = true }.accessibilityIdentifier("drinks.manage")
       Text("按杯预估，实际含量会因品牌与杯量变化。酒精不折算为补水建议。")
@@ -61,35 +57,27 @@ struct FangcunDrinkSheet: View {
     }
   }
   private func drinkRow(_ kind: FangcunDrink) -> some View {
-    let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12)) : AnyLayout(HStackLayout(spacing: 10))
-    return layout {
-      HStack(alignment: .top, spacing: 10) {
-        Image(systemName: kind.symbol).foregroundStyle(InnerBalanceTheme.strongFill).accessibilityHidden(true)
-        VStack(alignment: .leading, spacing: 3) {
-          Text(kind.title).font(.subheadline.weight(.medium))
-          Text("\(kind == .water ? cupML : kind.fluid) ml" + (kind.isCoffee ? " · 每杯约 \(coffeeMg) mg 咖啡因" : kind == .beer ? " · 5% · 约 13 g 酒精" : ""))
-            .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk)
-        }.fixedSize(horizontal: false, vertical: true)
-      }
-      HStack(spacing: 10) {
-        Spacer(minLength: 0)
-        Button { change(kind, adding: false) } label: { Image(systemName: "minus").frame(minWidth: 44, minHeight: 44) }
-          .accessibilityLabel("减少\(kind.title)").disabled(count(kind) == 0)
-        Text("\(count(kind))").font(.subheadline.monospacedDigit()).frame(minWidth: 12)
+    VStack(alignment: .leading, spacing: 6) {
+      Label(kind.title, systemImage: kind.symbol).font(.subheadline.weight(.semibold))
+      Text("\(kind == .water ? cupML : kind.fluid) ml" + (kind.isCoffee ? " · 约 \(coffeeMg) mg" : kind == .beer ? " · 5%" : ""))
+        .font(.caption2.monospacedDigit()).foregroundStyle(InnerBalanceTheme.mutedInk)
+        .fixedSize(horizontal: false, vertical: true)
+      HStack(spacing: 0) {
+        Button { change(kind, adding: false) } label: {
+          Image(systemName: "minus").frame(minWidth: 44, minHeight: 44)
+        }.accessibilityLabel("减少\(kind.title)").disabled(count(kind) == 0)
+        Text("\(count(kind))").font(.subheadline.monospacedDigit()).frame(maxWidth: .infinity)
           .accessibilityIdentifier("drinks.count.\(kind.rawValue)")
         Button { change(kind, adding: true) } label: {
-          if kind == .water {
-            Text(FangcunCopy.text("drink.logCup", cupML)).font(.caption2).multilineTextAlignment(.center)
-              .fixedSize(horizontal: false, vertical: true).padding(.horizontal, 12).padding(.vertical, 6)
-              .frame(minWidth: 72, minHeight: 44).background(InnerBalanceTheme.subtleFill, in: RoundedRectangle(cornerRadius: 18))
-          } else { Image(systemName: "plus").frame(minWidth: 44, minHeight: 44).background(InnerBalanceTheme.subtleFill, in: Circle()) }
-        }
-        .accessibilityLabel(kind == .water ? FangcunCopy.text("drink.logCup", cupML) : "增加\(kind.title)")
-        .accessibilityIdentifier("drinks.add." + kind.rawValue)
+          Image(systemName: "plus").frame(minWidth: 44, minHeight: 44)
+            .background(InnerBalanceTheme.subtleFill, in: Circle())
+        }.accessibilityLabel("增加\(kind.title)")
+          .accessibilityIdentifier("drinks.add." + kind.rawValue)
       }
-    }
-    .opacity(diary.storageMessage == nil ? 1 : 0.5).disabled(diary.storageMessage != nil)
+    }.padding(10).background(InnerBalanceTheme.surface, in: RoundedRectangle(cornerRadius: 16))
+      .opacity(diary.storageMessage == nil ? 1 : 0.5).disabled(diary.storageMessage != nil)
   }
+
   private var summary: some View {
     VStack(spacing: 8) {
       if let care, care.preferences.volumePromptsAllowed {

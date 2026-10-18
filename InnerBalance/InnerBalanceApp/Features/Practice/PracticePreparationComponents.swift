@@ -7,7 +7,7 @@ struct PracticePreparationHero: View {
 
   var body: some View {
     HStack(alignment: .center, spacing: FangcunLayout.spacing(5)) {
-      PracticeFieldGlyph(kind: kind, size: 96)
+      PracticeCompanionV4(kind: kind, elapsed: 0, duration: duration, isActive: false).frame(width: 96, height: 96)
       VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
         Text(kind.outcomeTitle)
           .font(.caption.weight(.bold))

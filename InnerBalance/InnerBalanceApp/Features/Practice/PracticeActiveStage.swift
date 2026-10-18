@@ -63,11 +63,12 @@ struct PracticeStageScaffold<Stage: View>: View {
   let accessibilityIdentifier: String
   var titleAccessibilityIdentifier = "practice.stageTitle"
   var showsStageCard = true
+  var compactLayout = false
   @ViewBuilder let stage: () -> Stage
 
   var body: some View {
     ScrollView {
-      VStack(spacing: FangcunLayout.spacing(6)) {
+      VStack(spacing: FangcunLayout.spacing(compactLayout ? 3 : 6)) {
         VStack(spacing: FangcunLayout.spacing(2)) {
           Text(eyebrow)
             .font(.caption.weight(.bold))
@@ -101,13 +102,10 @@ struct PracticeStageScaffold<Stage: View>: View {
             )
             .strokeBorder(showsStageCard ? InnerBalanceTheme.hairline : .clear, lineWidth: 1)
           }
-        Text(PracticeDurationFormatter.clock(remaining))
-          .font(.footnote.monospacedDigit().weight(.medium))
-          .foregroundStyle(InnerBalanceTheme.mutedInk)
-          .accessibilityLabel("剩余 \(PracticeDurationFormatter.clock(remaining))")
+
       }
       .frame(maxWidth: .infinity)
-      .padding(.top, FangcunLayout.spacing(6))
+      .padding(.top, FangcunLayout.spacing(compactLayout ? 3 : 6))
       .padding(.bottom, FangcunLayout.spacing(4))
     }
     .accessibilityIdentifier(accessibilityIdentifier)

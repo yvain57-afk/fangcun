@@ -112,7 +112,7 @@ struct SettingsView: View {
       .tint(InnerBalanceTheme.strongFill)
       .scrollContentBackground(.hidden)
       .background(InnerBalanceTheme.canvas)
-      .navigationTitle("设置")
+      .fangcunCleanList().navigationTitle("设置")
       .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.accessibilityIdentifier("settings.done") } }
       .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
     }
@@ -150,7 +150,7 @@ private struct PrivacyView: View {
     .listRowSeparatorTint(InnerBalanceTheme.hairline)
     .scrollContentBackground(.hidden)
     .background(InnerBalanceTheme.canvas)
-    .navigationTitle("隐私与数据")
+    .fangcunCleanList().navigationTitle("隐私与数据")
     .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
   }
 

@@ -13,6 +13,8 @@ struct DailyStatusHistoryView: View {
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 20) {
+        Text("每一天，都有自己的节奏").font(.title2.weight(.semibold))
+        Text("回看已有记录，不必追求每天相同。").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
         Picker("时间范围", selection: $span) { Text("7 天").tag(7); Text("28 天").tag(28) }
           .pickerStyle(.segmented).accessibilityIdentifier("readiness.history.range")
         LazyVGrid(columns:Array(repeating:GridItem(.flexible()),count:7)) {
@@ -54,13 +56,18 @@ struct DailyStatusHistoryView: View {
               }
             }
           }
-        } else { Text("这一天还没有状态分。") }
+        } else {
+          VStack(alignment: .leading, spacing: 10) {
+            Label("这一天还没有状态分。", systemImage: "leaf")
+            Text("没有记录，也不代表这一天不好。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+          }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
+        }
         Text("状态分从 v3 开始记录，旧版记录保持原样。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         NavigationLink("查看旧版记录（无状态分）") { ReadinessHistoryView(owner:owner) }
           .accessibilityIdentifier("status.history.legacy")
       }.padding(20)
     }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)
-      .navigationTitle("这一周的节奏").navigationBarTitleDisplayMode(.inline)
+      .fangcunCleanList().navigationTitle(span == 7 ? "这一周的节奏" : "最近四周的节奏").navigationBarTitleDisplayMode(.inline)
   }
 }
 
@@ -84,7 +91,7 @@ struct ManualStatusSleepView: View {
           }
         }.disabled(saving).accessibilityIdentifier("status.manual.save")
         if failed { Text("暂时未能保存，请重试。") }
-      }.navigationTitle("补记一次睡眠").toolbar { Button("取消") { dismiss() } }
+      }.fangcunCleanList().navigationTitle("补记一次睡眠").toolbar { Button("取消") { dismiss() } }
     }
   }
 }

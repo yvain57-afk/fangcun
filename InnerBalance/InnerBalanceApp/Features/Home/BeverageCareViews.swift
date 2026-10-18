@@ -110,10 +110,11 @@ struct BeverageCareSettings: View {
       }
       if let error = owner.errorKey { Text(FangcunCopy.text(error)) }
       Button(FangcunCopy.text("care.clear"), role: .destructive) { clear = true }
-    }.navigationTitle(FangcunCopy.text("care.settings"))
+    }.fangcunCleanList().navigationTitle(FangcunCopy.text("care.settings"))
       .scrollContentBackground(.hidden).background(InnerBalanceTheme.canvas)
-      .confirmationDialog(FangcunCopy.text("care.clearExplanation"), isPresented: $clear, titleVisibility: .visible) {
-        Button(FangcunCopy.text("care.clear"), role: .destructive) { Task { await owner.clearPrivateCare() } }
+      .sheet(isPresented: $clear) {
+        FangcunDataConfirmation(title: FangcunCopy.text("care.clearExplanation"), actionTitle: FangcunCopy.text("care.clear"),
+          onCancel: { clear = false }, onConfirm: { clear = false; Task { await owner.clearPrivateCare() } })
       }
       .sheet(isPresented: $severe) {
         VStack(alignment: .leading, spacing: 24) {

@@ -40,7 +40,7 @@ struct RecoverySuggestionView: View {
                 .accessibilityIdentifier("recovery.choose." + action.id)
             }
             Text(FangcunCopy.text("recovery.safety"))
-          }.navigationTitle(FangcunCopy.text("recovery.change"))
+          }.fangcunCleanList().navigationTitle(FangcunCopy.text("recovery.change"))
         }.presentationDetents([.medium, .large])
       }
       .fullScreenCover(item: $selected) { launch in
@@ -67,7 +67,9 @@ struct RecoverySessionView: View {
     NavigationStack {
       ScrollView {
         VStack(spacing: 22) {
-          FangcunCompanion(scene: FangcunDayState.insufficient.scene, paused: true).frame(maxWidth: 180)
+          PracticeCompanionV4(kind: model.plan.action == .quietRest ? .nsdr : .balancedBreathing,
+            elapsed: model.elapsed, duration: model.plan.duration, isActive: false)
+            .frame(maxWidth: 260).frame(height: 180)
           Text(FangcunCopy.text("recovery.title." + model.plan.action.id)).font(.title2)
           Text(FangcunCopy.text(model.plan.safetyKey)).font(.subheadline).fixedSize(horizontal: false, vertical: true)
           switch model.phase {
@@ -77,6 +79,7 @@ struct RecoverySessionView: View {
               .buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("recovery.start")
           case .running, .paused:
             Text(FangcunCopy.text(model.plan.stageKeys[model.elapsed < model.plan.duration/2 ? 0 : 1]))
+            ProgressView(value: min(model.elapsed, model.plan.duration), total: model.plan.duration).tint(Color("FangcunExhale"))
             Text(FangcunCopy.text("recovery.remaining", Int(max(0, model.plan.duration - model.elapsed))))
               .monospacedDigit().accessibilityIdentifier("recovery.remaining")
             Button(FangcunCopy.text(model.phase == .running ? "recovery.pause" : "recovery.resume")) {
@@ -155,6 +158,6 @@ struct RecoveryHistoryView: View {
           }
         }.accessibilityIdentifier("recovery.history.record")
       }
-    }.navigationTitle(FangcunCopy.text("recovery.history"))
+    }.fangcunCleanList().navigationTitle(FangcunCopy.text("recovery.history"))
   }
 }

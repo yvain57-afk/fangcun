@@ -1,0 +1,14 @@
+{
+  "result": "Passed",
+  "passedTests": 220,
+  "failedTests": 0,
+  "skippedTests": 0,
+  "totalTestCount": 220,
+  "statistics": [
+    {
+      "subtitle": "75 test runs",
+      "title": "12 tests ran with dynamic parameters"
+    }
+  ],
+  "testFailures": []
+}

@@ -21,6 +21,13 @@ struct PracticeComparisonScreen: View {
           .font(.caption.weight(.semibold)).foregroundStyle(InnerBalanceTheme.emphasis)
         Text(viewModel.plan.kind.title + " · " + PracticeDurationFormatter.clock(viewModel.actualDuration ?? 0))
           .font(.title.weight(.semibold)).accessibilityIdentifier("practice.actualSummary")
+        if !PracticeTimeline.steps(for: viewModel.plan.kind, variantID: viewModel.variantID).isEmpty {
+          HStack {
+            Label("完成 \(viewModel.completedCycles) 轮引导", systemImage: "checkmark.circle")
+            Spacer()
+            Text("按实际练习时间记录").font(.caption)
+          }.font(.subheadline.monospacedDigit()).foregroundStyle(Color("FangcunExhale")).fangcunPaperCard()
+        }
         Text(viewModel.plan.kind.completionReview).font(.body).foregroundStyle(InnerBalanceTheme.mutedInk)
         Text("现在感觉怎么样？").font(.headline)
         VStack(spacing: 10) {

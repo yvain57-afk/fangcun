@@ -19,6 +19,7 @@ struct PracticeSessionView: View {
   @State private var postArousal = 0.0
   @State private var hasPostPosition = false
   @State private var isEntering = false
+  @State private var resumeAfterDialog = false
   @State private var entryStartedAt = Date.now
 
   private let diagnostics: any LocalDiagnosticsRecording
@@ -145,6 +146,15 @@ struct PracticeSessionView: View {
       onRetry: { Task { await saveCompletion() } },
       onDiscard: { dismiss() }
     )
+    .onChange(of: showFinishConfirmation || showExitConfirmation) { _, showing in
+      if showing {
+        resumeAfterDialog = viewModel.phase == .running
+        if resumeAfterDialog { viewModel.pause() }
+      } else {
+        if resumeAfterDialog && viewModel.phase == .paused { viewModel.resume() }
+        resumeAfterDialog = false
+      }
+    }
     .sensoryFeedback(.impact(weight: .light), trigger: cadence.trigger)
   }
 

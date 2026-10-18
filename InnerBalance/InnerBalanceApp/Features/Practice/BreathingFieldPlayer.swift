@@ -79,7 +79,8 @@ struct BreathingFieldPlayer: View {
       title: isPaused ? "已暂停" : snapshot.phase?.title ?? "自然呼吸",
       instruction: isPaused ? "先自然呼吸，准备好再继续" : instruction,
       remaining: sessionRemaining, accessibilityIdentifier: "practice.breathGuide",
-      titleAccessibilityIdentifier: "practice.breathPhase", showsStageCard: false) {
+      titleAccessibilityIdentifier: "practice.breathPhase", showsStageCard: false,
+      compactLayout: kind == .alternateNostrilBreathing) {
         PracticeVisualGuide(kind: kind, elapsed: elapsed, duration: elapsed + sessionRemaining,
           variantID: variantID, isPaused: isPaused, reduceMotion: reduceMotion)
     }

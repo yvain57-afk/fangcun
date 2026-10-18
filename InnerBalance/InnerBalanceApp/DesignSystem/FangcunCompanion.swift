@@ -86,8 +86,8 @@ struct FangcunCompanion: View {
 
 extension View {
   func fangcunPaperCard() -> some View {
-    self.padding(20)
-      .background(InnerBalanceTheme.surface, in: RoundedRectangle(cornerRadius: 24))
-      .overlay { RoundedRectangle(cornerRadius: 24).strokeBorder(InnerBalanceTheme.hairline.opacity(0.5), lineWidth: 0.7) }
+    self.padding(16)
+      .background(InnerBalanceTheme.surface, in: RoundedRectangle(cornerRadius: 18))
+      .overlay { RoundedRectangle(cornerRadius: 18).strokeBorder(InnerBalanceTheme.hairline, lineWidth: 1) }
   }
 }

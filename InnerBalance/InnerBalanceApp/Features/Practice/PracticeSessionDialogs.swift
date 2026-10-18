@@ -39,6 +39,7 @@ enum PracticeSessionDialogPolicy {
 }
 
 private struct PracticeSessionDialogs: ViewModifier {
+  @Environment(\.dynamicTypeSize) private var typeSize
   @Binding var showFinish: Bool
   @Binding var showExit: Bool
   @Binding var saveErrorMessage: String?
@@ -49,19 +50,21 @@ private struct PracticeSessionDialogs: ViewModifier {
   func body(content: Content) -> some View {
     content
       .tint(InnerBalanceTheme.strongFill)
-      .confirmationDialog("要提前结束吗？", isPresented: $showFinish) {
-        Button(PracticeSessionDialogCopy.finishActionTitle, action: onFinish)
-          .accessibilityIdentifier(PracticeSessionDialogCopy.finishActionID)
-        Button("继续练习", role: .cancel) {}
-      } message: {
-        Text(PracticeSessionDialogCopy.finishMessage)
-      }
-      .confirmationDialog("正在进行练习", isPresented: $showExit) {
-        Button(PracticeSessionDialogCopy.finishActionTitle, action: onFinish)
-          .accessibilityIdentifier(PracticeSessionDialogCopy.finishActionID)
-        Button("继续练习", role: .cancel) {}
-      } message: {
-        Text(PracticeSessionDialogCopy.finishMessage)
+      .sheet(isPresented: Binding(get: { showFinish || showExit }, set: { if !$0 { showFinish = false; showExit = false } })) {
+        ScrollView {
+        VStack(alignment: .leading, spacing: 22) {
+          Text("这次先到这里？").font(.title2.weight(.semibold))
+          Text(PracticeSessionDialogCopy.finishMessage).font(.body).foregroundStyle(InnerBalanceTheme.mutedInk)
+          Button("继续练习") { showFinish = false; showExit = false }
+            .buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("practice.finish.cancel")
+          Button(PracticeSessionDialogCopy.finishActionTitle) {
+            showFinish = false; showExit = false; onFinish()
+          }.frame(maxWidth: .infinity, minHeight: 44).font(.headline)
+            .accessibilityIdentifier(PracticeSessionDialogCopy.finishActionID)
+        }.padding(24)
+        }.foregroundStyle(InnerBalanceTheme.ink)
+          .presentationBackground(InnerBalanceTheme.canvas)
+          .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large]).presentationDragIndicator(.visible)
       }
       .alert(
         "未能保留本次练习",

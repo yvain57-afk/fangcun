@@ -63,10 +63,6 @@ struct FangcunTodayView: View {
       ScrollView {
         VStack(spacing: 20) {
           header
-          Button(action: onRecords) {
-            HStack { Label("练习记录", systemImage: "clock.arrow.circlepath"); Spacer(); Image(systemName: "chevron.right") }
-              .font(.headline).fangcunPaperCard()
-          }.buttonStyle(.plain).accessibilityIdentifier("daily.records")
           Text("身体状态").font(.headline).frame(maxWidth: .infinity, alignment: .leading)
           HStack {
             Text(statusNow, format: .dateTime.month().day().weekday(.wide)).font(.caption)
@@ -76,17 +72,7 @@ struct FangcunTodayView: View {
             } else { Text(readiness?.loading == true ? "正在更新" : "方寸状态分").font(.caption2) }
           }.foregroundStyle(InnerBalanceTheme.mutedInk)
           hero
-          Button(action: startPrimary) {
-            HStack(spacing: 14) {
-              Image(systemName: "wind").font(.title2)
-              VStack(alignment: .leading, spacing: 5) {
-                Text(primaryAction == .sync && readiness?.errorKey != nil ? "重试同步" : primaryAction.title).font(.headline)
-              }
-              Spacer(minLength: 0)
-              Image(systemName: "arrow.up.right")
-            }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 18)
-          }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
-            .disabled(primaryAction == .unavailable || askingHealth)
+          if !typeSize.isAccessibilitySize { primaryButton }
           if status == nil, readiness?.enabled == true, readiness?.reading == true {
             Button("补记一次睡眠") { manualSleep = true }.font(.subheadline).accessibilityIdentifier("status.manual")
           }
@@ -100,6 +86,10 @@ struct FangcunTodayView: View {
               }.fangcunPaperCard()
             }.buttonStyle(.plain).accessibilityIdentifier("today.evidence")
           }
+          Button(action: onRecords) {
+            HStack { Label("练习记录", systemImage: "clock.arrow.circlepath"); Spacer(); Image(systemName: "chevron.right") }
+              .font(.headline).fangcunPaperCard()
+          }.buttonStyle(.plain).accessibilityIdentifier("daily.records")
           VStack(alignment: .leading, spacing: 12) {
           Button { drinks = true } label: {
             HStack(spacing: 14) {
@@ -130,6 +120,20 @@ struct FangcunTodayView: View {
               .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
               .accessibilityIdentifier("today.feeling").accessibilityValue(recentFeeling.syncIdentifier)
           }
+          if let recentFeeling, Calendar.current.isDateInToday(recentFeeling.date),
+             !recentFeeling.bodySensationCodes.isEmpty {
+            Button { onSuggestedPractice(.physiologicalSigh, 60) } label: {
+              HStack(spacing: 12) {
+                Image(systemName: "wind")
+                VStack(alignment: .leading, spacing: 5) {
+                  Text("也给自己留一分钟").font(.headline)
+                  Text("跟随双吸一呼，试试此刻的感受。你也可以什么都不做。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "arrow.up.right")
+              }.fangcunPaperCard()
+            }.buttonStyle(.plain).accessibilityIdentifier("daily.feeling.practice")
+          }
           Button("想补充一下自己的感受") { onCheckIn() }
             .accessibilityIdentifier("home.checkIn")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).frame(minHeight: 44)
@@ -143,6 +147,11 @@ struct FangcunTodayView: View {
       }
       .background(InnerBalanceTheme.canvas)
       .foregroundStyle(InnerBalanceTheme.ink)
+      .safeAreaInset(edge: .bottom) {
+        if typeSize.isAccessibilitySize {
+          primaryButton.padding(.horizontal, 20).padding(.vertical, 8).background(InnerBalanceTheme.canvas)
+        }
+      }
       .toolbar(.hidden, for: .navigationBar)
       .refreshable { await refresh() }
       .onChange(of: care?.pendingRoute, initial: true) { _, route in
@@ -173,10 +182,24 @@ struct FangcunTodayView: View {
     .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in Task { await refresh() } }
   }
 
+  private var primaryButton: some View {
+    Button(action: startPrimary) {
+            HStack(spacing: 14) {
+              if !typeSize.isAccessibilitySize { Image(systemName: "wind").font(.title2) }
+              VStack(alignment: .leading, spacing: 5) {
+                Text(primaryAction == .sync && readiness?.errorKey != nil ? "重试同步" : primaryAction.title).font(.headline)
+              }
+              Spacer(minLength: 0)
+              if !typeSize.isAccessibilitySize { Image(systemName: "arrow.up.right") }
+            }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 18)
+          }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("today.start")
+            .disabled(primaryAction == .unavailable || askingHealth)
+  }
+
   private var header: some View {
     HStack {
       VStack(alignment: .leading, spacing: 4) {
-        Text("日常").font(.title.weight(.semibold)).accessibilityIdentifier("daily.title")
+        Text("日常").font(typeSize.isAccessibilitySize ? .headline : .title.weight(.semibold)).accessibilityIdentifier("daily.title")
         Text("照顾身体，也留意自己的感受。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
       }
       Spacer()

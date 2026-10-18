@@ -34,7 +34,11 @@ struct EmotionCompassView: View {
         ScrollView {
           VStack(spacing: FangcunLayout.spacing(6)) {
             CheckInHeader(step: "记录此刻", onClose: onClose)
-            introduction
+            HStack(spacing: 12) {
+              introduction
+              PracticeCompanionV4(kind: .meditation, elapsed: 0, duration: 300, isActive: false)
+                .frame(width: 84, height: 84).accessibilityHidden(true)
+            }
             SpatialEmotionField(
               valence: viewModel.valence,
               arousal: viewModel.arousal,
@@ -93,7 +97,7 @@ struct EmotionCompassView: View {
 
   private var introduction: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-      Text("现在怎样？").font(.largeTitle.weight(.medium))
+      Text("现在怎样？").font(.title.weight(.semibold))
       Text("往右更愉快，往上更有劲。找到最接近你的地方。")
         .font(.subheadline)
         .foregroundStyle(InnerBalanceTheme.mutedInk)
