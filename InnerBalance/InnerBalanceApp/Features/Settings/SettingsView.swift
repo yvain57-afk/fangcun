@@ -143,6 +143,16 @@ private struct PrivacyView: View {
         "删除本地数据不会自动删除 Apple 健康中的记录；后者需在「健康」App 中管理。",
         "trash"
       )
+      if let policyURL = URL(string: "https://yvain57-afk.github.io/fangcun/privacy.html") {
+        Link(destination: policyURL) {
+          Label("完整隐私政策", systemImage: "doc.text")
+        }.accessibilityIdentifier("settings.privacyPolicy")
+      }
+      if let supportURL = URL(string: "https://yvain57-afk.github.io/fangcun/support.html") {
+        Link(destination: supportURL) {
+          Label("使用支持与联系", systemImage: "questionmark.circle")
+        }.accessibilityIdentifier("settings.support")
+      }
     }
     .foregroundStyle(InnerBalanceTheme.ink)
     .tint(InnerBalanceTheme.strongFill)

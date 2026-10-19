@@ -1,0 +1,57 @@
+{
+  "PrivacyUpdate": {
+    "result": "Passed",
+    "passedTests": 220,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 220,
+    "runs": 283
+  },
+  "PrivacyUI": {
+    "result": "Passed",
+    "passedTests": 1,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 1,
+    "runs": 1
+  },
+  "commands": [
+    [
+      "xcodebuild",
+      "test",
+      "-project",
+      "InnerBalance/InnerBalance.xcodeproj",
+      "-scheme",
+      "InnerBalance",
+      "-destination",
+      "platform=iOS Simulator,name=Fangcun UI Audit",
+      "-derivedDataPath",
+      ".build/appstore-release-20261019/Derived",
+      "-parallel-testing-enabled",
+      "NO",
+      "-collect-test-diagnostics",
+      "never",
+      "-only-testing:InnerBalanceTests",
+      "CODE_SIGNING_ALLOWED=NO"
+    ],
+    [
+      "xcodebuild",
+      "test",
+      "-project",
+      "InnerBalance/InnerBalance.xcodeproj",
+      "-scheme",
+      "InnerBalance",
+      "-destination",
+      "platform=iOS Simulator,name=Fangcun UI Audit",
+      "-derivedDataPath",
+      ".build/appstore-release-20261019/Derived",
+      "-parallel-testing-enabled",
+      "NO",
+      "-collect-test-diagnostics",
+      "never",
+      "-only-testing:InnerBalanceUITests/FangcunAppearanceUITests/testCriticalScreensInCurrentAppearance",
+      "CODE_SIGNING_ALLOWED=NO"
+    ]
+  ],
+  "command_note": "执行时 destination 使用本机 simulator id；公开回执用同一模拟器名称表示，省略设备标识。实际命令保存在本地执行脚本及日志中。"
+}

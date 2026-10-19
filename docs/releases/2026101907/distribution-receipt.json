@@ -1,0 +1,41 @@
+{
+  "bundleID": "com.yvainair.InnerBalance",
+  "version": "1.0.0",
+  "build": "2026101907",
+  "sourceBase": "79289959141dd2881bac9868cd38e72634d0db1f",
+  "sourceDelta": [
+    "SettingsView.swift: privacy and support links"
+  ],
+  "distributionExportExit": 0,
+  "signatureVerifyExit": 0,
+  "uploadExit": 0,
+  "uploadCompletedAt": "2026-10-19T13:59:31+08:00",
+  "ipaSHA256": "a1ae17362c7e3130c90454195ecded7c16b31ed3e1fc511fa3a836b79116a280",
+  "ipaBytes": 30311643,
+  "appUnitTests": {
+    "result": "Passed",
+    "testFunctions": 220,
+    "testRuns": 283
+  },
+  "criticalScreensUI": {
+    "result": "Passed",
+    "tests": 1
+  },
+  "testflightProcessingVerified": true,
+  "externalGroupUpdated": true,
+  "appStoreSubmitted": false,
+  "externalStatus": "TESTING",
+  "testGroups": [
+    "开发自测",
+    "朋友体验"
+  ],
+  "publicInvitation": "https://testflight.apple.com/join/tt8NVFJE",
+  "appStoreStatus": "PREPARE_FOR_SUBMISSION",
+  "formalSubmissionStop": "user_requested_pending_voice_distribution_rights",
+  "priceConfigured": "free",
+  "territoriesConfigured": 175,
+  "privacyLabelPublished": "DATA_NOT_COLLECTED",
+  "storeScreenshotCount": 7,
+  "privacyPolicyURL": "https://yvain57-afk.github.io/fangcun/privacy.html",
+  "supportURL": "https://yvain57-afk.github.io/fangcun/support.html"
+}
