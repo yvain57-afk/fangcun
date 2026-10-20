@@ -1,0 +1,29 @@
+{
+  "installedVersion": "1.0.0",
+  "installedBuild": "2026102001",
+  "previousBuild": "2026101906",
+  "bundleIdentifier": "com.yvainair.InnerBalance",
+  "installExit": 0,
+  "launchExit": 0,
+  "processReadbackExit": 0,
+  "nativeAppRunning": true,
+  "uninstalled": false,
+  "backupCompleted": true,
+  "originalDurableUserFiles": 15,
+  "unchangedDurableUserFiles": 15,
+  "missingDurableUserFiles": 0,
+  "changedDurableUserFiles": 0,
+  "originalPreferences": 8,
+  "originalPreferencesPreserved": true,
+  "verificationNotes": [
+    "Post-install full-container copy encountered a protected SplashBoard cache; durable Application Support and Preferences were copied separately and all 15 original files matched before first launch.",
+    "No actual personal health data, raw backup, device identifier, signing data or credential is included in this receipt."
+  ],
+  "notVerified": [
+    "all new guidance heard in full on physical device",
+    "physical lock-screen/interruption/route-change audio",
+    "physical Watch/background behavior"
+  ],
+  "distribution": "Local development installation only; no new TestFlight or App Store upload.",
+  "verifiedAt": "2026-10-21T00:02:50+08:00"
+}

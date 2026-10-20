@@ -70,9 +70,15 @@
     "privateLog": ".build/guidance-integration-20261020/export-verified.private.log"
   },
   "device": {
-    "status": "not_installed_device_disconnected",
-    "checkedAt": "2026-10-20 21:36 +08:00",
-    "data": "No physical-device container modification or deletion performed; phone backup/installation/data comparison remains pending connection"
+    "status": "installed_and_launched",
+    "version": "1.0.0 (2026102001)",
+    "previousBuild": "2026101906",
+    "installExit": 0,
+    "launchExit": 0,
+    "nativeAppRunning": true,
+    "data": "Backed up before update; 15 original durable user-data files matched byte-for-byte after install and before first launch; all 8 original preferences preserved. No uninstall or clearing.",
+    "details": "DEVICE_INSTALLATION.json",
+    "verifiedAt": "2026-10-21T00:02:50+08:00"
   },
   "unverified": [
     "human listening acceptance of all new audio",
