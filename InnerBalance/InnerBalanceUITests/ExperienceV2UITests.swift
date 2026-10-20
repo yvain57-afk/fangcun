@@ -4,7 +4,7 @@ final class ExperienceV2UITests: XCTestCase {
   @MainActor func testFirstExperienceDelivery() throws {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep480", "-AppleLanguages", "(zh-Hans)",
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480", "-AppleLanguages", "(zh-Hans)",
       "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     let conclusion = app.staticTexts["status.band"]

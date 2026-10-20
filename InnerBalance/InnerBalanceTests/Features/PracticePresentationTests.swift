@@ -251,10 +251,10 @@ struct PracticePresentationTests {
       PracticeAudioTimeline.cue(for: .pacedBreathing, elapsed: 4) == .pacedExhale
     )
     #expect(
-      PracticeAudioTimeline.moment(for: .meditation, elapsed: 31, duration: 300).voiceResourceName == "practice_v4_meditation_300_1"
+      PracticeAudioTimeline.moment(for: .meditation, elapsed: 31, duration: 300).voiceResourceName == "guide20_meditation_300_1"
     )
     #expect(
-      PracticeAudioTimeline.moment(for: .nsdr, elapsed: 46, duration: 600).voiceResourceName == "practice_v4_nsdr_600_1"
+      PracticeAudioTimeline.moment(for: .nsdr, elapsed: 46, duration: 600).voiceResourceName == "guide20_nsdr_600_1"
     )
     #expect(
       PracticeAudioTimeline.cue(for: .kegel, elapsed: 4) == .kegelRelease
@@ -294,7 +294,7 @@ struct PracticePresentationTests {
 
     #expect(opening.id != nextGuidance.id)
     #expect(PracticeAudioTimeline.moment(for: .nsdr, elapsed: 29).id == opening.id)
-    #expect(nextGuidance.voiceResourceName == "practice_v4_nsdr_600_1")
+    #expect(nextGuidance.voiceResourceName == "guide20_nsdr_600_1")
   }
 
   @Test("NSDR 身体扫描之间穿插轻柔呼吸提示")

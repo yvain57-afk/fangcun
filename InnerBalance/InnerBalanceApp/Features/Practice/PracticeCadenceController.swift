@@ -18,7 +18,8 @@ final class PracticeCadenceController {
       }
       viewModel.checkpointIfNeeded()
       let cueID = viewModel.timelineSnapshot.cueID
-      if isEnabled, cueID != lastCueID || lastGeneration != viewModel.timelineGeneration {
+      let quietEnding = viewModel.plan.kind == .progressiveMuscleRelaxation && viewModel.variantID == "pmr_sleep" && viewModel.elapsedActive >= 540
+      if isEnabled && !quietEnding, cueID != lastCueID || lastGeneration != viewModel.timelineGeneration {
         lastGeneration = viewModel.timelineGeneration
         lastCueID = cueID
         trigger += 1

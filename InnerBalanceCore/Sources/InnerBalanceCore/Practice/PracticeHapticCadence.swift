@@ -29,6 +29,8 @@ public enum PracticeHapticCadence {
       return cycle * 2 + phase
     case .balancedBreathing, .boxBreathing, .alternateNostrilBreathing, .diaphragmaticBreathing:
       return PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: 300).cueID
+    case .progressiveMuscleRelaxation:
+      return PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: 600).cueID
     case .meditation:
       return Int(elapsed / 10)
     case .nsdr:

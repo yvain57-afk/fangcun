@@ -26,6 +26,7 @@ final class PracticeSessionViewModel {
   private var phaseOffset: TimeInterval = 0
   private var cycleLeadIn: TimeInterval = 0
   private var priorCompletedCycles = 0
+  private var pmrReleaseOnlyCueID: Int?
   private(set) var selectedFeedback: String?
 
   private let now: () -> Date
@@ -89,7 +90,10 @@ final class PracticeSessionViewModel {
   }
 
   var timelineSnapshot: PracticeTimelineSnapshot {
-    PracticeTimeline.snapshot(kind: plan.kind, elapsed: phaseElapsed, duration: duration, variantID: variantID)
+    let snapshot = PracticeTimeline.snapshot(kind: plan.kind, elapsed: phaseElapsed, duration: duration, variantID: variantID)
+    guard plan.kind == .progressiveMuscleRelaxation, snapshot.cueID == pmrReleaseOnlyCueID,
+      let segment = snapshot.segment, segment.focus.hasSuffix("gentle_tension") else { return snapshot }
+    return snapshot.recoveringMuscleRelease()
   }
 
   var completedCycles: Int { completedCycles(at: elapsedActive) }
@@ -124,6 +128,9 @@ final class PracticeSessionViewModel {
 
   func resume() {
     guard phase == .paused, let pausedAt else { return }
+    if plan.kind == .progressiveMuscleRelaxation, timelineSnapshot.segment?.focus.hasSuffix("gentle_tension") == true {
+      pmrReleaseOnlyCueID = timelineSnapshot.cueID
+    }
     accumulatedPause += max(0, now().timeIntervalSince(pausedAt))
     self.pausedAt = nil
     priorCompletedCycles = completedCycles
@@ -173,6 +180,7 @@ final class PracticeSessionViewModel {
       beforeRating: nil,
       afterRating: nil,
       metadata: PracticeSessionMetadata(
+        protocolVersion: plan.kind == .progressiveMuscleRelaxation ? PracticeSessionMetadata.muscleRelaxationProtocolVersion : PracticeTimeline.protocolVersion,
         timelineVariantID: variantID, sceneID: PracticeTimeline.sceneID(for: plan.kind),
         completionStatus: actualDuration >= duration ? "completed" : "endedEarly",
         completedCycles: completedCycles, activeIntervals: activeIntervals,

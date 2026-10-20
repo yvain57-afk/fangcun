@@ -4,7 +4,7 @@ final class OverhaulInteractionUITests: XCTestCase {
   @MainActor func testExitOffersContinueAndRestoresRunningSession() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO", "-fangcun.largeType", "NO"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-fangcun.dark", "NO", "-fangcun.largeType", "NO"]
     app.launch()
     openV4Method("physiologicalSigh", app: app)
     app.buttons["practice.physiologicalSigh.300"].tap()
@@ -24,7 +24,7 @@ final class OverhaulInteractionUITests: XCTestCase {
   @MainActor func testDrinkCompositeAndManageAreReachableOnInitialSheet() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep375", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryLarge"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep375", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryLarge"]
     app.launch()
     app.tabBars.buttons["日常"].tap()
     let drinks = app.buttons["today.drinks"]
@@ -41,7 +41,7 @@ final class OverhaulInteractionUITests: XCTestCase {
   @MainActor func testMaximumTypeKeepsPrimaryControlsReachable() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO",
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-fangcun.dark", "NO",
       "-fangcun.largeType", "YES", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
       "-fangcun.practice.v4.quickKind", "physiologicalSigh"]
     app.launch()
@@ -63,7 +63,7 @@ final class OverhaulInteractionUITests: XCTestCase {
   @MainActor func testReducedMotionKeepsInstructionsWithoutContinuousResizing() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
       "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES",
       "-fangcun.motionMode", "standard", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryLarge"]
     app.launch(); openV4Method("balancedBreathing", app: app)

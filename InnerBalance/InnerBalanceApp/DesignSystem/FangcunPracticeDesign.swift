@@ -60,7 +60,7 @@ struct ProportionalPhaseBar: View {
       } else {
         HStack(spacing: 6) {
           Image(systemName: kind == .nsdr ? "moon" : "leaf")
-          Text(kind == .nsdr ? "身体扫描 · 安静休息 · 慢慢回来" : "自然呼吸 · 不必跟拍")
+          Text(kind == .progressiveMuscleRelaxation ? "八组肌肉 · 轻收再松开 · 自然呼吸" : kind == .nsdr ? "身体扫描 · 安静休息 · 慢慢回来" : "自然呼吸 · 不必跟拍")
         }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
       }
     }
@@ -98,11 +98,13 @@ extension PracticeKind {
     case .meditation: "给纷乱的念头一点空间"
     case .nsdr: "躺下来，让身体休息"
     case .kegel: "练习盆底的轻收与放松"
+    case .progressiveMuscleRelaxation: "轻轻用力，再让身体歇一歇"
     }
   }
   var positionNote: String {
     switch self {
     case .nsdr: "舒适躺卧"
+    case .progressiveMuscleRelaxation: "舒服坐靠或躺卧"
     case .diaphragmaticBreathing: "坐姿或躺卧"
     case .kegel: "坐稳或躺好"
     default: "放松坐稳"
@@ -144,14 +146,15 @@ struct PracticeGuidedProgress: View {
   let kind: PracticeKind
   let elapsed: TimeInterval
   let duration: TimeInterval
+  var variantID: String? = nil
   var body: some View {
-    let segments = PracticeTimeline.segments(for: kind, duration: duration)
+    let segments = PracticeTimeline.segments(for: kind, duration: duration, variantID: variantID)
     let index = segments.lastIndex(where: { elapsed >= $0.start }) ?? 0
     VStack(alignment: .leading, spacing: 10) {
       ProgressView(value: min(max(0, elapsed), duration), total: max(1, duration))
         .tint(Color("FangcunExhale"))
       HStack {
-        Text(kind == .nsdr ? "身体扫描与休息" : "自然呼吸，不必跟拍")
+        Text(kind == .progressiveMuscleRelaxation ? "分组收放 · 自然呼吸" : kind == .nsdr ? "身体扫描与休息" : "自然呼吸，不必跟拍")
         Spacer(minLength: 8)
         if !segments.isEmpty { Text("引导 \(index + 1) / \(segments.count)").monospacedDigit() }
       }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)

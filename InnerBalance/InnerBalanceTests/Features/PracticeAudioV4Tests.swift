@@ -44,7 +44,7 @@ struct PracticeAudioV4Tests {
           let inside = PracticeAudioTimeline.moment(for: kind, elapsed: segment.start + 1, duration: duration)
           #expect(start.isSegment && start.shouldSpeak)
           #expect(start.id == inside.id)
-          #expect(start.voiceResourceName == "practice_v4_" + segment.id)
+          #expect(start.voiceResourceName == "guide20_" + segment.id)
           #expect(start.remainingWindow == segment.end - segment.start)
           #expect(inside.offset == 1)
           if let name = start.voiceResourceName { resources.insert(name) }

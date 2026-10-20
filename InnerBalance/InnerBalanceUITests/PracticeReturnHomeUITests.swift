@@ -64,7 +64,7 @@ final class PracticeReturnHomeUITests: XCTestCase {
   private func launchPracticeFromLibrary() -> XCUIApplication {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     let practice = app.tabBars.buttons["呼吸"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))

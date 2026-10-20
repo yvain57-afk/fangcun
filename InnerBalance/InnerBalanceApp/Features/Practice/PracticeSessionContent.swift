@@ -38,6 +38,14 @@ struct PracticeSessionContent: View {
         onFinish: onFinish
       )
     case .comparison:
+      if viewModel.plan.kind == .progressiveMuscleRelaxation && viewModel.variantID == "pmr_sleep" {
+        VStack(spacing: 20) {
+          Text("这次练习结束了").font(.title2.weight(.semibold))
+          Text("可以继续安静躺着，不必回应屏幕。")
+            .font(.body).foregroundStyle(InnerBalanceTheme.mutedInk)
+          if isSaving { ProgressView("正在保留这段练习") }
+        }.accessibilityIdentifier("practice.pmr.sleepFinish")
+      } else {
       PracticeComparisonScreen(
         viewModel: viewModel,
         afterRating: $afterRating,
@@ -48,6 +56,7 @@ struct PracticeSessionContent: View {
         isSaving: isSaving,
         onSave: onSave
       )
+      }
     case .saved:
       PracticeSavedScreen(detail: savedDetail, kind: viewModel.plan.kind, actualDuration: viewModel.actualDuration ?? 0,
         scene: (viewModel.actualDuration ?? 0) >= viewModel.duration - 1 ? .complete : .rest,

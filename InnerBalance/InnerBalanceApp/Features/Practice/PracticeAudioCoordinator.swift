@@ -17,7 +17,7 @@ final class PracticeAudioCoordinator: PracticeAudioCoordinating {
   private let voiceNode = AVAudioPlayerNode()
   private let cueNode = AVAudioPlayerNode()
   private let ambienceNode = AVAudioPlayerNode()
-  private let session = PracticeAudioSessionWorker()
+  private let session = PracticeAudioSessionWorker.shared
   private var generation = 0
   private var voiceGeneration = 0
   private var duckTask: Task<Void, Never>?
@@ -176,7 +176,8 @@ final class PracticeAudioCoordinator: PracticeAudioCoordinating {
 
 // AVAudioSession activation can block while negotiating a route. Serialize those
 // calls off the main thread so the breathing controls remain responsive.
-nonisolated private final class PracticeAudioSessionWorker: @unchecked Sendable {
+nonisolated final class PracticeAudioSessionWorker: @unchecked Sendable {
+  static let shared = PracticeAudioSessionWorker()
   private let queue = DispatchQueue(label: "com.yvainair.fangcun.audio-session")
 
   func activate() async throws {

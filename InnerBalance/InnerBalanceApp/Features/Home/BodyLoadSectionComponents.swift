@@ -129,6 +129,7 @@ struct RecoveryRecommendationCard: View {
     case .meditation: "安静 5 分钟"
     case .nsdr: "躺下休息 10 分钟"
     case .kegel: "开始 3 分钟"
+    case .progressiveMuscleRelaxation: "放松 10 分钟"
     }
   }
 
@@ -157,6 +158,7 @@ struct RecoveryRecommendationCard: View {
     case .meditation: "5 或 10 分钟 · 安静地放松注意力"
     case .nsdr: "10 或 20 分钟 · 躺下完成深度休息"
     case .kegel: "3 分钟 · 盆底肌收紧与放松"
+    case .progressiveMuscleRelaxation: "10 分钟 · 轻轻收紧，再逐组松开"
     }
   }
 }

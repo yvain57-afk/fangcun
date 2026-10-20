@@ -81,7 +81,14 @@ public enum PracticeCatalog {
     PracticeProtocol(kind: .kegel, durationOptions: [180], isAutomaticallyRecommended: false, minimumEvidenceDuration: nil, writesMindfulSession: false, preferredDuration: 180)
   ]
 
+  /// Additive phone catalog; the original nine and legacy Watch parameters remain intact.
+  public static let phone = v4 + [PracticeProtocol(
+    kind: .progressiveMuscleRelaxation, durationOptions: [600],
+    isAutomaticallyRecommended: false, minimumEvidenceDuration: nil,
+    writesMindfulSession: false, preferredDuration: 600
+  )]
+
   public static func `protocol`(for kind: PracticeKind) -> PracticeProtocol? {
-    buildOne.first { $0.kind == kind } ?? v4.first { $0.kind == kind }
+    buildOne.first { $0.kind == kind } ?? phone.first { $0.kind == kind }
   }
 }

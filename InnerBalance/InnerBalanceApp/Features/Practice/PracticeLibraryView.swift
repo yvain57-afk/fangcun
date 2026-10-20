@@ -40,7 +40,7 @@ struct PracticeLibraryView: View {
   @State private var checkpoint: PracticeSessionCheckpoint?
   private let filters = ["全部", "放松", "专注", "休息", "身体训练"]
   private let order: [PracticeKind] = [.physiologicalSigh, .pacedBreathing, .nsdr, .meditation,
-    .balancedBreathing, .boxBreathing, .diaphragmaticBreathing, .alternateNostrilBreathing, .kegel]
+    .balancedBreathing, .boxBreathing, .diaphragmaticBreathing, .alternateNostrilBreathing, .kegel, .progressiveMuscleRelaxation]
   private var featured: PracticeKind {
     if let pinned = PracticeKind(rawValue: quickKind), order.contains(pinned) { return pinned }
     if !PracticeHubPreferences.hasLearned(.physiologicalSigh) { return .physiologicalSigh }
@@ -94,7 +94,7 @@ struct PracticeLibraryView: View {
             }
           }
           HStack {
-            Text(filter == "全部" ? "9 项呼吸与身心练习" : filter + "练习").font(.headline)
+            Text(filter == "全部" ? "10 项呼吸与身心练习" : filter + "练习").font(.headline)
             Spacer()
           }
           LazyVStack(spacing: 14) { ForEach(filtered, id: \.rawValue) { methodCard($0) } }
@@ -231,6 +231,11 @@ struct PracticeMethodDetailView: View {
   let onStart: (PracticeLaunch) -> Void
   @State private var duration: TimeInterval = 0
   @State private var variantID = "equal_5_5"
+  @State private var pmrEnding = "pmr_day"
+  @State private var skipsIntro = false
+  private var chosenVariant: String? {
+    kind == .balancedBreathing ? variantID : kind == .progressiveMuscleRelaxation ? pmrEnding : nil
+  }
   @State private var demonstration = true
   @State private var demoStartedAt = Date.now
   @State private var sound = PracticeSoundPreferences()
@@ -247,15 +252,17 @@ struct PracticeMethodDetailView: View {
         TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !demoIsAnimating)) { context in
           let time = demonstration ? max(0, context.date.timeIntervalSince(demoStartedAt)) : 0
           PracticeCompanionV4(kind: kind, elapsed: time, duration: chosenDuration,
-            variantID: kind == .balancedBreathing ? variantID : nil, isActive: demoIsAnimating)
-            .frame(height: 190).frame(maxWidth: .infinity)
+            variantID: chosenVariant, isActive: demoIsAnimating)
+            .frame(height: 190)
+            .frame(maxWidth: kind == .progressiveMuscleRelaxation ? 300 : .infinity)
+            .frame(maxWidth: .infinity)
 
         }
         .onScrollVisibilityChange(threshold: 0.1) { demoVisible = $0 }
         Button(demonstration ? "停止示范" : "看看动作示范") { demoStartedAt = .now; demonstration.toggle() }
           .font(.subheadline).frame(minHeight: 44).accessibilityIdentifier("practice.demo")
         if demonstration { Text("动作示范 · 不计入练习时长").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk) }
-        ProportionalPhaseBar(kind: kind, variantID: kind == .balancedBreathing ? variantID : nil, compact: true)
+        ProportionalPhaseBar(kind: kind, variantID: chosenVariant, compact: true)
         Picker("练习时长", selection: Binding(get: { chosenDuration }, set: { duration = $0 })) {
           ForEach(PracticeCatalog.protocol(for: kind)?.durationOptions ?? [], id: \.self) { value in
             Text(PracticeDurationFormatter.text(value)).tag(value)
@@ -267,6 +274,22 @@ struct PracticeMethodDetailView: View {
             Text("吸 4 秒 / 呼 4 秒").tag("easy_4_4")
           }.pickerStyle(.segmented).accessibilityIdentifier("practice.variant")
         }
+        if kind == .progressiveMuscleRelaxation {
+          Picker("结束方式", selection: $pmrEnding) {
+            Text("日间 · 慢慢回来").tag("pmr_day")
+            Text("睡前 · 安静休息").tag("pmr_sleep")
+          }.pickerStyle(.segmented).accessibilityIdentifier("practice.pmr.ending")
+          Text("同样 10 分钟，只改变最后一分钟的引导。全程自然呼吸，不跟吸呼节拍。")
+            .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        }
+        DisclosureGroup("开场说明") {
+          Text(PracticeGuidanceContent.introduction(for: kind, variantID: chosenVariant))
+            .font(.body).lineSpacing(5).padding(.top, 12)
+          Toggle("下次跳过这项说明", isOn: Binding(
+            get: { skipsIntro },
+            set: { skipsIntro = $0; PracticeIntroductionPreferences.setSkips($0, for: kind) }))
+            .font(.subheadline).tint(InnerBalanceTheme.strongFill)
+        }.fangcunPaperCard()
         DisclosureGroup("动作要领与注意事项") {
           VStack(alignment: .leading, spacing: 12) {
             Text(kind.steps).font(.body)
@@ -295,11 +318,12 @@ struct PracticeMethodDetailView: View {
           // The detail contains the method's movement and safety teaching; no second questionnaire.
           PracticeHubPreferences.markLearned(kind)
           onStart(.init(kind: kind, duration: chosenDuration, startsImmediately: true,
-            variantID: kind == .balancedBreathing ? variantID : nil))
+            variantID: chosenVariant))
         }.buttonStyle(InnerBalancePrimaryButtonStyle())
           .accessibilityIdentifier("practice." + kind.rawValue + "." + String(Int(chosenDuration)))
           .padding(.horizontal, 20).padding(.vertical, 10).background(InnerBalanceTheme.canvas)
       }
+      .onAppear { skipsIntro = PracticeIntroductionPreferences.skips(kind) }
       .onDisappear { demonstration = false }
   }
 }

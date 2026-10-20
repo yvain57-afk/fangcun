@@ -422,6 +422,7 @@ extension PracticeKind {
     case .boxBreathing: "方块呼吸"
     case .diaphragmaticBreathing: "膈肌呼吸"
     case .alternateNostrilBreathing: "交替鼻孔呼吸"
+    case .progressiveMuscleRelaxation: "渐进式肌肉放松"
     }
   }
 

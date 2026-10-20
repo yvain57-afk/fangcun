@@ -67,7 +67,7 @@ final class ReadinessHomeUITests: XCTestCase {
   @MainActor private func launch(_ scenario:String,large:Bool=false)->XCUIApplication {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing","--readiness-fixture="+scenario,"-AppleLanguages","(zh-Hans)","-AppleLocale","zh_CN","-fangcun.dark",large ? "YES":"NO","-fangcun.largeType",large ? "YES":"NO","-fangcun.reduceMotion","YES"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture="+scenario,"-AppleLanguages","(zh-Hans)","-AppleLocale","zh_CN","-fangcun.dark",large ? "YES":"NO","-fangcun.largeType",large ? "YES":"NO","-fangcun.reduceMotion","YES"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap(); return app
   }
   @MainActor private func reveal(_ item:XCUIElement,_ app:XCUIApplication) {

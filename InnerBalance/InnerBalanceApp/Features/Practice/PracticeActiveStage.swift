@@ -9,6 +9,7 @@ struct PracticeActiveStage: View {
   let isPaused: Bool
   let reduceMotion: Bool
   var variantID: String? = nil
+  var recoverySnapshot: PracticeTimelineSnapshot? = nil
 
   var body: some View {
     switch PracticeStageKind.for(kind) {
@@ -41,6 +42,9 @@ struct PracticeActiveStage: View {
         reduceMotion: reduceMotion,
         variantID: variantID
       )
+    case .muscleRelaxation:
+      MuscleRelaxationStagePlayer(duration: duration, elapsed: elapsed, remaining: remaining,
+        isPaused: isPaused, reduceMotion: reduceMotion, variantID: variantID, recoverySnapshot: recoverySnapshot)
     case .pelvicFloor:
       PelvicFloorStagePlayer(
         kind: kind,

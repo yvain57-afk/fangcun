@@ -1,0 +1,93 @@
+{
+  "baseline": "f188b0eff998de340842eff11ccead0130735ad0",
+  "build": "1.0.0 (2026102001)",
+  "core": {
+    "command": "swift test --package-path InnerBalanceCore",
+    "exit": 0,
+    "tests": 170,
+    "failed": 0,
+    "log": ".build/guidance-integration-20261020/core-final.log"
+  },
+  "finalAppAndPMRUI": {
+    "result": "Passed",
+    "totalTestCount": 229,
+    "passedTests": 229,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "appFunctions": 228,
+    "appInvocations": 292,
+    "uiCases": 1,
+    "exit": 0,
+    "bundle": ".build/guidance-integration-20261020/FinalAppAndPMRUI.xcresult",
+    "commandWithLocalIdentifierRedacted": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination \"platform=iOS Simulator,id=$SIMULATOR_UUID\" -derivedDataPath .build/appstore-release-20261019/Derived -resultBundlePath .build/guidance-integration-20261020/FinalAppAndPMRUI.xcresult -parallel-testing-enabled NO -collect-test-diagnostics never \"-only-testing:InnerBalanceTests\" \"-only-testing:InnerBalanceUITests/PracticeGuidanceIntroUITests/testPMRSleepEndingSavesWithoutForcingFeedback\" CODE_SIGNING_ALLOWED=NO"
+  },
+  "earlierRegression": {
+    "result": "Failed",
+    "totalTestCount": 237,
+    "passedTests": 236,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "legacyUICasesPassed": 11,
+    "failure": "PMR saved row filtered by V4-only metadata decoder; fixed and retested in final result",
+    "commandWithLocalIdentifierRedacted": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination \"platform=iOS Simulator,id=$SIMULATOR_UUID\" -derivedDataPath .build/appstore-release-20261019/Derived -resultBundlePath .build/guidance-integration-20261020/Regression.xcresult -parallel-testing-enabled NO -collect-test-diagnostics never \"-only-testing:InnerBalanceTests\" \"-only-testing:InnerBalanceUITests/PracticeGuidanceIntroUITests/testPMRSleepEndingSavesWithoutForcingFeedback\" \"-only-testing:InnerBalanceUITests/BreathingHubV4UITests/testAllNineMethodsStartPauseAndSaveWithoutHealth\" \"-only-testing:InnerBalanceUITests/BreathingHubV4UITests/testDefaultHubHasTwoTabsAndNoHealthGate\" \"-only-testing:InnerBalanceUITests/BreathingHubV4UITests/testEntryIsSkippableAndDoesNotStartTheActiveSessionEarly\" \"-only-testing:InnerBalanceUITests/BreathingHubV4UITests/testSaveFailureRetriesWithoutFalseSuccessOrDuplicateRecord\" \"-only-testing:InnerBalanceUITests/OverhaulInteractionUITests\" \"-only-testing:InnerBalanceUITests/PracticeReturnHomeUITests\" \"-only-testing:InnerBalanceUITests/FangcunAppearanceUITests\" CODE_SIGNING_ALLOWED=NO"
+  },
+  "initialIntroUI": {
+    "result": "Failed",
+    "totalTestCount": 4,
+    "passedTests": 3,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "finalEffectivePassedPaths": [
+      "skip introduction without consuming training time",
+      "natural audio completion starts full training",
+      "real PMR 100s tension and 105s release",
+      "PMR sleep saving plus actual stored record (final result)"
+    ],
+    "commandWithLocalIdentifierRedacted": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project InnerBalance/InnerBalance.xcodeproj -scheme InnerBalance -destination \"platform=iOS Simulator,id=$SIMULATOR_UUID\" -derivedDataPath .build/appstore-release-20261019/Derived -resultBundlePath .build/guidance-integration-20261020/IntroUI.xcresult -parallel-testing-enabled NO -collect-test-diagnostics never \"-only-testing:InnerBalanceUITests/PracticeGuidanceIntroUITests\" CODE_SIGNING_ALLOWED=NO"
+  },
+  "storageRegression": {
+    "redResult": "3 tests, 2 failed with 4 issues before fix",
+    "greenResult": "all 3 included in final 228 App tests",
+    "coverage": [
+      "day and sleep disk cold reopen alongside V4 and legacy rows",
+      "local-only completion and feedback with zero health writes and zero pending writes",
+      "unknown/wrong-kind protocol bytes retained, not treated as legacy"
+    ]
+  },
+  "watchSimulatorBuild": {
+    "exit": 0,
+    "command": "xcodebuild build -project InnerBalance/InnerBalance.xcodeproj -scheme 'InnerBalance Watch App' -destination 'generic/platform=watchOS Simulator' -derivedDataPath .build/guidance-integration-20261020/WatchDerived CODE_SIGNING_ALLOWED=NO"
+  },
+  "releaseArchive": {
+    "exit": 0,
+    "version": "1.0.0",
+    "build": "2026102001",
+    "privateLog": ".build/guidance-integration-20261020/archive-verified.private.log"
+  },
+  "developmentExport": {
+    "exit": 0,
+    "method": "debugging",
+    "privateLog": ".build/guidance-integration-20261020/export-verified.private.log"
+  },
+  "device": {
+    "status": "not_installed_device_disconnected",
+    "checkedAt": "2026-10-20 21:36 +08:00",
+    "data": "No physical-device container modification or deletion performed; phone backup/installation/data comparison remains pending connection"
+  },
+  "unverified": [
+    "human listening acceptance of all new audio",
+    "physical-device lock screen / interruption / headphone route audio",
+    "physical Watch/background/HealthKit behavior",
+    "commercial voice distribution authorization",
+    "PMR full 10-minute real-time UI/listening session; sleep UI tested an early end and actual persisted record; full-duration boundary covered by Core/VM clock tests"
+  ],
+  "distribution": {
+    "testFlight": "no new upload; existing 2026101907 unchanged",
+    "appStore": "no submission or release"
+  },
+  "runtimeNotes": [
+    "Simulator Watch not paired messages",
+    "existing class of audio QoS priority-inversion warnings; no final test failure"
+  ],
+  "commandNote": "Simulator UUID and signing team are omitted in public commands; exact invocations and full result bundles remain in the ignored build directory."
+}

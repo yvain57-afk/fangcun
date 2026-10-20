@@ -67,7 +67,8 @@ struct PracticePlayerScreen: View {
           remaining: viewModel.remainingTime,
           isPaused: viewModel.phase == .paused,
           reduceMotion: reduceMotion,
-          variantID: viewModel.variantID
+          variantID: viewModel.variantID,
+          recoverySnapshot: viewModel.plan.kind == .progressiveMuscleRelaxation ? viewModel.timelineSnapshot : nil
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
       if isResuming { Text("准备好，先自然呼吸…").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 12).accessibilityIdentifier("practice.resumePreparation") }

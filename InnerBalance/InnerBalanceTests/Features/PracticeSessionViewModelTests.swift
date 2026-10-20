@@ -177,7 +177,7 @@ struct PracticeSessionViewModelTests {
     #expect(record.metadata?.completionStatus == "completed")
   }
 
-  @Test("All nine methods end at their exact selected target without extra cycles or health intervals", arguments: PracticeKind.allCases)
+  @Test("All ten phone methods end at their exact selected target without extra cycles or health intervals", arguments: PracticeKind.allCases)
   @MainActor
   func allV4DurationTargetsKeepExactActivity(_ kind: PracticeKind) throws {
     // Independent acceptance values: do not derive expected durations or cycles
@@ -201,8 +201,10 @@ struct PracticeSessionViewModelTests {
       expected = [(600, nil, 0), (1200, nil, 0)]
     case .kegel:
       expected = [(180, nil, 15)]
+    case .progressiveMuscleRelaxation:
+      expected = [(600, "pmr_day", 0), (600, "pmr_sleep", 0)]
     }
-    let plan = try #require(PracticeCatalog.v4.first { $0.kind == kind })
+    let plan = try #require(PracticeCatalog.phone.first { $0.kind == kind })
     #expect(Set(plan.durationOptions) == Set(expected.map(\.duration)))
 
     for target in expected {

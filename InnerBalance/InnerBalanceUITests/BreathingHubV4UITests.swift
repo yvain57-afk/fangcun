@@ -54,7 +54,7 @@ final class BreathingHubV4UITests: XCTestCase {
   @MainActor private func launch() -> XCUIApplication {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.practice.v4.quickKind", "", "-fangcun.reduceMotion", "YES"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.practice.v4.quickKind", "", "-fangcun.reduceMotion", "YES"]
     app.launch()
     XCTAssertTrue(app.tabBars.buttons["呼吸"].waitForExistence(timeout: 8))
     return app
@@ -117,7 +117,7 @@ final class BreathingHubV4UITests: XCTestCase {
 
   @MainActor func testSaveFailureRetriesWithoutFalseSuccessOrDuplicateRecord() {
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "--ui-testing-practice-save-failure-once", "-fangcun.practice.v4.quickKind", "physiologicalSigh"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "--ui-testing-practice-save-failure-once", "-fangcun.practice.v4.quickKind", "physiologicalSigh"]
     app.launch()
     openV4Method("balancedBreathing", app: app)
     app.buttons["practice.balancedBreathing.300"].tap()
@@ -346,7 +346,7 @@ final class PracticeV4CaptureUITests: XCTestCase {
 
   @MainActor private func launchCaptureApp(dark: Bool = false, motion: String = "standard", large: Bool = false, reduced: Bool = false) -> XCUIApplication {
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN",
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN",
       "-fangcun.dark", dark ? "YES" : "NO", "-fangcun.largeType", large ? "YES" : "NO",
       "-fangcun.motionMode", motion, "-fangcun.reduceMotion", reduced ? "YES" : "NO",
       "-fangcun.practice.v4.quickKind", "physiologicalSigh", "-practice.sound.mode", "guided", "-practice.sound.ambience", "YES",

@@ -6,7 +6,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]
@@ -76,7 +76,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -96,7 +96,7 @@ final class CheckInFlowUITests: XCTestCase {
   func testHomeResponseRemainsReachableAtAccessibilityTextSizes() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep480","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture=scoreSleep480","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:10))
     let action = app.buttons["today.start"]
@@ -183,7 +183,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -265,7 +265,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",
     ]
@@ -303,7 +303,7 @@ final class CheckInFlowUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480",
       "--ui-testing-practice-save-failure",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryAccessibilityXXXL",

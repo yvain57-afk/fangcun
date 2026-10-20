@@ -2,6 +2,7 @@ import Foundation
 
 /// Optional on historical records. Absence means legacy, never an inferred V4 protocol.
 public struct PracticeSessionMetadata: Codable, Equatable, Sendable {
+  public static let muscleRelaxationProtocolVersion = "fangcun-pmr-1.0"
   public let protocolVersion: String
   public let timelineVariantID: String?
   public let sceneID: String

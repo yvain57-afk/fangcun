@@ -29,6 +29,8 @@ struct PracticeComparisonScreen: View {
           }.font(.subheadline.monospacedDigit()).foregroundStyle(Color("FangcunExhale")).fangcunPaperCard()
         }
         Text(viewModel.plan.kind.completionReview).font(.body).foregroundStyle(InnerBalanceTheme.mutedInk)
+        Text(PracticeGuidanceContent.completion(for: viewModel.plan.kind))
+          .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).lineSpacing(5)
         Text("现在感觉怎么样？").font(.headline)
         VStack(spacing: 10) {
           ForEach(PracticeChangeChoice.allCases, id: \.self) { choice in
@@ -72,13 +74,15 @@ struct PracticeSavedScreen: View {
         Text("练习结果")
           .fangcunSectionLabelStyle()
         if let kind {
-          TimelineView(.animation(minimumInterval: 1.0 / 30, paused: completionFinished || kind == .nsdr || kind == .pacedBreathing || scene != .complete)) { context in
-            let celebrates = kind != .nsdr && kind != .pacedBreathing && scene == .complete
+          TimelineView(.animation(minimumInterval: 1.0 / 30, paused: completionFinished || kind == .nsdr || kind == .pacedBreathing || kind == .progressiveMuscleRelaxation || scene != .complete)) { context in
+            let celebrates = kind != .nsdr && kind != .pacedBreathing && kind != .progressiveMuscleRelaxation && scene == .complete
             let progress = min(1, max(0, context.date.timeIntervalSince(completionStartedAt) / 1.6))
             PracticeCompanionV4(kind: kind, elapsed: actualDuration, duration: max(1, actualDuration),
               variantID: nil, isActive: celebrates && !completionFinished,
               completionProgress: celebrates ? progress : 0)
-              .frame(height: 185).opacity(appeared ? 1 : 0)
+              .frame(height: 185)
+              .frame(maxWidth: kind == .progressiveMuscleRelaxation ? 300 : .infinity)
+              .opacity(appeared ? 1 : 0)
           }
         } else {
           FangcunCompanion(scene: scene, event: scene == .complete ? .completed : .endedEarly).frame(height: 185)

@@ -6,7 +6,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = [
-      "--ui-testing", "--readiness-fixture=scoreSleep480",
+      "--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480",
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]

@@ -1,0 +1,66 @@
+{
+  "baseline": "f188b0eff998de340842eff11ccead0130735ad0",
+  "files": [
+    {
+      "file": "InnerBalance/InnerBalanceApp/InnerBalance.entitlements",
+      "unchanged": true,
+      "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceTests/Features/StatusScoreCoordinatorV3Tests.swift",
+      "unchanged": true,
+      "sha256": "d11fc8e5258fd666364936f1c455d215707421492fd87ad59344b8860a04171c"
+    },
+    {
+      "file": "InnerBalance/InnerBalanceWatch/InnerBalanceWatch.entitlements",
+      "unchanged": true,
+      "sha256": "e82a7f6e130b0fe65a40214c15b4116c5245125329c63954d9ccdd9cc80f039e"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusScoreEngine.swift",
+      "unchanged": true,
+      "sha256": "2f8363a2a74f5e3c7a6aa89d0fe69edc65e2cb4b188a35cae537725f8b4b0569"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSnapshot.swift",
+      "unchanged": true,
+      "sha256": "420028f9f1daf4a9a2e3c3f2d278a13b5accce97a53d58f3f8da1dcc3c31f56f"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/DailyStatusSummaryDTO.swift",
+      "unchanged": true,
+      "sha256": "e380a6c90e276292a0a7628f44bfed3c37d7d13c32f1b901a752434de5a5a300"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreCardioBuilder.swift",
+      "unchanged": true,
+      "sha256": "f30f9ce07f71c4d0339ab0d019fd2fa802dd3801dab643e54f9e79904a68489c"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/ScoreFeatureBuilder.swift",
+      "unchanged": true,
+      "sha256": "b673ba382691fe6bdc9f540130ec72b4bda8f35f0fa57ef37f639fd1d0fcfe02"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusPresentationPolicy.swift",
+      "unchanged": true,
+      "sha256": "c2f275a5f3f2440b5a078481bbdf69d568dde4ddd929b0f440008943282a83e1"
+    },
+    {
+      "file": "InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/StatusScoreConfiguration.swift",
+      "unchanged": true,
+      "sha256": "ad34318d1e25b2318a2cf423f9da7985326490b5d4bcbbcbb16597dc78a8e064"
+    },
+    {
+      "file": "InnerBalanceCore/Tests/InnerBalanceCoreTests/StatusScoreDataV3Tests.swift",
+      "unchanged": true,
+      "sha256": "679f0a264b4c3494eb49e4a4432e37b2c5f8191bb77d34e26c1b4adfd0d2a186"
+    },
+    {
+      "file": "InnerBalanceCore/Tests/InnerBalanceCoreTests/StatusScoreV3Tests.swift",
+      "unchanged": true,
+      "sha256": "62233b7b44af2055aea861c9c733c87f3259421e0b0ba9244922d93e4d67b7a1"
+    }
+  ],
+  "allUnchanged": true
+}

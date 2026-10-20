@@ -4,7 +4,7 @@ final class PracticeVisualRepairUITests: XCTestCase {
   @MainActor func testNaturalBreathingArtworkStaysVisibleWithItsExplanation() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
       "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO", "-fangcun.motionMode", "standard"]
     app.launch()
     XCTAssertTrue(app.tabBars.buttons["呼吸"].waitForExistence(timeout: 10))
@@ -26,7 +26,7 @@ final class PracticeVisualRepairUITests: XCTestCase {
     continueAfterFailure = false
     for (kind, duration, seconds) in [("kegel", 180, 38.0), ("pacedBreathing", 300, 26.0)] {
       let app = XCUIApplication()
-      app.launchArguments = ["--ui-testing", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
+      app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
         "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO", "-fangcun.motionMode", "standard"]
       app.launch()
       XCTAssertTrue(app.tabBars.buttons["呼吸"].waitForExistence(timeout: 10))
@@ -46,7 +46,7 @@ final class PracticeVisualRepairUITests: XCTestCase {
   @MainActor func testActualSessionShowsLargeBreathMovementAndStopsOnPause() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-AppleLanguages", "(zh-Hans)",
       "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO",
       "-fangcun.motionMode", "standard", "-fangcun.practice.v4.quickKind", "physiologicalSigh"]
     app.launch()

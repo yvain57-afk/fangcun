@@ -1,3 +1,4 @@
+import AVFAudio
 import InnerBalanceCore
 import SwiftUI
 
@@ -18,7 +19,10 @@ struct PracticeSessionView: View {
   @State private var postValence = 0.0
   @State private var postArousal = 0.0
   @State private var hasPostPosition = false
-  @State private var isEntering = false
+  @State private var entry = PracticeIntroductionGate()
+  @State private var introductionAudio = PracticeIntroductionAudio()
+  @State private var skipsIntroduction = false
+  private var isEntering: Bool { entry.stage == .settling }
   @State private var resumeAfterDialog = false
   @State private var entryStartedAt = Date.now
 
@@ -54,7 +58,15 @@ struct PracticeSessionView: View {
     NavigationStack {
       ZStack {
         PracticeSessionAtmosphere(kind: viewModel.plan.kind)
-        if isEntering {
+        if entry.stage == .introduction {
+          PracticeIntroductionScreen(kind: viewModel.plan.kind, variantID: viewModel.variantID,
+            audio: introductionAudio,
+            skipsNextTime: Binding(get: { skipsIntroduction }, set: {
+              skipsIntroduction = $0
+              PracticeIntroductionPreferences.setSkips($0, for: viewModel.plan.kind)
+            }), onSkip: finishIntroduction)
+            .padding(FangcunLayout.pageHorizontalPadding)
+        } else if isEntering {
           PracticeEntryScreen(kind: viewModel.plan.kind, duration: viewModel.duration, variantID: viewModel.variantID, startedAt: entryStartedAt, entryDuration: entryDuration, onSkip: finishEntry)
             .padding(FangcunLayout.pageHorizontalPadding)
         } else {
@@ -118,14 +130,35 @@ struct PracticeSessionView: View {
       .timingCurve(0.23, 1, 0.32, 1, duration: 0.22),
       value: PracticeScreenIdentity.for(viewModel.phase)
     )
-    .onAppear { if startsImmediately && viewModel.phase == .ready { beginEntry() } }
+    .onAppear {
+      skipsIntroduction = PracticeIntroductionPreferences.skips(viewModel.plan.kind)
+      if startsImmediately && viewModel.phase == .ready { beginEntry() }
+    }
+    .task(id: entry.stage) {
+      guard entry.stage == .introduction else { return }
+      let completed = await introductionAudio.play(resource: PracticeGuidanceContent.introductionResource(for: viewModel.plan.kind, variantID: viewModel.variantID))
+      guard completed, !Task.isCancelled, scenePhase == .active else { return }
+      finishIntroduction()
+    }
     .task(id: isEntering) {
       guard isEntering else { return }
       do { try await Task.sleep(for: .seconds(entryDuration)) } catch { return }
       guard !Task.isCancelled, scenePhase == .active else { return }
       finishEntry()
     }
-    .onChange(of: scenePhase) { _, phase in if phase != .active { isEntering = false } }
+    .onChange(of: scenePhase) { _, phase in
+      if phase != .active, viewModel.phase == .ready { cancelEntry() }
+    }
+    .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)) { notification in
+      if let value = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+        AVAudioSession.InterruptionType(rawValue: value) == .began, viewModel.phase == .ready { cancelEntry() }
+    }
+    .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)) { notification in
+      if let value = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt,
+        AVAudioSession.RouteChangeReason(rawValue: value) == .oldDeviceUnavailable,
+        viewModel.phase == .ready { cancelEntry() }
+    }
+    .onDisappear { introductionAudio.stop() }
     .task(id: viewModel.phase) { await runSessionPhase() }
     .modifier(
       PracticeAudioLifecycle(
@@ -168,13 +201,22 @@ struct PracticeSessionView: View {
     }
   }
   private func beginEntry() {
-    guard viewModel.phase == .ready, !isEntering else { return }
+    guard viewModel.phase == .ready, entry.stage == .ready else { return }
     entryStartedAt = .now
-    isEntering = true
+    let shouldIntroduce = sound.mode(hasVoiceAssets: voiceAvailable) == .guided && PracticeAudioLevels.read("voice") > 0 && !skipsIntroduction
+    entry.begin(shouldIntroduce: shouldIntroduce)
+  }
+  private func cancelEntry() {
+    entry.cancel()
+    introductionAudio.stop()
+  }
+  private func finishIntroduction() {
+    guard viewModel.phase == .ready, entry.finish(.introduction) else { return }
+    introductionAudio.stop(deactivateSession: false)
+    startPractice()
   }
   private func finishEntry() {
-    guard isEntering, viewModel.phase == .ready else { return }
-    isEntering = false
+    guard viewModel.phase == .ready, entry.finish(.settling) else { return }
     startPractice()
   }
 
@@ -203,16 +245,27 @@ struct PracticeSessionView: View {
 
   private func runSessionPhase() async {
     if viewModel.phase == .comparison {
-      await saving.saveCompletion(viewModel: viewModel)
+      await saveFinishedPractice()
     } else {
       await cadence.run(viewModel)
       if viewModel.phase == .comparison {
-        await saving.saveCompletion(viewModel: viewModel)
+        await saveFinishedPractice()
       }
     }
   }
 
+  private func saveFinishedPractice() async {
+    await saving.saveCompletion(viewModel: viewModel)
+    if viewModel.plan.kind == .progressiveMuscleRelaxation, viewModel.variantID == "pmr_sleep",
+      saving.saveErrorMessage == nil {
+      await saving.skipFeedback(viewModel: viewModel)
+    }
+  }
+
   private var savedDetail: String {
+    if viewModel.plan.kind == .progressiveMuscleRelaxation, viewModel.variantID == "pmr_sleep" {
+      return "这段练习已保存在本机。可以继续安静躺着，无需填写感受。"
+    }
     guard saving.hasSavedFeedback else {
       return saving.healthWriteNeedsAttention
         ? "本次练习已经保存在本机，Apple 健康稍后再试。"

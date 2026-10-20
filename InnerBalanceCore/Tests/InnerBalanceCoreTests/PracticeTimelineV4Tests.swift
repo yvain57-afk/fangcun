@@ -6,8 +6,9 @@ import Testing
 struct PracticeTimelineV4Tests {
   @Test("Nine stable IDs, preserved legacy parameters and explicit default durations")
   func catalog() {
-    #expect(Set(PracticeCatalog.v4.map(\.kind)) == Set(PracticeKind.allCases))
+    #expect(Set(PracticeCatalog.phone.map(\.kind)) == Set(PracticeKind.allCases))
     #expect(PracticeCatalog.v4.count == 9)
+    #expect(PracticeCatalog.phone.count == 10)
     #expect(PracticeCatalog.v4.filter { PracticeTimeline.mode(for: $0.kind) == .pacedBreath }.count == 5)
     #expect(PracticeCatalog.v4.first { $0.kind == .physiologicalSigh }?.defaultDuration == 300)
     #expect(PracticeCatalog.v4.first { $0.kind == .pacedBreathing }?.defaultDuration == 300)

@@ -65,7 +65,7 @@ struct PracticeCompanionV4: View {
     case .balancedBreathing:
       character("cat-sit", size: w * 0.53, warp: 0).position(x: w * 0.27, y: h * 0.52)
       character("dog-sit", size: w * 0.55, warp: 1).position(x: w * 0.73, y: h * 0.54)
-    case .pacedBreathing, .nsdr:
+    case .pacedBreathing, .nsdr, .progressiveMuscleRelaxation:
       character("v5-dog-sleep", size: w * 1.12, warp: 6)
         .position(x: w * 0.50, y: h * 0.57)
     case .diaphragmaticBreathing:
@@ -124,6 +124,7 @@ struct PracticeCompanionV4: View {
     case .alternateNostrilBreathing: "小狗和左右叶子，左右均指你自己"
     case .meditation: "小猫蜷卧闭眼，安静陪伴"
     case .nsdr: "小狗枕爪休息，跟随身体扫描放松"
+    case .progressiveMuscleRelaxation: "小狗安静陪伴，跟随文字轻收与放松；呼吸按自己的节奏"
     case .kegel: "小狗用旗子提示轻收与完全放松，呼吸照常"
     }
   }

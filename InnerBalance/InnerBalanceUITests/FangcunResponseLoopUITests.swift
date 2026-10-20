@@ -75,7 +75,7 @@ final class FangcunResponseLoopUITests: XCTestCase {
   @MainActor private func launchApp()->XCUIApplication {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep480","-fangcun.dark","NO","-fangcun.largeType","NO","-status-v3.avoidBreathing","NO","-status-v3.favorite","breath","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryLarge"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture=scoreSleep480","-fangcun.dark","NO","-fangcun.largeType","NO","-status-v3.avoidBreathing","NO","-status-v3.favorite","breath","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryLarge"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap(); XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:12)); return app
   }
   @MainActor private func openCheckIn(_ app:XCUIApplication) {

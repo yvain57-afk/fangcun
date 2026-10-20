@@ -4,7 +4,7 @@ final class StatusScoreV3UITests: XCTestCase {
   @MainActor func testFirstNightRawSleepPublishes78AndRealAction() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing", "--readiness-fixture=scoreSleep375", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep375", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["尚可"].waitForExistence(timeout: 12))
     XCTAssertTrue(app.staticTexts["78"].exists)
@@ -32,7 +32,7 @@ final class StatusScoreV3UITests: XCTestCase {
   @MainActor func testNightKeeps78AndStartsShortBreathingThenForegroundStillClean() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","--score-night","-fangcun.dark","YES","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture=scoreSleep375","--score-night","-fangcun.dark","YES","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
     app.launchArguments += ["-status-v3.avoidBreathing", "NO"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
@@ -50,7 +50,7 @@ final class StatusScoreV3UITests: XCTestCase {
   @MainActor func testEmptyCanSaveActualSleepWithoutConnectingHealth() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing","--readiness-fixture=insufficient","-fangcun.dark","NO","-fangcun.largeType","NO"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture=insufficient","-fangcun.dark","NO","-fangcun.largeType","NO"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12))
     XCTAssertFalse(app.staticTexts["status.score"].exists); assertClean(app)
@@ -65,7 +65,7 @@ final class StatusScoreV3UITests: XCTestCase {
   @MainActor func testMaximumTypeDarkModeScoreAndActionRemainReachable() {
     continueAfterFailure = false
     let app = XCUIApplication()
-    app.launchArguments = ["--ui-testing","--readiness-fixture=scoreSleep375","-fangcun.dark","YES","-fangcun.largeType","YES","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL","-fangcun.reduceMotion","YES"]
+    app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture=scoreSleep375","-fangcun.dark","YES","-fangcun.largeType","YES","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryAccessibilityXXXL","-fangcun.reduceMotion","YES"]
     app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:12))
     let settingsControl = app.buttons["daily.settings"]

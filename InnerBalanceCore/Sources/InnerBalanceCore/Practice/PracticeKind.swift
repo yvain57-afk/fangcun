@@ -8,6 +8,7 @@ public enum PracticeKind: String, CaseIterable, Codable, Equatable, Sendable {
   case boxBreathing
   case diaphragmaticBreathing
   case alternateNostrilBreathing
+  case progressiveMuscleRelaxation
   /// Watch V4 retains the five existing executable methods; new records keep their real IDs.
   public var isLegacyWatchExecutable: Bool {
     switch self {

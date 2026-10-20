@@ -6,6 +6,7 @@ enum PracticeStageKind: Equatable {
   case settling
   case bodyScan
   case pelvicFloor
+  case muscleRelaxation
 
   static func `for`(_ kind: PracticeKind) -> Self {
     switch kind {
@@ -14,6 +15,7 @@ enum PracticeStageKind: Equatable {
     case .meditation: .settling
     case .nsdr: .bodyScan
     case .kegel: .pelvicFloor
+    case .progressiveMuscleRelaxation: .muscleRelaxation
     }
   }
 }
@@ -216,6 +218,10 @@ struct PracticeStageState: Equatable {
     case .meditation, .diaphragmaticBreathing:
       let wave = (sin(elapsed * 0.55) + 1) / 2
       return Self(stage: .settling, focusIndex: (Int(elapsed) / 30) % 3, intensity: wave)
+    case .progressiveMuscleRelaxation:
+      let snapshot = PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: duration ?? 600)
+      let state = PracticeMuscleRelaxationState(snapshot: snapshot)
+      return Self(stage: .muscleRelaxation, focusIndex: state.muscleIndex ?? -1, intensity: snapshot.phaseProgress)
     case .nsdr:
       let state = PracticeBodyScanState.make(elapsed: elapsed, duration: duration)
       return Self(
@@ -243,6 +249,7 @@ extension PracticeKind {
     case .meditation: "减少分心"
     case .nsdr: "恢复精力"
     case .kegel: "盆底控制"
+    case .progressiveMuscleRelaxation: "分组松一松"
     }
   }
   var title: String {
@@ -256,6 +263,7 @@ extension PracticeKind {
     case .meditation: "冥想"
     case .nsdr: "NSDR"
     case .kegel: "凯格尔"
+    case .progressiveMuscleRelaxation: "渐进式肌肉放松"
     }
   }
   var summary: String {
@@ -269,6 +277,7 @@ extension PracticeKind {
     case .meditation: "练习发现走神、放下念头，再把注意力带回当下。"
     case .nsdr: "通过躺式放松和身体扫描缓解疲惫，让身心获得一段深度休息。"
     case .kegel: "练习盆底肌的收紧、保持与放松，逐步增强盆底控制。"
+    case .progressiveMuscleRelaxation: "依次轻轻收紧八组肌肉，再留出更长时间松开，感受用力与休息的区别。"
     }
   }
   var bestFor: String {
@@ -282,6 +291,7 @@ extension PracticeKind {
     case .meditation: "思绪很多、难以停下，或想练习注意力。"
     case .nsdr: "午间、工作之后，或需要躺下歇一会儿。"
     case .kegel: "主动选择盆底肌训练，且已经了解正确动作。"
+    case .progressiveMuscleRelaxation: "日间需要松一松身体，或睡前想安静休息的时候。"
     }
   }
   var steps: String {
@@ -295,6 +305,7 @@ extension PracticeKind {
     case .meditation: "感受身体被托住 → 留意自然呼吸 → 走神后温和地回来。"
     case .nsdr: "躺稳 → 跟随声音扫描身体 → 安静休息 → 缓缓回来。"
     case .kegel: "轻收 4 秒 → 完全放松 8 秒，始终自然呼吸。"
+    case .progressiveMuscleRelaxation: "八组肌肉各做一次：先听动作说明，轻收 5 秒，再松开 25 秒；始终自然呼吸。"
     }
   }
   var preparation: String {
@@ -308,6 +319,7 @@ extension PracticeKind {
     case .meditation: "可以睁眼练习；不舒服时看看周围并结束。"
     case .nsdr: "在安全、能休息的地方使用；不在驾驶或操作设备时练习，不能代替正常睡眠。"
     case .kegel: "不在排尿时练习；腹部、臀部和大腿保持放松。盆底持续紧张、疼痛、排尿排便异常或产后术后恢复中，先咨询专业人员。"
+    case .progressiveMuscleRelaxation: "疼痛、受伤或容易抽筋的部位可跳过收紧，只感觉支撑；不适时立即松开，不必等满 5 秒。近期术后或被限制用力时，先按专业建议练习。"
     }
   }
   var completionReview: String {
@@ -321,11 +333,12 @@ extension PracticeKind {
     case .meditation: "完成了一段注意力练习。"
     case .nsdr: "完成了一段 NSDR 深度休息。"
     case .kegel: "完成了一段盆底控制练习。"
+    case .progressiveMuscleRelaxation: "完成了一段肌肉收放练习。"
     }
   }
   var outcomeDetail: String { summary }
   var purpose: String { summary }
-  var systemImage: String { self == .nsdr ? "bed.double" : self == .kegel ? "figure.core.training" : "wind" }
+  var systemImage: String { self == .progressiveMuscleRelaxation ? "figure.cooldown" : self == .nsdr ? "bed.double" : self == .kegel ? "figure.core.training" : "wind" }
   var v4DefaultDuration: TimeInterval {
     switch self {
     case .physiologicalSigh: 300
@@ -337,6 +350,7 @@ extension PracticeKind {
     case .meditation: 300
     case .nsdr: 600
     case .kegel: 180
+    case .progressiveMuscleRelaxation: 600
     }
   }
   var v4Tags: [String] {
@@ -350,6 +364,7 @@ extension PracticeKind {
     case .meditation: ["专注"]
     case .nsdr: ["休息"]
     case .kegel: ["身体训练"]
+    case .progressiveMuscleRelaxation: ["放松", "休息", "身体训练"]
     }
   }
   func cue(elapsed: TimeInterval, duration: TimeInterval? = nil) -> String {

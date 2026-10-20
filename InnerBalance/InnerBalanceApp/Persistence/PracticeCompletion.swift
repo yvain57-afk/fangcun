@@ -126,8 +126,10 @@ final class StoredPracticeCompletion {
     if let protocolMetadata {
       // Preserve unreadable bytes; never reinterpret a damaged V4 record as legacy and
       // fabricate one continuous HealthKit interval spanning its pauses.
+      let expectedVersion = practiceKind == .progressiveMuscleRelaxation
+        ? PracticeSessionMetadata.muscleRelaxationProtocolVersion : PracticeTimeline.protocolVersion
       guard let decoded = try? JSONDecoder().decode(PracticeSessionMetadata.self, from: protocolMetadata),
-        decoded.protocolVersion == PracticeTimeline.protocolVersion else { return nil }
+        decoded.protocolVersion == expectedVersion else { return nil }
       metadata = decoded
     } else { metadata = nil }
     return PracticeCompletionRecord(
@@ -312,18 +314,19 @@ final class PracticeCompletionCoordinator {
   }
 
   private func persistCompletion(_ record: PracticeCompletionRecord) async throws -> PracticeCompletionOutcome {
+    let localOnly = record.practiceKind == .kegel || record.practiceKind == .progressiveMuscleRelaxation
     if let existing = try store.completion(sessionID: record.sessionID),
-      record.practiceKind == .kegel || existing.mindfulWriteResult != .failedToQueue
+      localOnly || existing.mindfulWriteResult != .failedToQueue
     {
       return PracticeCompletionOutcome(
-        mindfulWriteResult: record.practiceKind == .kegel ? nil : existing.mindfulWriteResult,
+        mindfulWriteResult: localOnly ? nil : existing.mindfulWriteResult,
         postWriteResult: nil,
         savedRecord: existing.record
       )
     }
 
     let initialMindfulResult: HealthWriteResult =
-      record.practiceKind == .kegel ? .saved : .failedToQueue
+      localOnly ? .saved : .failedToQueue
     do {
       try store.save(
         record,
@@ -334,7 +337,7 @@ final class PracticeCompletionCoordinator {
       throw PracticeCompletionSaveError.localPersistenceFailed
     }
 
-    guard record.practiceKind != .kegel else {
+    guard !localOnly else {
       return PracticeCompletionOutcome(
         mindfulWriteResult: nil,
         postWriteResult: nil,
@@ -374,7 +377,7 @@ final class PracticeCompletionCoordinator {
     postValence: Double,
     postArousal: Double
   ) async throws -> PracticeCompletionOutcome {
-    if record.practiceKind == .kegel {
+    if record.practiceKind == .kegel || record.practiceKind == .progressiveMuscleRelaxation {
       return try await saveCompletion(record)
     }
 

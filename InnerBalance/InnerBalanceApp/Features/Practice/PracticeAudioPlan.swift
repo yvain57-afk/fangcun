@@ -171,20 +171,25 @@ enum PracticeVoiceAssets {
   }
 
   static func resourceName(for segment: PracticeGuidedSegment) -> String {
-    "practice_v4_" + segment.id
+    "guide20_" + segment.id
   }
 
   static func requiredResourceNames(for kind: PracticeKind) -> [String] {
-    switch kind {
-    case .physiologicalSigh: return [.sighInhale, .sighTopUp, .sighExhale].map { (cue: PracticeAudioCue) in cue.voiceResourceName }
-    case .pacedBreathing, .balancedBreathing: return [PracticeAudioCue.pacedInhale, .pacedExhale].map(\.voiceResourceName)
-    case .boxBreathing: return [PracticeAudioCue.pacedInhale, .hold, .pacedExhale].map(\.voiceResourceName)
-    case .alternateNostrilBreathing: return [PracticeAudioCue.leftInhale, .rightExhale, .rightInhale, .leftExhale].map(\.voiceResourceName)
-    case .kegel: return [PracticeAudioCue.kegelContract, .kegelRelease].map(\.voiceResourceName)
-    case .meditation, .nsdr, .diaphragmaticBreathing:
-      let durations: [Double] = kind == .nsdr ? [600, 1200] : kind == .meditation ? [300, 600] : [180, 300]
-      return durations.flatMap { PracticeTimeline.segments(for: kind, duration: $0).map(resourceName) }
+    var resources: [String] = []
+    let steps = PracticeTimeline.steps(for: kind)
+    if !steps.isEmpty {
+      resources = (0..<2).flatMap { cycle in
+        steps.indices.map { PracticeGuidanceContent.phaseResource(for: kind, cycle: cycle, index: $0) }
+      }
+    } else {
+      let variants: [String?] = kind == .progressiveMuscleRelaxation ? ["pmr_day", "pmr_sleep"] : [nil]
+      resources = variants.flatMap { variant in
+        (PracticeCatalog.protocol(for: kind)?.durationOptions ?? []).flatMap { duration in
+          PracticeTimeline.segments(for: kind, duration: duration, variantID: variant).map(resourceName)
+        }
+      }
     }
+    return Array(Set(resources)).sorted()
   }
 
 }
@@ -234,7 +239,7 @@ struct PracticeAmbienceSpec: Equatable {
       Self(frequencies: [65.5, 98.25, 131], duration: 8, volume: 0.028)
     case .meditation, .diaphragmaticBreathing:
       Self(frequencies: [55, 82.5, 110], duration: 8, volume: 0.032)
-    case .nsdr:
+    case .nsdr, .progressiveMuscleRelaxation:
       Self(frequencies: [44, 66, 88], duration: 8, volume: 0.035)
     case .kegel:
       Self(frequencies: [73.5, 110.25, 147], duration: 8, volume: 0.022)
@@ -261,10 +266,16 @@ enum PracticeAudioTimeline {
   static func moment(for kind: PracticeKind, snapshot: PracticeTimelineSnapshot) -> PracticeAudioMoment {
     let cue = cue(for: kind, snapshot: snapshot)
     return PracticeAudioMoment(id: snapshot.cueID, cue: cue,
-      shouldSpeak: snapshot.segment != nil || kind == .alternateNostrilBreathing || snapshot.cycleIndex < 2,
-      voiceResourceName: snapshot.segment.map(PracticeVoiceAssets.resourceName) ?? cue.voiceResourceName,
+      shouldSpeak: !(snapshot.segment?.id.hasSuffix("_resume_release") ?? false) && (snapshot.segment != nil || kind == .alternateNostrilBreathing || snapshot.cycleIndex < 2),
+      voiceResourceName: snapshot.segment.map(PracticeVoiceAssets.resourceName) ?? phaseResource(kind: kind, snapshot: snapshot),
       offset: snapshot.elapsedInPhase, remainingWindow: max(0, snapshot.phaseDuration - snapshot.elapsedInPhase),
       isSegment: snapshot.segment != nil)
+  }
+
+  private static func phaseResource(kind: PracticeKind, snapshot: PracticeTimelineSnapshot) -> String {
+    let count = PracticeTimeline.steps(for: kind, variantID: snapshot.variantID).count
+    guard count > 0 else { return PracticeAudioCue.meditationBreath.voiceResourceName }
+    return PracticeGuidanceContent.phaseResource(for: kind, cycle: snapshot.cycleIndex, index: snapshot.cueID % count)
   }
 
   static func cue(for kind: PracticeKind, elapsed: TimeInterval, duration: TimeInterval? = nil) -> PracticeAudioCue {
@@ -273,6 +284,10 @@ enum PracticeAudioTimeline {
 
   private static func cue(for kind: PracticeKind, snapshot: PracticeTimelineSnapshot) -> PracticeAudioCue {
     if let segment = snapshot.segment {
+      if kind == .progressiveMuscleRelaxation {
+        if segment.focus.hasSuffix("gentle_tension") { return .kegelContract }
+        if segment.focus.hasSuffix("release") { return .kegelRelease }
+      }
       if kind == .meditation { return segment.focus == "return" ? .meditationReturn : segment.focus == "breath" ? .meditationBreath : .meditationSupport }
       switch segment.focus {
       case "face": return .nsdrFace

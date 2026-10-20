@@ -1,0 +1,593 @@
+{
+  "status": "text_structure_checked_audio_not_generated",
+  "existingMethods": 9,
+  "existingDurationVariantCombinations": 19,
+  "originalNaturalSegmentsPreserved": 62,
+  "originalSourceHashesUnchanged": true,
+  "pmrProposedDurationSeconds": 600,
+  "pmrMuscleGroups": 8,
+  "pmrEndingVariants": [
+    "day",
+    "sleep"
+  ],
+  "pmrTimelineCoverage": "each ending forms continuous 0..600 without overlap",
+  "speechLengthEstimate": "2.8 Han characters/s + 0.2 s per punctuation; estimate only, not actual audio acceptance",
+  "segmentEstimates": [
+    {
+      "id": "G05-180-S01",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 14.4,
+      "estimatedQuietSeconds": 10.6
+    },
+    {
+      "id": "G05-180-S02",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 17.6,
+      "estimatedQuietSeconds": 7.4
+    },
+    {
+      "id": "G05-180-S03",
+      "windowSeconds": 35,
+      "estimatedTextSeconds": 17.6,
+      "estimatedQuietSeconds": 17.4
+    },
+    {
+      "id": "G05-180-S04",
+      "windowSeconds": 35,
+      "estimatedTextSeconds": 13.7,
+      "estimatedQuietSeconds": 21.3
+    },
+    {
+      "id": "G05-180-S05",
+      "windowSeconds": 35,
+      "estimatedTextSeconds": 14.6,
+      "estimatedQuietSeconds": 20.4
+    },
+    {
+      "id": "G05-180-S06",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 12.4,
+      "estimatedQuietSeconds": 7.6
+    },
+    {
+      "id": "G05-180-S07",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 2.9,
+      "estimatedQuietSeconds": 2.1
+    },
+    {
+      "id": "G05-300-S01",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.9,
+      "estimatedQuietSeconds": 13.1
+    },
+    {
+      "id": "G05-300-S02",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 15.6,
+      "estimatedQuietSeconds": 14.4
+    },
+    {
+      "id": "G05-300-S03",
+      "windowSeconds": 60,
+      "estimatedTextSeconds": 18.0,
+      "estimatedQuietSeconds": 42.0
+    },
+    {
+      "id": "G05-300-S04",
+      "windowSeconds": 65,
+      "estimatedTextSeconds": 18.1,
+      "estimatedQuietSeconds": 46.9
+    },
+    {
+      "id": "G05-300-S05",
+      "windowSeconds": 60,
+      "estimatedTextSeconds": 17.3,
+      "estimatedQuietSeconds": 42.7
+    },
+    {
+      "id": "G05-300-S06",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 17.8,
+      "estimatedQuietSeconds": 22.2
+    },
+    {
+      "id": "G05-300-S07",
+      "windowSeconds": 15,
+      "estimatedTextSeconds": 9.0,
+      "estimatedQuietSeconds": 6.0
+    },
+    {
+      "id": "G07-300-S01",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 15.1,
+      "estimatedQuietSeconds": 9.9
+    },
+    {
+      "id": "G07-300-S02",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.2,
+      "estimatedQuietSeconds": 13.8
+    },
+    {
+      "id": "G07-300-S03",
+      "windowSeconds": 45,
+      "estimatedTextSeconds": 18.1,
+      "estimatedQuietSeconds": 26.9
+    },
+    {
+      "id": "G07-300-S04",
+      "windowSeconds": 45,
+      "estimatedTextSeconds": 16.7,
+      "estimatedQuietSeconds": 28.3
+    },
+    {
+      "id": "G07-300-S05",
+      "windowSeconds": 55,
+      "estimatedTextSeconds": 15.8,
+      "estimatedQuietSeconds": 39.2
+    },
+    {
+      "id": "G07-300-S06",
+      "windowSeconds": 60,
+      "estimatedTextSeconds": 15.8,
+      "estimatedQuietSeconds": 44.2
+    },
+    {
+      "id": "G07-300-S07",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 11.5,
+      "estimatedQuietSeconds": 13.5
+    },
+    {
+      "id": "G07-300-S08",
+      "windowSeconds": 15,
+      "estimatedTextSeconds": 6.0,
+      "estimatedQuietSeconds": 9.0
+    },
+    {
+      "id": "G07-600-S01",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.0,
+      "estimatedQuietSeconds": 14.0
+    },
+    {
+      "id": "G07-600-S02",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 16.6,
+      "estimatedQuietSeconds": 23.4
+    },
+    {
+      "id": "G07-600-S03",
+      "windowSeconds": 70,
+      "estimatedTextSeconds": 17.3,
+      "estimatedQuietSeconds": 52.7
+    },
+    {
+      "id": "G07-600-S04",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 17.8,
+      "estimatedQuietSeconds": 62.2
+    },
+    {
+      "id": "G07-600-S05",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 19.8,
+      "estimatedQuietSeconds": 60.2
+    },
+    {
+      "id": "G07-600-S06",
+      "windowSeconds": 100,
+      "estimatedTextSeconds": 17.5,
+      "estimatedQuietSeconds": 82.5
+    },
+    {
+      "id": "G07-600-S07",
+      "windowSeconds": 100,
+      "estimatedTextSeconds": 20.2,
+      "estimatedQuietSeconds": 79.8
+    },
+    {
+      "id": "G07-600-S08",
+      "windowSeconds": 65,
+      "estimatedTextSeconds": 15.5,
+      "estimatedQuietSeconds": 49.5
+    },
+    {
+      "id": "G07-600-S09",
+      "windowSeconds": 35,
+      "estimatedTextSeconds": 15.1,
+      "estimatedQuietSeconds": 19.9
+    },
+    {
+      "id": "G08-600-S01",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 17.1,
+      "estimatedQuietSeconds": 12.9
+    },
+    {
+      "id": "G08-600-S02",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.6,
+      "estimatedQuietSeconds": 13.4
+    },
+    {
+      "id": "G08-600-S03",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 15.1,
+      "estimatedQuietSeconds": 14.9
+    },
+    {
+      "id": "G08-600-S04",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 17.4,
+      "estimatedQuietSeconds": 22.6
+    },
+    {
+      "id": "G08-600-S05",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 17.8,
+      "estimatedQuietSeconds": 22.2
+    },
+    {
+      "id": "G08-600-S06",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 16.9,
+      "estimatedQuietSeconds": 23.1
+    },
+    {
+      "id": "G08-600-S07",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 16.6,
+      "estimatedQuietSeconds": 23.4
+    },
+    {
+      "id": "G08-600-S08",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 17.4,
+      "estimatedQuietSeconds": 22.6
+    },
+    {
+      "id": "G08-600-S09",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 16.5,
+      "estimatedQuietSeconds": 23.5
+    },
+    {
+      "id": "G08-600-S10",
+      "windowSeconds": 40,
+      "estimatedTextSeconds": 16.6,
+      "estimatedQuietSeconds": 23.4
+    },
+    {
+      "id": "G08-600-S11",
+      "windowSeconds": 45,
+      "estimatedTextSeconds": 17.1,
+      "estimatedQuietSeconds": 27.9
+    },
+    {
+      "id": "G08-600-S12",
+      "windowSeconds": 45,
+      "estimatedTextSeconds": 15.8,
+      "estimatedQuietSeconds": 29.2
+    },
+    {
+      "id": "G08-600-S13",
+      "windowSeconds": 50,
+      "estimatedTextSeconds": 16.7,
+      "estimatedQuietSeconds": 33.3
+    },
+    {
+      "id": "G08-600-S14",
+      "windowSeconds": 60,
+      "estimatedTextSeconds": 15.5,
+      "estimatedQuietSeconds": 44.5
+    },
+    {
+      "id": "G08-600-S15",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 13.9,
+      "estimatedQuietSeconds": 16.1
+    },
+    {
+      "id": "G08-1200-S01",
+      "windowSeconds": 45,
+      "estimatedTextSeconds": 20.0,
+      "estimatedQuietSeconds": 25.0
+    },
+    {
+      "id": "G08-1200-S02",
+      "windowSeconds": 45,
+      "estimatedTextSeconds": 18.7,
+      "estimatedQuietSeconds": 26.3
+    },
+    {
+      "id": "G08-1200-S03",
+      "windowSeconds": 60,
+      "estimatedTextSeconds": 19.6,
+      "estimatedQuietSeconds": 40.4
+    },
+    {
+      "id": "G08-1200-S04",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 20.1,
+      "estimatedQuietSeconds": 59.9
+    },
+    {
+      "id": "G08-1200-S05",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 19.6,
+      "estimatedQuietSeconds": 60.4
+    },
+    {
+      "id": "G08-1200-S06",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 21.1,
+      "estimatedQuietSeconds": 58.9
+    },
+    {
+      "id": "G08-1200-S07",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 19.1,
+      "estimatedQuietSeconds": 60.9
+    },
+    {
+      "id": "G08-1200-S08",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 18.2,
+      "estimatedQuietSeconds": 61.8
+    },
+    {
+      "id": "G08-1200-S09",
+      "windowSeconds": 90,
+      "estimatedTextSeconds": 19.9,
+      "estimatedQuietSeconds": 70.1
+    },
+    {
+      "id": "G08-1200-S10",
+      "windowSeconds": 80,
+      "estimatedTextSeconds": 19.8,
+      "estimatedQuietSeconds": 60.2
+    },
+    {
+      "id": "G08-1200-S11",
+      "windowSeconds": 90,
+      "estimatedTextSeconds": 20.3,
+      "estimatedQuietSeconds": 69.7
+    },
+    {
+      "id": "G08-1200-S12",
+      "windowSeconds": 90,
+      "estimatedTextSeconds": 20.2,
+      "estimatedQuietSeconds": 69.8
+    },
+    {
+      "id": "G08-1200-S13",
+      "windowSeconds": 100,
+      "estimatedTextSeconds": 20.8,
+      "estimatedQuietSeconds": 79.2
+    },
+    {
+      "id": "G08-1200-S14",
+      "windowSeconds": 100,
+      "estimatedTextSeconds": 18.2,
+      "estimatedQuietSeconds": 81.8
+    },
+    {
+      "id": "G08-1200-S15",
+      "windowSeconds": 70,
+      "estimatedTextSeconds": 18.0,
+      "estimatedQuietSeconds": 52.0
+    },
+    {
+      "id": "G08-1200-S16",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 18.4,
+      "estimatedQuietSeconds": 11.6
+    },
+    {
+      "id": "G10-I01",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 17.1,
+      "estimatedQuietSeconds": 12.9
+    },
+    {
+      "id": "G10-I02",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 17.1,
+      "estimatedQuietSeconds": 7.9
+    },
+    {
+      "id": "G10-I03",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 16.4,
+      "estimatedQuietSeconds": 8.6
+    },
+    {
+      "id": "G10-M01-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 13.1,
+      "estimatedQuietSeconds": 6.9
+    },
+    {
+      "id": "G10-M01-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M01-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 17.3,
+      "estimatedQuietSeconds": 7.7
+    },
+    {
+      "id": "G10-M02-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 17.7,
+      "estimatedQuietSeconds": 2.3
+    },
+    {
+      "id": "G10-M02-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M02-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 15.8,
+      "estimatedQuietSeconds": 9.2
+    },
+    {
+      "id": "G10-M03-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 15.5,
+      "estimatedQuietSeconds": 4.5
+    },
+    {
+      "id": "G10-M03-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M03-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 17.6,
+      "estimatedQuietSeconds": 7.4
+    },
+    {
+      "id": "G10-M04-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 16.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M04-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M04-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 14.6,
+      "estimatedQuietSeconds": 10.4
+    },
+    {
+      "id": "G10-M05-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 16.8,
+      "estimatedQuietSeconds": 3.2
+    },
+    {
+      "id": "G10-M05-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M05-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 15.8,
+      "estimatedQuietSeconds": 9.2
+    },
+    {
+      "id": "G10-M06-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 16.4,
+      "estimatedQuietSeconds": 3.6
+    },
+    {
+      "id": "G10-M06-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M06-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 17.3,
+      "estimatedQuietSeconds": 7.7
+    },
+    {
+      "id": "G10-M07-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 15.5,
+      "estimatedQuietSeconds": 4.5
+    },
+    {
+      "id": "G10-M07-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M07-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 15.1,
+      "estimatedQuietSeconds": 9.9
+    },
+    {
+      "id": "G10-M08-A",
+      "windowSeconds": 20,
+      "estimatedTextSeconds": 16.0,
+      "estimatedQuietSeconds": 4.0
+    },
+    {
+      "id": "G10-M08-B",
+      "windowSeconds": 5,
+      "estimatedTextSeconds": 1.6,
+      "estimatedQuietSeconds": 3.4
+    },
+    {
+      "id": "G10-M08-C",
+      "windowSeconds": 25,
+      "estimatedTextSeconds": 15.3,
+      "estimatedQuietSeconds": 9.7
+    },
+    {
+      "id": "G10-W01",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 20.2,
+      "estimatedQuietSeconds": 9.8
+    },
+    {
+      "id": "G10-W02",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 17.1,
+      "estimatedQuietSeconds": 12.9
+    },
+    {
+      "id": "G10-D01",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.5,
+      "estimatedQuietSeconds": 13.5
+    },
+    {
+      "id": "G10-D02",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.4,
+      "estimatedQuietSeconds": 13.6
+    },
+    {
+      "id": "G10-N01",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.6,
+      "estimatedQuietSeconds": 13.4
+    },
+    {
+      "id": "G10-N02",
+      "windowSeconds": 30,
+      "estimatedTextSeconds": 16.2,
+      "estimatedQuietSeconds": 13.8
+    }
+  ],
+  "limits": [
+    "No speech generation, playback or listening performed",
+    "No App build, simulator or device test run for this document-only task",
+    "No clinical validation claimed for the proposed PMR protocol",
+    "No app code, original config, golden fixtures, persistence or preferences changed"
+  ]
+}
