@@ -8,6 +8,8 @@
 
 ## 当前版本
 
+2026-10-21：1.0.0（2026102001）已上传 TestFlight，Apple 处理完成，原“开发自测”和“朋友体验”组均可测试，已单独回读外部组状态。正式 App Store 未提交。见 [分发记录](docs/releases/2026102001/REPORT.md)。
+
 2026-10-20：本地体验版接入已审阅的九项完整引导词，开场可暂停、跳过并按练习记住选择，开场不占训练时间；原九项参数与节拍保留。新增独立十分钟渐进式肌肉放松，提供日间与睡前结尾。实际验证、安装状态及试听音频的分发边界见 [本轮交付报告](docs/content/guidance-integration-20261020/REPORT.md)。本轮未上传新的 TestFlight，也未正式上架。
 
 2026-10-15：本地 V4 改为“呼吸 / 日常”两个主页面，首页集中九项练习，原分数与记录入口迁至日常。原生训练使用分层猫狗和统一时间线，新增完整离线引导段落。当前范围、实际测试及真机未验事项见 [V4 交付报告](docs/plans/fangcun-breathing-v4/REPORT.md)、[核验记录](docs/plans/fangcun-breathing-v4/VERIFICATION.md) 和 [入口迁移表](docs/plans/fangcun-breathing-v4/UI_MIGRATION.md)。用户本轮选择先收可安装构建、稍后真机验收；没有自动上传或上架。以下旧版图片不代表 V4 首页。

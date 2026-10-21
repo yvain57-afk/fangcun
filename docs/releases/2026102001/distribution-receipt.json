@@ -1,0 +1,37 @@
+{
+  "build": "2026102001",
+  "version": "1.0.0",
+  "bundleID": "com.yvainair.InnerBalance",
+  "newAudioFilesVerified": 140,
+  "ipaSHA256": "cd2a3249d5859d6cb16b373ab57d922a4f4509a7c250cc83e3c603c16daa4a01",
+  "ipaBytes": 49624516,
+  "sourceCodeCommit": "9c3ad57d09e92e9846ca5225403ee9935e954612",
+  "reviewHead": "698ceae62b2364f7cf13c39d33306ae9a557b98c",
+  "distributionExportExit": 0,
+  "uploadExit": 0,
+  "uploadSuccessLogTimestamp": "2026-10-21 11:37:34.970",
+  "processingStatus": "VALID",
+  "processingVerifiedInASC": true,
+  "appStoreSubmitted": false,
+  "testflightBuildState": "TESTING",
+  "processingCompletedVerifiedAt": "2026-10-21T11:42:58+08:00",
+  "distributionSignatureVerifyExit": 0,
+  "testNotesSavedInASC": true,
+  "selectedGroups": [
+    "开发自测",
+    "朋友体验"
+  ],
+  "automaticTesterNotification": true,
+  "testFlightReviewSubmission": "submitted; build and external group both read back TESTING",
+  "groupsAttached": [
+    "开发自测",
+    "朋友体验"
+  ],
+  "externalGroupStatus": "TESTING",
+  "externalGroupStatusVerifiedInASC": true,
+  "publicInvitation": "https://testflight.apple.com/join/tt8NVFJE",
+  "externalGroupBuildsPageVerified": true,
+  "verifiedAt": "2026-10-21T11:46:04+08:00",
+  "testerDeviceInstallVerifiedForTestFlight": false,
+  "actualPhysicalDeviceAcceptance": "Previous local development installation of the same source/build was verified; not a TestFlight download receipt."
+}
