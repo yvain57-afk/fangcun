@@ -5,6 +5,9 @@ Same App ID `6818437987`, bundle `com.yvainair.InnerBalance`; version `2.0.0`, b
 
 ## Release state
 
+**2026-10-28 release follow-up:** Xcode and ASC login restored. App Store distribution export succeeded; actual IPA signature/profile and 171 English audio hashes verified (`distribution-verification.json`). `xcodebuild -exportArchive` with the existing upload options completed with exit 0 / EXPORT SUCCEEDED. This confirms the upload command, not TestFlight processing or test availability. Version 2.0.0 draft, English store copy and Little Exhale name saved. Primary English switch requires screenshots first. Browser file-chooser upload timed out; subsequent native Chrome access was explicitly stopped by the computer-use URL safety rule. Browser work stopped. Review is **not submitted**. State before login restoration follows as historical evidence.
+
+
 The user authorized TestFlight upload **and** App Store review submission. Neither has happened. Xcode has no signed-in developer account and no valid distribution identity; App Store Connect is at an expired/failed login page. The Mac remains locked for native UI operations. The existing production app has not been withdrawn or replaced.
 
 A development-signed Release archive is verified locally. It is **not** an App Store IPA. Export failed with `No Accounts` and `No signing certificate "iOS Distribution" found`. Restore the original Xcode/ASC login; no additional release-scope permission is needed. See `release-state.json`.
@@ -74,3 +77,10 @@ The final archive also applies English locales to preformatted history/evidence 
 Ten native recordings finished normally, each 1320×2868, roughly 33 seconds including pause/continue; all ten fully decoded with FFmpeg. Source hashes and viewing limits are in `video-verification.json`. The final offline gallery contains **49 native screenshots and 10 recordings**. Screen captures cover all ten practice stages, light/dark Breathe/Daily, drinks, specific movement teaching, synthetic health evidence, and Watch home. These are selected acceptance screens, not an exhaustive capture of every possible state.
 
 Copy-table note: the TSV exact-literal source/target columns intentionally retain trailing spaces for concatenated labels. `git diff --check` flags those data rows; Swift/source whitespace checks are clean. Do not trim them and change the generated strings.
+
+## 2026-10-29 screenshot/release continuation
+
+- The completed `StorePhone.xcresult` was read back: **1/1 passed, normal result**, six native screenshots at 1206×2622. All six reviewed at source quality; `store-screenshots.json` now points to the required size. No rescaling or image editing. Delivery now includes 55 native screenshots.
+- Screenshot staging uses hard links to the authoritative capture files; six iPhone images plus the unchanged 416×496 native Watch capture. No duplicate binary upload and no new distribution build.
+- Apple web login expired overnight. Chrome's authentication widget remained blank/failed; the ordinary Safari login page loaded and offered the existing account's passkey. Native Touch ID requires the owner's verification; no credential was read, no browser security permission changed, and no protected Chrome URL was accessed.
+- Review remains **not submitted** until the Apple backend is accessible and its submission result is read back. No recurring monitoring or automation was created.

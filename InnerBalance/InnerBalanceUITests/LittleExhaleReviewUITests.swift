@@ -38,6 +38,26 @@ final class LittleExhaleReviewUITests: XCTestCase {
       app.terminate()
     }
   }
+  @MainActor func testStorePhoneScreenshots() {
+    for kind in ["physiologicalSigh", "balancedBreathing", "nsdr"] {
+      let app = launch(kind)
+      if kind == "physiologicalSigh" { capture("store-home-light", app: app) }
+      app.buttons["hub.quickStart"].tap()
+      let prepare = app.buttons["practice.prepare.start"]
+      if prepare.waitForExistence(timeout: 2) { prepare.tap() }
+      XCTAssertTrue(app.buttons["Pause practice"].waitForExistence(timeout: 10))
+      XCTAssertTrue(app.descendants(matching: .any)["practice.companion"].firstMatch.exists)
+      capture("store-" + kind, app: app)
+      app.terminate()
+    }
+    let app = launch(dark: true)
+    app.buttons["Daily"].tap()
+    XCTAssertTrue(app.buttons["today.drinks"].waitForExistence(timeout: 5))
+    capture("store-daily-dark", app: app)
+    app.buttons["today.drinks"].tap()
+    XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5))
+    capture("store-drinks-dark", app: app)
+  }
   @MainActor func testEnglishDailyAndDarkPracticeOnChineseSystem() {
     let app = launch(dark: true)
     capture("home-dark", app: app)

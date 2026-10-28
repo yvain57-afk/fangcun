@@ -32,3 +32,5 @@ Approved references:
 - [ ] Upload once, reconcile processing and TestFlight availability; prepare English store assets and submit the same app's new version for review.
 
 Remote upload, TestFlight processing, review submission and public release are separate states. Record their actual receipts rather than infer success from a local build.
+
+2026-10-29 continuation: User asked the agent to handle all technical preparation independently. Required 6.3-inch store screenshots are now captured and reviewed; use the normal native Safari file picker without changing extension security. Only Apple’s offered owner Touch ID verification is pending human input. No new monitoring authorization.

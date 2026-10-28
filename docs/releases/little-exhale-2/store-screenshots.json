@@ -1,45 +1,45 @@
 {
   "locale": "en-US",
-  "device": "iPhone 16 Pro Max simulator",
+  "device": "iPhone 16 Pro simulator",
   "status": "prepared_not_uploaded",
   "source": "unaltered native screenshots; synthetic data",
   "deliveryFolder": "Little-Exhale-2.0-发布更新-20261028",
   "screenshots": [
     {
-      "file": "screenshots/LE2-home-light.png",
-      "width": 1320,
-      "height": 2868,
-      "sha256": "01c466d1edecdfe78d72a3440493482a41e226d97d5eb24bfbe50534c31b2471"
+      "file": "screenshots/LE2-store-home-light.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "1829140c3c32b31306b7bfde1fc5b0767a2fcac6d7664d71c53295c9e917f3b4"
     },
     {
-      "file": "screenshots/LE2-physiologicalSigh-start.png",
-      "width": 1320,
-      "height": 2868,
-      "sha256": "483cd4d45fc1f4f4292d9409d6746bff500c845c651388907c9a19323f606c24"
+      "file": "screenshots/LE2-store-physiologicalSigh.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "6b45336df328d30818a57f956fca5da2bf617f1bcbe75f24be7a7df17286aff0"
     },
     {
-      "file": "screenshots/LE2-balancedBreathing-next-phase.png",
-      "width": 1320,
-      "height": 2868,
-      "sha256": "a453a422161a43aa0363779f39b5ee04717f5a0fbe2c8ae700108eaa1189fb7c"
+      "file": "screenshots/LE2-store-balancedBreathing.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "6f6b371b84e03579c4eb01fdcd40335a460fa000340d8aaa6c3f90ed5d8d7093"
     },
     {
-      "file": "screenshots/LE2-nsdr-start.png",
-      "width": 1320,
-      "height": 2868,
-      "sha256": "df44bb87e0e64b30675fd6e0b8911358b9f77ef2264c334c148f089731a3db17"
+      "file": "screenshots/LE2-store-nsdr.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "a5828f79010816927bee974242a815ad9d1104087748856f1bc9d096f33cedaa"
     },
     {
-      "file": "screenshots/LE2-daily-dark.png",
-      "width": 1320,
-      "height": 2868,
-      "sha256": "9aa2c8a84ae8ef1fd6d990aa3b1c6d0fb5d34e45735daee6429d823666add858"
+      "file": "screenshots/LE2-store-daily-dark.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "537a00f9c7f8769d34e55e61c2c48048eb30cc50f14e60ae1673ae6a21249303"
     },
     {
-      "file": "screenshots/LE2-drinks-dark.png",
-      "width": 1320,
-      "height": 2868,
-      "sha256": "8b31eeb328a196ed1f3d48d4acb4cca4c2a8ed779e48928a6dbe04975e7eedd1"
+      "file": "screenshots/LE2-store-drinks-dark.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "84e3c9f397de9c1de22223b938efdfe655e861abbdfbf9e9979c928c3977514a"
     }
   ]
 }

@@ -1,20 +1,30 @@
 {
-  "checkedAt": "2026-10-28T03:55:12.871333+00:00",
+  "checkedAt": "2026-10-28T16:30:08.149953+00:00",
   "appID": "6818437987",
   "version": "2.0.0",
   "build": "2026102801",
   "localArchive": "development_signed_final_archive_verified",
-  "distributionExport": "blocked_no_xcode_account_or_distribution_identity",
-  "upload": "not_attempted",
-  "testFlight": "not_uploaded",
-  "appStoreReview": "not_submitted",
+  "distributionExport": "app_store_ipa_verified",
+  "upload": "xcode_upload_completed_exit_0",
+  "testFlight": "apple_processing_not_yet_read_back",
+  "appStoreReview": "2.0.0_draft_created_not_submitted",
   "publicRelease": "existing_version_unchanged",
-  "requiredAction": "Restore the original Apple developer account in Xcode and App Store Connect. No new release-scope approval required.",
+  "requiredAction": "Apple web session expired overnight. Complete the offered native Safari passkey Touch ID prompt, then continue ordinary file-picker upload, verify TestFlight and submit review. No browser-security change or duplicate binary upload.",
   "archive": ".build/little-exhale-2/LittleExhale-2026102801-release.xcarchive",
   "verification": {
     "corePassed": 173,
     "appPassed": 235,
     "selectedNativeUILatestPassed": 25,
     "nativeVideoClips": 10
+  },
+  "browserChanges": {
+    "versionDraft": "2.0.0",
+    "enUSStoreCopy": "saved",
+    "zhHansCopy": "updated_to_disclose_English_only_experience",
+    "brandName": "Little Exhale_saved",
+    "primaryEnglishLocale": "pending_required_screenshots",
+    "watchScreenshotUpload": "not_confirmed",
+    "storePhoneScreenshots": "six_native_1206x2622_captures_passed_and_reviewed",
+    "safariPasskey": "awaiting_owner_Touch_ID"
   }
 }

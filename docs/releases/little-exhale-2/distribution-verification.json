@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "build": "2026102801",
+  "ipa": "InnerBalance.ipa",
+  "ipaSHA256": "17890d2650d85186539267de92786d7ca8cb7a1cae321ab6d48b8943e0d4d0e5",
+  "bytes": 77272497,
+  "appStoreProfile": true,
+  "debuggerAllowed": false,
+  "strictCodeSignature": true,
+  "englishAudioVerified": 171,
+  "scope": "Actual exported IPA, not upload or Apple processing."
+}
