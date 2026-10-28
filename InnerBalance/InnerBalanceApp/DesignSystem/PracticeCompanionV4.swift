@@ -1,7 +1,8 @@
 import SwiftUI
 import InnerBalanceCore
 
-/// Intact authored silhouettes: local deformation never moves the face, ears or feet.
+/// Authored cutout layers move as rigid pieces. Faces and silhouettes are never warped.
+/// Every pose is a pure function of the same elapsed time as audio and phase guidance.
 struct PracticeCompanionV4: View {
   let kind: PracticeKind
   let elapsed: Double
@@ -18,114 +19,187 @@ struct PracticeCompanionV4: View {
   private var snapshot: PracticeTimelineSnapshot {
     PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: duration, variantID: variantID)
   }
-  private var motion: PracticeVisualMotion { .init(kind: kind, snapshot: snapshot) }
   private var strength: Double {
     (systemReduced || reduceMotion || reduceMotionOverride || motionMode == "static" || ProcessInfo.processInfo.isLowPowerModeEnabled) ? 0 : (motionMode == "gentle" ? 0.55 : 1)
   }
-  private var expansion: Double {
-    if kind == .diaphragmaticBreathing {
-      // Labelled visual demonstration only, never a prescribed breathing pace.
-      return (1 - cos(elapsed.truncatingRemainder(dividingBy: 10) / 10 * 2 * .pi)) / 2
-    }
-    if kind == .nsdr && snapshot.segment?.focus == "belly" {
-      return -0.2 * PracticeVisualMotion.eased(snapshot.segmentElapsed / 2.4)
-    }
-    if kind == .meditation || kind == .nsdr {
-      return 0.25 * (1 - cos(elapsed / 8 * 2 * .pi)) / 2
-    }
-    return motion.expansion
-  }
-  private var attention: Double {
-    let focus = snapshot.segment?.focus
-    let cue = (kind == .meditation && focus == "return") || (kind == .nsdr && focus == "face")
-    let t = min(1, max(0, cue ? snapshot.segmentElapsed / 2.4 : completionProgress))
-    return sin(t * .pi) * strength
+  private var pose: LittleExhalePose {
+    LittleExhalePose.make(kind: kind, snapshot: snapshot, strength: strength)
   }
   var body: some View {
-    GeometryReader { proxy in
-      let w = proxy.size.width
-      let h = min(proxy.size.height, w * 0.86)
-      ZStack {
-        scene(w: w, h: h)
-          .opacity(entryProgress < 1 && kind == .pacedBreathing ? PracticeVisualMotion.eased((entryProgress - 0.45) / 0.3) : 1)
-        if entryProgress < 1 && kind == .pacedBreathing {
-          character("dog-sit", size: min(w * 0.80, h * 1.06), warp: 1)
-            .position(x: w * 0.5, y: h * 0.5)
-            .opacity(1 - PracticeVisualMotion.eased((entryProgress - 0.45) / 0.3))
+    GeometryReader { geometry in
+      let width = geometry.size.width
+      let height = geometry.size.height
+      Group {
+        switch kind {
+        case .physiologicalSigh:
+          LittleExhaleCat(opening: pose.pawOpening)
+        case .balancedBreathing:
+          HStack(alignment: .bottom, spacing: 0) {
+            LittleExhaleCat(opening: pose.pawOpening).frame(width: width * 0.48)
+            LittleExhaleRestingDog(lift: pose.headLift).frame(width: width * 0.52)
+          }.frame(height: height * 0.86)
+        case .pacedBreathing:
+          LittleExhaleRestingDog(lift: pose.headLift)
+        case .boxBreathing:
+          LittleExhaleCat(opening: pose.pawOpening, pointing: true)
+        case .diaphragmaticBreathing:
+          LittleExhaleSeatedDog(leftLift: pose.leftLift, rightLift: pose.rightLift)
+        case .alternateNostrilBreathing:
+          LittleExhaleSeatedDog(leftLift: pose.leftLift, rightLift: pose.rightLift)
+        case .meditation:
+          LittleExhaleCat(opening: 0, resting: true, settling: pose.settling)
+        case .nsdr:
+          LittleExhaleRestingDog(lift: pose.headLift)
+        case .kegel:
+          LittleExhaleSeatedDog(leftLift: 0, rightLift: pose.rightLift, flag: true)
+        case .progressiveMuscleRelaxation:
+          LittleExhaleCat(opening: pose.pawOpening, resting: true)
         }
-      }
-        .frame(width: w, height: h).frame(maxHeight: .infinity)
+      }.frame(width: width, height: height)
     }
     .accessibilityElement(children: .ignore).accessibilityLabel(stageLabel)
     .accessibilityIdentifier("practice.companion")
   }
 
-  @ViewBuilder private func scene(w: CGFloat, h: CGFloat) -> some View {
-    switch kind {
-    case .balancedBreathing:
-      character("cat-sit", size: w * 0.53, warp: 0).position(x: w * 0.27, y: h * 0.52)
-      character("dog-sit", size: w * 0.55, warp: 1).position(x: w * 0.73, y: h * 0.54)
-    case .pacedBreathing, .nsdr, .progressiveMuscleRelaxation:
-      character("v5-dog-sleep", size: w * 1.12, warp: 6)
-        .position(x: w * 0.50, y: h * 0.57)
-    case .diaphragmaticBreathing:
-      character("dog-side", size: w * 0.96, warp: 3).position(x: w * 0.50, y: h * 0.51)
-    case .physiologicalSigh:
-      character("cat-sit", size: min(w * 0.81, h * 1.08), warp: 0)
-        .position(x: w * 0.46, y: h * 0.50)
-      prop("cat-flower", width: w * 0.13, height: h * 0.22)
-        .rotationEffect(.degrees(snapshot.phase == .exhale ? -6 * sin(min(1, snapshot.elapsedInPhase / 2) * .pi) * strength : 0), anchor: .bottom)
-        .position(x: w * 0.83, y: h * 0.55)
-    case .meditation:
-      character("v5-cat-loaf", size: min(w * 0.96, h * 1.2), warp: 5)
-        .position(x: w * 0.50, y: h * 0.50)
-      prop("cat-leaf", width: w * 0.10, height: h * 0.12)
-        .position(x: w * 0.84, y: h * 0.77)
-    case .boxBreathing:
-      character("cat-sit", size: min(w * 0.83, h * 1.08), warp: 0)
-        .position(x: w * 0.50, y: h * 0.50)
-    case .alternateNostrilBreathing:
-      character("dog-sit", size: min(w * 0.79, h * 1.06), warp: 1)
-        .position(x: w * 0.50, y: h * 0.50)
-      prop("dog-leaf", width: w * 0.09, height: h * 0.13)
-        .opacity(motion.side == -1 ? 1 : 0.28)
-        .position(x: w * 0.10, y: h * 0.56)
-      prop("cat-leaf", width: w * 0.09, height: h * 0.13)
-        .opacity(motion.side == 1 ? 1 : 0.28)
-        .position(x: w * 0.90, y: h * 0.56)
-    case .kegel:
-      character("dog-coach", size: min(w * 0.87, h * 1.08), warp: 4)
-        .position(x: w * 0.53, y: h * 0.50)
-    }
-  }
-
-  private func character(_ name: String, size: CGFloat, warp: Float, aspect: CGFloat = 1) -> some View {
-    Image(name.hasPrefix("v5-") ? "PracticeV5-" + String(name.dropFirst(3)) : "PracticeV4R-" + name).resizable().aspectRatio(contentMode: .fit)
-      .frame(width: size, height: size / aspect)
-      .visualEffect { content, geometry in
-        content.distortionEffect(
-          ShaderLibrary.fangcunV4IntactBody(.float2(geometry.size), .float(warp),
-            .float(Float((kind == .kegel ? motion.contraction : expansion) * strength)), .float(Float(attention))),
-          maxSampleOffset: CGSize(width: 12, height: 12)
-        )
-      }.accessibilityHidden(true)
-  }
-  private func prop(_ name: String, width: CGFloat, height: CGFloat) -> some View {
-    Image("PracticeV4-" + name).resizable().aspectRatio(contentMode: .fit)
-      .frame(width: width, height: height).accessibilityHidden(true)
-  }
   private var stageLabel: String {
     switch kind {
-    case .physiologicalSigh: "小猫闻花，双吸一呼"
-    case .pacedBreathing: "小狗枕爪，缓缓呼气"
-    case .balancedBreathing: "猫狗并肩，同步呼吸"
-    case .boxBreathing: "小猫安稳坐着，停留时身体保持"
-    case .diaphragmaticBreathing: "小狗前爪放在下肋，腹部轻轻起伏；动作示范，按自己的节奏"
-    case .alternateNostrilBreathing: "小狗和左右叶子，左右均指你自己"
-    case .meditation: "小猫蜷卧闭眼，安静陪伴"
-    case .nsdr: "小狗枕爪休息，跟随身体扫描放松"
-    case .progressiveMuscleRelaxation: "小狗安静陪伴，跟随文字轻收与放松；呼吸按自己的节奏"
-    case .kegel: "小狗用旗子提示轻收与完全放松，呼吸照常"
+    case .physiologicalSigh: "Cat opens its paws with the two-part inhale, then lowers them as you exhale"
+    case .pacedBreathing: "Dog gently lifts its chin, then settles onto its paws with the longer exhale"
+    case .balancedBreathing: "Cat and dog follow the same even breathing rhythm"
+    case .boxBreathing: "Cat opens its paws to breathe in, stays still during holds, and settles to breathe out"
+    case .diaphragmaticBreathing: "Dog rests its paws by its lower ribs. Follow your own breathing rhythm"
+    case .alternateNostrilBreathing: "Dog gestures toward your left or right side, following the current cue"
+    case .meditation: "Cat sits with closed eyes, quietly keeping you company"
+    case .nsdr: "Dog settles into rest. There is no breathing pace to follow"
+    case .kegel: "Dog raises its flag for a gentle lift, then lowers it for a full release. Breathe normally"
+    case .progressiveMuscleRelaxation: "Cat gently opens its paws after the hand exercise, then rests while you follow the remaining muscle groups"
     }
+  }
+}
+
+/// Separate from View composition so pause/reduced-motion and phase behavior can be replayed.
+struct LittleExhalePose: Equatable {
+  var pawOpening = 0.0
+  var headLift = 0.0
+  var leftLift = 0.0
+  var rightLift = 0.0
+  var settling = 0.0
+
+  static func make(kind: PracticeKind, snapshot: PracticeTimelineSnapshot, strength: Double) -> Self {
+    let s = min(1, max(0, strength))
+    let motion = PracticeVisualMotion(kind: kind, snapshot: snapshot)
+    var pose = Self()
+    switch kind {
+    case .physiologicalSigh, .balancedBreathing, .boxBreathing:
+      pose.pawOpening = motion.expansion * s
+      pose.headLift = motion.expansion * s
+    case .pacedBreathing:
+      pose.headLift = motion.expansion * s
+    case .alternateNostrilBreathing:
+      // Small arrival gesture, then hold the correct side. Never mirror user directions.
+      let arrive = PracticeVisualMotion.eased(snapshot.elapsedInPhase / 0.5)
+      pose.leftLift = motion.side == -1 ? arrive * s : 0
+      pose.rightLift = motion.side == 1 ? arrive * s : 0
+    case .diaphragmaticBreathing:
+      // One settling gesture at each spoken cue, not an invented recurring breath pace.
+      let settle = 1 - PracticeVisualMotion.eased(snapshot.segmentElapsed / 2.4)
+      pose.leftLift = 0.18 * settle * s
+      pose.rightLift = 0.18 * settle * s
+    case .meditation:
+      pose.settling = PracticeVisualMotion.eased(snapshot.segmentElapsed / 2.4) * s
+    case .nsdr:
+      pose.headLift = 0.18 * (1 - PracticeVisualMotion.eased(snapshot.segmentElapsed / 2.4)) * s
+    case .kegel:
+      pose.rightLift = motion.contraction * s
+    case .progressiveMuscleRelaxation:
+      // Hands close for hand tension and open for release. Other muscle groups stay still.
+      pose.pawOpening = 0.35 * s
+      if snapshot.segment?.focus == "pmr_m01_gentle_tension" {
+        pose.pawOpening = 0.35 * (1 - PracticeVisualMotion.eased(snapshot.segmentElapsed / 0.6)) * s
+      } else if snapshot.segment?.focus == "pmr_m01_release" {
+        pose.pawOpening = 0.35 * PracticeVisualMotion.eased(snapshot.segmentElapsed / 1.6) * s
+      }
+    }
+    return pose
+  }
+}
+
+struct LittleExhaleCat: View {
+  var opening: Double
+  var resting = false
+  var pointing = false
+  var settling = 0.0
+  var body: some View {
+    GeometryReader { geometry in
+      let w = min(geometry.size.width * 0.93, geometry.size.height * 0.91)
+      let h = w * 571 / 545
+      ZStack {
+        Image(resting ? "LE2-cat-rest-base" : "LE2-cat-base")
+          .resizable().scaledToFit().frame(width: w, height: h)
+        paw("left", width: w * 0.23, angle: 48 * opening,
+          anchor: UnitPoint(x: 0.24, y: 0.20))
+          .position(x: w * 0.49, y: h * (0.71 - 0.055 * opening + 0.01 * settling))
+        paw("right", width: w * 0.23, angle: -(pointing ? 62 : 48) * opening,
+          anchor: UnitPoint(x: 0.76, y: 0.20))
+          .position(x: w * 0.76, y: h * (0.71 - 0.055 * opening + 0.01 * settling))
+      }.frame(width: w, height: h)
+        .position(x: geometry.size.width * 0.46, y: geometry.size.height * 0.50)
+    }.accessibilityHidden(true)
+  }
+  private func paw(_ side: String, width: CGFloat, angle: Double, anchor: UnitPoint) -> some View {
+    Image("LE2-cat-" + side + "-paw").resizable().scaledToFit()
+      .frame(width: width, height: width * 1.09)
+      .rotationEffect(.degrees(angle), anchor: anchor)
+  }
+}
+
+struct LittleExhaleRestingDog: View {
+  let lift: Double
+  var body: some View {
+    GeometryReader { geometry in
+      let w = min(geometry.size.width, geometry.size.height / 0.75)
+      let h = w * 0.75
+      ZStack {
+        Image("LE2-dog-rest-body").resizable().scaledToFit()
+          .frame(width: w, height: w * 302 / 586)
+          .position(x: w * 0.5, y: h * 0.64)
+        Image("LE2-dog-rest-head").resizable().scaledToFit()
+          .frame(width: w * 0.64, height: w * 0.64 * 301 / 489)
+          .rotationEffect(.degrees(-2.2 * lift), anchor: .bottom)
+          .position(x: w * 0.35, y: h * 0.39 - w * 0.035 * lift)
+        Image("LE2-dog-rest-paws").resizable().scaledToFit()
+          .frame(width: w * 235 / 586, height: w * 85 / 586)
+          .position(x: w * (42 + 117.5) / 586, y: h * 0.64 + w * (154 + 42.5 - 151) / 586)
+      }.frame(width: w, height: h)
+        .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.54)
+    }.accessibilityHidden(true)
+  }
+}
+
+struct LittleExhaleSeatedDog: View {
+  let leftLift: Double
+  let rightLift: Double
+  var flag = false
+  var body: some View {
+    GeometryReader { geometry in
+      let w = min(geometry.size.width * 0.90, geometry.size.height * 0.93)
+      let h = w * 544 / 539
+      ZStack {
+        Image("LE2-dog-base").resizable().scaledToFit().frame(width: w, height: h)
+        Image("LE2-dog-left-paw").resizable().scaledToFit().frame(width: w * 0.22)
+          .rotationEffect(.degrees(38 * leftLift), anchor: UnitPoint(x: 0.25, y: 0.15))
+          .position(x: w * 0.29, y: h * (0.73 - 0.04 * leftLift))
+        ZStack {
+          if flag {
+            Image("LE2-flag").resizable().scaledToFit().frame(width: w * 0.29)
+              .offset(x: w * 0.07, y: -w * 0.13)
+          }
+          Image("LE2-dog-right-paw").resizable().scaledToFit().frame(width: w * 0.22)
+        }.frame(width: w * 0.22, height: w * 0.23)
+          .rotationEffect(.degrees(-42 * rightLift), anchor: UnitPoint(x: 0.75, y: 0.15))
+          .position(x: w * 0.53, y: h * (0.73 - 0.04 * rightLift))
+      }.frame(width: w, height: h)
+        .position(x: geometry.size.width * 0.54, y: geometry.size.height * 0.50)
+    }.accessibilityHidden(true)
   }
 }

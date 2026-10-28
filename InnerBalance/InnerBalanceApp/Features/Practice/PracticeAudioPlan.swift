@@ -15,17 +15,17 @@ enum PracticeSoundMode: String, CaseIterable, Equatable {
 
   var title: String {
     switch self {
-    case .guided: "语音引导"
-    case .rhythmOnly: "仅节奏"
-    case .silent: "静音"
+    case .guided: "Guided"
+    case .rhythmOnly: "Cues only"
+    case .silent: "Silent"
     }
   }
 
   var detail: String {
     switch self {
-    case .guided: "关键时刻听到简短指引"
-    case .rhythmOnly: "用高低音跟随动作"
-    case .silent: "只保留视觉与触觉"
+    case .guided: "A few words when you need them"
+    case .rhythmOnly: "Follow gentle sound cues"
+    case .silent: "Visual and haptic guidance only"
     }
   }
 
@@ -111,27 +111,27 @@ enum PracticeAudioCue: String, CaseIterable, Equatable {
 
   var spokenText: String {
     switch self {
-    case .sighInhale: "用鼻子，轻轻吸气。"
-    case .sighTopUp: "再补一小口。"
-    case .sighExhale: "慢慢呼出去。"
-    case .pacedInhale: "慢慢吸气。"
-    case .pacedExhale: "把呼气放长。"
-    case .meditationSupport: "感觉身体，被稳稳托住。"
-    case .meditationBreath: "留意这一口，自然的呼吸。"
-    case .meditationReturn: "走神也没关系，回来就好。"
-    case .nsdrFace: "松开眼周，也松开下颌。"
-    case .nsdrShoulders: "让肩膀，把重量交出去。"
-    case .nsdrBreath: "轻轻吸气。慢慢呼气，把重量交出去。"
-    case .nsdrBelly: "腹部不用用力，让呼吸自己来。"
-    case .nsdrLegs: "双腿沉下来，脚也松开。"
-    case .nsdrReturn: "动动手指和脚趾。准备好时，慢慢睁开眼睛。"
-    case .kegelContract: "轻轻收紧，呼吸照常。"
-    case .kegelRelease: "完全放松。"
-    case .hold: "轻松停留。"
-    case .leftInhale: "左侧吸气。"
-    case .rightExhale: "右侧呼气。"
-    case .rightInhale: "右侧吸气。"
-    case .leftExhale: "左侧呼气。"
+    case .sighInhale: "Gently breathe in through your nose."
+    case .sighTopUp: "A little more."
+    case .sighExhale: "Slowly breathe out."
+    case .pacedInhale: "Gently breathe in."
+    case .pacedExhale: "Let the out-breath be longer."
+    case .meditationSupport: "Feel the support beneath you."
+    case .meditationBreath: "Notice this ordinary breath."
+    case .meditationReturn: "It's okay to wander. Gently come back."
+    case .nsdrFace: "Soften your eyes and your jaw."
+    case .nsdrShoulders: "Let your shoulders rest."
+    case .nsdrBreath: "Gently in. Slowly out. Let your weight be supported."
+    case .nsdrBelly: "Let your belly rest. Breathing can happen on its own."
+    case .nsdrLegs: "Let your legs and feet rest."
+    case .nsdrReturn: "Move your fingers and toes. Open your eyes when you're ready."
+    case .kegelContract: "Gently lift. Keep breathing."
+    case .kegelRelease: "Let go completely."
+    case .hold: "Gently pause."
+    case .leftInhale: "Left, breathe in."
+    case .rightExhale: "Right, breathe out."
+    case .rightInhale: "Right, breathe in."
+    case .leftExhale: "Left, breathe out."
     }
   }
 }
@@ -153,7 +153,7 @@ enum PracticeAudioBackgroundPolicy {
 }
 
 enum PracticeVoiceAssets {
-  static let selectedPackID = "zhixingnv"
+  static let selectedPackID = "little-exhale-ava-en-20261028"
 
   static func isAvailable(for kind: PracticeKind, bundle: Bundle = .main) -> Bool {
     requiredResourceNames(for: kind).allSatisfy { url(named: $0, bundle: bundle) != nil }
@@ -164,7 +164,8 @@ enum PracticeVoiceAssets {
   }
 
   static func url(named name: String, bundle: Bundle = .main) -> URL? {
-    ["m4a", "mp3", "wav"].lazy.compactMap { ext in
+    let name = "le2_" + name
+    return ["m4a", "mp3", "wav"].lazy.compactMap { ext in
       bundle.url(forResource: name, withExtension: ext, subdirectory: "PracticeVoice")
         ?? bundle.url(forResource: name, withExtension: ext)
     }.first

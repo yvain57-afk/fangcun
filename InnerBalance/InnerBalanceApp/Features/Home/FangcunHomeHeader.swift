@@ -36,7 +36,7 @@ struct FangcunHomeHeader: View {
   private var titleBlock: some View {
     VStack(alignment: .leading, spacing: 0) {
       brandPoint
-      Text("此刻")
+      Text("Right now")
         .font(
           dynamicTypeSize.isAccessibilitySize
             ? .largeTitle.bold()
@@ -61,7 +61,7 @@ struct FangcunHomeHeader: View {
   private var brandPoint: some View {
     HStack(spacing: FangcunLayout.spacing(2)) {
       FangcunBrandMark(size: 28)
-      Text("方寸")
+      Text("Little Exhale")
         .font(.subheadline.weight(.semibold))
         .tracking(1.4)
         .foregroundStyle(InnerBalanceTheme.ink)
@@ -69,7 +69,7 @@ struct FangcunHomeHeader: View {
     .frame(minHeight: 24)
     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     .accessibilityElement(children: .ignore)
-    .accessibilityLabel("方寸")
+    .accessibilityLabel("Little Exhale")
     .accessibilityIdentifier("home.brandPoint")
   }
 
@@ -77,7 +77,7 @@ struct FangcunHomeHeader: View {
     let calendar = Calendar.autoupdatingCurrent
     let month = calendar.component(.month, from: date)
     let day = calendar.component(.day, from: date)
-    let weekday = date.formatted(.dateTime.weekday(.wide))
+    let weekday = date.formatted(.dateTime.weekday(.wide).locale(Locale(identifier: "en")))
     return String(format: "%02d / %02d\n%@", month, day, weekday)
   }
 }

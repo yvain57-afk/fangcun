@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "build": "2026102801",
+  "bundleID": "com.yvainair.InnerBalance",
+  "englishAudioVerified": 171,
+  "characterLayersVerified": 12,
+  "watchIdentityAndVersionMatch": true,
+  "englishCatalogBundled": true,
+  "tracking": false,
+  "codeSignatureVerified": true,
+  "archive": "LittleExhale-2026102801-release.xcarchive",
+  "executableSHA256": "c74eada72310a8d876fb098e3b963ffee48a61aa3d90ecf324d9b612f2b944a8",
+  "signatureScope": "Development-signed archive; distribution export not verified",
+  "boundary": "Local package validation, not Apple processing or review approval."
+}

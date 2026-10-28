@@ -209,7 +209,7 @@ struct ReadinessHistoryView: View {
               }.frame(minHeight: 50).frame(maxWidth: .infinity)
                 .background(Calendar.current.isDate(date, inSameDayAs: selected) ? InnerBalanceTheme.subtleFill : .clear, in: RoundedRectangle(cornerRadius: 10))
             }.accessibilityIdentifier(records(date).isEmpty ? "readiness.history.day.empty" : "readiness.history.day.recorded")
-              .accessibilityLabel(date.formatted(date: .abbreviated, time: .omitted) + " · " + (records(date).first.map { a in FangcunCopy.text("readiness.state." + a.availability.rawValue) + (a.level.map { " · " + FangcunCopy.text("readiness.level." + $0.rawValue) } ?? "") } ?? FangcunCopy.text(diary.allSnapshots.contains { Calendar.current.isDate($0.date, inSameDayAs: date) } ? "readiness.history.legacy" : "readiness.history.blank")))
+              .accessibilityLabel(date.formatted(.dateTime.year().month().day().locale(Locale(identifier: "en"))) + " · " + (records(date).first.map { a in FangcunCopy.text("readiness.state." + a.availability.rawValue) + (a.level.map { " · " + FangcunCopy.text("readiness.level." + $0.rawValue) } ?? "") } ?? FangcunCopy.text(diary.allSnapshots.contains { Calendar.current.isDate($0.date, inSameDayAs: date) } ? "readiness.history.legacy" : "readiness.history.blank")))
           }
         }
         if let recovery { NavigationLink(FangcunCopy.text("recovery.history")) { RecoveryHistoryView(owner: recovery) } }
@@ -282,9 +282,9 @@ struct ReadinessSettingsView: View {
       }.accessibilityIdentifier("readiness.diagnostics")
       Toggle(FangcunCopy.text("readiness.enabled"), isOn: Binding(get: { owner.enabled }, set: { value in Task { await owner.setEnabled(value) } }))
       if owner.enabled {
-        Toggle("计入睡眠规律",isOn:Binding(get:{ owner.scoreConfiguration.regularityEnabled },set:{ value in Task { await owner.setRegularity(value) } }))
+        Toggle("Include sleep regularity",isOn:Binding(get:{ owner.scoreConfiguration.regularityEnabled },set:{ value in Task { await owner.setRegularity(value) } }))
           .accessibilityIdentifier("status.regularity")
-        Text("轮班或旅行时，可以关闭规律项。").font(.caption)
+        Text("You can turn this off for shift work or travel.").font(.caption)
         Stepper(value: Binding(get: { owner.configuration.sleepTargetHours }, set: { value in Task { await owner.setTarget(value) } }), in: 7...10, step: 0.5) {
           Text(FangcunCopy.text("readiness.target", owner.configuration.sleepTargetHours))
         }.accessibilityIdentifier("readiness.target")

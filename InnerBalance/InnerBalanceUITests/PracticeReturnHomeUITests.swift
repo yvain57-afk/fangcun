@@ -5,7 +5,7 @@ final class PracticeReturnHomeUITests: XCTestCase {
   func testCompletedLibraryPracticeReturnsToNowTab() {
     let app = launchPracticeFromLibrary()
     app.buttons["practice.prepare.start"].tap()
-    let end = app.buttons["结束"]
+    let end = app.buttons["End"]
     XCTAssertTrue(end.waitForExistence(timeout: 5))
     end.tap()
     let confirmEnd = app.buttons["practice.finish.confirm"].firstMatch
@@ -23,10 +23,10 @@ final class PracticeReturnHomeUITests: XCTestCase {
     XCTAssertTrue(done.waitForExistence(timeout: 5))
     done.tap()
 
-    let now = app.tabBars.buttons["呼吸"]
+    let now = app.tabBars.buttons["Breathe"]
     XCTAssertTrue(now.waitForExistence(timeout: 5))
     XCTAssertTrue(now.isSelected)
-    app.tabBars.buttons["日常"].tap()
+    app.tabBars.buttons["Daily"].tap()
     let saved = app.descendants(matching: .any)["today.latestPractice"].firstMatch
     reveal(saved, app)
     XCTAssertTrue(saved.exists)
@@ -40,19 +40,19 @@ final class PracticeReturnHomeUITests: XCTestCase {
     let app = launchPracticeFromLibrary()
     app.buttons["practice.close"].tap()
 
-    let practice = app.tabBars.buttons["呼吸"]
+    let practice = app.tabBars.buttons["Breathe"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))
     XCTAssertTrue(practice.isSelected)
     XCTAssertTrue(app.buttons["hub.quickStart"].exists)
-    XCTAssertFalse(app.buttons["暂停练习"].exists)
-    app.tabBars.buttons["日常"].tap()
+    XCTAssertFalse(app.buttons["Pause practice"].exists)
+    app.tabBars.buttons["Daily"].tap()
     XCTAssertFalse(app.descendants(matching: .any)["today.latestPractice"].exists)
-    app.tabBars.buttons["呼吸"].tap()
+    app.tabBars.buttons["Breathe"].tap()
     let launch = app.buttons["practice.physiologicalSigh.60"]
     reveal(launch, app)
     launch.tap()
     XCTAssertTrue(app.buttons["practice.prepare.start"].waitForExistence(timeout: 5))
-    XCTAssertFalse(app.buttons["暂停练习"].exists)
+    XCTAssertFalse(app.buttons["Pause practice"].exists)
   }
 
   @MainActor private func reveal(_ item: XCUIElement, _ app: XCUIApplication) {
@@ -65,8 +65,8 @@ final class PracticeReturnHomeUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
-    let practice = app.tabBars.buttons["呼吸"]
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
+    let practice = app.tabBars.buttons["Breathe"]
     XCTAssertTrue(practice.waitForExistence(timeout: 5))
     practice.tap()
     let launch = app.buttons["practice.physiologicalSigh.60"]

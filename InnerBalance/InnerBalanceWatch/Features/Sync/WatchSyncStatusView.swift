@@ -17,32 +17,32 @@ struct WatchSyncStatusView: View {
       )
       .font(.largeTitle)
       .foregroundStyle(summary.totalCount == 0 ? .mint : .yellow)
-      Text(summary.totalCount == 0 ? "无等待写入" : "\(summary.totalCount) 条等待写入")
+      Text(summary.totalCount == 0 ? "No pending writes" : "\(summary.totalCount) pending writes")
         .font(.headline)
         .multilineTextAlignment(.center)
-      Text("跨设备以 Apple 健康为事实源，不上传到任何服务器。")
+      Text("Apple Health is the shared record across devices. No data is sent to an app server.")
         .font(.caption2)
         .foregroundStyle(.secondary)
         .multilineTextAlignment(.center)
       if summary.authorizationRequiredCount > 0 {
-        Text("请在手表「设置 > 健康 > App > 方寸」中允许心境或正念写入。")
+        Text("On your Watch, open Settings > Health > Apps > Little Exhale to allow mood or mindful-session writes.")
           .font(.caption2)
           .foregroundStyle(.yellow)
           .multilineTextAlignment(.center)
       }
       if summary.terminalCount > 0 {
-        Text("\(summary.terminalCount) 条本地数据已损坏，无法重试。")
+        Text("\(summary.terminalCount) local entries are damaged and can't be retried.")
           .font(.caption2)
           .foregroundStyle(.red)
           .multilineTextAlignment(.center)
-        Button("移除损坏记录", role: .destructive) {
+        Button("Remove damaged entries", role: .destructive) {
           coordinator.discardTerminalWrites()
           summary = coordinator.pendingSummary
         }
         .font(.caption)
       }
       if summary.totalCount > summary.terminalCount {
-        Button(isRetrying ? "正在重试…" : "现在重试") {
+        Button(isRetrying ? "Trying again…" : "Try now") {
           Task {
             isRetrying = true
             await coordinator.retryPending(force: true)
@@ -56,7 +56,7 @@ struct WatchSyncStatusView: View {
       }
     }
     .padding(.horizontal, 6)
-    .navigationTitle("同步状态")
+    .navigationTitle("Sync status")
     .task { summary = coordinator.pendingSummary }
   }
 }

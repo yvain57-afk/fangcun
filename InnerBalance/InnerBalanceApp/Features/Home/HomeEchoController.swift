@@ -39,11 +39,11 @@ final class HomeEchoController {
       }
       savedEcho = verifiedEcho
       history = try store.history()
-      saveMessage = "已记下"
-      AccessibilityNotification.Announcement("已记下").post()
+      saveMessage = "Noted"
+      AccessibilityNotification.Announcement("Noted").post()
     } catch {
-      saveMessage = "这次没存上，请再试一次"
-      AccessibilityNotification.Announcement("这次没存上，请再试一次").post()
+      saveMessage = "Couldn't save this time. Please try again."
+      AccessibilityNotification.Announcement("Couldn't save this time. Please try again.").post()
     }
   }
 }

@@ -36,6 +36,9 @@ struct FangcunDesignSystemTests {
         // One explicitly approved volume field behind the mascot; other UI remains flat.
         if token == "RadialGradient(", fileURL.lastPathComponent == "FangcunPracticeDesign.swift" {
           #expect(source.components(separatedBy: token).count == 2)
+        } else if token == "design: .serif", fileURL.lastPathComponent == "PracticeLibraryView.swift" {
+          // Approved Little Exhale proposal uses serif type for the brand and hero only.
+          #expect(source.components(separatedBy: token).count == 3)
         } else {
           violations.append("\(fileURL.lastPathComponent): \(token)")
         }

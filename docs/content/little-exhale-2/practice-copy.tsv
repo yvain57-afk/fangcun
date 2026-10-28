@@ -1,0 +1,389 @@
+补吸	A little more
+停留	Pause
+左吸	In · left
+右吸	In · right
+左呼	Out · left
+右呼	Out · right
+轻收	Gently lift
+放松	Unwind
+ 秒	 sec
+八组肌肉 · 轻收再松开 · 自然呼吸	8 muscle groups · Gently tense, then release
+身体扫描 · 安静休息 · 慢慢回来	Body scan · Quiet rest · Gently return
+自然呼吸 · 不必跟拍	Your own breath · No pace to follow
+引导顺序	Practice sequence
+自然呼吸，不必跟拍	Breathe naturally. No pace to follow.
+\(FangcunPhaseStyle.title($0.phase))\(Int($0.duration))秒	\(FangcunPhaseStyle.title($0.phase)), \(Int($0.duration)) seconds
+紧绷时，先缓一缓	For when everything feels a little much
+忙碌之后，慢下来	An easier end to a busy day
+找回均匀的节奏	Find a steady rhythm
+开始工作前，收回注意力	A moment before your next task
+练习轻松、不费力的呼吸	Let breathing feel a little easier
+跟随左右，专注当下	One side, then the other
+给纷乱的念头一点空间	A little room for a busy mind
+躺下来，让身体休息	Lie down. Let yourself rest.
+练习盆底的轻收与放松	A gentle lift, with time to release
+轻轻用力，再让身体歇一歇	Notice the difference when you let go
+舒适躺卧	Lie down comfortably
+舒服坐靠或躺卧	Sit back or lie down
+坐姿或躺卧	Seated or lying down
+坐稳或躺好	Sit or lie comfortably
+放松坐稳	Sit comfortably
+由你决定	Your choice
+取消，保留数据	Cancel and keep my data
+分组收放 · 自然呼吸	Tense and release · Breathe naturally
+身体扫描与休息	Body scan and rest
+引导 \(index + 1) / \(segments.count)	Step \(index + 1) of \(segments.count)
+猫咪和小狗安静相伴	Cat and dog keeping you company
+小狗趴下陪你休息	Dog resting beside you
+猫咪好奇地观察	Cat looking around curiously
+小狗在水杯旁陪你记录	Dog beside a glass of water
+猫咪跟随节拍呼吸	Cat following the breathing rhythm
+猫咪和小狗轻轻碰爪	Cat and dog touching paws
+轻收与放松引导	Lift and release guide
+呼吸起伏引导	Breathing guide
+你的左侧	Your left
+你的右侧	Your right
+\(motion.phaseSeconds) 秒	\(motion.phaseSeconds) sec
+第 \(state.cycleIndex + 1) 轮引导	Round \(state.cycleIndex + 1)
+轻轻展开	Gently open
+再轻补一口	One small extra breath
+缓缓回落	Slowly soften
+保持，不用用力	Rest here. No effort needed.
+向内轻收 · 呼吸照常	Lift gently · Keep breathing
+舒展开来 · 完全放松	Let go completely
+按自己的节奏，不必跟拍	Your own rhythm. No pace to follow.
+方寸	Little Exhale
+给自己，留一点空间。	A little room to breathe.
+留一方余地。	A little room to breathe.
+在纷乱的日常里，留一小处照顾自己的空间。先听懂身体的信号，再慢慢找回自己的节奏。	Small, gentle practices for the moments between everything else. Breathe, rest, and find a rhythm that feels like yours.
+中心的留白，是属于自己的那一小处空间。柔软的弧形像被轻轻托住，向外的开口留有余地，也容得下呼吸。	An open curve, with room in the middle. A reminder that you can be supported without being held in place.
+关于方寸	About Little Exhale
+完成	Done
+开始	Start
+结束	End
+练习	Practice
+\(minutes) 分钟	\(minutes) min
+练习记录	Your practice
+更舒服	A little easier
+差不多	About the same
+不舒服	Less comfortable
+正在保存…	Saving…
+有劲	Energized
+这次练习结束了	Nothing more to do
+可以继续安静躺着，不必回应屏幕。	You can keep resting. No need to check the screen.
+正在保留这段练习	Saving this moment
+不用盯着屏幕	You can look away
+语音只提示下一步	Gentle prompts, with room for quiet
+完整语音尚未就绪，可跟随文字练习	Voice guidance is unavailable. You can follow the text.
+语音音量	Voice volume
+节拍音量	Cue volume
+环境声音量	Background volume
+环境声·锁屏继续	Background sound · Keep playing when locked
+有可用且开启的环境声时可锁屏继续；声音中断会暂停	With background sound on, practice continues when locked. Audio interruptions pause it.
+声音已关闭	Sound is off
+静音	Silent
+剩余 \(PracticeDurationFormatter.clock(remaining))	\(PracticeDurationFormatter.clock(remaining)) remaining
+暂停练习	Pause practice
+已暂停	Paused
+先自然呼吸，准备好再继续	Breathe naturally. Continue when you're ready.
+轻轻吸气，不必吸满	Gently in. No need to fill up.
+再补一小口，比刚才更轻	One small extra sip of air
+让呼气比吸气更长	Let the out-breath take a little longer
+轻柔、慢慢地呼出	Slowly out. No need to push.
+轻松停留，不用忍耐憋气；不舒服就自然呼吸	A gentle pause. If it feels difficult, breathe normally.
+跟随自己的舒适节奏	Find a pace that feels comfortable
+关闭练习	Close practice
+这次先到这里？	Ready to leave it here?
+未能保留本次练习	Couldn't save this practice
+重试	Try again
+稍后处理	Not now
+请重试。	Please try again.
+和刚才比	Compared with before
+低落	Low
+紧绷	Tense
+平平	Neutral
+平和	At ease
+现在更接近	What feels closest right now?
+全部	All
+专注	Focus
+休息	Rest
+身体训练	Body
+呼吸与身心练习	A little room to breathe
+继续上次练习	Pick up where you left off
+保留上次练习	Your practice is still here
+ · 剩余 	 · Remaining: 
+离开期间不计时。回来后，先自然呼吸。	Time away doesn't count. Take a natural breath before continuing.
+回到练习	Return to practice
+10 项呼吸与身心练习	Find your next small pause
+最近练习 · 	Last time · 
+用呼吸放松，用练习找回专注与身体控制。	A little breathing room, whatever your day feels like.
+给自己，\n一次慢呼吸	A small pause.\nA softer next moment.
+，方法说明	, practice details
+体验 1 分钟	Just one minute
+停止示范	Stop preview
+看看动作示范	Preview the movement
+动作示范 · 不计入练习时长	Preview · Doesn't count toward your practice
+练习时长	Time for yourself
+舒适节拍	Choose your rhythm
+吸 5 秒 / 呼 5 秒	5 seconds in / 5 out
+吸 4 秒 / 呼 4 秒	4 seconds in / 4 out
+结束方式	How would you like to finish?
+日间 · 慢慢回来	Daytime · Gently return
+睡前 · 安静休息	Bedtime · Stay resting
+同样 10 分钟，只改变最后一分钟的引导。全程自然呼吸，不跟吸呼节拍。	Both last 10 minutes. Only the final minute changes. Breathe naturally throughout.
+开场说明	Before you begin
+下次跳过这项说明	Skip this introduction next time
+动作要领与注意事项	How it works and what to notice
+引导设置	Make it yours
+仅节奏或静音时，请看左右文字提示；相似的轻触不能代替换边教学。	Without voice, follow the left and right labels. Haptics alone don't tell you which side to use.
+设为首页快捷练习	Make this my home shortcut
+按方法查看	Browse by practice
+全部方法	All practices
+练习过的时间，会留在这里。	Your small pauses will find a home here.
+提前结束	Finished early
+轻行动与旧记录	Small actions and earlier entries
+先听听怎么做	Before we begin
+这段说明不计入练习时间	This introduction is outside your practice time
+可以先阅读下面的说明，准备好后直接开始。	Read the guidance below, then start when you're ready.
+继续说明	Resume introduction
+暂停说明	Pause introduction
+开场说明进度	Introduction progress
+只跳过开场，训练中的阶段提示仍按你的引导设置播放。	This skips only the introduction. Your in-session guidance settings stay the same.
+跳过，直接开始	Skip intro and begin
+练习完成	You made a little space
+这次先到这里	A good place to stop
+完成 \(viewModel.completedCycles) 轮引导	\(viewModel.completedCycles) rounds completed
+按实际练习时间记录	Saved with the time you actually practiced
+现在感觉怎么样？	How are you feeling now?
+保留这次感受	Save this feeling
+跳过，完成	Skip and finish
+练习结果	Your moment
+本次练习已保存	Your practice is saved
+方寸 · 片刻	Little Exhale · A moment for you
+回到呼吸	Back to Breathe
+这个练什么	What this offers
+适合什么时候	A good moment for it
+怎么做	How it works
+开始前	Before you begin
+选择后作为练习前的主观参照	An optional starting point, based on how you feel
+触觉提示	Haptic cues
+每次换动作时轻触一下	A gentle tap when the step changes
+在节奏切换处提供轻触感，可独立关闭	Gentle taps at transitions. You can turn these off separately.
+手放在哪里？	Where do my hands go?
+肩膀	Shoulders
+自然落下，不向耳朵耸起。	Let them rest, without lifting toward your ears.
+双手	Hands
+轻放在腹部或两侧下肋，不向里压。	Rest lightly on your belly or lower ribs. Don't press inward.
+吸气 / 呼气	In / Out
+感受下肋和腹部轻轻展开，再自然回落。不故意鼓肚子。	Notice a little expansion and release in your lower ribs or belly. Don't push your belly out.
+动作示意，按自己的节奏；不是呼吸深度测量。	A movement guide, not a measure of breath depth. Use your own rhythm.
+换边顺序，先看一遍	A quick look at the sequence
+同向示意：图左是你的左鼻孔，图右是你的右鼻孔。不是镜中左右。	Left means your left nostril; right means your right. This is not a mirror view.
+指腹只需轻遮。不压迫鼻子，换边不屏息；鼻塞或鼻部不舒服时换其他方法。	Cover gently with a fingertip, without squeezing or holding your breath. Choose another practice if your nose feels blocked or uncomfortable.
+盆底轻收，呼吸照常	A gentle lift. Keep breathing.
+下图只示意骨盆底部的收放方向，肩膀、腹部、臀部与大腿不用一起使劲。	The diagram shows the direction of movement. Your shoulders, belly, bottom, and thighs can stay relaxed.
+每次完全放松 8 秒，再进入下一轮。不要向下用力，也不要在排尿时练习。	Rest completely for 8 seconds before the next lift. Don't push down or practice while urinating.
+1 · 你的左侧吸气	1 · Breathe in through your left
+2 · 你的右侧呼气	2 · Breathe out through your right
+3 · 你的右侧吸气	3 · Breathe in through your right
+4 · 你的左侧呼气	4 · Breathe out through your left
+轻遮右鼻孔，从左鼻孔吸气。	Gently cover your right nostril. Breathe in through the left.
+换遮左鼻孔，从右鼻孔呼气。	Cover your left nostril. Breathe out through the right.
+保持轻遮左鼻孔，从右鼻孔吸气。	Keep the left covered. Breathe in through the right.
+换遮右鼻孔，从左鼻孔呼气。	Cover your right nostril. Breathe out through the left.
+轻收 · 4 秒	Gentle lift · 4 seconds
+完全放松 · 8 秒	Full release · 8 seconds
+盆底轻轻向内、向上收。	Gently lift your pelvic floor inward and upward.
+松开收紧，让盆底自然回落。	Release the lift and let your pelvic floor rest.
+松肩	Soft shoulders
+下肋	Lower ribs
+腹部	Belly
+你的左	Your left
+你的右	Your right
+轻遮	Cover lightly
+骨盆底部	Pelvic floor
+这段练习已保存在本机。可以继续安静躺着，无需填写感受。	Saved on this device. You can keep resting, with nothing to fill in.
+本次练习已经保存在本机，Apple 健康稍后再试。	Saved on this device. We'll retry Apple Health later.
+本次练习已经保存在本机。	Saved on this device.
+本次练习已保存在本机。	Saved on this device.
+此刻的感受已经保存在本机，Apple 健康稍后再试。	Your feeling is saved here. We'll retry Apple Health later.
+此刻的感受已经保存在本机，回到首页就能看到。	Your feeling is saved. You'll find it on the home screen.
+这次变化已经保存在本机，Apple 健康稍后再试。	Your reflection is saved here. We'll retry Apple Health later.
+这次变化已经保留，回到首页就能看到。	Your reflection is saved. You'll find it on the home screen.
+还好	Doing okay
+有点需要	Could use a pause
+很需要	Really need a pause
+舒缓紧张	Let the tension ease
+睡前放松	Wind down
+稳住节奏	Find your rhythm
+进入专注	Gather your attention
+轻松呼吸	Breathe with less effort
+静心收神	One side at a time
+减少分心	Make room for your thoughts
+恢复精力	A place to rest
+盆底控制	Build gentle control
+分组松一松	Let your body soften
+生理性叹息	A little sigh
+节律呼吸	Longer exhale
+均衡慢呼吸	Even breathing
+方块呼吸	Box breathing
+膈肌呼吸	Belly breathing
+交替鼻孔呼吸	Alternate nostril
+冥想	A quiet moment
+凯格尔	Pelvic floor
+渐进式肌肉放松	Muscle relaxation
+用两次轻吸和一次长呼，放慢急促的呼吸，松开紧绷感。	Two gentle breaths in, one slow breath out. A small pause when things feel like a lot.
+把呼气放长，让身体慢下来，为休息和入睡做准备。	A little more time on the out-breath, for winding down at the end of a busy day.
+用均匀的吸气和呼气，练习稳定、从容的呼吸节奏。	Equal time breathing in and out. A simple rhythm to return to.
+跟随吸、停、呼、停四段节拍，把注意力收回到眼前。	In, pause, out, pause. Four gentle steps to gather your attention.
+学会用腹部和下肋轻柔呼吸，减少肩颈带着用力。	Notice your belly and lower ribs move, without asking your shoulders to work harder.
+在左右鼻孔交替中集中注意，暂时放下纷乱的思绪。	Follow one side, then the other. Give your attention a simple place to land.
+练习发现走神、放下念头，再把注意力带回当下。	Notice when your mind wanders, and gently come back. No empty mind required.
+通过躺式放松和身体扫描缓解疲惫，让身心获得一段深度休息。	Lie down for a guided body scan and some quiet rest. You don't have to fall asleep.
+练习盆底肌的收紧、保持与放松，逐步增强盆底控制。	Practice a gentle pelvic floor lift, with plenty of time to release.
+依次轻轻收紧八组肌肉，再留出更长时间松开，感受用力与休息的区别。	Gently tense and release eight muscle groups. Notice what changes when you let go.
+突然紧张、忙碌间隙，或想先缓一缓。	When you're feeling tense, between tasks, or whenever you'd like a pause.
+睡前、一天结束后，或需要安静下来的时刻。	Before bed, after a long day, or when you'd like to slow down.
+日常固定练习、工作间隙，或喜欢简单节拍的时候。	For a daily pause, a work break, or when a simple rhythm feels right.
+工作、阅读、演讲准备之前。	Before work, reading, or a conversation that needs your attention.
+想学会不费力的呼吸，或先熟悉身体动作。	When you'd like to explore easier breathing at your own pace.
+可以空出一只手，想做一段专注的静心练习。	When you have a free hand and a quiet moment to focus.
+思绪很多、难以停下，或想练习注意力。	When your mind feels busy, or you'd like to practice coming back.
+午间、工作之后，或需要躺下歇一会儿。	At midday, after work, or when you have time to lie down and rest.
+主动选择盆底肌训练，且已经了解正确动作。	When you've chosen pelvic floor training and know the correct movement.
+日间需要松一松身体，或睡前想安静休息的时候。	For a daytime reset or a quieter way to settle before bed.
+轻轻鼻吸 → 再补一小口 → 用嘴慢慢呼出。	Gently in through your nose → one small top-up → slowly out through your mouth.
+轻轻吸气 4 秒 → 慢慢呼气 6 秒，全程不屏息。	Breathe in for 4 seconds → out for 6. No holds.
+吸气与呼气一样长；默认各 5 秒，也可选各 4 秒。	Equal time in and out: 5 seconds each, or choose 4.
+吸气 3 秒 → 停留 3 秒 → 呼气 3 秒 → 停留 3 秒。	In for 3 → pause for 3 → out for 3 → pause for 3.
+手轻放腹部或下肋，感受吸气时轻轻展开、呼气时回落；按自己的节奏。	Rest your hand on your belly or lower ribs. Notice a little expansion and release, at your own pace.
+左侧吸 → 右侧呼 → 右侧吸 → 左侧呼；轻轻换边，不屏息。	Left in → right out → right in → left out. Switch gently, without holding your breath.
+感受身体被托住 → 留意自然呼吸 → 走神后温和地回来。	Feel your support → notice a natural breath → gently return when your mind wanders.
+躺稳 → 跟随声音扫描身体 → 安静休息 → 缓缓回来。	Lie down → follow the body scan → rest quietly → gently return.
+轻收 4 秒 → 完全放松 8 秒，始终自然呼吸。	Gently lift for 4 seconds → fully release for 8. Keep breathing naturally.
+八组肌肉各做一次：先听动作说明，轻收 5 秒，再松开 25 秒；始终自然呼吸。	Eight muscle groups, once each. Hear the guidance, gently tense for 5 seconds, then release for 25. Keep breathing naturally.
+轻柔呼吸，不必吸满；头晕或不舒服时停止，恢复自然呼吸。	Keep it gentle. Stop if you feel dizzy or uncomfortable, and breathe normally.
+不追求深吸或用力呼尽；节奏吃力时停止，恢复自然呼吸。	Don't force a deep breath or empty your lungs. If the pace feels difficult, stop and breathe normally.
+轻柔呼吸，不必吸满；不舒服时停止。	Keep each breath gentle. Stop if you feel uncomfortable.
+含短暂停留。无需忍耐憋气；不舒服时恢复自然呼吸，可换均衡慢呼吸。	Includes short holds. Don't push through discomfort. Breathe normally and try Even breathing instead.
+不故意鼓大肚子，不压腹部，不强行深吸；不适时停止。	Don't push your belly out, press inward, or force a deep breath. Stop if uncomfortable.
+鼻塞或鼻部不舒服时换其他方法；手指轻放，不压迫鼻子。	Choose another practice if your nose is blocked or uncomfortable. Cover lightly, without squeezing.
+可以睁眼练习；不舒服时看看周围并结束。	You can keep your eyes open. If uncomfortable, look around and stop.
+在安全、能休息的地方使用；不在驾驶或操作设备时练习，不能代替正常睡眠。	Use only where you can rest safely. Never while driving or operating equipment. This doesn't replace sleep.
+不在排尿时练习；腹部、臀部和大腿保持放松。盆底持续紧张、疼痛、排尿排便异常或产后术后恢复中，先咨询专业人员。	Don't practice while urinating. Keep your belly, bottom, and thighs relaxed. For ongoing pelvic tension or pain, bladder or bowel symptoms, or recovery after childbirth or surgery, follow your clinician's advice.
+疼痛、受伤或容易抽筋的部位可跳过收紧，只感觉支撑；不适时立即松开，不必等满 5 秒。近期术后或被限制用力时，先按专业建议练习。	Skip tightening any painful, injured, or cramp-prone area. Release immediately if uncomfortable; don't wait for 5 seconds. Follow professional advice after surgery or when exertion is restricted.
+完成了一段舒缓呼吸练习。	You took a moment for a little sigh.
+完成了一段睡前放松练习。	You made time to wind down.
+完成了一段均衡呼吸练习。	You spent a little time with an even rhythm.
+完成了一段专注呼吸练习。	You made a little room for focus.
+完成了一段呼吸动作练习。	You explored easier breathing.
+完成了一段交替鼻孔呼吸。	You finished an alternate nostril practice.
+完成了一段注意力练习。	You made room for a quiet moment.
+完成了一段 NSDR 深度休息。	You gave yourself time to rest.
+完成了一段盆底控制练习。	You finished a pelvic floor practice.
+完成了一段肌肉收放练习。	You gave your muscles time to let go.
+本地存储失败，方寸没有把本次练习标记为已保存。请释放设备空间后重试。	This practice hasn't been saved. Free up some device storage, then try again.
+开始\(plan.kind.title)，1 分钟	Start \(plan.kind.title), 1 minute
+开始\(plan.kind.title)，\(PracticeDurationFormatter.text(duration))	Start \(plan.kind.title), \(PracticeDurationFormatter.text(duration))
+上臂	Upper arms
+额头	Forehead
+嘴唇与面颊	Lips and cheeks
+大腿	Thighs
+小腿	Lower legs
+双脚与脚趾	Feet and toes
+现在松开	Let go now
+先听动作说明	Listen before moving
+慢慢回到此刻	Gently return
+继续安静休息	Stay resting
+不用再做动作	Nothing more to do
+先让身体安顿下来	Let yourself settle
+渐进式肌肉放松 · 自然呼吸	Muscle relaxation · Breathe naturally
+已暂停，先松开	Paused. Let go for now.
+保持舒服的姿势，不需要继续收紧	Stay comfortable. There's no need to hold the tension.
+呼吸照自己的节奏。	Keep breathing at your own pace.
+给身体一点休息的时间	Give your body a little time to rest
+\(max(1, Int(ceil(state.phaseDuration - state.elapsedInPhase)))) 秒	\(max(1, Int(ceil(state.phaseDuration - state.elapsedInPhase)))) sec
+听说明	Listen
+轻收 5 秒	Gently tense · 5 sec
+松开 25 秒	Release · 25 sec
+当前动作进度	Current movement progress
+随时可以松开或跳过用力 · 不要屏住呼吸	Release or skip any time · Keep breathing
+语音引导	Guided
+仅节奏	Cues only
+关键时刻听到简短指引	A few words when you need them
+用高低音跟随动作	Follow gentle sound cues
+只保留视觉与触觉	Visual and haptic guidance only
+用鼻子，轻轻吸气。	Gently breathe in through your nose.
+再补一小口。	One small extra breath.
+慢慢呼出去。	Slowly breathe out.
+慢慢吸气。	Gently breathe in.
+把呼气放长。	Let the out-breath be longer.
+感觉身体，被稳稳托住。	Feel the support beneath you.
+留意这一口，自然的呼吸。	Notice this ordinary breath.
+走神也没关系，回来就好。	It's okay to wander. Gently come back.
+松开眼周，也松开下颌。	Soften your eyes and your jaw.
+让肩膀，把重量交出去。	Let your shoulders rest.
+轻轻吸气。慢慢呼气，把重量交出去。	Gently in. Slowly out. Let your weight be supported.
+腹部不用用力，让呼吸自己来。	Let your belly rest. Breathing can happen on its own.
+双腿沉下来，脚也松开。	Let your legs and feet rest.
+动动手指和脚趾。准备好时，慢慢睁开眼睛。	Move your fingers and toes. Open your eyes when you're ready.
+轻轻收紧，呼吸照常。	Gently lift. Keep breathing.
+完全放松。	Let go completely.
+动作要领与详细说明	Movement guide and details
+开始 · \(PracticeDurationFormatter.text(viewModel.duration))	Begin · \(PracticeDurationFormatter.text(viewModel.duration))
+开始 \(PracticeDurationFormatter.text(viewModel.duration))练习	Start a \(PracticeDurationFormatter.text(viewModel.duration)) practice
+准备好，先自然呼吸…	Settle in. Breathe naturally…
+躺稳，把重量放下	Lie down and let yourself be supported
+找个舒服的姿势	Find a comfortable position
+先自然呼吸，准备时间不计入练习。	Breathe naturally. This settling time is outside your practice.
+准备好了，开始	I'm ready
+按自己的节奏呼吸	Breathe at your own pace
+让注意力落下来	Let your attention settle
+腹部起伏为动作示范 · 按自己的节奏	A movement guide · Follow your own breath
+把重量交给支撑面	Let the support take your weight
+完全放松，先自然呼吸	Release fully. Breathe naturally.
+始终自然呼吸，肩膀、腹部和大腿不用帮忙	Keep breathing. Your shoulders, belly, and thighs can rest.
+开始调节	Take a pause
+疼痛或不适立即停止	Stop if painful or uncomfortable
+选择时长	Choose your time
+开始 \(max(1, Int(duration / 60))) 分钟	Begin · \(max(1, Int(duration / 60))) min
+已保留本次练习	Practice saved
+触觉节奏	Haptic rhythm
+在节奏切换时轻触提示	Gentle taps at transitions
+身体证据	Heart rate during practice
+开启后使用训练会话取得心率；结束时丢弃训练，不产生训练记录。	Uses a workout session to read heart rate. The workout is discarded at the end; no workout record is created.
+心率证据不可用，本次已退化为普通练习。	Heart rate is unavailable. Your practice can continue without it.
+正在准备…	Getting ready…
+\(Int(heartRate.rounded())) 次/分	\(Int(heartRate.rounded())) bpm
+实时心率 \(Int(heartRate.rounded())) 次每分钟	Current heart rate, \(Int(heartRate.rounded())) beats per minute
+暂停	Pause
+继续	Continue
+结束并保存	End and save
+未能完成保存	Couldn't save
+稍后	Later
+\(state.remainingWholeSeconds) 秒	\(state.remainingWholeSeconds) sec
+整段还有 \(clock(remaining(at: date)))	\(clock(remaining(at: date))) remaining
+轻吸一口	Gently in
+再补一小口	A little more
+缓慢呼出	Slowly out
+慢慢吸气	Breathe in
+更慢地呼气	A longer exhale
+注意一次自然呼吸	Notice an ordinary breath
+感受身体的支撑	Feel your support
+请在 iPhone 上进行这项练习	Try this practice on your iPhone
+练习时间太短，请继续后再保存。	Keep going a little longer before saving.
+本地存储失败，方寸没有把本次练习标记为已保存。	This practice hasn't been saved because device storage failed.
+练习已保存在手表，但 Apple 健康写入未能加入重试队列。请在「同步状态」中重试。	Saved on your Watch. Apple Health couldn't be queued for retry. Try again in Sync status.
+冥想放松	A quiet moment
+1 分钟·高激活	1 min · A little pause
+3 / 5 分钟	3 / 5 min
+5 / 10 分钟	5 / 10 min
+10 / 20 分钟·疲惫	10 / 20 min · Rest
+盆底肌收紧与放松·3 分钟	Pelvic floor lift and release · 3 min
+在 iPhone 上练习	Practice on iPhone
+站稳或坐稳，呼吸不用很深。	Sit or stand steadily. Keep each breath gentle.
+找到不费力的呼吸节律。	Find an easy breathing rhythm.
+把注意力放在呼吸和支撑感上。	Notice your breath and the support beneath you.
+请躺下或半躺，确保暂时不需要驾驶。	Lie down or recline safely. Never practice while driving.
+保持自然呼吸，不在排尿时练习。	Breathe naturally. Don't practice while urinating.
+这项新方法请在 iPhone 上进行。	This practice is available on your iPhone.

@@ -9,7 +9,7 @@ struct LatestCheckInViewState: Equatable {
 
   var title: String? {
     guard let record else { return nil }
-    return record.labels.first?.displayName ?? "已记录 · 未分类"
+    return record.labels.first?.displayName ?? "Saved · Without a label"
   }
 }
 
@@ -86,7 +86,7 @@ struct RootView: View {
         requestPractice(launch)
       }, onRecords: { selectedTab = .now; showingRecords = true }, latestPractice: latestPractice)
       .id(hubGeneration)
-      .tabItem { Label("呼吸", systemImage: "wind") }
+      .tabItem { Label("Breathe", systemImage: "wind") }
       .tag(Tab.practice)
 
       FangcunTodayView(
@@ -109,21 +109,21 @@ struct RootView: View {
         hasOngoingPractice: selectedPractice != nil,
         recentFeeling: latestCheckIn.record
       )
-      .tabItem { Label("日常", systemImage: "sun.max") }
+      .tabItem { Label("Daily", systemImage: "sun.max") }
       .tag(Tab.now)
 
 
     }
-    .alert("还有一段未处理的练习", isPresented: $showingUnfinishedPractice) {
-      Button("先处理上次练习") {
+    .alert("A practice is still open", isPresented: $showingUnfinishedPractice) {
+      Button("Return to the open practice") {
         if let checkpoint = PracticeHubPreferences.resumableCheckpoint() {
           selectedPractice = .init(kind: checkpoint.kind, duration: checkpoint.duration,
             variantID: checkpoint.variantID, restoredCheckpoint: checkpoint)
         }
       }
-      Button("暂时不开始", role: .cancel) {}
+      Button("Not now", role: .cancel) {}
     } message: {
-      Text("你已练过的时间仍然保留。先继续或结束上次练习，再开始新的方法。")
+      Text("Your practiced time is safe. Continue or finish the open practice before starting another.")
     }
     .sheet(isPresented: $showingSettings) {
       SettingsView(authorizationCoordinator: authorizationCoordinator, homeViewModel: homeViewModel,
@@ -132,7 +132,7 @@ struct RootView: View {
     .sheet(isPresented: $showingRecords) {
       NavigationStack {
         PracticeRecordsView()
-          .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { showingRecords = false }.accessibilityIdentifier("practice.history.done") } }
+          .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { showingRecords = false }.accessibilityIdentifier("practice.history.done") } }
       }
     }
     .environment(diary)

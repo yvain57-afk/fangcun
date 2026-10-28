@@ -1,10 +1,10 @@
 # 方寸：给 GPT / AI 的项目入口
 
-> 当前开发分支 `codex/fangcun-v1-m0-m1` 的产品契约为 **分数优先 V3**，取代 V2 的首页结论路线。最新入口：[V3 REVIEW](docs/plans/fangcun-score-v3/REVIEW.md)、[实际验证](docs/plans/fangcun-score-v3/VERIFICATION.md)、[原规格](docs/plans/fangcun-score-v3/FANGCUN_SCORE_FIRST_SPEC_v3.0.md)。可靠睡眠可独立生成状态分；HRV、静息心率按各自资料和渐进权重参与。旧准备度仅保留历史与数据安全兼容。饮品、原画、练习和用户记录继续保留；不得把模型分数当作实时压力或医学标准。Watch/Widget/Live Activity 新功能阶段未展开。
+> 当前工作分支 `codex/little-exhale-2` 正在交付 **Little Exhale 2.0.0（2026102801）**：英文优先的呼吸与放松产品，沿用方寸原 App 身份、本地数据及所有训练参数。首页为 Breathe，日常记录与可选身体线索在 Daily；分数模型保留，首页不放大分数。最新事实以 [2.0 验证](docs/releases/little-exhale-2/VERIFICATION.md)、[发布状态](docs/releases/little-exhale-2/release-state.json) 和 [范围契约](docs/plans/LITTLE-EXHALE-2.md) 为准。当前已生成并验证开发签名归档；Xcode 缺少开发者账号和分发证书，尚未上传 TestFlight 或提交本次审核。
 
 仓库：<https://github.com/yvain57-afk/fangcun>
 
-本文 raw 地址：<https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/AI_CONTEXT.md>
+本文 raw 地址：<https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/little-exhale-2/AI_CONTEXT.md>
 
 ## 阅读顺序
 
@@ -13,28 +13,30 @@
 3. [设计决策](docs/CURRENT_DESIGN.md)：已确认方向与历史版本优先级。
 4. [原始完整设计规格](web/docs/用户提供的完整设计规格.md)：设计目标；不是完成声明。
 5. [架构与数据流](docs/ARCHITECTURE.md)：原生真实数据和网页 Mock 的边界。
-6. [所有文件索引](FILE_INDEX.md)：每个源文件及图片的可点击链接。
+6. 下列索引与源码分卷是此前快照，尚未包含本轮所有文件；当前改版优先直接读取本分支源码及 `docs/content/little-exhale-2/`。
+
+[所有文件索引](FILE_INDEX.md)：每个源文件及图片的可点击链接。
 7. [分卷源码](ai/README.md)：原生代码、Core、网页与设计文字的纯文本分卷，适合无法递归遍历仓库的阅读工具。
 
-所有文件均可通过 `https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/fangcun-v1-m0-m1/<文件路径>` 读取。中文和空格路径需要 URL 编码。分卷文件使用 ASCII 文件名；文件索引同时提供原文件和 raw 链接。
+所有文件均可通过 `https://raw.githubusercontent.com/yvain57-afk/fangcun/codex/little-exhale-2/<文件路径>` 读取。中文和空格路径需要 URL 编码。分卷文件使用 ASCII 文件名；文件索引同时提供原文件和 raw 链接。
 
 ## 目标与明确偏好
 
-方寸帮助一部分需要缓释压力的人理解身体线索并开始一个合适的练习。用户重视明确且有依据的结论，不希望首页强迫从“绷着”等预设标签中选心情。缺少数据必须如实表示缺少数据，不能用虚假的确定性补齐。
+Little Exhale 为海外英语用户提供日常可用的短暂呼吸和放松空间。英文内容按真实使用情景重写；不强迫先选心情，不以打卡压力驱动使用。身体线索是可选补充，缺数据时不能伪造结论。
 
 界面轻松、安静、有趣；猫狗是情境陪伴。角色的原画、耳朵、花纹、五官和身形不能被随意重画；允许局部动作，脚底固定，避免全身夸张缩放与持续摇晃。猫狗需要独处场景，不必每次一起出现。
 
 ## 当前实现入口
 
-- `InnerBalance/InnerBalanceApp/App/RootView.swift`：今日 / 练习 / 设置，真实数据与练习持久化连接。
-- `Features/Home/FangcunTodayView.swift`：新首页与依据详情。旧 `HomeView.swift` 保留但不是根入口。
+- `InnerBalance/InnerBalanceApp/App/RootView.swift`：Breathe / Daily 两页，真实数据与练习持久化连接。
+- `Features/Home/FangcunTodayView.swift`：Daily 页面，身体线索默认折叠。旧 `HomeView.swift` 保留但不是根入口。
 - `Features/Home/FangcunDrinkSheet.swift`、`FangcunDrinkEditor.swift`、`Persistence/FangcunDiary.swift`：剂量、酒精度、可撤销且幂等的饮品命令与旧档兼容。
 - `Features/Home/BeverageCareCoordinator.swift`、`CareNotificationClient.swift`：本机关怀回执、主动开启的通知、默认锁屏隐私。Core 的 `BeverageCareEngine`、`CareAttentionPolicy`、`CareNotificationPlanner` 不做 IO。
 - `Features/Readiness/ReadinessCoordinator.swift`：独立数值引擎、逐指标发布、磁盘快照和失败保留。
 - `Features/Readiness/DailyStatusViews.swift`、`DailyStatusHistoryView.swift`：整数状态分、实际构成权重、数值历史和旧记录分离。
 - `InnerBalanceCore/Sources/InnerBalanceCore/StatusScore/`：V3 睡眠/HRV/RHR 提取、参数、引擎、版本化快照与最小跨端 DTO。
 - `Features/Home/FangcunTrendsView.swift`：周视图与真实已存记录。
-- `DesignSystem/FangcunCompanion.swift`、同名 Metal shader：确认原画的局部动效。
+- `DesignSystem/PracticeCompanionV4.swift`、`FangcunCompanion.swift`：生成透明原画的刚性分层动作，禁止整脸拉伸和白色抠像。
 - `Features/Practice/PracticeSessionView.swift`：练习完整流程；`PracticeAudioCoordinator.swift` 将可能阻塞的音频 session 准备移出主线程。
 - `DesignSystem/FangcunDisplayPreferences.swift`：深浅色、字号、减少动态。
 

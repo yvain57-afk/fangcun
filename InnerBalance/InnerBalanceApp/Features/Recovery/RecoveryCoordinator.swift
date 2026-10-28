@@ -43,12 +43,7 @@ extension EnvironmentValues {
   }
   func importPractice(_ record: PracticeCompletionRecord) async {
     if await store?.isDeleted(record.sessionID) == true { return }
-    let helpfulness: RecoveryHelpfulness? = switch record.metadata?.subjectiveFeedback {
-    case "更舒服": .helpful
-    case "差不多": .unchanged
-    case "不舒服": .uncomfortable
-    default: nil
-    }
+    let helpfulness = PracticeFeedbackCopy.helpfulness(record.metadata?.subjectiveFeedback)
     if !records.contains(where: { $0.sessionID == record.sessionID }) {
       var value = RecoverySession(sessionID: record.sessionID, action: .practice(record.practiceKind),
         plannedDuration: record.plannedDuration, startedAt: record.startedAt, originDevice: "iPhone",

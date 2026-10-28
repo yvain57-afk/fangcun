@@ -1,7 +1,7 @@
 import Foundation
 
 /// User-approved 2026-10-20 listening draft. Existing nine protocol timings are unchanged.
-public enum PracticeGuidanceContent {
+enum OriginalPracticeGuidanceContent {
   public static let version = "fangcun-guidance-20261020"
   public static func introduction(for kind: PracticeKind, variantID: String? = nil) -> String {
     switch kind {

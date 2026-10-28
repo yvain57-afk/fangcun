@@ -69,11 +69,11 @@ struct HealthKitRepositoryTests {
 
   @Test("常见训练类型在身体来信中有具体名称")
   func commonWorkoutTypesHaveReadableNames() {
-    #expect(HealthKitRepository.activityName(for: .rowing) == "划船")
-    #expect(HealthKitRepository.activityName(for: .elliptical) == "椭圆机")
-    #expect(HealthKitRepository.activityName(for: .pilates) == "普拉提")
-    #expect(HealthKitRepository.activityName(for: .cardioDance) == "舞蹈")
-    #expect(HealthKitRepository.activityName(for: .tennis) == "网球")
-    #expect(HealthKitRepository.activityName(for: .basketball) == "篮球")
+    #expect(HealthKitRepository.activityName(for: .rowing) == "Rowing")
+    #expect(HealthKitRepository.activityName(for: .elliptical) == "Elliptical")
+    #expect(HealthKitRepository.activityName(for: .pilates) == "Pilates")
+    #expect(HealthKitRepository.activityName(for: .cardioDance) == "Dance")
+    #expect(HealthKitRepository.activityName(for: .tennis) == "Tennis")
+    #expect(HealthKitRepository.activityName(for: .basketball) == "Basketball")
   }
 }

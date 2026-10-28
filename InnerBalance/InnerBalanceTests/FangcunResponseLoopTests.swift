@@ -25,13 +25,13 @@ struct FangcunResponseLoopTests {
     )
 
     #expect(state.currentSource == .detailed(detailed))
-    #expect(state.currentStateTitle == "焦虑")
+    #expect(state.currentStateTitle == "Anxious")
     #expect(state.selectedQuickState == nil)
     #expect(state.isStressIdentified)
     #expect(state.stressProfile == CurrentStressProfile(level: .high, source: .physicalTension))
-    #expect(state.stressLevelTitle == "压力较高")
-    #expect(state.stressSourceRoleTitle == "主要表现")
-    #expect(state.stressSourceTitle == "身体持续紧绷")
+    #expect(state.stressLevelTitle == "Higher reported pressure")
+    #expect(state.stressSourceRoleTitle == "Showing up as")
+    #expect(state.stressSourceTitle == "Physical tension")
     #expect(state.recommendedPractice == .physiologicalSigh)
     #expect(
       state.reflection
@@ -59,11 +59,11 @@ struct FangcunResponseLoopTests {
     )
 
     #expect(state.currentSource == .quick(.calm))
-    #expect(state.currentStateTitle == "平静")
+    #expect(state.currentStateTitle == "Calm")
     #expect(state.selectedQuickState == .calm)
     #expect(state.isStressIdentified)
     #expect(state.stressProfile == CurrentStressProfile(level: .low, source: .none))
-    #expect(state.stressSourceTitle == "没有明显来源")
+    #expect(state.stressSourceTitle == "No clear source")
     #expect(state.recommendedPractice == nil)
     #expect(state.recoveryAction == .continueNormally)
     #expect(
@@ -118,7 +118,7 @@ struct FangcunResponseLoopTests {
     )
 
     #expect(state.stressProfile == CurrentStressProfile(level: .high, source: .work))
-    #expect(state.reflectionContextTitle == "给「工作」的一句")
+    #expect(state.reflectionContextTitle == "A thought about Work")
     #expect(
       state.reflection == DailyReflectionSelector.reflection(
         on: date(hour: 12), stressProfile: state.stressProfile, calendar: calendar
@@ -170,11 +170,11 @@ struct FangcunResponseLoopTests {
       )
 
       #expect(!state.isStressIdentified)
-      #expect(state.stressLevelTitle == "还没判断")
-      #expect(state.stressSourceTitle == "来源待确认")
+      #expect(state.stressLevelTitle == "No check-in yet")
+      #expect(state.stressSourceTitle == "Source not specified")
       #expect(state.recommendedPractice == nil)
       #expect(state.recoveryAction == .needsInput)
-      #expect(state.explanation == "选一下现在的状态，我马上给你结论。")
+      #expect(state.explanation == "Start with how you feel right now.")
       #expect(!state.explanation.contains("数据"))
       #expect(!state.explanation.contains("参考"))
     }
@@ -204,7 +204,7 @@ struct FangcunResponseLoopTests {
     #expect(elevated.recommendedPractice == nil)
     #expect(steady.recoveryAction == .continueNormally)
     #expect(elevated.recoveryAction == .continueNormally)
-    #expect(elevated.explanation == "现在状态稳，照常往下走。")
+    #expect(elevated.explanation == "Things feel steady. There's no need to add anything.")
   }
 
   @Test("低压时各来源的说明和行动一致，不增加练习任务", arguments: CurrentStressSource.allCases)
@@ -226,7 +226,7 @@ struct FangcunResponseLoopTests {
     #expect(state.stressProfile == CurrentStressProfile(level: .low, source: source))
     #expect(state.recommendedPractice == nil)
     #expect(state.recoveryAction == .continueNormally)
-    #expect(state.explanation == "现在状态稳，照常往下走。")
+    #expect(state.explanation == "Things feel steady. There's no need to add anything.")
   }
 
   @Test("一个压力档案同时驱动来源、名言和练习")
@@ -248,10 +248,10 @@ struct FangcunResponseLoopTests {
     )
 
     #expect(state.stressProfile == CurrentStressProfile(level: .high, source: .work))
-    #expect(state.stressSourceRoleTitle == "主要来自")
-    #expect(state.stressSourceTitle == "工作")
+    #expect(state.stressSourceRoleTitle == "Mostly connected to")
+    #expect(state.stressSourceTitle == "Work")
     #expect(state.recommendedPractice == .physiologicalSigh)
-    #expect(state.reflectionContextTitle == "给「工作」的一句")
+    #expect(state.reflectionContextTitle == "A thought about Work")
     #expect(
       state.reflection
         == DailyReflectionSelector.reflection(

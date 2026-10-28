@@ -1,8 +1,26 @@
 {
   "sourceLanguage": "zh-Hans",
   "strings": {
-    "方寸": {},
-    "照料方寸之间的自己": {},
+    "方寸": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Exhale"
+          }
+        }
+      }
+    },
+    "照料方寸之间的自己": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little room to breathe"
+          }
+        }
+      }
+    },
     "body.state.steady.title": {
       "extractionState": "manual",
       "comment": "M1 current-evidence semantics; review via COPY_REVIEW.csv",
@@ -11,6 +29,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "身体指标处于参考范围"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Within your usual range"
           }
         }
       }
@@ -24,6 +48,12 @@
             "state": "translated",
             "value": "参考范围内"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Within range"
+          }
         }
       }
     },
@@ -35,6 +65,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已有身体指标接近平常，今天按自己的节奏来。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Available measures are close to your usual levels. Take today at your own pace."
           }
         }
       }
@@ -48,6 +84,12 @@
             "state": "translated",
             "value": "至少两类可靠近期线索，其中包含心血管指标"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least two reliable recent measures, including a cardiovascular measure"
+          }
         }
       }
     },
@@ -59,6 +101,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "有一项指标值得留意"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One measure to keep an eye on"
           }
         }
       }
@@ -72,6 +120,12 @@
             "state": "translated",
             "value": "轻度留意"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worth noticing"
+          }
         }
       }
     },
@@ -83,6 +137,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "有一项身体指标偏离参考，留意今天的恢复和自己的感受。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One measure differs from your baseline. Leave room for recovery and notice how you feel."
           }
         }
       }
@@ -96,6 +156,12 @@
             "state": "translated",
             "value": "一项可靠指标偏离参考，尚不等于整体负荷偏高"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One reliable measure differs; this alone doesn't establish elevated overall load"
+          }
         }
       }
     },
@@ -107,6 +173,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今日身体负荷偏高"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Higher body load today"
           }
         }
       }
@@ -120,6 +192,12 @@
             "state": "translated",
             "value": "偏高"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elevated"
+          }
         }
       }
     },
@@ -131,6 +209,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "多项身体指标偏离参考，先给自己留一点缓冲。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Several measures differ from your baseline. Consider a little more breathing room today."
           }
         }
       }
@@ -144,6 +228,12 @@
             "state": "translated",
             "value": "至少两类可靠指标偏离个人参考，不代表心理压力诊断"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least two reliable measures differ from your baseline; this isn't a diagnosis of psychological stress"
+          }
         }
       }
     },
@@ -155,6 +245,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "目前只有有限的身体线索"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A few clues, not the whole picture"
           }
         }
       }
@@ -168,6 +264,12 @@
             "state": "translated",
             "value": "有限线索"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limited context"
+          }
         }
       }
     },
@@ -179,6 +281,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "还不够判断整体状态。你可以先休息，或做一次呼吸。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There isn't enough for an overall assessment. You can still rest or take a gentle breathing break."
           }
         }
       }
@@ -192,6 +300,12 @@
             "state": "translated",
             "value": "单一指标或尚不可靠的资料，不用于判断整体平稳"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A single measure or unreliable data can't establish that everything is steady"
+          }
         }
       }
     },
@@ -203,6 +317,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "还需要一点身体线索"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little more context is needed"
           }
         }
       }
@@ -216,6 +336,12 @@
             "state": "translated",
             "value": "数据不足"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough data"
+          }
         }
       }
     },
@@ -227,6 +353,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "暂时没有可用的近期线索。已有历史记录，也不能代表现在。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No usable recent data yet. Earlier records don't tell us how things are right now."
           }
         }
       }
@@ -240,6 +372,12 @@
             "state": "translated",
             "value": "数据不足时，不把未知当作平稳"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown stays unknown when data is missing"
+          }
         }
       }
     },
@@ -251,6 +389,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已有近期读数，个人基线积累了 %ld/5 天；暂不判断整体状态。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent readings are available. Your baseline has %ld/5 days; no overall assessment yet."
           }
         }
       }
@@ -264,6 +408,12 @@
             "state": "translated",
             "value": "近期运动可能影响这些指标。先给身体一点恢复时间，今天仍可按感受调整。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent exercise may affect these measures. Give yourself recovery time and keep noticing how you feel."
+          }
         }
       }
     },
@@ -275,6 +425,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "运动保护窗口内有指标偏离，本次不将它们解释为正常"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some measures differ during the exercise protection window; they aren't being labeled normal"
           }
         }
       }
@@ -288,6 +444,12 @@
             "state": "translated",
             "value": "近期有至少 45 分钟训练，处于旧判断的 18 小时保护窗口。心血管偏离可能受运动影响，仍在上方保留；保护窗口不代表各项指标正常。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A workout of at least 45 minutes falls within the earlier model's 18-hour protection window. Cardiovascular differences may reflect exercise and remain visible above. This window doesn't mean every measure is normal."
+          }
         }
       }
     },
@@ -299,6 +461,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最近测量 · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last measured · %@"
           }
         }
       }
@@ -312,6 +480,12 @@
             "state": "translated",
             "value": "尚无可展示的测量记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No measurement to show yet"
+          }
         }
       }
     },
@@ -323,6 +497,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本次查询 · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checked · %@"
           }
         }
       }
@@ -336,6 +516,12 @@
             "state": "translated",
             "value": "本次计算 · %@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calculated · %@"
+          }
         }
       }
     },
@@ -347,6 +533,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "查询和计算时间不代表新测量。每项线索的测量日期见下方。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking and calculation times aren't new measurements. Each measure's date is shown below."
           }
         }
       }
@@ -360,6 +552,12 @@
             "state": "translated",
             "value": " · 判断所用最新样本 %@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · Latest sample used: %@"
+          }
         }
       }
     },
@@ -371,6 +569,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最近主睡眠"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latest main sleep"
           }
         }
       }
@@ -384,6 +588,12 @@
             "state": "translated",
             "value": "%@ 结束\n%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ended %@\n%@"
+          }
         }
       }
     },
@@ -395,6 +605,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "心率变异性"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heart rate variability"
           }
         }
       }
@@ -408,6 +624,12 @@
             "state": "translated",
             "value": "静息心率"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resting heart rate"
+          }
         }
       }
     },
@@ -419,6 +641,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "暂无可用数据"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No usable data yet"
           }
         }
       }
@@ -432,6 +660,12 @@
             "state": "translated",
             "value": "超过 36 小时 · 不参与当前判断"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Over 36 hours old · Excluded from current assessment"
+          }
         }
       }
     },
@@ -443,6 +677,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · 测量于 %@%@%@ · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · Measured %@%@%@ · %@"
           }
         }
       }
@@ -456,6 +696,12 @@
             "state": "translated",
             "value": "部分身体线索未能读取。本次判断只使用成功读取的资料，无法据此判断是否已授权。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some data couldn't be read. Only successful reads are included. This doesn't tell us whether access was granted."
+          }
         }
       }
     },
@@ -468,6 +714,12 @@
             "state": "translated",
             "value": "旧版记录 · 保留当时的判断口径，不作为新准备度样本"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier record · Original assessment retained; not a new readiness sample"
+          }
         }
       }
     },
@@ -479,6 +731,12 @@
             "state": "translated",
             "value": "浅色短线：线索有限 / 数据不足 / 未记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pale line: limited context, insufficient data, or no entry"
+          }
         }
       }
     },
@@ -488,6 +746,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "结束练习"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End practice"
           }
         }
       }
@@ -499,6 +763,12 @@
             "state": "translated",
             "value": "今天到这里，也很好。结束后可保留已完成的时长。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Here is a fine place to stop. You can save the time you've already spent."
+          }
         }
       }
     },
@@ -508,6 +778,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本机记录暂时无法读取，原始数据已保留。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your local entries couldn't be read. The original data is preserved."
           }
         }
       }
@@ -519,6 +795,12 @@
             "state": "translated",
             "value": "记录未能保存，未确认的修改没有写入。请重试。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't save. Unconfirmed changes weren't written. Please try again."
+          }
         }
       }
     },
@@ -528,6 +810,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "补记或编辑"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add or edit an entry"
           }
         }
       }
@@ -539,6 +827,12 @@
             "state": "translated",
             "value": "饮用时间"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time of drink"
+          }
         }
       }
     },
@@ -548,6 +842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "容量（ml）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volume (ml)"
           }
         }
       }
@@ -559,6 +859,12 @@
             "state": "translated",
             "value": "补记一杯"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a drink"
+          }
         }
       }
     },
@@ -568,6 +874,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "保存修改"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save changes"
           }
         }
       }
@@ -579,6 +891,12 @@
             "state": "translated",
             "value": "饮品记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drink history"
+          }
         }
       }
     },
@@ -588,6 +906,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "按杯估算；未知糖量保持未知。调整杯量不会改动其他历史。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cup-based estimates. Unknown sugar stays unknown. Editing volume doesn't change other entries."
           }
         }
       }
@@ -599,6 +923,12 @@
             "state": "translated",
             "value": "可补记今天及前 6 天；饮用时间与录入时间分开保存。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add entries for today or the previous 6 days. Drink time and entry time are stored separately."
+          }
         }
       }
     },
@@ -608,6 +938,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "重新读取并重试"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload and try again"
           }
         }
       }
@@ -619,6 +955,12 @@
             "state": "translated",
             "value": "部分酒精量未知"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some alcohol amounts are unknown"
+          }
         }
       }
     },
@@ -628,6 +970,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "完成"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
           }
         }
       }
@@ -639,6 +987,12 @@
             "state": "translated",
             "value": "饮品种类"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drink type"
+          }
         }
       }
     },
@@ -648,6 +1002,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "撤销上一笔"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo last entry"
           }
         }
       }
@@ -659,6 +1019,12 @@
             "state": "translated",
             "value": "%@ · 约 %d ml"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · About %d ml"
+          }
         }
       }
     },
@@ -668,6 +1034,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "资料充分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enough context"
           }
         }
       }
@@ -679,6 +1051,12 @@
             "state": "translated",
             "value": "初步参考"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An early reference"
+          }
         }
       }
     },
@@ -688,6 +1066,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "有限线索"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limited context"
           }
         }
       }
@@ -699,6 +1083,12 @@
             "state": "translated",
             "value": "还没有足够资料"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough data yet"
+          }
         }
       }
     },
@@ -708,6 +1098,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "等待资料到齐"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for data"
           }
         }
       }
@@ -719,6 +1115,12 @@
             "state": "translated",
             "value": "暂时读取失败"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't read data this time"
+          }
         }
       }
     },
@@ -728,6 +1130,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已停止读取"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading is paused"
           }
         }
       }
@@ -739,6 +1147,12 @@
             "state": "translated",
             "value": "上一周期参考"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous period"
+          }
         }
       }
     },
@@ -748,6 +1162,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "等待新的恢复资料"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for fresh recovery data"
           }
         }
       }
@@ -759,6 +1179,12 @@
             "state": "translated",
             "value": "恢复状态接近平常"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery close to your usual level"
+          }
         }
       }
     },
@@ -768,6 +1194,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天可以放慢一点"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consider an easier pace today"
           }
         }
       }
@@ -779,6 +1211,12 @@
             "state": "translated",
             "value": "今天多留一点休息"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make more room for rest today"
+          }
         }
       }
     },
@@ -788,6 +1226,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "结合主睡眠和个人体征基线，看看这一周期的身体恢复。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A view of this recovery period, using main sleep and your personal baseline."
           }
         }
       }
@@ -799,6 +1243,12 @@
             "state": "translated",
             "value": "已有初步资料；个人基线仍在积累。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some early data is available. Your personal baseline is still building."
+          }
         }
       }
     },
@@ -808,6 +1258,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "部分线索已到齐，暂不作整体判断。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some measures are available, but not enough for an overall assessment."
           }
         }
       }
@@ -819,6 +1275,12 @@
             "state": "translated",
             "value": "资料不够，也可以先做一次轻松的呼吸。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can take a gentle breathing break without waiting for more data."
+          }
         }
       }
     },
@@ -828,6 +1290,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠刚结束，留一点时间让资料更新。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep has just ended. Allow some time for data to arrive."
           }
         }
       }
@@ -839,6 +1307,12 @@
             "state": "translated",
             "value": "这次没能读到资料；稍后可以重新刷新。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data couldn't be read this time. You can refresh again later."
+          }
         }
       }
     },
@@ -848,6 +1322,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "你可以随时在设置中重新启用读取。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can restart reading in Settings at any time."
           }
         }
       }
@@ -859,6 +1339,12 @@
             "state": "translated",
             "value": "这个结论属于上一有效时段，不代表此刻状态。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This assessment belongs to a previous valid period, not this moment."
+          }
         }
       }
     },
@@ -868,6 +1354,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "旧资料已过期，不继续沿用旧结论。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The old data has expired, so its conclusion isn't carried forward."
           }
         }
       }
@@ -879,6 +1371,12 @@
             "state": "translated",
             "value": "准备度是身体恢复参考，不等于心理压力诊断。首版工程阈值待校准。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Readiness is recovery context, not a diagnosis of psychological stress. Initial software thresholds still need calibration."
+          }
         }
       }
     },
@@ -888,6 +1386,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本地评估档案暂不可用，原资料已保留。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The local assessment archive is unavailable. Original data is preserved."
           }
         }
       }
@@ -899,6 +1403,12 @@
             "state": "translated",
             "value": "本次刷新未成功；已有资料保留原测量时间。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh didn't finish. Existing data keeps its original measurement time."
+          }
         }
       }
     },
@@ -908,6 +1418,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "身体给的线索"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clues from your body"
           }
         }
       }
@@ -919,6 +1435,12 @@
             "state": "translated",
             "value": "为什么这样判断"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What this is based on"
+          }
         }
       }
     },
@@ -928,6 +1450,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未知"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown"
           }
         }
       }
@@ -939,6 +1467,12 @@
             "state": "translated",
             "value": "%@：%@ %@ · 有效基线 %d 天"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %@ %@ · %d valid baseline days"
+          }
         }
       }
     },
@@ -948,6 +1482,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HRV SDNN 主睡眠内中位数"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Median HRV SDNN during main sleep"
           }
         }
       }
@@ -959,6 +1499,12 @@
             "state": "translated",
             "value": "静息心率"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resting heart rate"
+          }
         }
       }
     },
@@ -968,6 +1514,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠来源"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep source"
           }
         }
       }
@@ -979,6 +1531,12 @@
             "state": "translated",
             "value": "主睡眠结束：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main sleep ended: %@"
+          }
         }
       }
     },
@@ -988,6 +1546,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "证据测量：%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measured: %@"
           }
         }
       }
@@ -999,6 +1563,12 @@
             "state": "translated",
             "value": "证据查询：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checked: %@"
+          }
         }
       }
     },
@@ -1008,6 +1578,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "计算完成：%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calculated: %@"
           }
         }
       }
@@ -1019,6 +1595,12 @@
             "state": "translated",
             "value": "参考截止：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reference valid until: %@"
+          }
         }
       }
     },
@@ -1028,6 +1610,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最近刷新尝试：%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last refresh attempt: %@"
           }
         }
       }
@@ -1039,6 +1627,12 @@
             "state": "translated",
             "value": "最近成功检查：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last successful check: %@"
+          }
         }
       }
     },
@@ -1048,6 +1642,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "评估及修订"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assessment and revision"
           }
         }
       }
@@ -1059,6 +1659,12 @@
             "state": "translated",
             "value": "当前恢复周期"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current recovery period"
+          }
         }
       }
     },
@@ -1068,6 +1674,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "历史参考，不代表此刻"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historical reference, not current status"
           }
         }
       }
@@ -1079,6 +1691,12 @@
             "state": "translated",
             "value": "已过有效时段"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outside the valid period"
+          }
         }
       }
     },
@@ -1088,6 +1706,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "恢复参考与来源"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery context and sources"
           }
         }
       }
@@ -1099,6 +1723,12 @@
             "state": "translated",
             "value": "历史范围"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History range"
+          }
         }
       }
     },
@@ -1108,6 +1738,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "7 天"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 days"
           }
         }
       }
@@ -1119,6 +1755,12 @@
             "state": "translated",
             "value": "28 天"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "28 days"
+          }
         }
       }
     },
@@ -1128,6 +1770,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "恢复与记录"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery and history"
           }
         }
       }
@@ -1139,6 +1787,12 @@
             "state": "translated",
             "value": "这一天没有已存的新评估。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No new assessment was saved for this day."
+          }
         }
       }
     },
@@ -1148,6 +1802,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "旧口径记录 · 保留原文"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier assessment · Original wording retained"
           }
         }
       }
@@ -1159,6 +1819,12 @@
             "state": "translated",
             "value": "已记液体 %d ml · 咖啡因约 %d mg"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drinks logged: %d ml · About %d mg caffeine"
+          }
         }
       }
     },
@@ -1168,6 +1834,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "刷新资料"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh data"
           }
         }
       }
@@ -1179,6 +1851,12 @@
             "state": "translated",
             "value": "使用准备度参考"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use recovery context"
+          }
         }
       }
     },
@@ -1188,6 +1866,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠目标 %.1f 小时"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep goal: %.1f hours"
           }
         }
       }
@@ -1199,6 +1883,12 @@
             "state": "translated",
             "value": "主来源"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primary sources"
+          }
         }
       }
     },
@@ -1208,6 +1898,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "选择主睡眠"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose main sleep"
           }
         }
       }
@@ -1219,6 +1915,12 @@
             "state": "translated",
             "value": "停止读取"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop reading"
+          }
         }
       }
     },
@@ -1228,6 +1930,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "重新启用读取"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume reading"
           }
         }
       }
@@ -1239,6 +1947,12 @@
             "state": "translated",
             "value": "清除本地准备度资料"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear local readiness data"
+          }
         }
       }
     },
@@ -1248,6 +1962,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "停止读取并清除本地准备度缓存与评估。保留饮品、练习和 Apple 健康中的原始记录。重新启用需要你的选择。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stops reading and clears the local readiness cache and assessments. Drinks, practices, and original Apple Health records stay. Reading restarts only when you choose."
           }
         }
       }
@@ -1259,6 +1979,12 @@
             "state": "translated",
             "value": "当前体征缺失"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current measurements missing"
+          }
         }
       }
     },
@@ -1268,6 +1994,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "缺少主睡眠"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main sleep missing"
           }
         }
       }
@@ -1279,6 +2011,12 @@
             "state": "translated",
             "value": "缺少 HRV"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV missing"
+          }
         }
       }
     },
@@ -1288,6 +2026,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "缺少静息心率"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resting heart rate missing"
           }
         }
       }
@@ -1299,6 +2043,12 @@
             "state": "translated",
             "value": "个人基线仍在积累"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal baseline still building"
+          }
         }
       }
     },
@@ -1308,6 +2058,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HRV 样本较少"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Few HRV samples"
           }
         }
       }
@@ -1319,6 +2075,12 @@
             "state": "translated",
             "value": "HRV 时间覆盖不足"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limited HRV time coverage"
+          }
         }
       }
     },
@@ -1328,6 +2090,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "存在无效数值"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid value found"
           }
         }
       }
@@ -1339,6 +2107,12 @@
             "state": "translated",
             "value": "存在需复核数值"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A value needs review"
+          }
         }
       }
     },
@@ -1348,6 +2122,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "单位不匹配"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Units don't match"
           }
         }
       }
@@ -1359,6 +2139,12 @@
             "state": "translated",
             "value": "来源未知"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown source"
+          }
         }
       }
     },
@@ -1368,6 +2154,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "来源难以区分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources are hard to distinguish"
           }
         }
       }
@@ -1379,6 +2171,12 @@
             "state": "translated",
             "value": "来源设备标识不完整"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source device identity is incomplete"
+          }
         }
       }
     },
@@ -1388,6 +2186,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "手工数据不参与体征判断"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manual data excluded from measurement assessment"
           }
         }
       }
@@ -1399,6 +2203,12 @@
             "state": "translated",
             "value": "练习影响时段已排除"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Practice-affected periods excluded"
+          }
         }
       }
     },
@@ -1408,6 +2218,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "静息心率已用于上一周期"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resting heart rate already used in the previous period"
           }
         }
       }
@@ -1419,6 +2235,12 @@
             "state": "translated",
             "value": "睡眠片段较短"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short sleep segment"
+          }
         }
       }
     },
@@ -1428,6 +2250,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠时长需复核"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep duration needs review"
           }
         }
       }
@@ -1439,6 +2267,12 @@
             "state": "translated",
             "value": "睡眠时间异常"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unexpected sleep time"
+          }
         }
       }
     },
@@ -1448,6 +2282,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠阶段冲突"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conflicting sleep stages"
           }
         }
       }
@@ -1459,6 +2299,12 @@
             "state": "translated",
             "value": "主睡眠不明确"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main sleep unclear"
+          }
         }
       }
     },
@@ -1468,6 +2314,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠修订需复核"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep revision needs review"
           }
         }
       }
@@ -1479,6 +2331,12 @@
             "state": "translated",
             "value": "等待数据到齐"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for data to arrive"
+          }
         }
       }
     },
@@ -1488,6 +2346,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "使用你选择的主睡眠"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Using the main sleep you selected"
           }
         }
       }
@@ -1499,6 +2363,12 @@
             "state": "translated",
             "value": "HRV 异常偏高，暂不作整体判断"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atypically high HRV; no overall assessment yet"
+          }
         }
       }
     },
@@ -1508,6 +2378,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HRV 低于个人基线"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV below your baseline"
           }
         }
       }
@@ -1519,6 +2395,12 @@
             "state": "translated",
             "value": "静息心率高于个人基线"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resting heart rate above your baseline"
+          }
         }
       }
     },
@@ -1528,6 +2410,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠少于个人目标"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep below your goal"
           }
         }
       }
@@ -1539,6 +2427,12 @@
             "state": "translated",
             "value": "资料已过期"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data has expired"
+          }
         }
       }
     },
@@ -1548,6 +2442,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "设置需复核"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings need review"
           }
         }
       }
@@ -1559,6 +2459,12 @@
             "state": "translated",
             "value": "刷新未成功"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh unsuccessful"
+          }
         }
       }
     },
@@ -1568,6 +2474,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "来源已变更"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source changed"
           }
         }
       }
@@ -1579,6 +2491,12 @@
             "state": "translated",
             "value": "相关来源或数据已删除"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Related source or data deleted"
+          }
         }
       }
     },
@@ -1588,6 +2506,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "部分酒精量未知；汇总只包含已知估算量。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some alcohol amounts are unknown. The total includes known estimates only."
           }
         }
       }
@@ -1599,6 +2523,12 @@
             "state": "translated",
             "value": "2 分钟轻活动"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 2-minute movement break"
+          }
         }
       }
     },
@@ -1608,6 +2538,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 分钟座位舒展"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 1-minute seated stretch"
           }
         }
       }
@@ -1619,6 +2555,12 @@
             "state": "translated",
             "value": "2 分钟安静休息"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 minutes of quiet rest"
+          }
         }
       }
     },
@@ -1628,6 +2570,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "双吸一呼"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little sigh"
           }
         }
       }
@@ -1639,6 +2587,12 @@
             "state": "translated",
             "value": "节律呼吸"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Longer exhale"
+          }
         }
       }
     },
@@ -1648,6 +2602,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "静心练习"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A quiet moment"
           }
         }
       }
@@ -1659,6 +2619,12 @@
             "state": "translated",
             "value": "深度休息"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guided rest"
+          }
         }
       }
     },
@@ -1668,6 +2634,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "盆底肌练习"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pelvic floor"
           }
         }
       }
@@ -1679,6 +2651,12 @@
             "state": "translated",
             "value": "先确认周围安全。可以轻松走动，也可按能力改变姿势；不方便站立时请选择座位舒展。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check that your surroundings are safe. Walk gently or change position within your abilities. If standing isn't suitable, choose the seated stretch."
+          }
         }
       }
     },
@@ -1688,6 +2666,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "轻松改变姿势，或慢慢走一小段。不需要盯屏或数步。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change position gently, or take a short walk. No need to watch the screen or count steps."
           }
         }
       }
@@ -1699,6 +2683,12 @@
             "state": "translated",
             "value": "保持自然呼吸，按自己的节奏慢下来。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breathe naturally and slow down at your own pace."
+          }
         }
       }
     },
@@ -1708,6 +2698,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "坐稳，在舒适范围内轻轻调整肩部和手腕。无需转颈或拉伸到疼痛。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sit steadily. Gently move your shoulders and wrists within a comfortable range. Don't twist your neck or stretch into pain."
           }
         }
       }
@@ -1719,6 +2715,12 @@
             "state": "translated",
             "value": "松开肩膀，轻轻调整坐姿。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let your shoulders soften and gently adjust your seat."
+          }
         }
       }
     },
@@ -1728,6 +2730,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "手腕轻柔活动，找到舒服的位置。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move your wrists gently and find a comfortable position."
           }
         }
       }
@@ -1739,6 +2747,12 @@
             "state": "translated",
             "value": "找一个安全坐姿。可以睁眼，不需要跟随呼吸节拍。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find a safe seat. You can keep your eyes open. There's no breathing pace to follow."
+          }
         }
       }
     },
@@ -1748,6 +2762,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "把注意力留在这里，保持自然呼吸。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let your attention rest here. Breathe naturally."
           }
         }
       }
@@ -1759,6 +2779,12 @@
             "state": "translated",
             "value": "什么也不用完成，安静停留一会儿。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to finish. Stay quietly for a moment."
+          }
         }
       }
     },
@@ -1768,6 +2794,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "舒适静坐，保持轻松，不憋气或强迫加深呼吸。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sit comfortably. Keep breathing easy, without holds or forced deep breaths."
           }
         }
       }
@@ -1779,6 +2811,12 @@
             "state": "translated",
             "value": "先确认环境适合。保持舒适，不适即停。驾驶或不方便时请稍后；严重或持续不适时停止练习并寻求适当帮助。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a safe setting. Stay comfortable and stop if you feel unwell. If driving or unavailable, wait until later. For severe or persistent symptoms, stop and seek appropriate help."
+          }
         }
       }
     },
@@ -1788,6 +2826,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "现在可以先不练习，等方便时再开始。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can leave practice for a more convenient moment."
           }
         }
       }
@@ -1799,6 +2843,12 @@
             "state": "translated",
             "value": "换一个适合此刻的行动"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try a different small action"
+          }
         }
       }
     },
@@ -1808,6 +2858,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "想留怎样的片刻"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What kind of moment would you like?"
           }
         }
       }
@@ -1819,6 +2875,12 @@
             "state": "translated",
             "value": "休息片刻"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little rest"
+          }
         }
       }
     },
@@ -1828,6 +2890,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "平静一下"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A calmer moment"
           }
         }
       }
@@ -1839,6 +2907,12 @@
             "state": "translated",
             "value": "有点疲倦"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feeling tired"
+          }
         }
       }
     },
@@ -1848,6 +2922,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "工作间歇"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A break from work"
           }
         }
       }
@@ -1859,6 +2939,12 @@
             "state": "translated",
             "value": "当前环境（由你选择）"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your surroundings"
+          }
         }
       }
     },
@@ -1868,6 +2954,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "适合坐着"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somewhere to sit"
           }
         }
       }
@@ -1879,6 +2971,12 @@
             "state": "translated",
             "value": "可以安全走动"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safe to move around"
+          }
         }
       }
     },
@@ -1888,6 +2986,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在驾驶"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Driving"
           }
         }
       }
@@ -1899,6 +3003,12 @@
             "state": "translated",
             "value": "现在不方便"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not a good time"
+          }
         }
       }
     },
@@ -1908,6 +3018,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "可用时间 %d 秒"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Available time: %d seconds"
           }
         }
       }
@@ -1919,6 +3035,12 @@
             "state": "translated",
             "value": "准备好了，开始"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'm ready"
+          }
         }
       }
     },
@@ -1928,6 +3050,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "还剩 %d 秒"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d seconds remaining"
           }
         }
       }
@@ -1939,6 +3067,12 @@
             "state": "translated",
             "value": "暂停"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
+          }
         }
       }
     },
@@ -1948,6 +3082,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "继续"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
           }
         }
       }
@@ -1959,6 +3099,12 @@
             "state": "translated",
             "value": "到这里就好"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave it here"
+          }
         }
       }
     },
@@ -1968,6 +3114,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "重试保存"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try saving again"
           }
         }
       }
@@ -1979,6 +3131,12 @@
             "state": "translated",
             "value": "已记录这段片刻"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little moment, saved"
+          }
         }
       }
     },
@@ -1988,6 +3146,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本地保存未完成，原记录保留。请重试。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't finish saving. Earlier records are preserved. Please try again."
           }
         }
       }
@@ -1999,6 +3163,12 @@
             "state": "translated",
             "value": "有帮助"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helpful"
+          }
         }
       }
     },
@@ -2008,6 +3178,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "没明显变化"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No clear change"
           }
         }
       }
@@ -2019,6 +3195,12 @@
             "state": "translated",
             "value": "不舒服"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uncomfortable"
+          }
         }
       }
     },
@@ -2028,6 +3210,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未回答"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not answered"
           }
         }
       }
@@ -2039,6 +3227,12 @@
             "state": "translated",
             "value": "这次反馈：%@"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your response: %@"
+          }
         }
       }
     },
@@ -2048,6 +3242,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "先不回答"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip for now"
           }
         }
       }
@@ -2059,6 +3259,12 @@
             "state": "translated",
             "value": "回到今日"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back to Daily"
+          }
         }
       }
     },
@@ -2068,6 +3274,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "关闭"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
           }
         }
       }
@@ -2079,6 +3291,12 @@
             "state": "translated",
             "value": "行动与反馈记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small actions and reflections"
+          }
         }
       }
     },
@@ -2088,6 +3306,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "实际有效时长 %d 秒"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time practiced: %d seconds"
           }
         }
       }
@@ -2099,6 +3323,12 @@
             "state": "translated",
             "value": "按计划结束"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished as planned"
+          }
         }
       }
     },
@@ -2108,6 +3338,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "提前结束，也已经留了片刻"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished early; you still made a little space"
           }
         }
       }
@@ -2119,6 +3355,12 @@
             "state": "translated",
             "value": "中断后保留已知时长，离线间隔未计入"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Known practice time saved after interruption; time away excluded"
+          }
         }
       }
     },
@@ -2128,6 +3370,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "原练习记录，结束原因未单独记录"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier practice; finish reason wasn't recorded separately"
           }
         }
       }
@@ -2139,6 +3387,12 @@
             "state": "translated",
             "value": "同类明确回答：有帮助 %d 次，没明显变化 %d 次，不舒服 %d 次。仅描述记录，不代表疗效。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Responses for this action: helpful %d, no clear change %d, uncomfortable %d. A description of your entries, not proof of effectiveness."
+          }
         }
       }
     },
@@ -2148,6 +3402,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "跨端记录状态"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Device sync status"
           }
         }
       }
@@ -2159,6 +3419,12 @@
             "state": "translated",
             "value": "%d 条事件等待对端确认"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d events waiting for the other device to confirm"
+          }
         }
       }
     },
@@ -2168,6 +3434,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本地记录先保存。安排传输不代表已经送达，收到对端持久化确认后才移出队列。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Records save locally first. A scheduled transfer isn't confirmed delivery. An item leaves the queue after the other device confirms it has saved it."
           }
         }
       }
@@ -2179,6 +3451,12 @@
             "state": "translated",
             "value": "跨端服务暂不可用，本地记录保留。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Device sync is unavailable. Local records are preserved."
+          }
         }
       }
     },
@@ -2188,6 +3466,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "加入同步队列未完成，可重新尝试。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't add this to the sync queue. You can try again."
           }
         }
       }
@@ -2199,6 +3483,12 @@
             "state": "translated",
             "value": "尚未收到确认；连接恢复后可以重试。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No confirmation yet. Retry when the connection is restored."
+          }
         }
       }
     },
@@ -2208,6 +3498,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "共享容器尚未配置，不提供 Widget 共享缓存。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The shared container isn't configured. Widget cache sharing is unavailable."
           }
         }
       }
@@ -2219,6 +3515,12 @@
             "state": "translated",
             "value": "重新尝试传输"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry transfer"
+          }
         }
       }
     },
@@ -2228,6 +3530,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "实际睡眠 %.1f 小时 · 本次目标 %.1f 小时"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time asleep: %.1f hours · Goal: %.1f hours"
           }
         }
       }
@@ -2239,6 +3547,12 @@
             "state": "translated",
             "value": "主睡眠内 SDNN 中位数 · %d 个样本，覆盖 %d 个小时区间"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Median SDNN during main sleep · %d samples across %d hourly windows"
+          }
         }
       }
     },
@@ -2248,6 +3562,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "窗口内最近一条静息心率 · %d 个样本（覆盖 %d 个小时区间）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latest resting heart rate in the window · %d samples across %d hourly windows"
           }
         }
       }
@@ -2259,6 +3579,12 @@
             "state": "translated",
             "value": "个人中心 %.1f · 波动参考 %.1f–%.1f %@（中心上下一个稳健尺度；不是医学正常范围）"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal center: %.1f · Variation reference: %.1f–%.1f %@ (one robust scale each side; not a medical normal range)"
+          }
         }
       }
     },
@@ -2268,6 +3594,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "取样窗口 %@ — %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sample window: %@ — %@"
           }
         }
       }
@@ -2279,6 +3611,12 @@
             "state": "translated",
             "value": "当天背景记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Context for this day"
+          }
         }
       }
     },
@@ -2288,6 +3626,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这些是目前已读取的背景记录；未读到不代表没有活动。饮品与完成行动不会直接增加准备度。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These are the background records available so far. Missing records don't mean no activity. Drinks and completed actions don't directly raise readiness."
           }
         }
       }
@@ -2299,6 +3643,12 @@
             "state": "translated",
             "value": "已读取训练记录 %d 条"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d workout records read"
+          }
         }
       }
     },
@@ -2308,6 +3658,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · 训练 %d 分钟 · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %d-minute workout · %@"
           }
         }
       }
@@ -2319,6 +3675,12 @@
             "state": "translated",
             "value": "%@ · %@ · 估算 %d ml"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ · About %d ml"
+          }
         }
       }
     },
@@ -2328,6 +3690,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "该次评估参考：%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assessment at the time: %@"
           }
         }
       }
@@ -2339,6 +3707,12 @@
             "state": "translated",
             "value": "恢复接近平常"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery close to your usual level"
+          }
         }
       }
     },
@@ -2348,6 +3722,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天建议放缓一点"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consider an easier pace today"
           }
         }
       }
@@ -2359,6 +3739,12 @@
             "state": "translated",
             "value": "今天优先安排恢复"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Give recovery more room today"
+          }
         }
       }
     },
@@ -2368,6 +3754,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "基于睡眠的今日建议"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A suggestion based on sleep"
           }
         }
       }
@@ -2379,6 +3771,12 @@
             "state": "translated",
             "value": "先看看已知的身体线索"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start with what we know"
+          }
         }
       }
     },
@@ -2388,6 +3786,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天的判断还没形成"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough for today's assessment yet"
           }
         }
       }
@@ -2399,6 +3803,12 @@
             "state": "translated",
             "value": "健康读取已暂停"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Health reading is paused"
+          }
         }
       }
     },
@@ -2408,6 +3818,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这次没能更新身体线索"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Body context couldn't be updated this time"
           }
         }
       }
@@ -2419,6 +3835,12 @@
             "state": "translated",
             "value": "这次主睡眠，实际睡了约 %.1f 小时。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You slept about %.1f hours in this main sleep."
+          }
         }
       }
     },
@@ -2428,6 +3850,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "与自己的近期记录相比，身体恢复线索有所下降。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery measures are lower than your recent personal levels."
           }
         }
       }
@@ -2439,6 +3867,12 @@
             "state": "translated",
             "value": "目前可比较的身体线索接近自己的近期水平。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparable measures are close to your recent personal levels."
+          }
         }
       }
     },
@@ -2448,6 +3882,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "比你设置的睡眠目标短，今天可以给休息多留一点空间。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep was shorter than your goal. Consider making more room for rest today."
           }
         }
       }
@@ -2459,6 +3899,12 @@
             "state": "translated",
             "value": "睡眠时长已经有线索，其他数据还不足以形成整体判断。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep duration is available, but other data isn't sufficient for an overall assessment."
+          }
         }
       }
     },
@@ -2468,6 +3914,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "有了部分测量记录，但还不足以和自己的日常节奏可靠比较。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some measurements are available, but not enough for a reliable personal comparison."
           }
         }
       }
@@ -2479,6 +3931,12 @@
             "state": "translated",
             "value": "还没有足够的当前数据。也可以先留五分钟，轻轻缓一缓。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There isn't enough current data yet. You can still take five gentle minutes for yourself."
+          }
         }
       }
     },
@@ -2488,6 +3946,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "你仍然可以练习、记录饮品，或在设置中恢复读取。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can still practice, log drinks, or resume reading in Settings."
           }
         }
       }
@@ -2499,6 +3963,12 @@
             "state": "translated",
             "value": "稍后再试一次；这不代表身体状态变差。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again later. This doesn't mean your body status has worsened."
+          }
         }
       }
     },
@@ -2508,6 +3978,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "留五分钟，缓一缓"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take five gentle minutes"
           }
         }
       }
@@ -2519,6 +3995,12 @@
             "state": "translated",
             "value": "照自己的节奏安排今天"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let today follow your own rhythm"
+          }
         }
       }
     },
@@ -2528,6 +4010,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "给休息多留一点空间"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make a little more room for rest"
           }
         }
       }
@@ -2539,6 +4027,12 @@
             "state": "translated",
             "value": "稍后回到今日刷新"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Return to Daily and refresh later"
+          }
         }
       }
     },
@@ -2548,6 +4042,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这条建议只基于已有线索，不是整体恢复结论。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This suggestion uses the available clues only, not an overall recovery assessment."
           }
         }
       }
@@ -2559,6 +4059,12 @@
             "state": "translated",
             "value": "初步比较"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Early comparison"
+          }
         }
       }
     },
@@ -2568,6 +4074,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本次更新未成功，保留上次仍有效的判断。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This update didn't finish. The previous assessment remains valid for now."
           }
         }
       }
@@ -2579,6 +4091,12 @@
             "state": "translated",
             "value": "今日恢复"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's recovery"
+          }
         }
       }
     },
@@ -2588,6 +4106,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "有限线索"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limited context"
           }
         }
       }
@@ -2599,6 +4123,12 @@
             "state": "translated",
             "value": "慢慢认识自己"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Getting to know your rhythm"
+          }
         }
       }
     },
@@ -2608,6 +4138,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "等待更新"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for an update"
           }
         }
       }
@@ -2619,6 +4155,12 @@
             "state": "translated",
             "value": "数据来源与判断方法"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources and assessment method"
+          }
         }
       }
     },
@@ -2628,6 +4170,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "睡眠按实际入睡片段合计，身体指标与同一来源的个人记录比较。记录不足时保留未知；这些是工程默认规则，仍待校准。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep sums actual asleep segments. Measurements are compared with personal records from the same source. Missing data stays unknown. These are default software rules that still need calibration."
           }
         }
       }
@@ -2639,6 +4187,12 @@
             "state": "translated",
             "value": "个人参照还在积累，暂不显示个人范围。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your baseline is still building, so no personal range is shown yet."
+          }
         }
       }
     },
@@ -2648,6 +4202,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "实际睡眠"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time asleep"
           }
         }
       }
@@ -2659,6 +4219,12 @@
             "state": "translated",
             "value": "约 %.1f 小时"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About %.1f hours"
+          }
         }
       }
     },
@@ -2668,6 +4234,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "数据诊断（高级）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advanced data diagnostics"
           }
         }
       }
@@ -2679,6 +4251,12 @@
             "state": "translated",
             "value": "陪伴动效"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Companion movement"
+          }
         }
       }
     },
@@ -2688,6 +4266,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "标准"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
           }
         }
       }
@@ -2699,6 +4283,12 @@
             "state": "translated",
             "value": "轻柔"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gentle"
+          }
         }
       }
     },
@@ -2708,6 +4298,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "静态"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still"
           }
         }
       }
@@ -2719,6 +4315,12 @@
             "state": "translated",
             "value": "已记录饮品 %d ml · 非酒精饮品 %d ml"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drinks logged: %d ml · Non-alcoholic: %d ml"
+          }
         }
       }
     },
@@ -2728,6 +4330,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已知咖啡因约 %.0f mg · 酒精约 %.0f g"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Known caffeine: about %.0f mg · Alcohol: about %.0f g"
           }
         }
       }
@@ -2739,6 +4347,12 @@
             "state": "translated",
             "value": "部分咖啡因含量未知，合计只包含已知部分。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some caffeine amounts are unknown. The total includes known amounts only."
+          }
         }
       }
     },
@@ -2748,6 +4362,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这杯已经记好。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That drink is noted."
           }
         }
       }
@@ -2759,6 +4379,12 @@
             "state": "translated",
             "value": "已减少一杯。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One drink removed."
+          }
         }
       }
     },
@@ -2768,6 +4394,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已撤销上一笔。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last entry undone."
           }
         }
       }
@@ -2779,6 +4411,12 @@
             "state": "translated",
             "value": "这笔暂时不能记录，请检查时间和杯量。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't add this entry. Check the time and serving size."
+          }
         }
       }
     },
@@ -2788,6 +4426,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "还没保存成功，请检查后重试。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not saved yet. Check the details and try again."
           }
         }
       }
@@ -2799,6 +4443,12 @@
             "state": "translated",
             "value": "饮品名称"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drink name"
+          }
         }
       }
     },
@@ -2808,6 +4458,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这是旧记录，调整杯量不会重新推算当时的咖啡因或酒精。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is an earlier entry. Changing its volume won't recalculate the original caffeine or alcohol estimate."
           }
         }
       }
@@ -2819,6 +4475,12 @@
             "state": "translated",
             "value": "是否含咖啡因"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contains caffeine?"
+          }
         }
       }
     },
@@ -2828,6 +4490,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "是否含酒精"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contains alcohol?"
           }
         }
       }
@@ -2839,6 +4507,12 @@
             "state": "translated",
             "value": "有"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes"
+          }
         }
       }
     },
@@ -2848,6 +4522,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "没有"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
           }
         }
       }
@@ -2859,6 +4539,12 @@
             "state": "translated",
             "value": "不确定"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not sure"
+          }
         }
       }
     },
@@ -2868,6 +4554,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "剂量方式"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to enter the amount"
           }
         }
       }
@@ -2879,6 +4571,12 @@
             "state": "translated",
             "value": "每杯剂量"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per serving"
+          }
         }
       }
     },
@@ -2888,6 +4586,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "每 100 ml 含量"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per 100 ml"
           }
         }
       }
@@ -2899,6 +4603,12 @@
             "state": "translated",
             "value": "含量未知"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amount unknown"
+          }
         }
       }
     },
@@ -2908,6 +4618,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "咖啡因（mg）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffeine (mg)"
           }
         }
       }
@@ -2919,6 +4635,12 @@
             "state": "translated",
             "value": "知道酒精度"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I know the alcohol percentage"
+          }
         }
       }
     },
@@ -2928,6 +4650,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "酒精度（% vol）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcohol (% ABV)"
           }
         }
       }
@@ -2939,6 +4667,12 @@
             "state": "translated",
             "value": "删除这笔记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete this entry"
+          }
         }
       }
     },
@@ -2948,6 +4682,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "饮品与关怀"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drinks and gentle reminders"
           }
         }
       }
@@ -2959,6 +4699,12 @@
             "state": "translated",
             "value": "在 App 内显示轻关怀"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show gentle reminders in the app"
+          }
         }
       }
     },
@@ -2968,6 +4714,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "医生要求限制液体摄入"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My clinician has advised a fluid limit"
           }
         }
       }
@@ -2979,6 +4731,12 @@
             "state": "translated",
             "value": "成人一般参考适用于我"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General adult guidance applies to me"
+          }
         }
       }
     },
@@ -2988,6 +4746,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "参考量只用于已记录的非酒精饮品。需求因人而异；儿童、孕期或特殊健康情况，请使用自己的专业建议。可选范围是软件设置，不代表医学安全范围。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The reference applies only to logged non-alcoholic drinks. Needs vary. Children, pregnancy, and specific health conditions call for personal professional guidance. The available settings aren't medical safety limits."
           }
         }
       }
@@ -2999,6 +4763,12 @@
             "state": "translated",
             "value": "非酒精饮品参考量：%d ml"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non-alcoholic drink reference: %d ml"
+          }
         }
       }
     },
@@ -3008,6 +4778,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "采用这个参考量"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use this reference"
           }
         }
       }
@@ -3019,6 +4795,12 @@
             "state": "translated",
             "value": "一杯白水的默认杯量"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default glass of water"
+          }
         }
       }
     },
@@ -3028,6 +4810,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "自定义杯量（ml）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom glass size (ml)"
           }
         }
       }
@@ -3039,6 +4827,12 @@
             "state": "translated",
             "value": "你的作息计划"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your sleep schedule"
+          }
         }
       }
     },
@@ -3048,6 +4842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "使用我确认的睡眠计划"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use my confirmed sleep schedule"
           }
         }
       }
@@ -3059,6 +4859,12 @@
             "state": "translated",
             "value": "预计入睡"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expected bedtime"
+          }
         }
       }
     },
@@ -3068,6 +4874,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "预计起床"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expected wake time"
           }
         }
       }
@@ -3079,6 +4891,12 @@
             "state": "translated",
             "value": "睡前 %.0f 小时开始留意咖啡因"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notice caffeine %.0f hours before bed"
+          }
         }
       }
     },
@@ -3088,6 +4906,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这次作息不同（临时覆盖）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A different schedule this time"
           }
         }
       }
@@ -3099,6 +4923,12 @@
             "state": "translated",
             "value": "只设置咖啡截止时间"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set only a caffeine cutoff time"
+          }
         }
       }
     },
@@ -3108,6 +4938,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "咖啡截止时间"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffeine cutoff"
           }
         }
       }
@@ -3119,6 +4955,12 @@
             "state": "translated",
             "value": "咖啡因参考：%.0f mg / 24 小时"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffeine reference: %.0f mg / 24 hours"
+          }
         }
       }
     },
@@ -3128,6 +4970,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "手机本地提醒"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-device reminders"
           }
         }
       }
@@ -3139,6 +4987,12 @@
             "state": "translated",
             "value": "开启饮品轻提醒"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gentle drink reminders"
+          }
         }
       }
     },
@@ -3148,6 +5002,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "开启咖啡收尾提醒"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caffeine wind-down reminders"
           }
         }
       }
@@ -3159,6 +5019,12 @@
             "state": "translated",
             "value": "允许我主动预约酒后关怀"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow me to schedule care after drinking"
+          }
         }
       }
     },
@@ -3168,6 +5034,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "锁屏可显示关怀类别"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show reminder category on the lock screen"
           }
         }
       }
@@ -3179,6 +5051,12 @@
             "state": "translated",
             "value": "尚未读取通知状态"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification status hasn't been checked"
+          }
         }
       }
     },
@@ -3188,6 +5066,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "尚未申请通知权限"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification permission hasn't been requested"
           }
         }
       }
@@ -3199,6 +5083,12 @@
             "state": "translated",
             "value": "系统已允许通知"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System notifications are allowed"
+          }
         }
       }
     },
@@ -3208,6 +5098,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "通知权限未开启，可在系统设置中调整。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications are off. You can change this in system Settings."
           }
         }
       }
@@ -3219,6 +5115,12 @@
             "state": "translated",
             "value": "当前测试环境不申请系统通知权限。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System notification permission isn't requested in this test environment."
+          }
         }
       }
     },
@@ -3228,6 +5130,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已安排到 %@；下次打开 App 会更新。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheduled through %@. Updated next time you open the app."
           }
         }
       }
@@ -3239,6 +5147,12 @@
             "state": "translated",
             "value": "默认静音，不显示健康数值。每天与滚动 24 小时最多两条，间隔至少四小时；夜间和已确认的睡眠时间不打扰。预约不代表已经送达或被阅读。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silent by default, with no health numbers. At most two reminders per day and rolling 24 hours, at least four hours apart. Quiet at night and during confirmed sleep. Scheduled doesn't mean delivered or read."
+          }
         }
       }
     },
@@ -3248,6 +5162,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "去记录"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log a drink"
           }
         }
       }
@@ -3259,6 +5179,12 @@
             "state": "translated",
             "value": "看看记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View entries"
+          }
         }
       }
     },
@@ -3268,6 +5194,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "喝过，先不记"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I've had a drink; no entry needed"
           }
         }
       }
@@ -3279,6 +5211,12 @@
             "state": "translated",
             "value": "一小时后再说"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In an hour"
+          }
         }
       }
     },
@@ -3288,6 +5226,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天不再提醒"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No more today"
           }
         }
       }
@@ -3299,6 +5243,12 @@
             "state": "translated",
             "value": "暂时收起这条关怀"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Put this reminder away"
+          }
         }
       }
     },
@@ -3308,6 +5258,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "30 分钟后提醒我关照自己"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me to check on myself in 30 minutes"
           }
         }
       }
@@ -3319,6 +5275,12 @@
             "state": "translated",
             "value": "我觉得喝多了"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I think I've had too much"
+          }
         }
       }
     },
@@ -3328,6 +5290,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "了解酒后危险症状"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Know the warning signs"
           }
         }
       }
@@ -3339,6 +5307,12 @@
             "state": "translated",
             "value": "我现在有这些症状"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'm having these symptoms now"
+          }
         }
       }
     },
@@ -3348,6 +5322,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "需要额外照顾时"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When you need extra care"
           }
         }
       }
@@ -3359,6 +5339,12 @@
             "state": "translated",
             "value": "清除关怀偏好与提醒"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear care preferences and reminders"
+          }
         }
       }
     },
@@ -3368,6 +5354,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "只清除关怀设置、关怀回执和本 App 的关怀通知；饮品和练习记录保留。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clears care settings, receipts, and this app's care notifications only. Drink and practice records stay."
           }
         }
       }
@@ -3379,6 +5371,12 @@
             "state": "translated",
             "value": "关怀设置暂时无法保存，已停止新增提醒。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Care settings couldn't be saved. New reminders have been stopped."
+          }
         }
       }
     },
@@ -3388,6 +5386,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这次提醒未能安排成功，稍后重新打开 App 再试。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This reminder couldn't be scheduled. Reopen the app later to try again."
           }
         }
       }
@@ -3399,6 +5403,12 @@
             "state": "translated",
             "value": "今天还没记饮品"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No drinks logged today yet"
+          }
         }
       }
     },
@@ -3408,6 +5418,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "喝过了，可以顺手补一下。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Had something already? You can add it whenever you like."
           }
         }
       }
@@ -3419,6 +5435,12 @@
             "state": "translated",
             "value": "咖啡也计入已记录的液体"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coffee counts toward logged fluid too"
+          }
         }
       }
     },
@@ -3428,6 +5450,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "下一杯想换换口味，也可以选白水。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you'd like a change for your next drink, water is an option."
           }
         }
       }
@@ -3439,6 +5467,12 @@
             "state": "translated",
             "value": "忙了一阵，给水杯续一点？"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A busy stretch. Time to refill your glass?"
+          }
         }
       }
     },
@@ -3448,6 +5482,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "按自己的需要来；喝过但没记，也没关系。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow your own needs. It's okay if you drank without logging it."
           }
         }
       }
@@ -3459,6 +5499,12 @@
             "state": "translated",
             "value": "已记录到今天的参考量"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You've logged today's reference amount"
+          }
         }
       }
     },
@@ -3468,6 +5514,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "之后按自己的需要来，不用赶进度。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow your needs from here. There's no target to chase."
           }
         }
       }
@@ -3479,6 +5531,12 @@
             "state": "translated",
             "value": "没有记录，不等于没有喝过。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No entry doesn't mean you haven't had a drink."
+          }
         }
       }
     },
@@ -3488,6 +5546,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "这里统计的是已记录饮品，不是全天实际摄入量。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This shows logged drinks, not your actual total intake."
           }
         }
       }
@@ -3499,6 +5563,12 @@
             "state": "translated",
             "value": "这杯咖啡因，时间可以留意一下"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A moment to notice the timing"
+          }
         }
       }
     },
@@ -3508,6 +5578,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已进入你设置的咖啡收尾时段。之后想喝点什么，可以考虑无咖啡因的选择。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're in your chosen caffeine wind-down window. A caffeine-free option might suit your next drink."
           }
         }
       }
@@ -3519,6 +5595,12 @@
             "state": "translated",
             "value": "已知咖啡因达到你的参考量"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Known caffeine has reached your reference"
+          }
         }
       }
     },
@@ -3528,6 +5610,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天接下来可以先停一停含咖啡因饮品，留意自己的感受。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consider pausing caffeinated drinks for the rest of today and noticing how you feel."
           }
         }
       }
@@ -3539,6 +5627,12 @@
             "state": "translated",
             "value": "咖啡因的量和时间，都值得留意"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Both the amount and timing are worth noticing"
+          }
         }
       }
     },
@@ -3548,6 +5642,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已知摄入达到参考量，也进入了你的收尾时段。接下来可以选择无咖啡因饮品。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Known caffeine has reached your reference, and your wind-down window has begun. Consider a caffeine-free option next."
           }
         }
       }
@@ -3559,6 +5659,12 @@
             "state": "translated",
             "value": "部分含量未知；这条参考仅合计已知部分，不表示剩下的摄入是安全的。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some amounts are unknown. This reference sums known amounts only; it doesn't establish a safe amount remaining."
+          }
         }
       }
     },
@@ -3568,6 +5674,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "成人一般参考不等于个人安全上限，也不能预测今晚一定失眠。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General adult guidance isn't your personal safety limit and can't predict whether you'll sleep well tonight."
           }
         }
       }
@@ -3579,6 +5691,12 @@
             "state": "translated",
             "value": "临近休息，先停一停酒饮"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Near bedtime, leave the next drink"
+          }
         }
       }
     },
@@ -3588,6 +5706,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "可以给今晚留一些安静的空间，并安排安全的返程。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make a little quiet space for tonight, and arrange a safe way home."
           }
         }
       }
@@ -3599,6 +5723,12 @@
             "state": "translated",
             "value": "先停止饮酒，照顾好自己"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop drinking and take care of yourself"
+          }
         }
       }
     },
@@ -3608,6 +5738,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "请不要驾驶。尽量和可信任的人待在一起，需要时请人帮助。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please don't drive. Stay with someone you trust and ask for help when needed."
           }
         }
       }
@@ -3619,6 +5755,12 @@
             "state": "translated",
             "value": "酒精量还不确定"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The alcohol amount isn't clear yet"
+          }
         }
       }
     },
@@ -3628,6 +5770,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "先留意自己的感受，避免继续饮酒，不要驾驶。不能据未知含量判断喝多或没事。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notice how you feel, avoid further alcohol, and don't drive. An unknown amount can't tell us whether you've had too much or are okay."
           }
         }
       }
@@ -3639,6 +5787,12 @@
             "state": "translated",
             "value": "上一段休息前，有一笔酒饮记录"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You logged alcohol before your last rest"
+          }
         }
       }
     },
@@ -3648,6 +5802,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天可以按感受放缓安排。这笔记录不能证明宿醉或解释所有不适。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consider an easier pace based on how you feel. This entry alone doesn't establish a hangover or explain every symptom."
           }
         }
       }
@@ -3659,6 +5819,12 @@
             "state": "translated",
             "value": "这些症状需要立即求助"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These symptoms need immediate help"
+          }
         }
       }
     },
@@ -3668,6 +5834,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "如果出现难以唤醒、呼吸缓慢或不规则、抽搐、反复呕吐或明显意识混乱，请立即联系当地急救，不要独自待着。不要用睡一觉、运动或呼吸练习替代急救。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If someone is difficult to wake, breathing slowly or irregularly, having seizures, repeatedly vomiting, or very confused, contact local emergency services now. Don't leave them alone. Sleep, exercise, or breathing practice cannot replace emergency care."
           }
         }
       }
@@ -3679,6 +5851,12 @@
             "state": "translated",
             "value": "立即请身边的人联系当地急救；不要驾车自行就医。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask someone nearby to contact local emergency services immediately. Don't drive yourself."
+          }
         }
       }
     },
@@ -3688,6 +5866,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "水、咖啡和呼吸练习都不能抵消酒精，也不能据此判断何时能驾驶。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Water, coffee, and breathing exercises don't cancel out alcohol or tell you when it's safe to drive."
           }
         }
       }
@@ -3699,6 +5883,12 @@
             "state": "translated",
             "value": "你设置了液体限制，请遵循医生给你的饮水安排。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You've set a fluid restriction. Follow your clinician's drinking plan."
+          }
         }
       }
     },
@@ -3708,6 +5898,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "方寸"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Exhale"
           }
         }
       }
@@ -3719,6 +5915,12 @@
             "state": "translated",
             "value": "给自己留一点缓冲。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little room for yourself."
+          }
         }
       }
     },
@@ -3728,6 +5930,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "忙了一阵，给水杯续一点？按自己的需要来。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A busy stretch. Refill your glass if it suits your needs."
           }
         }
       }
@@ -3739,6 +5947,12 @@
             "state": "translated",
             "value": "快到你设定的咖啡收尾时间了。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your chosen caffeine wind-down time is coming up."
+          }
         }
       }
     },
@@ -3748,6 +5962,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "到了你预约关照自己的时间。先休息，并安排安全返程。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time for the check-in you scheduled. Rest, and arrange a safe way home."
           }
         }
       }
@@ -3759,6 +5979,12 @@
             "state": "translated",
             "value": "记一杯\n%d ml"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log a drink\n%d ml"
+          }
         }
       }
     },
@@ -3768,6 +5994,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已记录非酒精饮品 %d / %d ml"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non-alcoholic drinks logged: %d / %d ml"
           }
         }
       }
@@ -3779,6 +6011,12 @@
             "state": "translated",
             "value": "采用 %d ml 的每日记录参考"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use %d ml as my daily logging reference"
+          }
         }
       }
     },
@@ -3788,6 +6026,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "我已得到帮助，收起安全提示"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I've received help. Close this notice."
           }
         }
       }
@@ -3799,6 +6043,12 @@
             "state": "translated",
             "value": "查看此前 %d 次修订"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View %d earlier revisions"
+          }
         }
       }
     },
@@ -3809,6 +6059,12 @@
             "state": "translated",
             "value": "已展开"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expanded"
+          }
         }
       }
     },
@@ -3818,6 +6074,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已收起"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collapsed"
           }
         }
       }

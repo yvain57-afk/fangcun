@@ -44,38 +44,38 @@ enum TodayBodyContext: Equatable, Sendable {
   var explanation: String {
     switch self {
     case .loading:
-      "身体数据还在读取。"
+      "Health data is still loading."
     case .unavailable:
-      "目前没有可用的身体数据，这次只按你的状态推荐。"
+      "No usable health data yet. This suggestion uses only your check-in."
     case .buildingBaseline:
-      "个人参考还在建立，这次先按你的状态推荐。"
+      "Your baseline is still building. For now, this suggestion uses your check-in."
     case .insufficientEvidence:
-      "现有身体数据还不够，暂时不判断身体负荷。"
+      "There isn't enough health data to assess body load yet."
     case .steady:
-      "近期身体指标大致在你的个人范围内。"
+      "Recent measures are broadly within your personal range."
     case .watch:
-      "有一项身体指标偏离近期水平，今天别把强度拉满。"
+      "One measure differs from your recent level. Consider leaving room for an easier day."
     case .elevated:
-      "有两项以上身体指标偏离近期水平，今天先把恢复放前面。"
+      "Two or more measures differ from your recent level. Consider prioritizing recovery today."
     }
   }
 
   var awaitingSelectionExplanation: String {
     switch self {
     case .loading:
-      "身体数据还在读取。"
+      "Health data is still loading."
     case .unavailable:
-      "目前没有可用的身体数据。"
+      "No usable health data yet."
     case .buildingBaseline:
-      "个人参考还在建立。"
+      "Your personal baseline is still building."
     case .insufficientEvidence:
-      "现有身体数据还不够。"
+      "There isn't enough health data yet."
     case .steady:
-      "近期身体指标大致在你的个人范围内。"
+      "Recent measures are broadly within your personal range."
     case .watch:
-      "有一项身体指标偏离近期水平。"
+      "One measure differs from your recent level."
     case .elevated:
-      "有两项以上身体指标偏离近期水平。"
+      "Two or more measures differ from your recent level."
     }
   }
 }
@@ -168,14 +168,14 @@ struct TodayCoordinator: Sendable {
       isStressIdentified: isStressIdentified,
       stressProfile: decision.stressProfile,
       stressLevelTitle: isStressIdentified
-        ? stressLevelTitle(for: decision.stressProfile.level) : "还没判断",
+        ? stressLevelTitle(for: decision.stressProfile.level) : "No check-in yet",
       stressSourceRoleTitle: stressSourceRoleTitle(for: decision.stressProfile.source),
       stressSourceTitle: isStressIdentified
-        ? stressSourceTitle(for: decision.stressProfile.source) : "来源待确认",
+        ? stressSourceTitle(for: decision.stressProfile.source) : "Source not specified",
       reflectionContextTitle: reflectionContextTitle(for: decision.stressProfile),
       reflection: reflection,
       explanation: isStressIdentified
-        ? guidance(for: decision.stressProfile) : "选一下现在的状态，我马上给你结论。",
+        ? guidance(for: decision.stressProfile) : "Start with how you feel right now.",
       recommendedPractice: recommendedPractice,
       recoveryAction: recoveryAction,
       latestPractice: currentPractice,
@@ -203,7 +203,7 @@ struct TodayCoordinator: Sendable {
     case .quick(let state):
       state.title
     case .detailed(let state):
-      state.emotion?.displayName ?? "罗盘已记录"
+      state.emotion?.displayName ?? "Check-in saved"
     }
   }
 
@@ -214,88 +214,88 @@ struct TodayCoordinator: Sendable {
 
   private func stressLevelTitle(for level: CurrentStressLevel) -> String {
     switch level {
-    case .low: "压力较低"
-    case .moderate: "压力中等"
-    case .high: "压力较高"
+    case .low: "Lower reported pressure"
+    case .moderate: "Some reported pressure"
+    case .high: "Higher reported pressure"
     }
   }
 
   private func stressSourceTitle(for source: CurrentStressSource) -> String {
     switch source {
-    case .none: "没有明显来源"
-    case .work: "工作"
-    case .tasks: "待办太多"
-    case .health: "身体不适"
-    case .family: "家庭"
-    case .relationship: "关系"
-    case .money: "金钱"
-    case .training: "训练恢复"
-    case .sleep: "睡眠不足"
-    case .physicalTension: "身体持续紧绷"
-    case .mentalLoad: "思绪和情绪"
-    case .lowEnergy: "精力消耗"
-    case .bodySignals: "身体恢复"
+    case .none: "No clear source"
+    case .work: "Work"
+    case .tasks: "Too much to do"
+    case .health: "Physical discomfort"
+    case .family: "Family"
+    case .relationship: "Relationships"
+    case .money: "Money"
+    case .training: "Exercise recovery"
+    case .sleep: "Not enough sleep"
+    case .physicalTension: "Physical tension"
+    case .mentalLoad: "Thoughts and feelings"
+    case .lowEnergy: "Low energy"
+    case .bodySignals: "Recovery"
     }
   }
 
   private func stressSourceRoleTitle(for source: CurrentStressSource) -> String {
     switch source {
     case .work, .tasks, .health, .family, .relationship, .money, .training, .sleep:
-      "主要来自"
+      "Mostly connected to"
     case .physicalTension, .mentalLoad, .lowEnergy, .bodySignals:
-      "主要表现"
+      "Showing up as"
     case .none:
-      "压力来源"
+      "What's on your mind"
     }
   }
 
   private func reflectionContextTitle(for profile: CurrentStressProfile) -> String {
     switch profile.source {
     case .none:
-      return "此刻的一句"
+      return "A thought for this moment"
     case .physicalTension:
-      return "给此刻紧绷的一句"
+      return "A thought for a tense moment"
     case .mentalLoad:
-      return "给纷乱思绪的一句"
+      return "A thought for a busy mind"
     case .lowEnergy:
-      return "给疲惫的一句"
+      return "A thought for a tired day"
     case .bodySignals:
-      return "给身体恢复的一句"
+      return "A thought for recovery"
     default:
-      return "给「\(stressSourceTitle(for: profile.source))」的一句"
+      return "A thought about \(stressSourceTitle(for: profile.source))"
     }
   }
 
   private func guidance(for profile: CurrentStressProfile) -> String {
     if profile.level == .low {
-      return "现在状态稳，照常往下走。"
+      return "Things feel steady. There's no need to add anything."
     }
     switch profile.source {
     case .sleep:
-      return "睡眠正在拖累恢复，先补一段休息。"
+      return "Sleep may be affecting recovery. A little rest could be useful."
     case .training:
-      return "训练后的恢复还没跟上，今天先减量。"
+      return "You may still be recovering from exercise. Consider an easier day."
     case .lowEnergy:
-      return "精力已经掉下来，先躺下休息一会儿。"
+      return "Your energy feels low. You might like to lie down for a while."
     case .work, .tasks, .money:
       return profile.level == .high
-        ? "紧绷已经很明显，现在先停一分钟。"
-        : "事情正在占满注意力，先把呼吸慢下来。"
+        ? "You're feeling tense. Start with a small pause."
+        : "There's a lot on your mind. A gentle breathing break might help."
     case .family, .relationship:
-      return "这件事正在牵动你，先留几分钟给自己。"
+      return "This matters to you. Make a few minutes for yourself, if you can."
     case .health, .physicalTension, .bodySignals:
       return profile.level == .high
-        ? "身体的紧绷已经很明显，现在先停一下。"
-        : "身体正在持续用力，先把节奏放慢。"
+        ? "You're noticing tension in your body. Take a small pause."
+        : "Your body feels busy. You might try slowing the pace."
     case .mentalLoad:
       return profile.level == .high
-        ? "紧绷已经很明显，现在先停一分钟。"
-        : "思绪有点满，先把呼吸慢下来。"
+        ? "You're feeling tense. Start with a small pause."
+        : "Your mind feels full. Try a few easier breaths."
     case .none:
       return switch profile.level {
-      case .low: "现在状态稳，照常往下走。"
-      case .moderate: "压力已经有些累积，先缓三分钟。"
-      case .high: "紧绷已经很明显，现在先停一分钟。"
+      case .low: "Things feel steady. There's no need to add anything."
+      case .moderate: "Things have been building up. You might like three minutes to unwind."
+      case .high: "You're feeling tense. Start with a small pause."
       }
     }
   }

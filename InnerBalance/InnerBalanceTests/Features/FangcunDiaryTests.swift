@@ -62,7 +62,7 @@ struct FangcunDiaryTests {
     let diary = FangcunDiary(defaults: defaults)
     #expect(defaults.data(forKey: "fangcun.native.diary.v1") == original)
     #expect(diary.snapshot(on: date)?.isLegacy == true)
-    #expect(diary.snapshot(on: date)?.displayStateTitle == "平稳")
+    #expect(diary.snapshot(on: date)?.displayStateTitle == "Steady")
     diary.record(FangcunDaySnapshot(date: date.addingTimeInterval(1), state: .watch,
       summary: "New summary", sleep: "New sleep", training: "New training"))
     let reloaded = FangcunDiary(defaults: defaults)

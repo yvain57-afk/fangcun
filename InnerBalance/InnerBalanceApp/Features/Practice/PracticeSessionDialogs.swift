@@ -11,7 +11,7 @@ struct PracticeCloseToolbar: ToolbarContent {
         if isActive { showExitConfirmation = true } else { onDismiss() }
       }
       .frame(minWidth: 44, minHeight: 44)
-      .accessibilityLabel("关闭练习")
+      .accessibilityLabel("Close practice")
       .accessibilityIdentifier("practice.close")
     }
   }
@@ -53,9 +53,9 @@ private struct PracticeSessionDialogs: ViewModifier {
       .sheet(isPresented: Binding(get: { showFinish || showExit }, set: { if !$0 { showFinish = false; showExit = false } })) {
         ScrollView {
         VStack(alignment: .leading, spacing: 22) {
-          Text("这次先到这里？").font(.title2.weight(.semibold))
+          Text("Ready to leave it here?").font(.title2.weight(.semibold))
           Text(PracticeSessionDialogCopy.finishMessage).font(.body).foregroundStyle(InnerBalanceTheme.mutedInk)
-          Button("继续练习") { showFinish = false; showExit = false }
+          Button("Continue practice") { showFinish = false; showExit = false }
             .buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("practice.finish.cancel")
           Button(PracticeSessionDialogCopy.finishActionTitle) {
             showFinish = false; showExit = false; onFinish()
@@ -67,19 +67,19 @@ private struct PracticeSessionDialogs: ViewModifier {
           .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large]).presentationDragIndicator(.visible)
       }
       .alert(
-        "未能保留本次练习",
+        "Couldn't save this practice",
         isPresented: Binding(
           get: { saveErrorMessage != nil },
           set: { if !$0 { saveErrorMessage = nil } }
         )
       ) {
-        Button("重试") {
+        Button("Try again") {
           saveErrorMessage = nil
           if PracticeSessionDialogPolicy.shouldRetry(for: .retry) { onRetry() }
         }
-        Button("稍后处理", role: .cancel) {}
+        Button("Not now", role: .cancel) {}
       } message: {
-        Text(saveErrorMessage ?? "请重试。")
+        Text(saveErrorMessage ?? "Please try again.")
       }
   }
 }

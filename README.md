@@ -1,4 +1,4 @@
-# 方寸 Fangcun
+# Little Exhale · formerly 方寸 Fangcun
 
 留一方余地，给自己一点缓冲。
 
@@ -7,6 +7,8 @@
 **给 GPT / AI 阅读：[AI_CONTEXT.md](AI_CONTEXT.md)** · [完整文件索引](FILE_INDEX.md) · [分卷源码文本](ai/README.md) · [当前交付状态](docs/verification/STATUS.md)
 
 ## 当前版本
+
+2026-10-28：本分支接入 Little Exhale 2.0 英文体验、十种练习的透明猫狗分层动作及英文离线语音，保留旧记录、偏好、练习节拍和健康模型。详见 [本轮范围](docs/plans/LITTLE-EXHALE-2.md)、[实际验证](docs/releases/little-exhale-2/VERIFICATION.md)、[上传与审核状态](docs/releases/little-exhale-2/release-state.json)。开发签名归档已验证；分发登录待恢复，**本次尚未上传或提交审核**。以下日期为历史交付记录，不能代替当前发布状态。
 
 2026-10-21：1.0.0（2026102001）已上传 TestFlight，Apple 处理完成，原“开发自测”和“朋友体验”组均可测试，已单独回读外部组状态。正式 App Store 未提交。见 [分发记录](docs/releases/2026102001/REPORT.md)。
 

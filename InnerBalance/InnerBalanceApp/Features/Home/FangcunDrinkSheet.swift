@@ -8,7 +8,7 @@ struct FangcunDrinkSheet: View {
   @Environment(\.dismiss) private var dismiss
   @AppStorage("fangcun.coffeeMg") private var coffeeMg = 140
   @State private var sweetCoffee = false
-  @State private var feedback = "轻轻记一下，就好。"
+  @State private var feedback = "Just a quick note."
   @State private var reaction = 0
   @State private var motionEvent = CompanionMotionEvent.entered
   @State private var committedEvent: CompanionEvent?
@@ -33,14 +33,14 @@ struct FangcunDrinkSheet: View {
     let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12)) : AnyLayout(HStackLayout())
     return layout {
       VStack(alignment: .leading, spacing: 4) {
-        Text("今天喝了什么？").font(.title3.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
+        Text("What have you been sipping?").font(.title3.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
         Text(feedback).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
           .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("drinks.feedback")
       }
       HStack {
         Spacer(minLength: 0)
         FangcunCompanion(scene: .drink, paused: editing, reaction: reaction, event: motionEvent, committedEvent: committedEvent).frame(width: 68, height: 68)
-        Button("完成") { dismiss() }.font(.subheadline).frame(minWidth: 44, minHeight: 44)
+        Button("Done") { dismiss() }.font(.subheadline).frame(minWidth: 44, minHeight: 44)
       }
     }
   }
@@ -49,9 +49,9 @@ struct FangcunDrinkSheet: View {
       LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: typeSize.isAccessibilitySize ? 1 : 2), spacing: 10) {
         ForEach(kinds) { kind in drinkRow(kind) }
       }
-      Toggle("咖啡是甜拿铁（同时记糖饮）", isOn: $sweetCoffee).font(.caption).padding(.vertical, 6)
+      Toggle("Sweetened latte (also log as a sweet drink)", isOn: $sweetCoffee).font(.caption).padding(.vertical, 6)
       Button(FangcunCopy.text("diary.manage")) { editing = true }.accessibilityIdentifier("drinks.manage")
-      Text("按杯预估，实际含量会因品牌与杯量变化。酒精不折算为补水建议。")
+      Text("Cup estimates vary by brand and serving size. Alcohol isn't treated as a hydration recommendation.")
         .font(.caption2).foregroundStyle(InnerBalanceTheme.mutedInk).frame(maxWidth: .infinity, alignment: .leading)
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -59,19 +59,19 @@ struct FangcunDrinkSheet: View {
   private func drinkRow(_ kind: FangcunDrink) -> some View {
     VStack(alignment: .leading, spacing: 6) {
       Label(kind.title, systemImage: kind.symbol).font(.subheadline.weight(.semibold))
-      Text("\(kind == .water ? cupML : kind.fluid) ml" + (kind.isCoffee ? " · 约 \(coffeeMg) mg" : kind == .beer ? " · 5%" : ""))
+      Text("\(kind == .water ? cupML : kind.fluid) ml" + (kind.isCoffee ? " · About \(coffeeMg) mg" : kind == .beer ? " · 5%" : ""))
         .font(.caption2.monospacedDigit()).foregroundStyle(InnerBalanceTheme.mutedInk)
         .fixedSize(horizontal: false, vertical: true)
       HStack(spacing: 0) {
         Button { change(kind, adding: false) } label: {
           Image(systemName: "minus").frame(minWidth: 44, minHeight: 44)
-        }.accessibilityLabel("减少\(kind.title)").disabled(count(kind) == 0)
+        }.accessibilityLabel("Remove one \(kind.title)").disabled(count(kind) == 0)
         Text("\(count(kind))").font(.subheadline.monospacedDigit()).frame(maxWidth: .infinity)
           .accessibilityIdentifier("drinks.count.\(kind.rawValue)")
         Button { change(kind, adding: true) } label: {
           Image(systemName: "plus").frame(minWidth: 44, minHeight: 44)
             .background(InnerBalanceTheme.subtleFill, in: Circle())
-        }.accessibilityLabel("增加\(kind.title)")
+        }.accessibilityLabel("Add one \(kind.title)")
           .accessibilityIdentifier("drinks.add." + kind.rawValue)
       }
     }.padding(10).background(InnerBalanceTheme.surface, in: RoundedRectangle(cornerRadius: 16))
@@ -97,7 +97,7 @@ struct FangcunDrinkSheet: View {
           Text(FangcunCopy.text("drink.recordedDose", totals.knownCaffeineMG, totals.knownAlcoholGrams))
         }.font(.caption).fixedSize(horizontal: false, vertical: true).accessibilityElement(children: .combine).accessibilityIdentifier("drinks.totals")
         if !typeSize.isAccessibilitySize { Spacer() }
-        Button { report(diary.undo(), key: "drink.undone", event: .drinkUndone) } label: { Label("撤销", systemImage: "arrow.uturn.backward") }
+        Button { report(diary.undo(), key: "drink.undone", event: .drinkUndone) } label: { Label("Undo", systemImage: "arrow.uturn.backward") }
           .font(.caption).frame(minHeight: 44).disabled(!diary.canUndo)
       }
       if totals.hasUnknownCaffeine { Text(FangcunCopy.text("drink.unknownCaffeine")).font(.caption) }

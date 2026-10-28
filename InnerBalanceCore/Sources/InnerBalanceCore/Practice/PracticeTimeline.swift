@@ -31,7 +31,7 @@ public struct PracticeTimelineSnapshot: Equatable, Sendable {
     guard let segment, segment.focus.hasPrefix("pmr_"), segment.focus.hasSuffix("gentle_tension") else { return self }
     let release = PracticeGuidedSegment(id: segment.id + "_resume_release", start: segment.start,
       end: segment.end, focus: segment.focus.replacingOccurrences(of: "gentle_tension", with: "release"),
-      text: "先松开，呼吸照常。不需要补做刚才的收紧。")
+      text: "Let go and breathe naturally. You don't need to repeat the last contraction.")
     return .init(timelineMode: timelineMode, phase: nil, phaseDuration: phaseDuration,
       elapsedInPhase: elapsedInPhase, phaseProgress: phaseProgress, cycleIndex: cycleIndex,
       cueID: cueID, segment: release, variantID: variantID)

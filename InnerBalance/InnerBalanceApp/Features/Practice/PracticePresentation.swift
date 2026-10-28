@@ -136,16 +136,16 @@ enum PracticeSavedCopy {
     hasSubjectiveComparison: Bool = true
   ) -> String {
     if PracticeCompletionMode.for(kind) == .completionOnly {
-      return "本次练习已保存在本机。"
+      return "Saved on this device."
     }
     if !hasSubjectiveComparison {
       return healthNeedsAttention
-        ? "此刻的感受已经保存在本机，Apple 健康稍后再试。"
-        : "此刻的感受已经保存在本机，回到首页就能看到。"
+        ? "Your feeling is saved here. We'll retry Apple Health later."
+        : "Your feeling is saved. You'll find it in Daily."
     }
     return healthNeedsAttention
-      ? "这次变化已经保存在本机，Apple 健康稍后再试。"
-      : "这次变化已经保留，回到首页就能看到。"
+      ? "Your reflection is saved here. We'll retry Apple Health later."
+      : "Your reflection is saved. You'll find it in Daily."
   }
 }
 
@@ -162,9 +162,9 @@ enum PracticeChangeChoice: CaseIterable, Equatable {
 
   var title: String {
     switch self {
-    case .lighter: "更舒服"
-    case .same: "差不多"
-    case .heavier: "不舒服"
+    case .lighter: "A little easier"
+    case .same: "About the same"
+    case .heavier: "Less comfortable"
     }
   }
 
@@ -194,9 +194,9 @@ enum PracticeStartingChoice: CaseIterable, Equatable {
 
   var title: String {
     switch self {
-    case .okay: "还好"
-    case .some: "有点需要"
-    case .strong: "很需要"
+    case .okay: "Doing okay"
+    case .some: "Could use a pause"
+    case .strong: "Really need a pause"
     }
   }
 }
@@ -240,100 +240,100 @@ struct PracticeStageState: Equatable {
 extension PracticeKind {
   var outcomeTitle: String {
     switch self {
-    case .physiologicalSigh: "舒缓紧张"
-    case .pacedBreathing: "睡前放松"
-    case .balancedBreathing: "稳住节奏"
-    case .boxBreathing: "进入专注"
-    case .diaphragmaticBreathing: "轻松呼吸"
-    case .alternateNostrilBreathing: "静心收神"
-    case .meditation: "减少分心"
-    case .nsdr: "恢复精力"
-    case .kegel: "盆底控制"
-    case .progressiveMuscleRelaxation: "分组松一松"
+    case .physiologicalSigh: "Let the tension ease"
+    case .pacedBreathing: "Wind down"
+    case .balancedBreathing: "Find your rhythm"
+    case .boxBreathing: "Gather your attention"
+    case .diaphragmaticBreathing: "Breathe with less effort"
+    case .alternateNostrilBreathing: "One side at a time"
+    case .meditation: "Make room for your thoughts"
+    case .nsdr: "A place to rest"
+    case .kegel: "Build gentle control"
+    case .progressiveMuscleRelaxation: "Let your body soften"
     }
   }
   var title: String {
     switch self {
-    case .physiologicalSigh: "生理性叹息"
-    case .pacedBreathing: "节律呼吸"
-    case .balancedBreathing: "均衡慢呼吸"
-    case .boxBreathing: "方块呼吸"
-    case .diaphragmaticBreathing: "膈肌呼吸"
-    case .alternateNostrilBreathing: "交替鼻孔呼吸"
-    case .meditation: "冥想"
+    case .physiologicalSigh: "A little sigh"
+    case .pacedBreathing: "Longer exhale"
+    case .balancedBreathing: "Even breathing"
+    case .boxBreathing: "Box breathing"
+    case .diaphragmaticBreathing: "Belly breathing"
+    case .alternateNostrilBreathing: "Alternate nostril"
+    case .meditation: "A quiet moment"
     case .nsdr: "NSDR"
-    case .kegel: "凯格尔"
-    case .progressiveMuscleRelaxation: "渐进式肌肉放松"
+    case .kegel: "Pelvic floor"
+    case .progressiveMuscleRelaxation: "Muscle relaxation"
     }
   }
   var summary: String {
     switch self {
-    case .physiologicalSigh: "用两次轻吸和一次长呼，放慢急促的呼吸，松开紧绷感。"
-    case .pacedBreathing: "把呼气放长，让身体慢下来，为休息和入睡做准备。"
-    case .balancedBreathing: "用均匀的吸气和呼气，练习稳定、从容的呼吸节奏。"
-    case .boxBreathing: "跟随吸、停、呼、停四段节拍，把注意力收回到眼前。"
-    case .diaphragmaticBreathing: "学会用腹部和下肋轻柔呼吸，减少肩颈带着用力。"
-    case .alternateNostrilBreathing: "在左右鼻孔交替中集中注意，暂时放下纷乱的思绪。"
-    case .meditation: "练习发现走神、放下念头，再把注意力带回当下。"
-    case .nsdr: "通过躺式放松和身体扫描缓解疲惫，让身心获得一段深度休息。"
-    case .kegel: "练习盆底肌的收紧、保持与放松，逐步增强盆底控制。"
-    case .progressiveMuscleRelaxation: "依次轻轻收紧八组肌肉，再留出更长时间松开，感受用力与休息的区别。"
+    case .physiologicalSigh: "Two gentle breaths in, one slow breath out. A small pause when things feel like a lot."
+    case .pacedBreathing: "A little more time on the out-breath, for winding down at the end of a busy day."
+    case .balancedBreathing: "Equal time breathing in and out. A simple rhythm to return to."
+    case .boxBreathing: "In, pause, out, pause. Four gentle steps to gather your attention."
+    case .diaphragmaticBreathing: "Notice your belly and lower ribs move, without asking your shoulders to work harder."
+    case .alternateNostrilBreathing: "Follow one side, then the other. Give your attention a simple place to land."
+    case .meditation: "Notice when your mind wanders, and gently come back. No empty mind required."
+    case .nsdr: "Lie down for a guided body scan and some quiet rest. You don't have to fall asleep."
+    case .kegel: "Practice a gentle pelvic floor lift, with plenty of time to release."
+    case .progressiveMuscleRelaxation: "Gently tense and release eight muscle groups. Notice what changes when you let go."
     }
   }
   var bestFor: String {
     switch self {
-    case .physiologicalSigh: "突然紧张、忙碌间隙，或想先缓一缓。"
-    case .pacedBreathing: "睡前、一天结束后，或需要安静下来的时刻。"
-    case .balancedBreathing: "日常固定练习、工作间隙，或喜欢简单节拍的时候。"
-    case .boxBreathing: "工作、阅读、演讲准备之前。"
-    case .diaphragmaticBreathing: "想学会不费力的呼吸，或先熟悉身体动作。"
-    case .alternateNostrilBreathing: "可以空出一只手，想做一段专注的静心练习。"
-    case .meditation: "思绪很多、难以停下，或想练习注意力。"
-    case .nsdr: "午间、工作之后，或需要躺下歇一会儿。"
-    case .kegel: "主动选择盆底肌训练，且已经了解正确动作。"
-    case .progressiveMuscleRelaxation: "日间需要松一松身体，或睡前想安静休息的时候。"
+    case .physiologicalSigh: "When you're feeling tense, between tasks, or whenever you'd like a pause."
+    case .pacedBreathing: "Before bed, after a long day, or when you'd like to slow down."
+    case .balancedBreathing: "For a daily pause, a work break, or when a simple rhythm feels right."
+    case .boxBreathing: "Before work, reading, or a conversation that needs your attention."
+    case .diaphragmaticBreathing: "When you'd like to explore easier breathing at your own pace."
+    case .alternateNostrilBreathing: "When you have a free hand and a quiet moment to focus."
+    case .meditation: "When your mind feels busy, or you'd like to practice coming back."
+    case .nsdr: "At midday, after work, or when you have time to lie down and rest."
+    case .kegel: "When you've chosen pelvic floor training and know the correct movement."
+    case .progressiveMuscleRelaxation: "For a daytime reset or a quieter way to settle before bed."
     }
   }
   var steps: String {
     switch self {
-    case .physiologicalSigh: "轻轻鼻吸 → 再补一小口 → 用嘴慢慢呼出。"
-    case .pacedBreathing: "轻轻吸气 4 秒 → 慢慢呼气 6 秒，全程不屏息。"
-    case .balancedBreathing: "吸气与呼气一样长；默认各 5 秒，也可选各 4 秒。"
-    case .boxBreathing: "吸气 3 秒 → 停留 3 秒 → 呼气 3 秒 → 停留 3 秒。"
-    case .diaphragmaticBreathing: "手轻放腹部或下肋，感受吸气时轻轻展开、呼气时回落；按自己的节奏。"
-    case .alternateNostrilBreathing: "左侧吸 → 右侧呼 → 右侧吸 → 左侧呼；轻轻换边，不屏息。"
-    case .meditation: "感受身体被托住 → 留意自然呼吸 → 走神后温和地回来。"
-    case .nsdr: "躺稳 → 跟随声音扫描身体 → 安静休息 → 缓缓回来。"
-    case .kegel: "轻收 4 秒 → 完全放松 8 秒，始终自然呼吸。"
-    case .progressiveMuscleRelaxation: "八组肌肉各做一次：先听动作说明，轻收 5 秒，再松开 25 秒；始终自然呼吸。"
+    case .physiologicalSigh: "Gently in through your nose → one small top-up → slowly out through your mouth."
+    case .pacedBreathing: "Breathe in for 4 seconds → out for 6. No holds."
+    case .balancedBreathing: "Equal time in and out: 5 seconds each, or choose 4."
+    case .boxBreathing: "In for 3 → pause for 3 → out for 3 → pause for 3."
+    case .diaphragmaticBreathing: "Rest your hand on your belly or lower ribs. Notice a little expansion and release, at your own pace."
+    case .alternateNostrilBreathing: "Left in → right out → right in → left out. Switch gently, without holding your breath."
+    case .meditation: "Feel your support → notice a natural breath → gently return when your mind wanders."
+    case .nsdr: "Lie down → follow the body scan → rest quietly → gently return."
+    case .kegel: "Gently lift for 4 seconds → fully release for 8. Keep breathing naturally."
+    case .progressiveMuscleRelaxation: "Eight muscle groups, once each. Hear the guidance, gently tense for 5 seconds, then release for 25. Keep breathing naturally."
     }
   }
   var preparation: String {
     switch self {
-    case .physiologicalSigh: "轻柔呼吸，不必吸满；头晕或不舒服时停止，恢复自然呼吸。"
-    case .pacedBreathing: "不追求深吸或用力呼尽；节奏吃力时停止，恢复自然呼吸。"
-    case .balancedBreathing: "轻柔呼吸，不必吸满；不舒服时停止。"
-    case .boxBreathing: "含短暂停留。无需忍耐憋气；不舒服时恢复自然呼吸，可换均衡慢呼吸。"
-    case .diaphragmaticBreathing: "不故意鼓大肚子，不压腹部，不强行深吸；不适时停止。"
-    case .alternateNostrilBreathing: "鼻塞或鼻部不舒服时换其他方法；手指轻放，不压迫鼻子。"
-    case .meditation: "可以睁眼练习；不舒服时看看周围并结束。"
-    case .nsdr: "在安全、能休息的地方使用；不在驾驶或操作设备时练习，不能代替正常睡眠。"
-    case .kegel: "不在排尿时练习；腹部、臀部和大腿保持放松。盆底持续紧张、疼痛、排尿排便异常或产后术后恢复中，先咨询专业人员。"
-    case .progressiveMuscleRelaxation: "疼痛、受伤或容易抽筋的部位可跳过收紧，只感觉支撑；不适时立即松开，不必等满 5 秒。近期术后或被限制用力时，先按专业建议练习。"
+    case .physiologicalSigh: "Keep it gentle. Stop if you feel dizzy or uncomfortable, and breathe normally."
+    case .pacedBreathing: "Don't force a deep breath or empty your lungs. If the pace feels difficult, stop and breathe normally."
+    case .balancedBreathing: "Keep each breath gentle. Stop if you feel uncomfortable."
+    case .boxBreathing: "Includes short holds. Don't push through discomfort. Breathe normally and try Even breathing instead."
+    case .diaphragmaticBreathing: "Don't push your belly out, press inward, or force a deep breath. Stop if uncomfortable."
+    case .alternateNostrilBreathing: "Choose another practice if your nose is blocked or uncomfortable. Cover lightly, without squeezing."
+    case .meditation: "You can keep your eyes open. If uncomfortable, look around and stop."
+    case .nsdr: "Use only where you can rest safely. Never while driving or operating equipment. This doesn't replace sleep."
+    case .kegel: "Don't practice while urinating. Keep your belly, bottom, and thighs relaxed. For ongoing pelvic tension or pain, bladder or bowel symptoms, or recovery after childbirth or surgery, follow your clinician's advice."
+    case .progressiveMuscleRelaxation: "Skip tightening any painful, injured, or cramp-prone area. Release immediately if uncomfortable; don't wait for 5 seconds. Follow professional advice after surgery or when exertion is restricted."
     }
   }
   var completionReview: String {
     switch self {
-    case .physiologicalSigh: "完成了一段舒缓呼吸练习。"
-    case .pacedBreathing: "完成了一段睡前放松练习。"
-    case .balancedBreathing: "完成了一段均衡呼吸练习。"
-    case .boxBreathing: "完成了一段专注呼吸练习。"
-    case .diaphragmaticBreathing: "完成了一段呼吸动作练习。"
-    case .alternateNostrilBreathing: "完成了一段交替鼻孔呼吸。"
-    case .meditation: "完成了一段注意力练习。"
-    case .nsdr: "完成了一段 NSDR 深度休息。"
-    case .kegel: "完成了一段盆底控制练习。"
-    case .progressiveMuscleRelaxation: "完成了一段肌肉收放练习。"
+    case .physiologicalSigh: "You took a moment for a little sigh."
+    case .pacedBreathing: "You made time to wind down."
+    case .balancedBreathing: "You spent a little time with an even rhythm."
+    case .boxBreathing: "You made a little room for focus."
+    case .diaphragmaticBreathing: "You explored easier breathing."
+    case .alternateNostrilBreathing: "You finished an alternate nostril practice."
+    case .meditation: "You made room for a quiet moment."
+    case .nsdr: "You gave yourself time to rest."
+    case .kegel: "You finished a pelvic floor practice."
+    case .progressiveMuscleRelaxation: "You gave your muscles time to let go."
     }
   }
   var outcomeDetail: String { summary }
@@ -355,16 +355,16 @@ extension PracticeKind {
   }
   var v4Tags: [String] {
     switch self {
-    case .physiologicalSigh: ["放松"]
-    case .pacedBreathing: ["放松", "休息"]
-    case .balancedBreathing: ["放松"]
-    case .boxBreathing: ["专注"]
-    case .diaphragmaticBreathing: ["放松", "身体训练"]
-    case .alternateNostrilBreathing: ["专注"]
-    case .meditation: ["专注"]
-    case .nsdr: ["休息"]
-    case .kegel: ["身体训练"]
-    case .progressiveMuscleRelaxation: ["放松", "休息", "身体训练"]
+    case .physiologicalSigh: ["Unwind"]
+    case .pacedBreathing: ["Unwind", "Rest"]
+    case .balancedBreathing: ["Unwind"]
+    case .boxBreathing: ["Focus"]
+    case .diaphragmaticBreathing: ["Unwind", "Body"]
+    case .alternateNostrilBreathing: ["Focus"]
+    case .meditation: ["Focus"]
+    case .nsdr: ["Rest"]
+    case .kegel: ["Body"]
+    case .progressiveMuscleRelaxation: ["Unwind", "Rest", "Body"]
     }
   }
   func cue(elapsed: TimeInterval, duration: TimeInterval? = nil) -> String {
@@ -376,7 +376,7 @@ extension PracticeKind {
 enum PracticeDurationFormatter {
   static func text(_ duration: TimeInterval) -> String {
     let minutes = max(1, Int(duration / 60))
-    return "\(minutes) 分钟"
+    return "\(minutes) min"
   }
 
   static func clock(_ duration: TimeInterval) -> String {

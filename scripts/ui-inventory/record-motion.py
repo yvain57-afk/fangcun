@@ -6,6 +6,8 @@ import argparse, json, shutil, signal, subprocess, time
 parser=argparse.ArgumentParser()
 parser.add_argument('--simulator',required=True)
 parser.add_argument('--output',required=True)
+parser.add_argument('--derived-data')
+parser.add_argument('--also-test', action='append', default=[])
 args=parser.parse_args()
 root=Path(__file__).resolve().parents[2]
 out=Path(args.output).resolve(); out.mkdir(parents=True,exist_ok=True)
@@ -13,7 +15,8 @@ source=Path(__file__).with_name('MotionReviewUITests.swift')
 target=root/'InnerBalance/InnerBalanceUITests'/source.name
 if target.exists(): raise SystemExit('Refusing to overwrite an existing UI test source')
 shutil.copy2(source,target)
-cmd=['xcodebuild','test','-project','InnerBalance/InnerBalance.xcodeproj','-scheme','InnerBalance','-destination','platform=iOS Simulator,id='+args.simulator,'-derivedDataPath',str(out.parent/'Derived'),'-resultBundlePath',str(out/'Motion.xcresult'),'-parallel-testing-enabled','NO','-collect-test-diagnostics','never','-only-testing:InnerBalanceUITests/MotionReviewUITests','CODE_SIGNING_ALLOWED=NO']
+cmd=['xcodebuild','test','-project','InnerBalance/InnerBalance.xcodeproj','-scheme','InnerBalance','-destination','platform=iOS Simulator,id='+args.simulator,'-derivedDataPath',str(Path(args.derived_data).resolve() if args.derived_data else out.parent/'Derived'),'-resultBundlePath',str(out/'Motion.xcresult'),'-parallel-testing-enabled','NO','-collect-test-diagnostics','never','-only-testing:InnerBalanceUITests/MotionReviewUITests','CODE_SIGNING_ALLOWED=NO']
+cmd += ['-only-testing:' + item for item in args.also_test]
 recorder=None;receipt=[]
 def stop():
  global recorder

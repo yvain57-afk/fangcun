@@ -28,7 +28,7 @@ struct PracticeFeature: View {
         onStart(PracticeLaunch(kind: plan.kind, duration: plan.defaultDuration))
       } label: {
         HStack {
-          Text("开始")
+          Text("Start")
           Spacer()
           Text(PracticeDurationFormatter.text(plan.defaultDuration))
             .font(.subheadline.monospacedDigit())
@@ -36,7 +36,7 @@ struct PracticeFeature: View {
         }
       }
       .buttonStyle(PracticeLaunchButtonStyle())
-      .accessibilityLabel("开始\(plan.kind.title)，1 分钟")
+      .accessibilityLabel("Start \(plan.kind.title), 1 minute")
       .accessibilityIdentifier("practice.\(plan.kind.rawValue).\(Int(plan.defaultDuration))")
     }
     .padding(FangcunLayout.spacing(6))
@@ -101,7 +101,7 @@ struct PracticeLibraryRow: View {
         }
       }
       .buttonStyle(PracticeDurationButtonStyle())
-      .accessibilityLabel("开始\(plan.kind.title)，\(PracticeDurationFormatter.text(duration))")
+      .accessibilityLabel("Start \(plan.kind.title), \(PracticeDurationFormatter.text(duration))")
       .accessibilityIdentifier("practice.\(plan.kind.rawValue).\(Int(duration))")
     }
   }

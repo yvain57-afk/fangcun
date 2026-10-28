@@ -34,11 +34,11 @@ struct PracticeLibraryView: View {
   @AppStorage("fangcun.reduceMotion") private var reduceMotion = false
   @AppStorage("fangcun.motionMode") private var motionMode = "standard"
   @AppStorage(PracticeHubPreferences.quickKindKey) private var quickKind = ""
-  @State private var filter = "全部"
+  @State private var filter = "All"
   @State private var mainVisible = false
   @State private var previewStartedAt = Date.now
   @State private var checkpoint: PracticeSessionCheckpoint?
-  private let filters = ["全部", "放松", "专注", "休息", "身体训练"]
+  private let filters = ["All", "Unwind", "Focus", "Rest", "Body"]
   private let order: [PracticeKind] = [.physiologicalSigh, .pacedBreathing, .nsdr, .meditation,
     .balancedBreathing, .boxBreathing, .diaphragmaticBreathing, .alternateNostrilBreathing, .kegel, .progressiveMuscleRelaxation]
   private var featured: PracticeKind {
@@ -53,7 +53,7 @@ struct PracticeLibraryView: View {
     return plannedNight || (care?.preferences.sleepPlanConfirmed != true && (hour >= 22 || hour < 6))
       ? .pacedBreathing : .physiologicalSigh
   }
-  private var filtered: [PracticeKind] { order.filter { filter == "全部" || $0.v4Tags.contains(filter) } }
+  private var filtered: [PracticeKind] { order.filter { filter == "All" || $0.v4Tags.contains(filter) } }
 
   var body: some View {
     NavigationStack {
@@ -62,25 +62,35 @@ struct PracticeLibraryView: View {
           HStack(spacing: 10) {
             FangcunBrandMark(size: 36)
             VStack(alignment: .leading, spacing: 3) {
-              Text("方寸").font(.title3.weight(.semibold)).tracking(2)
-              Text("呼吸与身心练习").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+              Text("Little Exhale").font(.system(.title2, design: .serif, weight: .medium))
+              Text("A little room to breathe").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
             }
             Spacer()
             Button(action: onRecords) { Image(systemName: "clock.arrow.circlepath").frame(width: 44, height: 44) }
-              .accessibilityLabel("练习记录").accessibilityIdentifier("hub.records")
+              .accessibilityLabel("Your practice").accessibilityIdentifier("hub.records")
           }.padding(.vertical, 4)
           if let checkpoint {
             VStack(alignment: .leading, spacing: 12) {
-              Text(checkpoint.endedAt == nil ? "继续上次练习" : "保留上次练习").font(.title2.weight(.semibold))
-              Text(checkpoint.kind.title + " · 剩余 " + PracticeDurationFormatter.clock(max(0, checkpoint.duration - checkpoint.actualDuration)))
+              Text(checkpoint.endedAt == nil ? "Pick up where you left off" : "Your practice is still here").font(.title2.weight(.semibold))
+              Text(checkpoint.kind.title + " · Remaining: " + PracticeDurationFormatter.clock(max(0, checkpoint.duration - checkpoint.actualDuration)))
                 .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
-              Text("离开期间不计时。回来后，先自然呼吸。").font(.caption)
-              Button("回到练习") {
+              Text("Time away doesn't count. Take a natural breath before continuing.").font(.caption)
+              Button("Return to practice") {
                 onStart(.init(kind: checkpoint.kind, duration: checkpoint.duration, variantID: checkpoint.variantID,
                   restoredCheckpoint: checkpoint))
               }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("hub.resume")
             }.fangcunPaperCard()
           } else { featuredCard }
+          if let latestPractice {
+            Button(action: onRecords) {
+              HStack {
+                Image(systemName: "checkmark.circle")
+                Text("Last time · " + latestPractice.practiceKind.title)
+                Spacer()
+                Image(systemName: "chevron.right")
+              }.font(.subheadline).padding(.vertical, 14)
+            }.accessibilityIdentifier("hub.latestPractice")
+          }
           ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
               ForEach(filters, id: \.self) { item in
@@ -94,21 +104,11 @@ struct PracticeLibraryView: View {
             }
           }
           HStack {
-            Text(filter == "全部" ? "10 项呼吸与身心练习" : filter + "练习").font(.headline)
+            Text(filter == "All" ? "Find your next small pause" : filter + " practices").font(.headline)
             Spacer()
           }
           LazyVStack(spacing: 14) { ForEach(filtered, id: \.rawValue) { methodCard($0) } }
-          if let latestPractice {
-            Button(action: onRecords) {
-              HStack {
-                Image(systemName: "checkmark.circle")
-                Text("最近练习 · " + latestPractice.practiceKind.title)
-                Spacer()
-                Image(systemName: "chevron.right")
-              }.font(.subheadline).padding(.vertical, 14)
-            }.accessibilityIdentifier("hub.latestPractice")
-          }
-          Text("用呼吸放松，用练习找回专注与身体控制。")
+          Text("A little breathing room, whatever your day feels like.")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.vertical, 8)
         }.padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 24)
       }
@@ -141,13 +141,13 @@ struct PracticeLibraryView: View {
   }
   private var featuredText: some View {
     VStack(alignment: .leading, spacing: 8) {
-      Text("给自己，\n一次慢呼吸").font(.title2.weight(.semibold))
+      Text("A small pause.\nA softer next moment.").font(.system(.title, design: .serif, weight: .medium))
       NavigationLink { PracticeMethodDetailView(kind: featured, onStart: onStart) } label: {
         HStack(spacing: 4) {
           Text(featured.title + " · " + PracticeDurationFormatter.text(featured.v4DefaultDuration))
           Image(systemName: "info.circle").font(.caption)
         }.font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).frame(minHeight: 44)
-      }.accessibilityLabel(featured.title + "，方法说明")
+      }.accessibilityLabel(featured.title + ", practice details")
       Text(featured.useContext).font(.subheadline).fixedSize(horizontal: false, vertical: true)
         .foregroundStyle(InnerBalanceTheme.mutedInk)
     }
@@ -170,14 +170,14 @@ struct PracticeLibraryView: View {
     else { HStack(spacing: 10) { quickStartButton; minuteExperienceButton } }
   }
   private var quickStartButton: some View {
-    Button("开始" + PracticeDurationFormatter.text(featured.v4DefaultDuration)) {
+    Button("Begin · " + PracticeDurationFormatter.text(featured.v4DefaultDuration)) {
       onStart(.init(kind: featured, duration: featured.v4DefaultDuration,
         startsImmediately: PracticeHubPreferences.hasLearned(featured)))
     }.buttonStyle(InnerBalancePrimaryButtonStyle()).accessibilityIdentifier("hub.quickStart")
   }
   @ViewBuilder private var minuteExperienceButton: some View {
     if featured == .physiologicalSigh {
-      Button("体验 1 分钟") { onStart(.init(kind: .physiologicalSigh, duration: 60)) }
+      Button("Just one minute") { onStart(.init(kind: .physiologicalSigh, duration: 60)) }
         .font(.subheadline.weight(.medium)).frame(minWidth: 88, minHeight: 44)
         .accessibilityIdentifier("practice.physiologicalSigh.60")
     }
@@ -259,61 +259,61 @@ struct PracticeMethodDetailView: View {
 
         }
         .onScrollVisibilityChange(threshold: 0.1) { demoVisible = $0 }
-        Button(demonstration ? "停止示范" : "看看动作示范") { demoStartedAt = .now; demonstration.toggle() }
+        Button(demonstration ? "Stop preview" : "Preview the movement") { demoStartedAt = .now; demonstration.toggle() }
           .font(.subheadline).frame(minHeight: 44).accessibilityIdentifier("practice.demo")
-        if demonstration { Text("动作示范 · 不计入练习时长").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk) }
+        if demonstration { Text("Preview · Doesn't count toward your practice").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk) }
         ProportionalPhaseBar(kind: kind, variantID: chosenVariant, compact: true)
-        Picker("练习时长", selection: Binding(get: { chosenDuration }, set: { duration = $0 })) {
+        Picker("Time for yourself", selection: Binding(get: { chosenDuration }, set: { duration = $0 })) {
           ForEach(PracticeCatalog.protocol(for: kind)?.durationOptions ?? [], id: \.self) { value in
             Text(PracticeDurationFormatter.text(value)).tag(value)
           }
         }.pickerStyle(.segmented).accessibilityIdentifier("practice.duration")
         if kind == .balancedBreathing {
-          Picker("舒适节拍", selection: $variantID) {
-            Text("吸 5 秒 / 呼 5 秒").tag("equal_5_5")
-            Text("吸 4 秒 / 呼 4 秒").tag("easy_4_4")
+          Picker("Choose your rhythm", selection: $variantID) {
+            Text("5 seconds in / 5 out").tag("equal_5_5")
+            Text("4 seconds in / 4 out").tag("easy_4_4")
           }.pickerStyle(.segmented).accessibilityIdentifier("practice.variant")
         }
         if kind == .progressiveMuscleRelaxation {
-          Picker("结束方式", selection: $pmrEnding) {
-            Text("日间 · 慢慢回来").tag("pmr_day")
-            Text("睡前 · 安静休息").tag("pmr_sleep")
+          Picker("How would you like to finish?", selection: $pmrEnding) {
+            Text("Daytime · Gently return").tag("pmr_day")
+            Text("Bedtime · Stay resting").tag("pmr_sleep")
           }.pickerStyle(.segmented).accessibilityIdentifier("practice.pmr.ending")
-          Text("同样 10 分钟，只改变最后一分钟的引导。全程自然呼吸，不跟吸呼节拍。")
+          Text("Both last 10 minutes. Only the final minute changes. Breathe naturally throughout.")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         }
-        DisclosureGroup("开场说明") {
+        DisclosureGroup("Before you begin") {
           Text(PracticeGuidanceContent.introduction(for: kind, variantID: chosenVariant))
             .font(.body).lineSpacing(5).padding(.top, 12)
-          Toggle("下次跳过这项说明", isOn: Binding(
+          Toggle("Skip this introduction next time", isOn: Binding(
             get: { skipsIntro },
             set: { skipsIntro = $0; PracticeIntroductionPreferences.setSkips($0, for: kind) }))
             .font(.subheadline).tint(InnerBalanceTheme.strongFill)
         }.fangcunPaperCard()
-        DisclosureGroup("动作要领与注意事项") {
+        DisclosureGroup("How it works and what to notice") {
           VStack(alignment: .leading, spacing: 12) {
             Text(kind.steps).font(.body)
             Text(kind.preparation).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
             PracticeHumanInstruction(kind: kind)
           }.padding(.top, 12)
         }.fangcunPaperCard()
-        DisclosureGroup("引导设置") {
+        DisclosureGroup("Make it yours") {
           PracticeSoundControls(mode: Binding(get: { sound.mode(hasVoiceAssets: PracticeVoiceAssets.isAvailable(for: kind)) }, set: { sound.preferredMode = $0 }),
             ambienceEnabled: Binding(get: { sound.ambienceEnabled }, set: { sound.ambienceEnabled = $0 }),
             voiceAvailable: PracticeVoiceAssets.isAvailable(for: kind))
         }
         if kind == .alternateNostrilBreathing {
-          Text("仅节奏或静音时，请看左右文字提示；相似的轻触不能代替换边教学。")
+          Text("Without voice, follow the left and right labels. Haptics alone don't tell you which side to use.")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         }
-        Toggle("设为首页快捷练习", isOn: Binding(get: { quickKind == kind.rawValue }, set: { selected in
+        Toggle("Make this my home shortcut", isOn: Binding(get: { quickKind == kind.rawValue }, set: { selected in
           quickKind = selected ? kind.rawValue : ""
         })).tint(InnerBalanceTheme.strongFill).accessibilityIdentifier("practice.pin")
       }.padding(20).padding(.bottom, 16)
     }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)
       .navigationTitle(kind.title).navigationBarTitleDisplayMode(.inline)
       .safeAreaInset(edge: .bottom) {
-        Button("开始" + PracticeDurationFormatter.text(chosenDuration)) {
+        Button("Begin · " + PracticeDurationFormatter.text(chosenDuration)) {
           demonstration = false
           // The detail contains the method's movement and safety teaching; no second questionnaire.
           PracticeHubPreferences.markLearned(kind)
@@ -338,30 +338,30 @@ struct PracticeRecordsView: View {
   var body: some View {
     List {
       Section {
-        Picker("按方法查看", selection: $selectedMethod) {
-          Text("全部方法").tag("all")
+        Picker("Browse by practice", selection: $selectedMethod) {
+          Text("All practices").tag("all")
           ForEach(PracticeKind.allCases, id: \.rawValue) { Text($0.title).tag($0.rawValue) }
         }
       }
       if records.isEmpty {
         VStack(spacing: 12) {
           PracticeCompanionV4(kind: .meditation, elapsed: 0, duration: 300, isActive: false).frame(height: 150)
-          Text("练习过的时间，会留在这里。").foregroundStyle(InnerBalanceTheme.mutedInk)
+          Text("Your small pauses will find a home here.").foregroundStyle(InnerBalanceTheme.mutedInk)
         }.frame(maxWidth: .infinity).listRowBackground(InnerBalanceTheme.surface)
       }
       ForEach(records, id: \.sessionID) { record in
         VStack(alignment: .leading, spacing: 8) {
           Text(record.startedAt, format: .dateTime.month().day().weekday()).font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
           Text(record.practiceKind.title).font(.headline)
-          Text(PracticeDurationFormatter.clock(record.actualDuration) + " · " + (record.actualDuration >= record.plannedDuration - 1 ? "完成" : "提前结束"))
+          Text(PracticeDurationFormatter.clock(record.actualDuration) + " · " + (record.actualDuration >= record.plannedDuration - 1 ? "Done" : "Finished early"))
             .font(.subheadline)
-          if let feedback = record.metadata?.subjectiveFeedback { Text(feedback).font(.caption.weight(.semibold)).padding(.horizontal, 12).padding(.vertical, 7).background(Color("FangcunExhale").opacity(0.10), in: Capsule()).foregroundStyle(Color("FangcunExhale")) }
+          if let feedback = record.metadata?.subjectiveFeedback { Text(PracticeFeedbackCopy.englishTitle(feedback)).font(.caption.weight(.semibold)).padding(.horizontal, 12).padding(.vertical, 7).background(Color("FangcunExhale").opacity(0.10), in: Capsule()).foregroundStyle(Color("FangcunExhale")) }
         }.padding(.vertical, 5)
           .accessibilityElement(children: .combine)
           .accessibilityIdentifier("practice.history.record").accessibilityValue(record.sessionID)
       }
-      if let recovery { Section { NavigationLink("轻行动与旧记录") { RecoveryHistoryView(owner: recovery) } } }
-    }.navigationTitle("练习记录").scrollContentBackground(.hidden).background(InnerBalanceTheme.canvas)
+      if let recovery { Section { NavigationLink("Small actions and earlier entries") { RecoveryHistoryView(owner: recovery) } } }
+    }.navigationTitle("Your practice").scrollContentBackground(.hidden).background(InnerBalanceTheme.canvas)
       .accessibilityIdentifier("practice.history")
   }
 }

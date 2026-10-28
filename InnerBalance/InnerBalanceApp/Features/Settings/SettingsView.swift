@@ -29,57 +29,57 @@ struct SettingsView: View {
           NavigationLink(FangcunCopy.text("readiness.settings")) { ReadinessSettingsView(owner: readiness) }
         }
         Section {
-          Toggle(isOn: $dark) { Label("深色模式", systemImage: "moon") }
-          Toggle(isOn: $large) { Label("较大字号", systemImage: "textformat.size") }
+          Toggle(isOn: $dark) { Label("Dark appearance", systemImage: "moon") }
+          Toggle(isOn: $large) { Label("Larger text", systemImage: "textformat.size") }
           Picker(FangcunCopy.text("motion.mode"), selection: $motionMode) {
             ForEach(["standard", "gentle", "static"], id: \.self) { Text(FangcunCopy.text("motion." + $0)).tag($0) }
           }
-          Toggle(isOn: $reduced) { Label("减少动态效果", systemImage: "leaf") }
-        } header: { Text("舒服的方式，由你决定") }
+          Toggle(isOn: $reduced) { Label("Reduce motion", systemImage: "leaf") }
+        } header: { Text("Make yourself comfortable") }
         .listRowBackground(InnerBalanceTheme.surface)
-        Section("声音引导") {
+        Section("Voice guidance") {
           PracticeSoundControls(mode: Binding(get: { practiceSound.mode(hasVoiceAssets: PracticeVoiceAssets.isAvailable(for: .physiologicalSigh)) }, set: { practiceSound.preferredMode = $0 }),
             ambienceEnabled: Binding(get: { practiceSound.ambienceEnabled }, set: { practiceSound.ambienceEnabled = $0 }),
             voiceAvailable: PracticeVoiceAssets.isAvailable(for: .physiologicalSigh))
         }.listRowBackground(InnerBalanceTheme.surface)
         Section {
-          NavigationLink { if let readiness, readiness.enabled { DailyStatusHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: { Label("历史与趋势", systemImage: "chart.bar") }
+          NavigationLink { if let readiness, readiness.enabled { DailyStatusHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: { Label("History and patterns", systemImage: "chart.bar") }
           Stepper(value: $coffeeMg, in: 0...500, step: 10) {
             VStack(alignment: .leading, spacing: 4) {
-              Text("每杯咖啡因约 \(coffeeMg) mg")
-              Text("只影响之后新增的咖啡记录").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+              Text("About \(coffeeMg) mg caffeine per cup")
+              Text("Applies only to coffee logged from now on").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
             }
           }
-        } header: { Text("记录与预设") }
+        } header: { Text("Logging preferences") }
         .listRowBackground(InnerBalanceTheme.surface)
         Section {
           NavigationLink {
             PrivacyView()
           } label: {
-            Label("隐私与数据", systemImage: "hand.raised.fill")
+            Label("Privacy and data", systemImage: "hand.raised.fill")
           }
           if !isUITesting {
             Button {
               Task { _ = await authorizationCoordinator.request(.initialBodyStatus); await readiness?.refresh() }
             } label: {
-              Label("管理 Apple 健康权限", systemImage: "heart.text.clipboard")
+              Label("Manage Apple Health access", systemImage: "heart.text.clipboard")
             }
           }
         } header: {
-          Text("数据掌握在你手中")
+          Text("Your data, your choice")
         }
         .listRowBackground(InnerBalanceTheme.surface)
         .listRowSeparatorTint(InnerBalanceTheme.hairline)
 
         if diagnosticsAvailable {
-          Section("支持") {
+          Section("Support") {
             NavigationLink {
               DiagnosticsView(
                 homeViewModel: homeViewModel,
                 healthRepository: healthRepository
               )
             } label: {
-              Label("诊断与导出", systemImage: "stethoscope")
+              Label("Diagnostics and export", systemImage: "stethoscope")
             }
           }
           .listRowBackground(InnerBalanceTheme.surface)
@@ -93,17 +93,17 @@ struct SettingsView: View {
             HStack(spacing: 14) {
               FangcunBrandMark(size: 36)
               VStack(alignment: .leading, spacing: 5) {
-                Text("方寸 Fangcun").font(.headline)
-                Text("给自己，留一点空间。")
+                Text("Little Exhale").font(.headline)
+                Text("A little room to breathe.")
                   .font(.caption)
                   .foregroundStyle(InnerBalanceTheme.mutedInk)
               }
               .padding(.vertical, 8)
             }
           }
-          LabeledContent("版本", value: appVersion)
+          LabeledContent("Version", value: appVersion)
         } header: {
-          Text("关于")
+          Text("About")
         }
         .listRowBackground(InnerBalanceTheme.surface)
         .listRowSeparatorTint(InnerBalanceTheme.hairline)
@@ -112,8 +112,8 @@ struct SettingsView: View {
       .tint(InnerBalanceTheme.strongFill)
       .scrollContentBackground(.hidden)
       .background(InnerBalanceTheme.canvas)
-      .fangcunCleanList().navigationTitle("设置")
-      .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.accessibilityIdentifier("settings.done") } }
+      .fangcunCleanList().navigationTitle("Settings")
+      .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() }.accessibilityIdentifier("settings.done") } }
       .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
     }
   }
@@ -129,28 +129,28 @@ private struct PrivacyView: View {
   var body: some View {
     List {
       privacyRow(
-        "本地优先",
-        "方寸不创建账号，不使用服务器、广告、第三方分析或遥测。",
+        "At home on your device",
+        "No account, app server, ads, third-party analytics, or telemetry.",
         "iphone"
       )
       privacyRow(
-        "Apple 健康",
-        "仅在你授权后读取身体恢复、睡眠和训练数据；记录感受和适用练习时才写入。",
+        "Apple Health",
+        "With your permission, reads recovery, sleep, and workout data. Writes only when you log feelings or eligible practices.",
         "heart.fill"
       )
       privacyRow(
-        "删除的边界",
-        "删除本地数据不会自动删除 Apple 健康中的记录；后者需在「健康」App 中管理。",
+        "What deletion includes",
+        "Deleting local data doesn't delete Apple Health records. Manage those in the Health app.",
         "trash"
       )
       if let policyURL = URL(string: "https://yvain57-afk.github.io/fangcun/privacy.html") {
         Link(destination: policyURL) {
-          Label("完整隐私政策", systemImage: "doc.text")
+          Label("Read the privacy policy", systemImage: "doc.text")
         }.accessibilityIdentifier("settings.privacyPolicy")
       }
       if let supportURL = URL(string: "https://yvain57-afk.github.io/fangcun/support.html") {
         Link(destination: supportURL) {
-          Label("使用支持与联系", systemImage: "questionmark.circle")
+          Label("Help and contact", systemImage: "questionmark.circle")
         }.accessibilityIdentifier("settings.support")
       }
     }
@@ -160,7 +160,7 @@ private struct PrivacyView: View {
     .listRowSeparatorTint(InnerBalanceTheme.hairline)
     .scrollContentBackground(.hidden)
     .background(InnerBalanceTheme.canvas)
-    .fangcunCleanList().navigationTitle("隐私与数据")
+    .fangcunCleanList().navigationTitle("Privacy and data")
     .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
   }
 

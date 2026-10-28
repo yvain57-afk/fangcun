@@ -1,0 +1,134 @@
+[
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-cat-base",
+    "crop" : [
+      40,
+      83,
+      545,
+      571
+    ],
+    "source" : "cat-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-cat-left-paw",
+    "crop" : [
+      873,
+      303,
+      170,
+      184
+    ],
+    "source" : "cat-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-cat-right-paw",
+    "crop" : [
+      241,
+      879,
+      180,
+      182
+    ],
+    "source" : "cat-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-cat-rest-base",
+    "crop" : [
+      628,
+      681,
+      551,
+      552
+    ],
+    "source" : "cat-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-dog-rest-body",
+    "crop" : [
+      36,
+      296,
+      586,
+      302
+    ],
+    "source" : "dog-rest-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-dog-rest-head",
+    "crop" : [
+      695,
+      220,
+      489,
+      301
+    ],
+    "source" : "dog-rest-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-dog-alert-head",
+    "crop" : [
+      70,
+      764,
+      484,
+      292
+    ],
+    "source" : "dog-rest-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-dog-rest-paws",
+    "crop" : [
+      78,
+      450,
+      235,
+      85
+    ],
+    "source" : "dog-rest-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-dog-base",
+    "crop" : [
+      188,
+      50,
+      539,
+      544
+    ],
+    "source" : "dog-sit-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-dog-left-paw",
+    "crop" : [
+      1019,
+      243,
+      210,
+      217
+    ],
+    "source" : "dog-sit-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-dog-right-paw",
+    "crop" : [
+      306,
+      721,
+      208,
+      213
+    ],
+    "source" : "dog-sit-rig.png"
+  },
+  {
+    "alpha" : "original preserved",
+    "asset" : "LE2-flag",
+    "crop" : [
+      1041,
+      666,
+      308,
+      291
+    ],
+    "source" : "dog-sit-rig.png"
+  }
+]

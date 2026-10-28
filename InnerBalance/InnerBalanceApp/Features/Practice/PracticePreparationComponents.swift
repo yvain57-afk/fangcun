@@ -36,10 +36,10 @@ struct PracticeIntroductionCard: View {
         .foregroundStyle(InnerBalanceTheme.ink)
         .fixedSize(horizontal: false, vertical: true)
 
-      explanation("这个练什么", kind.purpose, systemImage: "scope")
-      explanation("适合什么时候", kind.bestFor, systemImage: "clock")
-      explanation("怎么做", kind.steps, systemImage: "list.number")
-      explanation("开始前", kind.preparation, systemImage: "checkmark.shield")
+      explanation("What this offers", kind.purpose, systemImage: "scope")
+      explanation("A good moment for it", kind.bestFor, systemImage: "clock")
+      explanation("How it works", kind.steps, systemImage: "list.number")
+      explanation("Before you begin", kind.preparation, systemImage: "checkmark.shield")
     }
     .padding(FangcunLayout.spacing(5))
     .fangcunLevelOneSurface(cornerRadius: FangcunLayout.spacing(5))
@@ -102,7 +102,7 @@ struct PracticeStartingPicker: View {
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected(choice) ? .isSelected : [])
-        .accessibilityHint("选择后作为练习前的主观参照")
+        .accessibilityHint("An optional starting point, based on how you feel")
     }
   }
 
@@ -118,8 +118,8 @@ struct PracticeHapticToggle: View {
     Toggle(isOn: $isOn) {
       Label {
         VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
-          Text("触觉提示").font(.headline)
-          Text("每次换动作时轻触一下")
+          Text("Haptic cues").font(.headline)
+          Text("A gentle tap when the step changes")
             .font(.caption)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
         }
@@ -131,7 +131,7 @@ struct PracticeHapticToggle: View {
     .tint(InnerBalanceTheme.strongFill)
     .padding(FangcunLayout.spacing(5))
     .fangcunLevelOneSurface(cornerRadius: 20)
-    .accessibilityHint("在节奏切换处提供轻触感，可独立关闭")
+    .accessibilityHint("Gentle taps at transitions. You can turn these off separately.")
     .accessibilityIdentifier("practice.haptics")
   }
 }
@@ -145,18 +145,18 @@ struct PracticeHumanInstruction: View {
       switch kind {
       case .diaphragmaticBreathing:
         VStack(alignment: .leading, spacing: 12) {
-          Text("手放在哪里？").font(.headline)
+          Text("Where do my hands go?").font(.headline)
           HumanTeachingFigure(diagram: .torso).frame(height: 210)
-          instruction("肩膀", "自然落下，不向耳朵耸起。")
-          instruction("双手", "轻放在腹部或两侧下肋，不向里压。")
-          instruction("吸气 / 呼气", "感受下肋和腹部轻轻展开，再自然回落。不故意鼓肚子。")
-          Text("动作示意，按自己的节奏；不是呼吸深度测量。")
+          instruction("Shoulders", "Let them rest, without lifting toward your ears.")
+          instruction("Hands", "Rest lightly on your belly or lower ribs. Don't press inward.")
+          instruction("In / Out", "Notice a little expansion and release in your lower ribs or belly. Don't push your belly out.")
+          Text("A movement guide, not a measure of breath depth. Use your own rhythm.")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         }.fangcunPaperCard().accessibilityIdentifier("practice.teaching.diaphragm")
       case .alternateNostrilBreathing:
         VStack(alignment: .leading, spacing: 12) {
-          Text("换边顺序，先看一遍").font(.headline)
-          Text("同向示意：图左是你的左鼻孔，图右是你的右鼻孔。不是镜中左右。")
+          Text("A quick look at the sequence").font(.headline)
+          Text("Left means your left nostril; right means your right. This is not a mirror view.")
             .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
           LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: typeSize.isAccessibilitySize ? 1 : 2), spacing: 14) {
             ForEach(0..<4) { step in
@@ -171,20 +171,20 @@ struct PracticeHumanInstruction: View {
                 .accessibilityIdentifier("practice.teaching.nostril.\(step + 1)")
             }
           }
-          Text("指腹只需轻遮。不压迫鼻子，换边不屏息；鼻塞或鼻部不舒服时换其他方法。")
+          Text("Cover gently with a fingertip, without squeezing or holding your breath. Choose another practice if your nose feels blocked or uncomfortable.")
             .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
         }.fangcunPaperCard().accessibilityIdentifier("practice.teaching.nostrils")
       case .kegel:
         VStack(alignment: .leading, spacing: 12) {
-          Text("盆底轻收，呼吸照常").font(.headline)
-          Text("下图只示意骨盆底部的收放方向，肩膀、腹部、臀部与大腿不用一起使劲。")
+          Text("A gentle lift. Keep breathing.").font(.headline)
+          Text("The diagram shows the direction of movement. Your shoulders, belly, bottom, and thighs can stay relaxed.")
             .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
           if typeSize.isAccessibilitySize {
             VStack(spacing: 12) { pelvicFrame(contract: true); pelvicFrame(contract: false) }
           } else {
             HStack(alignment: .top, spacing: 12) { pelvicFrame(contract: true); pelvicFrame(contract: false) }
           }
-          Text("每次完全放松 8 秒，再进入下一轮。不要向下用力，也不要在排尿时练习。")
+          Text("Rest completely for 8 seconds before the next lift. Don't push down or practice while urinating.")
             .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
         }.fangcunPaperCard().accessibilityIdentifier("practice.teaching.pelvicFloor")
       default: EmptyView()
@@ -195,16 +195,16 @@ struct PracticeHumanInstruction: View {
     VStack(alignment: .leading, spacing: 3) { Text(title).font(.subheadline.weight(.semibold)); Text(text).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk) }
   }
   private func nostrilTitle(_ step: Int) -> String {
-    ["1 · 你的左侧吸气", "2 · 你的右侧呼气", "3 · 你的右侧吸气", "4 · 你的左侧呼气"][step]
+    ["1 · Breathe in through your left", "2 · Breathe out through your right", "3 · Breathe in through your right", "4 · Breathe out through your left"][step]
   }
   private func nostrilAction(_ step: Int) -> String {
-    ["轻遮右鼻孔，从左鼻孔吸气。", "换遮左鼻孔，从右鼻孔呼气。", "保持轻遮左鼻孔，从右鼻孔吸气。", "换遮右鼻孔，从左鼻孔呼气。"][step]
+    ["Gently cover your right nostril. Breathe in through the left.", "Cover your left nostril. Breathe out through the right.", "Keep the left covered. Breathe in through the right.", "Cover your right nostril. Breathe out through the left."][step]
   }
   private func pelvicFrame(contract: Bool) -> some View {
     VStack(alignment: .leading, spacing: 8) {
-      Text(contract ? "轻收 · 4 秒" : "完全放松 · 8 秒").font(.subheadline.weight(.semibold))
+      Text(contract ? "Gentle lift · 4 seconds" : "Full release · 8 seconds").font(.subheadline.weight(.semibold))
       HumanTeachingFigure(diagram: .pelvis(contract)).frame(height: 160)
-      Text(contract ? "盆底轻轻向内、向上收。" : "松开收紧，让盆底自然回落。")
+      Text(contract ? "Gently lift your pelvic floor inward and upward." : "Release the lift and let your pelvic floor rest.")
         .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
     }.frame(maxWidth: .infinity, alignment: .leading)
       .accessibilityElement(children: .combine)
@@ -261,7 +261,7 @@ private struct HumanTeachingFigure: View {
         curve((0.39,0.48),(0.61,0.48),(0.43,0.56),(0.57,0.56))
         curve((0.43,0.76),(0.57,0.76),(0.46,0.80),(0.54,0.80), color: accent)
         arrow(0.29, from: 0.21, to: 0.30); arrow(0.71, from: 0.21, to: 0.30)
-        label("松肩",0.17,0.26); label("下肋",0.84,0.58); label("腹部",0.84,0.80)
+        label("Soft shoulders",0.17,0.26); label("Lower ribs",0.84,0.58); label("Belly",0.84,0.80)
         line([(0.72,0.58),(0.65,0.58)],color: accent, width: 1)
         line([(0.74,0.80),(0.59,0.77)],color: accent, width: 1)
       case .nostril(let step):
@@ -270,7 +270,7 @@ private struct HumanTeachingFigure: View {
         let inhale = step == 0 || step == 2
         let openX: CGFloat = openLeft ? 0.30 : 0.70
         let closedX: CGFloat = openLeft ? 0.70 : 0.30
-        label("你的左",0.25,0.08); label("你的右",0.75,0.08)
+        label("Your left",0.25,0.08); label("Your right",0.75,0.08)
         curve((0.43,0.21),(0.19,0.50),(0.41,0.39),(0.14,0.30))
         curve((0.57,0.21),(0.81,0.50),(0.59,0.39),(0.86,0.30))
         curve((0.19,0.50),(0.81,0.50),(0.35,0.61),(0.65,0.61))
@@ -279,7 +279,7 @@ private struct HumanTeachingFigure: View {
         curve((closedX - 0.05,0.86),(closedX - 0.04,0.48),(closedX - 0.09,0.71),(closedX - 0.08,0.49), color: accent, width: 3)
         curve((closedX - 0.04,0.48),(closedX + 0.05,0.86),(closedX + 0.08,0.38),(closedX + 0.06,0.72), color: accent, width: 3)
         curve((closedX + 0.05,0.86),(closedX + 0.17,0.88),(closedX + 0.13,0.73),(closedX + 0.19,0.80), color: accent, width: 2)
-        label("轻遮",closedX,0.96)
+        label("Cover lightly",closedX,0.96)
         arrow(openX, from: inhale ? 0.87 : 0.60, to: inhale ? 0.60 : 0.87)
       case .pelvis(let contract):
         // Simplified pelvic bowl and sling: movement belongs to the pelvic floor, not the abdomen.
@@ -290,7 +290,7 @@ private struct HumanTeachingFigure: View {
         line([(0.41,0.30),(0.46,0.47),(0.54,0.47),(0.59,0.30)])
         curve((0.35,0.66),(0.65,0.66),(0.40,contract ? 0.48 : 0.83),(0.60,contract ? 0.48 : 0.83), color: accent, width: 4)
         arrow(0.50,from: contract ? 0.88 : 0.54,to: contract ? 0.73 : 0.72)
-        label("骨盆底部",0.50,0.97)
+        label("Pelvic floor",0.50,0.97)
       }
     }.accessibilityHidden(true)
   }

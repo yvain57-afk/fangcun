@@ -17,21 +17,21 @@ struct PracticeComparisonScreen: View {
         PracticeCompanionV4(kind: viewModel.plan.kind, elapsed: viewModel.phaseElapsed,
           duration: viewModel.duration, variantID: viewModel.variantID, isActive: false)
           .frame(height: 190).frame(maxWidth: .infinity)
-        Text((viewModel.actualDuration ?? 0) >= viewModel.duration - 1 ? "练习完成" : "这次先到这里")
+        Text((viewModel.actualDuration ?? 0) >= viewModel.duration - 1 ? "You made a little space" : "A good place to stop")
           .font(.caption.weight(.semibold)).foregroundStyle(InnerBalanceTheme.emphasis)
         Text(viewModel.plan.kind.title + " · " + PracticeDurationFormatter.clock(viewModel.actualDuration ?? 0))
           .font(.title.weight(.semibold)).accessibilityIdentifier("practice.actualSummary")
         if !PracticeTimeline.steps(for: viewModel.plan.kind, variantID: viewModel.variantID).isEmpty {
           HStack {
-            Label("完成 \(viewModel.completedCycles) 轮引导", systemImage: "checkmark.circle")
+            Label("\(viewModel.completedCycles) rounds completed", systemImage: "checkmark.circle")
             Spacer()
-            Text("按实际练习时间记录").font(.caption)
+            Text("Saved with the time you actually practiced").font(.caption)
           }.font(.subheadline.monospacedDigit()).foregroundStyle(Color("FangcunExhale")).fangcunPaperCard()
         }
         Text(viewModel.plan.kind.completionReview).font(.body).foregroundStyle(InnerBalanceTheme.mutedInk)
         Text(PracticeGuidanceContent.completion(for: viewModel.plan.kind))
           .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).lineSpacing(5)
-        Text("现在感觉怎么样？").font(.headline)
+        Text("How are you feeling now?").font(.headline)
         VStack(spacing: 10) {
           ForEach(PracticeChangeChoice.allCases, id: \.self) { choice in
             Button { changeChoice = choice } label: {
@@ -43,10 +43,10 @@ struct PracticeComparisonScreen: View {
               .accessibilityAddTraits(changeChoice == choice ? .isSelected : [])
           }
         }
-        Button(isSaving ? "正在保存…" : "保留这次感受", action: onSave)
+        Button(isSaving ? "Saving…" : "Save this feeling", action: onSave)
           .buttonStyle(InnerBalancePrimaryButtonStyle()).disabled(isSaving || changeChoice == nil)
           .accessibilityIdentifier("practice.feedback.save")
-        Button(isSaving ? "正在保存…" : "跳过，完成") {
+        Button(isSaving ? "Saving…" : "Skip and finish") {
           changeChoice = nil
           hasPostPosition = false
           onSave()
@@ -71,7 +71,7 @@ struct PracticeSavedScreen: View {
   var body: some View {
     ScrollView {
       VStack(spacing: FangcunLayout.spacing(5)) {
-        Text("练习结果")
+        Text("Your moment")
           .fangcunSectionLabelStyle()
         if let kind {
           TimelineView(.animation(minimumInterval: 1.0 / 30, paused: completionFinished || kind == .nsdr || kind == .pacedBreathing || kind == .progressiveMuscleRelaxation || scene != .complete)) { context in
@@ -87,13 +87,13 @@ struct PracticeSavedScreen: View {
         } else {
           FangcunCompanion(scene: scene, event: scene == .complete ? .completed : .endedEarly).frame(height: 185)
         }
-        Text("本次练习已保存")
+        Text("Your practice is saved")
           .font(.title.weight(.semibold))
           .foregroundStyle(InnerBalanceTheme.ink)
           .multilineTextAlignment(.center)
         HStack(spacing: 8) {
           FangcunBrandMark(size: 24)
-          Text("方寸 · 片刻").font(.caption)
+          Text("Little Exhale · A moment for you").font(.caption)
         }
         .foregroundStyle(InnerBalanceTheme.mutedInk)
         Text(detail)
@@ -110,7 +110,7 @@ struct PracticeSavedScreen: View {
     }
     .accessibilityIdentifier("practice.saved.scroll")
     .safeAreaInset(edge: .bottom) {
-      Button("回到呼吸", action: onDone)
+      Button("Back to Breathe", action: onDone)
         .buttonStyle(InnerBalancePrimaryButtonStyle())
         .accessibilityIdentifier("practice.saved.done")
         .padding(.vertical, FangcunLayout.spacing(3))

@@ -3,13 +3,13 @@ import Testing
 
 @Suite("隐私合规")
 struct PrivacyManifestTests {
-  @Test("TestFlight 候选构建使用正式 1.0 版本号")
-  func releaseCandidateUsesVersionOne() {
+  @Test("TestFlight 候选构建使用已批准的 2.0 大版本号")
+  func releaseCandidateUsesVersionTwo() {
     let version =
       Bundle.main.object(
         forInfoDictionaryKey: "CFBundleShortVersionString"
       ) as? String
-    #expect(version == "1.0.0")
+    #expect(version == "2.0.0")
   }
 
   @Test("TestFlight 候选构建不声明非豁免加密")

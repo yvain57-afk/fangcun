@@ -16,11 +16,11 @@ struct PracticePreparationScreen: View {
         ProportionalPhaseBar(kind: viewModel.plan.kind, variantID: viewModel.variantID)
         Text(viewModel.plan.kind.steps).font(.body).foregroundStyle(InnerBalanceTheme.ink)
         Text(viewModel.plan.kind.preparation).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
-        DisclosureGroup("动作要领与详细说明") {
+        DisclosureGroup("Movement guide and details") {
           PracticeIntroductionCard(kind: viewModel.plan.kind)
           PracticeHumanInstruction(kind: viewModel.plan.kind)
         }
-        Text("引导设置")
+        Text("Make it yours")
           .font(.title3.weight(.semibold))
           .foregroundStyle(InnerBalanceTheme.ink)
         PracticeSoundControls(
@@ -35,9 +35,9 @@ struct PracticePreparationScreen: View {
     }
     .accessibilityIdentifier("practice.preparation")
     .safeAreaInset(edge: .bottom) {
-      Button("开始 · \(PracticeDurationFormatter.text(viewModel.duration))", action: onStart)
+      Button("Begin · \(PracticeDurationFormatter.text(viewModel.duration))", action: onStart)
         .buttonStyle(InnerBalancePrimaryButtonStyle())
-        .accessibilityLabel("开始 \(PracticeDurationFormatter.text(viewModel.duration))练习")
+        .accessibilityLabel("Start a \(PracticeDurationFormatter.text(viewModel.duration)) practice")
         .accessibilityIdentifier("practice.prepare.start")
         .padding(.vertical, FangcunLayout.spacing(3))
         .background(InnerBalanceTheme.canvas)
@@ -71,7 +71,7 @@ struct PracticePlayerScreen: View {
           recoverySnapshot: viewModel.plan.kind == .progressiveMuscleRelaxation ? viewModel.timelineSnapshot : nil
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-      if isResuming { Text("准备好，先自然呼吸…").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 12).accessibilityIdentifier("practice.resumePreparation") }
+      if isResuming { Text("Settle in. Breathe naturally…").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 12).accessibilityIdentifier("practice.resumePreparation") }
       PracticeTransportControls(
         isPaused: viewModel.phase == .paused,
         remaining: viewModel.remainingTime,
@@ -128,7 +128,7 @@ struct PracticeEntryScreen: View {
     ScrollView {
       VStack(spacing: 20) {
         Text(kind.title).font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
-        Text(kind == .nsdr ? "躺稳，把重量放下" : "找个舒服的姿势")
+        Text(kind == .nsdr ? "Lie down and let yourself be supported" : "Find a comfortable position")
           .font(.title.weight(.semibold)).multilineTextAlignment(.center)
         TimelineView(.animation(minimumInterval: 1.0 / 30)) { context in
           let progress = min(1, max(0, context.date.timeIntervalSince(startedAt) / entryDuration))
@@ -136,9 +136,9 @@ struct PracticeEntryScreen: View {
             isActive: true, entryProgress: progress)
             .frame(maxWidth: 320).frame(height: 280)
         }
-        Text("先自然呼吸，准备时间不计入练习。").font(.subheadline)
+        Text("Breathe naturally. This settling time is outside your practice.").font(.subheadline)
           .foregroundStyle(InnerBalanceTheme.mutedInk).multilineTextAlignment(.center)
-        Button("准备好了，开始", action: onSkip).buttonStyle(InnerBalancePrimaryButtonStyle())
+        Button("I'm ready", action: onSkip).buttonStyle(InnerBalancePrimaryButtonStyle())
           .accessibilityIdentifier("practice.entry.skip")
       }.padding(.vertical, 20).frame(maxWidth: .infinity)
     }.accessibilityIdentifier("practice.entry")

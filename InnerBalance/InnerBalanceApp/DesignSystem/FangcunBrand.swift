@@ -21,21 +21,21 @@ struct FangcunBrandAboutView: View {
       VStack(alignment: .leading, spacing: 28) {
         VStack(spacing: 16) {
           FangcunBrandMark(size: markSize)
-          Text("方寸")
+          Text("Little Exhale")
             .font(.title.weight(.semibold))
             .tracking(3)
-          Text("给自己，留一点空间。")
+          Text("A little room to breathe.")
             .font(.subheadline)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 28)
 
-        Text("留一方余地。")
+        Text("A little room to breathe.")
           .font(.title2.weight(.semibold))
           .accessibilityAddTraits(.isHeader)
-        Text("在纷乱的日常里，留一小处照顾自己的空间。先听懂身体的信号，再慢慢找回自己的节奏。")
-        Text("中心的留白，是属于自己的那一小处空间。柔软的弧形像被轻轻托住，向外的开口留有余地，也容得下呼吸。")
+        Text("Small, gentle practices for the moments between everything else. Breathe, rest, and find a rhythm that feels like yours.")
+        Text("An open curve, with room in the middle. A reminder that you can be supported without being held in place.")
           .foregroundStyle(InnerBalanceTheme.mutedInk)
       }
       .font(.body)
@@ -44,7 +44,7 @@ struct FangcunBrandAboutView: View {
     }
     .foregroundStyle(InnerBalanceTheme.ink)
     .background(InnerBalanceTheme.canvas)
-    .navigationTitle("关于方寸")
+    .navigationTitle("About Little Exhale")
     .navigationBarTitleDisplayMode(.inline)
   }
 }

@@ -9,6 +9,7 @@ struct DailyWordField: View {
   let contextTitle: String
 
   var body: some View {
+    let reflection = reflection.englishPresentation
     VStack(spacing: 0) {
       HStack(alignment: .top, spacing: FangcunLayout.spacing(3)) {
         if !dynamicTypeSize.isAccessibilitySize {

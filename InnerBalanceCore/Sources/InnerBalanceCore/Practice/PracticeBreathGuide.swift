@@ -10,17 +10,17 @@ public enum PracticeBreathPhase: Equatable, Sendable {
 
   public var title: String {
     switch self {
-    case .inhale: "吸气"
-    case .topUp: "再轻吸一口"
-    case .exhale: "呼气"
-    case .holdAfterInhale, .holdAfterExhale: "轻松停留"
-    case .leftInhale: "左侧吸气"
-    case .rightInhale: "右侧吸气"
-    case .leftExhale: "左侧呼气"
-    case .rightExhale: "右侧呼气"
-    case .contract: "轻轻收紧"
-    case .release: "完全放松"
-    case .natural: "自然呼吸"
+    case .inhale: "Breathe in"
+    case .topUp: "A little more"
+    case .exhale: "Breathe out"
+    case .holdAfterInhale, .holdAfterExhale: "Gently pause"
+    case .leftInhale: "Left, breathe in"
+    case .rightInhale: "Right, breathe in"
+    case .leftExhale: "Left, breathe out"
+    case .rightExhale: "Right, breathe out"
+    case .contract: "Gently lift"
+    case .release: "Release fully"
+    case .natural: "Breathe naturally"
     }
   }
 }

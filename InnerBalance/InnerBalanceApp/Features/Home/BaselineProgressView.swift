@@ -7,10 +7,10 @@ struct BaselineProgressView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
       HStack {
-        Text("个人基线")
+        Text("Your baseline")
           .font(.subheadline.weight(.medium))
         Spacer()
-        Text("\(min(completedDays, requiredDays))/\(requiredDays) 天")
+        Text("\(min(completedDays, requiredDays))/\(requiredDays) days")
           .font(.subheadline.monospacedDigit().weight(.semibold))
           .foregroundStyle(InnerBalanceTheme.strongFill)
       }
@@ -29,7 +29,7 @@ struct BaselineProgressView: View {
       .frame(height: FangcunLayout.spacing(2))
     }
     .accessibilityElement(children: .ignore)
-    .accessibilityLabel("个人基线进度")
-    .accessibilityValue("已获得 \(min(completedDays, requiredDays)) 天，共需 \(requiredDays) 天")
+    .accessibilityLabel("Personal baseline progress")
+    .accessibilityValue("\(min(completedDays, requiredDays)) of \(requiredDays) days collected")
   }
 }

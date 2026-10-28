@@ -1,0 +1,156 @@
+import Foundation
+
+/// English listening edition. Original IDs, boundaries and variants are retained.
+/// The archived Chinese edition remains the timing source for guided segments.
+public enum PracticeGuidanceContent {
+  public static let version = "little-exhale-guidance-20261028"
+  public static func introduction(for kind: PracticeKind, variantID: String? = nil) -> String {
+    let text = introductions[kind]!
+    return kind == .balancedBreathing && variantID == "easy_4_4"
+      ? text.replacingOccurrences(of: "five seconds", with: "four seconds").replacingOccurrences(of: "out for five", with: "out for four") : text
+  }
+  public static func introductionResource(for kind: PracticeKind, variantID: String? = nil) -> String {
+    OriginalPracticeGuidanceContent.introductionResource(for: kind, variantID: variantID)
+  }
+  public static func completion(for kind: PracticeKind) -> String { completions[kind]! }
+  public static func phaseResource(for kind: PracticeKind, cycle: Int, index: Int) -> String {
+    OriginalPracticeGuidanceContent.phaseResource(for: kind, cycle: cycle, index: index)
+  }
+  public static func phaseTexts(for kind: PracticeKind, cycle: Int) -> [String] {
+    phases[kind]?[min(1, max(0, cycle))] ?? []
+  }
+  public static func segments(for kind: PracticeKind, duration: TimeInterval, variantID: String? = nil) -> [PracticeGuidedSegment] {
+    OriginalPracticeGuidanceContent.segments(for: kind, duration: duration, variantID: variantID).map {
+      PracticeGuidedSegment(id: $0.id, start: $0.start, end: $0.end, focus: $0.focus, text: segmentCopy[$0.id]!)
+    }
+  }
+  private static let introductions: [PracticeKind: String] = [
+    .physiologicalSigh: "Find a comfortable seat, with something to support your back. You don't need to sort everything out before you begin. For now, there's just this breath.\nWe'll breathe in gently through the nose, take one small extra sip of air, then let it out slowly through the mouth. That second breath is only a little top-up. There's no need to fill your lungs to the limit, or push all the air out.\nI'll guide the first two rounds, then leave you some quiet space with the rhythm. If you feel dizzy, tight in the chest, in pain, or short of breath, stop and return to your usual breathing.",
+    .pacedBreathing: "Settle into a seat, or lean back somewhere supported. Let your hands rest wherever they feel comfortable. You can close your eyes, or keep them open.\nWe'll breathe in for four seconds and out for six, with no holds. These are gentle breaths. Four seconds doesn't mean taking in lots of air, and six doesn't mean emptying your lungs. Leave a little room.\nIf your mind is still busy, it can be busy. Just come along for this breath, then the next. I'll guide the first two rounds before giving you more quiet. If the pace feels difficult, or you feel dizzy, uncomfortable, or short of breath, stop and breathe normally.",
+    .balancedBreathing: "Make yourself comfortable. Let your back be supported and your hands rest. Your shoulders don't have to hold you up.\nThis time we'll breathe in for five seconds and out for five. No holds, just an even rhythm. Each breath can stay small and easy. There's nothing to prove by breathing more deeply.\nNotice the air at your nose, or a small movement in your chest or belly. Choose whichever is easiest to feel. I'll guide the first two rounds, then leave some quiet space. If you feel dizzy, uncomfortable, or short of breath, stop and return to your usual breathing.",
+    .boxBreathing: "Find a steady, comfortable seat. Let your hands and shoulders settle.\nThere are four parts: breathe in for three, pause for three, breathe out for three, and pause for three. The screen will show each change, so you don't need to count.\nA pause is a gentle moment without breathing in or out. It isn't a test of how long you can hold your breath. Keep your jaw and chest soft, and don't force a deep breath. If a pause feels uncomfortable, breathe normally and stop. You can choose Even breathing, which has no holds.\nI'll guide the first two rounds. If your attention wanders, just notice where we are now and join from there.",
+    .diaphragmaticBreathing: "Sit or lie somewhere comfortable, with your back and legs supported. There's no pace to keep up with here. We'll simply notice how breathing moves the body.\nRest a hand lightly on your belly or lower ribs. Don't press in, push your belly out, or lift your shoulders. Let the breath arrive in its own time.\nIf you can't feel much movement, that's fine. Notice your hand against your clothes instead. Ease matters more than size. Stop if you feel dizzy, uncomfortable, or short of breath, and return to your usual breathing.",
+    .alternateNostrilBreathing: "Sit comfortably. Support your arm if you can, so your hand can reach your nose without lifting your shoulder. Left and right always mean your own left and right.\nGently cover the right nostril and breathe in through the left. Switch, and breathe out through the right. Breathe in through the right, then switch and breathe out through the left. Each part lasts three seconds, with no holds.\nUse a light touch. Don't squeeze your nose or cover both sides together. If you're congested or your nose feels uncomfortable, choose another practice.\nYou'll hear a short cue for every change. If you lose your place, lower your hand and breathe normally. Pause, and come back when you're ready. There's no catching up to do.",
+    .meditation: "Find somewhere you can settle for a few minutes. You don't need a perfect posture. Choose a position that feels steady and comfortable.\nClose your eyes if you like, or let your gaze rest softly in front of you. We'll notice the support beneath you, feel a few ordinary breaths, and give your thoughts some room.\nYou don't have to clear your mind. Noticing that you've wandered and coming back is the practice. Between prompts, there's time to simply be here. If it doesn't feel comfortable, open your eyes, look around, move your hands and feet, and stop whenever you need.",
+    .nsdr: "Find a safe place to lie down, with your head, back, and legs supported. Adjust your position whenever you need to.\nThis is a guided rest. You don't have to fall asleep, or work hard to stay awake. I'll invite you to notice different parts of your body, while your breathing follows its own rhythm.\nThere's no need to make yourself feel heavy or warm, or check whether you're relaxed enough. Notice whatever is here. There will be quiet spaces. If you miss a sentence, just join the next one.\nUse this only where you can rest safely, never while driving or using equipment. This practice doesn't replace sleep.",
+    .kegel: "Sit or lie in a supported position. This is a pelvic floor practice, not a breathing exercise. Keep breathing naturally throughout.\nImagine gently holding back gas, then lifting your pelvic floor a little inward. Let your belly, bottom, and thighs stay relaxed. We'll use a gentle four-second lift, followed by eight seconds of rest. Don't push down when you release.\nIf you're unsure which muscles to use, get guidance from a qualified professional rather than squeezing your legs or tightening your belly. If four seconds is too long, release early and rest for the remainder of the round.\nDon't practice while urinating. For persistent pelvic tension or pain, bladder or bowel symptoms, or recovery after childbirth or surgery, follow your clinician's advice. I'll guide the first two rounds, then you can follow the visual and sound cues.",
+    .progressiveMuscleRelaxation: "Sit back or lie somewhere you can rest safely. Let your head, back, and legs be supported. You don't need to feel calm before we start.\nWe'll visit eight muscle groups, using a very gentle squeeze once, followed by a longer rest. Keep breathing normally. We're noticing the difference between effort and letting go, not building strength.\nSkip the tightening wherever you have pain, an injury, or a tendency to cramp. You can simply rest that part of your body. If you've recently had surgery or been advised to limit exertion, follow that advice.\nIf a movement hurts or feels uncomfortable, release straight away. You don't need to wait for my cue. You can stop the whole practice at any time.",
+  ]
+  private static let completions: [PracticeKind: String] = [
+    .physiologicalSigh: "Let your breathing find its own rhythm again. You don't need to decide whether it worked. Perhaps notice your shoulders, your jaw, or this next breath. A little easier, much the same, or something else: there's room for the honest answer. Take your time before moving on.",
+    .pacedBreathing: "Let the counting go. Your breath can be shorter or longer now, whatever comes naturally. Feel where the chair or bed supports you. If nothing feels different, there's nothing to make up for. Rest a little longer if you'd like, or give yourself time to get up.",
+    .balancedBreathing: "Let go of the rhythm and allow your breathing to continue on its own. Notice the transition, without searching for a particular feeling. When you're ready, gently move your hands and feet.",
+    .boxBreathing: "The four-part rhythm ends here. Breathe naturally; there's no next hold to wait for. Let your eyes rest on something nearby, noticing its color or shape. When you're ready, choose just one thing to do next.",
+    .diaphragmaticBreathing: "You don't need to keep a special breathing shape now. Perhaps you noticed a little expansion and release. If not, that's okay too. Next time, you can begin with one ordinary breath.",
+    .alternateNostrilBreathing: "Lower your hand and breathe naturally through both nostrils. Let your arm and shoulder rest. There's no need to compare one side with the other. Take a moment to notice the space around you.",
+    .meditation: "That's the end of this practice. You can notice how you feel without giving it a grade. If you'd like, leave a small note. If words don't come, you can leave it there.",
+    .nsdr: "Give yourself a little time to return. Sit or stand up slowly when you're ready. You can decide for yourself how this rest felt. You don't need a score to prove it.",
+    .kegel: "Let your pelvic floor rest, and take a few ordinary breaths. There's no need for another set, or a squeeze to check whether you did enough. If the movement wasn't clear, get help finding it before your next practice.",
+    .progressiveMuscleRelaxation: "Your practice is complete. Take a little time. When you're ready, move gently, or stay here and rest.",
+  ]
+  private static let phases: [PracticeKind: [[String]]] = [
+    .physiologicalSigh: [["Breathe in.", "And in.", "Breathe out. Let your shoulders rest."], ["Breathe in.", "And in.", "Slowly out. No need to push."]],
+    .pacedBreathing: [["Gently in.", "Slowly out. Leave a little room."], ["Breathe in.", "Breathe out. Let this breath finish."]],
+    .balancedBreathing: [["Gently in.", "Gently out."], ["Breathe in. No need to fill up.", "Breathe out. Let it go."]],
+    .boxBreathing: [["Breathe in.", "Gently pause.", "Breathe out.", "Gently pause."], ["Breathe in.", "Pause here.", "Breathe out.", "Pause here."]],
+    .alternateNostrilBreathing: [["Left, breathe in.", "Right, breathe out.", "Right, breathe in.", "Left, breathe out."], ["Left, breathe in.", "Right, breathe out.", "Right, breathe in.", "Left, breathe out."]],
+    .kegel: [["Gently lift inward.", "Release. Let these muscles rest."], ["A gentle lift.", "Relax. Keep breathing naturally."]],
+  ]
+  private static let segmentCopy: [String: String] = [
+    "diaphragmaticBreathing_180_0": "Sit or lie comfortably. Rest a hand on your belly or lower ribs, without pressing. Notice one ordinary breath.",
+    "diaphragmaticBreathing_180_1": "As your next breath arrives, notice a little expansion beneath your hand. It might be at your belly or lower ribs. Small is enough. Let your shoulders rest.",
+    "diaphragmaticBreathing_180_2": "When you breathe out, feel your hand settle back. No need to tighten your belly or push the air out. Let this breath finish in its own time.",
+    "diaphragmaticBreathing_180_3": "Let your body choose the rhythm. Your hand is here to notice, not to move anything. If there is very little movement, you can leave it small.",
+    "diaphragmaticBreathing_180_4": "Notice your jaw and shoulders. If they are working hard, see whether they can do a little less. Keep each breath comfortable.",
+    "diaphragmaticBreathing_180_5": "If you like, let your hand rest somewhere else. There is no movement to check now. Stay with a few ordinary breaths.",
+    "diaphragmaticBreathing_180_6": "That is enough. Take your time.",
+    "diaphragmaticBreathing_300_0": "Settle into your support. Rest a hand on your belly or lower ribs. Before changing anything, notice where your hand meets your body.",
+    "diaphragmaticBreathing_300_1": "With the next ordinary breath in, notice a little movement at your lower ribs or belly. Your hand stays light, and your shoulders can stay down.",
+    "diaphragmaticBreathing_300_2": "As the breath leaves, feel the movement settle. There is no need to draw your belly in or empty your lungs. Let the next breath come by itself.",
+    "diaphragmaticBreathing_300_3": "Allow your breathing to find its own rhythm. Notice an expansion and a release, then let go of checking whether it is right. Faint sensations count too.",
+    "diaphragmaticBreathing_300_4": "Bring a little attention to your jaw, shoulders, and chest. Is there any effort you could set down? You can also adjust your position to feel more supported.",
+    "diaphragmaticBreathing_300_5": "Let your hand rest somewhere comfortable. For a while, there is no need to measure the movement. Let breathing happen, until you hear the next prompt.",
+    "diaphragmaticBreathing_300_6": "Notice the sounds around you. Gently move your hands. When you are ready, bring this practice to a close.",
+    "meditation_300_0": "Settle into a comfortable seat. Let your hands rest. Your eyes can close, or stay softly open. You do not have to feel calm yet.",
+    "meditation_300_1": "Notice where your body meets the chair or cushion. Let that support take some weight. Perhaps your jaw and shoulders can soften a little too.",
+    "meditation_300_2": "Notice one natural breath. You might feel air at your nose, or a small movement in your chest or belly. Choose one place. No need to change the breath.",
+    "meditation_300_3": "Perhaps a thought carried your attention away. Once you notice, there is no need to criticize yourself. Feel the next ordinary breath, just as it is.",
+    "meditation_300_4": "Thoughts may keep arriving, as words or pictures. You do not need to finish them. Notice that they are here, then come back to the body.",
+    "meditation_300_5": "If focusing has become hard work, let it be lighter. Your body is still supported. Breathing is still happening. We will leave a little quiet here.",
+    "meditation_300_6": "Notice the next few breaths. You do not need to catch every one. Each return is enough.",
+    "meditation_300_7": "Listen to the sounds around you. When you are ready, let your eyes open.",
+    "meditation_600_0": "Find a position you can rest in. Let your hands settle, and close your eyes or lower your gaze. You can begin with the mood you have.",
+    "meditation_600_1": "Notice the chair or cushion beneath you. Perhaps your feet, your seat, or your back feels most clearly supported. Stay with one of those places for a moment.",
+    "meditation_600_2": "Gently bring your attention to breathing. Air at your nose, or movement in your chest or belly. Your body can choose the length of each breath. Just notice it happening.",
+    "meditation_600_3": "If you have been thinking about something else, you do not need to solve it before returning. Notice that you wandered, then feel your support or the next breath.",
+    "meditation_600_4": "Some thoughts return more than once. You do not have to push them away, or follow them further. You might quietly say, I noticed. Then bring a little attention back to your body.",
+    "meditation_600_5": "Notice whether concentrating has tightened anything. Your forehead, jaw, and shoulders can do a little less. If your position is uncomfortable, feel free to adjust it.",
+    "meditation_600_6": "For a while, we will simply practice returning. Wandering, noticing, coming back. No need to count. Even if most of this time has been busy, this moment is another place to begin.",
+    "meditation_600_7": "Let the method become lighter now. Feel a few ordinary breaths. Hear sounds arrive and fade. There is room to be here without doing it perfectly.",
+    "meditation_600_8": "Notice the space around you. Hear sounds nearby and farther away. Move your fingers and toes. When you are ready, open your eyes. There is no hurry to get up.",
+    "nsdr_600_0": "Find a safe place to lie down, with your head, back, and legs supported. Adjust whenever you need to. For now, this time is for rest.",
+    "nsdr_600_1": "Your eyes can close, or stay slightly open. You do not need to watch the screen, and you do not need to make yourself sleep. When you hear my voice, gently follow along.",
+    "nsdr_600_2": "Notice the area around your eyes and between your eyebrows. See whether it can do a little less. Your teeth do not need to touch. Let your tongue rest naturally.",
+    "nsdr_600_3": "Bring attention to your shoulders, then the contact beneath your back. You do not need to press your shoulders down. Let the support receive a little weight, whatever feels possible.",
+    "nsdr_600_4": "Notice your upper arms, then forearms, then hands. Your fingers can curl naturally. If something feels uncomfortable, adjust, or move your attention to an easier place.",
+    "nsdr_600_5": "Notice your palms against the bed or your clothes. Perhaps warmth, perhaps an ordinary texture, perhaps very little. Your hands do not have to hold anything now.",
+    "nsdr_600_6": "Feel one natural breath. It does not need to deepen, or match the pace of my voice. Simply notice that your body is breathing in, and breathing out.",
+    "nsdr_600_7": "Bring attention to your belly and lower back. Your belly does not have to tighten. There is support beneath you. Let each breath make whatever small movement it makes.",
+    "nsdr_600_8": "Notice where your pelvis meets the bed or cushion. Let your bottom do a little less. You do not need to sink or press down. Stay with the feeling of being supported.",
+    "nsdr_600_9": "Notice your thighs, then your lower legs. Let your knees stay comfortable, without locking them straight. Your legs do not have to take you anywhere just now.",
+    "nsdr_600_10": "Bring attention to your ankles, feet, and toes. Is there any effort you could let go of? Your feet can rest in different directions. They do not need to match.",
+    "nsdr_600_11": "Now notice the whole body against its support. Some places may feel easier, and others may still be tense. You do not have to fix each one.",
+    "nsdr_600_12": "Feel another ordinary breath. If your thoughts have wandered, there is no need to retrieve them. This breath, or this point of contact, is somewhere to return.",
+    "nsdr_600_13": "We will leave some quiet time now. You do not need to concentrate throughout. If you miss something, that is okay. Join me again when you hear the next prompt.",
+    "nsdr_600_14": "Notice the space around you. Gently move your fingers and toes. Open your eyes when you are ready. Stay lying down for a moment before deciding to get up.",
+    "nsdr_1200_0": "Find a safe place to lie down, with your head, back, and legs supported. Adjust whenever you need to. For now, this time is for rest.",
+    "nsdr_1200_1": "Your eyes can close, or stay slightly open. You do not need to watch the screen, and you do not need to make yourself sleep. When you hear my voice, gently follow along.",
+    "nsdr_1200_2": "Notice the area around your eyes and between your eyebrows. See whether it can do a little less. Your teeth do not need to touch. Let your tongue rest naturally.",
+    "nsdr_1200_3": "Bring attention to your shoulders, then the contact beneath your back. You do not need to press your shoulders down. Let the support receive a little weight, whatever feels possible.",
+    "nsdr_1200_4": "Notice your upper arms, then forearms, then hands. Your fingers can curl naturally. If something feels uncomfortable, adjust, or move your attention to an easier place.",
+    "nsdr_1200_5": "Notice your palms against the bed or your clothes. Perhaps warmth, perhaps an ordinary texture, perhaps very little. Your hands do not have to hold anything now.",
+    "nsdr_1200_6": "Feel one natural breath. It does not need to deepen, or match the pace of my voice. Simply notice that your body is breathing in, and breathing out.",
+    "nsdr_1200_7": "Bring attention to your belly and lower back. Your belly does not have to tighten. There is support beneath you. Let each breath make whatever small movement it makes.",
+    "nsdr_1200_8": "Notice where your pelvis meets the bed or cushion. Let your bottom do a little less. You do not need to sink or press down. Stay with the feeling of being supported.",
+    "nsdr_1200_9": "Notice your thighs, then your lower legs. Let your knees stay comfortable, without locking them straight. Your legs do not have to take you anywhere just now.",
+    "nsdr_1200_10": "Bring attention to your ankles, feet, and toes. Is there any effort you could let go of? Your feet can rest in different directions. They do not need to match.",
+    "nsdr_1200_11": "Now notice the whole body against its support. Some places may feel easier, and others may still be tense. You do not have to fix each one.",
+    "nsdr_1200_12": "Feel another ordinary breath. If your thoughts have wandered, there is no need to retrieve them. This breath, or this point of contact, is somewhere to return.",
+    "nsdr_1200_13": "We will leave some quiet time now. You do not need to concentrate throughout. If you miss something, that is okay. Join me again when you hear the next prompt.",
+    "nsdr_1200_14": "Notice your whole body once more. Is your position still comfortable? You can make a small adjustment. There is a little more time to rest, with nothing to finish.",
+    "nsdr_1200_15": "Notice the space around you. Gently move your fingers and toes. Open your eyes when you are ready. Stay lying down for a moment before deciding to get up.",
+    "pmr_i01": "Let your body settle. You can sit back or lie down. Notice whether your head, back, and legs feel supported. Adjust your position whenever you need.",
+    "pmr_i02": "You do not need to feel calm or clear your thoughts. We will use a little gentle effort, then notice letting go. Keep breathing naturally, without holding or forcing.",
+    "pmr_i03": "If a part of your body is injured, painful, or not suited to effort, skip the tightening. Just feel its support. When you are ready, we will begin with your hands.",
+    "pmr_w01": "All the tightening is finished now. Notice your hands, face, shoulders, and legs. Some places may feel easier, others much the same. You do not need to change anything else.",
+    "pmr_w02": "Let your attention widen to your whole body. Breathing follows its own rhythm. There are no more movements to complete. For now, simply rest here.",
+    "pmr_n01": "If you are getting ready for sleep, stay in a comfortable position. Sleepy or not, there is nothing else you need to do. Let your hands and feet rest, and breathe naturally.",
+    "pmr_n02": "My voice will settle into quiet now. You do not need to respond or open your eyes to check. You can stay here, and leave the remaining time for rest.",
+    "pmr_d01": "Gently notice sounds around you and the space you are in. Move your fingers and toes a little. See whether your body would like a different position.",
+    "pmr_d02": "Open your eyes when you are ready. Settle in your seat, or roll onto your side before getting up at your own pace. The practice is finished. There is no need to judge it yet.",
+    "pmr_m01_a": "Let your hands rest and keep your wrists comfortable. In a moment, gently curl your fingers, without pressing your nails into your palms.",
+    "pmr_m01_b": "Gently tense.",
+    "pmr_m01_c": "Release. Let your fingers open naturally. Notice your palms and the backs of your hands. Warmth, lightness, or no clear change: any of those is okay. Stay here for a while.",
+    "pmr_m02_a": "Notice your upper arms. Support your elbows in a comfortable bend. In a moment, gently flex your upper arms. Keep your hands loose, without pressing down.",
+    "pmr_m02_b": "Gently tense.",
+    "pmr_m02_c": "Release. Let your arms return to their support. Your forearms and hands do not need to hold a position. Give the muscles that were working a little time to rest.",
+    "pmr_m03_a": "Bring attention to your forehead. In a moment, raise your eyebrows just a little, as if mildly surprised. Do not squeeze your eyes or tip your head back.",
+    "pmr_m03_b": "Gently tense.",
+    "pmr_m03_c": "Release. Let your eyebrows return to their natural position. Your forehead has nothing to hold up. Your eyes can stay gently closed or comfortably open.",
+    "pmr_m04_a": "Notice your lips and cheeks. In a moment, gently bring your lips together. Keep your teeth apart. There is no need to clench your jaw or scrunch your whole face.",
+    "pmr_m04_b": "Gently tense.",
+    "pmr_m04_c": "Release. Let your lips rest naturally. Your teeth do not need to touch, and your tongue does not need to press. There is no expression you need to make.",
+    "pmr_m05_a": "Notice your shoulders. In a moment, lift them just a little toward your ears. Keep your neck still, without twisting or tipping back. A small movement is enough.",
+    "pmr_m05_b": "Gently tense.",
+    "pmr_m05_c": "Release. Let your shoulders return to a comfortable position, without pushing them down. Feel the weight of your arms. There is nothing to add for a little while.",
+    "pmr_m06_a": "Bring attention to your thighs. Let your knees stay comfortable, with a slight bend if you like. In a moment, gently tense the front of your thighs. Do not lift or lock your legs.",
+    "pmr_m06_b": "Gently tense.",
+    "pmr_m06_c": "Release. Let your thighs rest in their support. Keep your knees comfortable and let your bottom rest too. Notice any difference, without searching for one.",
+    "pmr_m07_a": "Notice your lower legs. In a moment, draw your toes a little toward you, without reaching the limit. Skip this movement if you are prone to cramps.",
+    "pmr_m07_b": "Gently tense.",
+    "pmr_m07_c": "Release. Let your ankles return to a natural angle. Your lower legs can stop pulling. Notice the contact beneath them. There is time before the next movement.",
+    "pmr_m08_a": "Finally, your toes. In a moment, curl them very gently, without gripping hard or pointing your feet. If this tends to cause cramp, skip the tightening.",
+    "pmr_m08_b": "Gently tense.",
+    "pmr_m08_c": "Release. Let your toes rest without trying to straighten them. Your feet can fall in a comfortable direction. All the tightening is finished now.",
+  ]
+}

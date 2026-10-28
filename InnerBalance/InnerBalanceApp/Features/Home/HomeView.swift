@@ -236,11 +236,11 @@ private struct EchoHistorySheet: View {
     NavigationStack {
       Group {
         if records.isEmpty {
-          ContentUnavailableView("还没有过去的状态", systemImage: "text.quote")
+          ContentUnavailableView("No earlier check-ins yet", systemImage: "text.quote")
         } else {
           List(records) { record in
             VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-              Text(record.displayDay().formatted(.dateTime.year().month().day().weekday()))
+              Text(record.displayDay().formatted(.dateTime.year().month().day().weekday().locale(Locale(identifier: "en"))))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(InnerBalanceTheme.strongFill)
               Text(record.reflectionText)
@@ -271,11 +271,11 @@ private struct EchoHistorySheet: View {
         }
       }
       .background(InnerBalanceTheme.canvas)
-      .navigationTitle("过去的状态")
+      .navigationTitle("Earlier check-ins")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .confirmationAction) {
-          Button("完成") { dismiss() }
+          Button("Done") { dismiss() }
         }
       }
     }
@@ -290,24 +290,24 @@ private struct SleepReviewSheet: View {
     NavigationStack {
       ScrollView {
         VStack(alignment: .leading, spacing: FangcunLayout.spacing(5)) {
-          Label("这次睡眠未参与判断", systemImage: "moon.zzz")
+          Label("This sleep wasn't included", systemImage: "moon.zzz")
             .font(.title3.weight(.semibold))
-          Text("睡眠阶段可能来自多个来源。方寸已经去除重叠并拆分午睡；如果主睡眠仍少于 2 小时或超过 12 小时，会标记为需要确认，而不会把它解释成身体负荷。")
+          Text("Sleep stages can come from several sources. Overlaps are removed and naps separated. Main sleep under 2 or over 12 hours is marked for review, rather than interpreted as body load.")
             .font(.body)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
           if let details {
             VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-              detailRow("开始", details.startDate.formatted(date: .abbreviated, time: .shortened))
-              detailRow("结束", details.endDate.formatted(date: .abbreviated, time: .shortened))
-              detailRow("去重后睡眠", HomeViewModel.durationText(details.asleepDuration))
-              detailRow("阶段样本", "\(details.sampleCount) 条")
-              detailRow("来源", details.sourceNames.joined(separator: "、"))
-              detailRow("Apple Watch", details.includesAppleWatch ? "包含" : "未识别到")
+              detailRow("Start", details.startDate.formatted(.dateTime.year().month().day().hour().minute().locale(Locale(identifier: "en"))))
+              detailRow("End", details.endDate.formatted(.dateTime.year().month().day().hour().minute().locale(Locale(identifier: "en"))))
+              detailRow("Sleep after deduplication", HomeViewModel.durationText(details.asleepDuration))
+              detailRow("Stage samples", "\(details.sampleCount) samples")
+              detailRow("Source", details.sourceNames.joined(separator: "、"))
+              detailRow("Apple Watch", details.includesAppleWatch ? "Included" : "Not identified")
             }
             .padding(FangcunLayout.spacing(4))
             .fangcunLevelOneSurface(cornerRadius: FangcunSurface.compactCornerRadius)
           }
-          Text("你可以在 Apple 健康中查看和修正睡眠记录，之后回到方寸下拉刷新。")
+          Text("Review or correct your sleep in Apple Health, then return here and pull to refresh.")
             .font(.subheadline)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
         }
@@ -317,7 +317,7 @@ private struct SleepReviewSheet: View {
       .background(InnerBalanceTheme.canvas.ignoresSafeArea())
       .toolbar {
         ToolbarItem(placement: .confirmationAction) {
-          Button("知道了") { dismiss() }
+          Button("Got it") { dismiss() }
         }
       }
     }

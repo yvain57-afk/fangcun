@@ -13,13 +13,13 @@ struct OptionalContextSheet: View {
     GridItem(.adaptive(minimum: FangcunLayout.spacing(26)), spacing: FangcunLayout.spacing(2))
   ]
   private let bodyOptions: [(code: String, title: String)] = [
-    ("shoulders_tight", "肩颈紧"),
-    ("chest_tight", "胸口紧"),
-    ("stomach_discomfort", "胃部不适"),
-    ("shallow_breath", "呼吸浅"),
-    ("heavy_head", "头沉"),
-    ("fatigue", "疲惫"),
-    ("none", "无明显感觉"),
+    ("shoulders_tight", "Tight shoulders or neck"),
+    ("chest_tight", "Chest tightness"),
+    ("stomach_discomfort", "Stomach discomfort"),
+    ("shallow_breath", "Shallow breathing"),
+    ("heavy_head", "Heavy-headed"),
+    ("fatigue", "Worn out"),
+    ("none", "Nothing noticeable"),
   ]
 
   var body: some View {
@@ -31,7 +31,7 @@ struct OptionalContextSheet: View {
           supportGuidance
         }
 
-        optionalSection(title: "压力主要来自哪里（选一个即可）") {
+        optionalSection(title: "What's on your mind? One is enough.") {
           LazyVGrid(columns: columns, alignment: .leading, spacing: FangcunLayout.spacing(2)) {
             ForEach(CheckInAssociation.allCases, id: \.self) { association in
               associationChip(association)
@@ -39,7 +39,7 @@ struct OptionalContextSheet: View {
           }
         }
 
-        optionalSection(title: "身体有什么感觉（可选）") {
+        optionalSection(title: "Anything in your body? (Optional)") {
           LazyVGrid(columns: columns, alignment: .leading, spacing: FangcunLayout.spacing(2)) {
             ForEach(bodyOptions, id: \.code) { option in
               chip(option.title, selected: bodyCodes.contains(option.code)) {
@@ -51,7 +51,7 @@ struct OptionalContextSheet: View {
 
         if viewModel.optionalContextFailed {
           Label(
-            "补充信息暂时无法安全保存；主记录已经保留，不受影响。",
+            "Couldn't safely save the extra details. Your main check-in is already saved.",
             systemImage: "exclamationmark.circle"
           )
           .font(.caption)
@@ -60,13 +60,13 @@ struct OptionalContextSheet: View {
 
         VStack(spacing: FangcunLayout.spacing(3)) {
           if !bodyCodes.isEmpty || !associations.isEmpty {
-            Button(isSaving ? "正在保存补充…" : "保存补充") {
+            Button(isSaving ? "Saving the extra details…" : "Save details") {
               Task { await saveOptionalContext() }
             }
             .buttonStyle(InnerBalancePrimaryButtonStyle())
             .disabled(isSaving)
           }
-          Button("先这样", action: onDone)
+          Button("Leave it here", action: onDone)
             .font(.headline)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
             .padding(.vertical, 12)
@@ -85,16 +85,16 @@ struct OptionalContextSheet: View {
   private var savedHeader: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
       HStack {
-        Label("这一刻，已留住", systemImage: "checkmark.circle.fill")
+        Label("A small moment, saved", systemImage: "checkmark.circle.fill")
           .font(.caption.weight(.semibold)).foregroundStyle(Color("FangcunExhale"))
         Spacer()
         PracticeCompanionV4(kind: .meditation, elapsed: 0, duration: 300, isActive: false)
           .frame(width: 92, height: 80).accessibilityHidden(true)
       }
-      Text("已记录此刻")
+      Text("Check-in saved")
         .font(.title.weight(.semibold))
       if let record = viewModel.savedRecord, record.unclassified {
-        Text("都不像，也已保留罗盘位置")
+        Text("No label needed. Your position is saved.")
           .font(.headline)
       } else if let label = viewModel.savedRecord?.labels.first {
         Text(label.displayName)
@@ -108,16 +108,16 @@ struct OptionalContextSheet: View {
 
   private var saveDetail: String {
     viewModel.primaryWriteResult == .queued
-      ? "已保存在本机，将在健康权限可用时重试。下面都可以跳过。"
-      : "主记录已经保存。下面都可以跳过，不会阻塞完成。"
+      ? "Saved on this device. We'll retry when Health access is available. Everything below is optional."
+      : "Your check-in is saved. You can skip everything below."
   }
 
   private var supportGuidance: some View {
     VStack(alignment: .leading, spacing: 8) {
-      Label("不用独自承受", systemImage: "person.2.fill")
+      Label("You don't have to carry this alone", systemImage: "person.2.fill")
         .font(.headline)
         .foregroundStyle(InnerBalanceTheme.emphasis)
-      Text("如果这份绝望很难独自承受，请现在联系一位你信任的人，或寻求当地的专业或紧急支持。")
+      Text("If this hopelessness feels hard to carry alone, reach out to someone you trust now, or seek local professional or emergency support.")
         .font(.subheadline)
     }
     .fixedSize(horizontal: false, vertical: true)
@@ -180,7 +180,7 @@ struct OptionalContextSheet: View {
   private func associationChip(_ association: CheckInAssociation) -> some View {
     let position = associations.firstIndex(of: association)
     let selected = position != nil
-    let selectionRole = position == 0 ? "主要" : (position == 1 ? "其次" : nil)
+    let selectionRole = position == 0 ? "Primary" : (position == 1 ? "Secondary" : nil)
 
     return Button {
       toggleAssociation(association)
@@ -213,11 +213,11 @@ struct OptionalContextSheet: View {
     .foregroundStyle(selected ? InnerBalanceTheme.inverseInk : InnerBalanceTheme.ink)
     .disabled(!selected && associations.count == 2)
     .accessibilityLabel(
-      selectionRole.map { "\(association.displayName)，\($0)来源" }
+      selectionRole.map { "\(association.displayName), \($0) source" }
         ?? association.displayName
     )
     .accessibilityHint(
-      !selected && associations.count == 2 ? "先取消一个已选来源" : ""
+      !selected && associations.count == 2 ? "Deselect a source first" : ""
     )
     .accessibilityAddTraits(selected ? .isSelected : [])
   }
@@ -259,14 +259,14 @@ struct OptionalContextSheet: View {
 extension CheckInAssociation {
   var displayName: String {
     switch self {
-    case .work: "工作"
-    case .tasks: "任务"
-    case .health: "健康"
-    case .family: "家庭"
-    case .relationship: "关系"
-    case .money: "金钱"
-    case .training: "训练"
-    case .sleep: "睡眠"
+    case .work: "Work"
+    case .tasks: "Tasks"
+    case .health: "Health"
+    case .family: "Family"
+    case .relationship: "Relationships"
+    case .money: "Money"
+    case .training: "Exercise"
+    case .sleep: "Sleep"
     }
   }
 }

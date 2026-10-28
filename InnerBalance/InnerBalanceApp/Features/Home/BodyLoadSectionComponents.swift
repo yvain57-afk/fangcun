@@ -47,18 +47,18 @@ struct RecoveryRecommendationCard: View {
         adjustmentButton
 
       case .continueNormally:
-        Text("照常进行，不需要额外练习。")
+        Text("You don't need an extra practice to keep going.")
           .font(.subheadline.weight(.semibold))
           .foregroundStyle(primaryInk)
           .fixedSize(horizontal: false, vertical: true)
         adjustmentButton
 
       case .needsInput:
-        Text("想直接弄清压力和来源，用十秒做一次判断。")
+        Text("Take a moment to note what you're feeling and what may be on your mind.")
           .font(.subheadline)
           .foregroundStyle(secondaryInk)
           .fixedSize(horizontal: false, vertical: true)
-        Button("判断压力与来源", action: onCheckIn)
+        Button("Check in with yourself", action: onCheckIn)
           .buttonStyle(
             InnerBalancePrimaryButtonStyle(
               onStrongSurface: onStrongSurface,
@@ -72,7 +72,7 @@ struct RecoveryRecommendationCard: View {
   }
 
   private var adjustmentButton: some View {
-    Button("调整状态与来源", action: onCheckIn)
+    Button("Update your check-in", action: onCheckIn)
       .font(.subheadline.weight(.semibold))
       .foregroundStyle(secondaryInk)
       .frame(minHeight: 44)
@@ -82,9 +82,9 @@ struct RecoveryRecommendationCard: View {
 
   private var sectionTitle: String {
     switch action {
-    case .practice: "现在做这个"
-    case .continueNormally: "现在怎么做"
-    case .needsInput: "下一步"
+    case .practice: "Try this now"
+    case .continueNormally: "What might help now?"
+    case .needsInput: "Next"
     }
   }
 
@@ -116,20 +116,20 @@ struct RecoveryRecommendationCard: View {
           cornerRadius: FangcunSurface.editorialActionCornerRadius
         )
       )
-      .accessibilityLabel("开始 · \(practice.title)")
+      .accessibilityLabel("Begin · \(practice.title)")
       .accessibilityIdentifier("home.startRecommendation")
   }
 
   private func actionTitle(for practice: PracticeKind) -> String {
     switch practice {
-    case .physiologicalSigh: "先缓 1 分钟"
-    case .pacedBreathing: "呼吸 3 分钟"
-    case .balancedBreathing: "呼吸 5 分钟"
-    case .boxBreathing, .diaphragmaticBreathing, .alternateNostrilBreathing: "开始 3 分钟"
-    case .meditation: "安静 5 分钟"
-    case .nsdr: "躺下休息 10 分钟"
-    case .kegel: "开始 3 分钟"
-    case .progressiveMuscleRelaxation: "放松 10 分钟"
+    case .physiologicalSigh: "Take one minute"
+    case .pacedBreathing: "Breathe for 3 minutes"
+    case .balancedBreathing: "Breathe for 5 minutes"
+    case .boxBreathing, .diaphragmaticBreathing, .alternateNostrilBreathing: "Begin · 3 min"
+    case .meditation: "A quiet 5 minutes"
+    case .nsdr: "Rest for 10 minutes"
+    case .kegel: "Begin · 3 min"
+    case .progressiveMuscleRelaxation: "Unwind for 10 minutes"
     }
   }
 
@@ -149,16 +149,16 @@ struct RecoveryRecommendationCard: View {
 
   private func recommendationDetail(for practice: PracticeKind) -> String {
     switch practice {
-    case .physiologicalSigh: "1 分钟 · 双重吸气后延长呼气"
-    case .pacedBreathing: "3 或 5 分钟 · 跟随节奏呼吸"
-    case .balancedBreathing: "3 或 5 分钟 · 均匀吸气和呼气"
-    case .boxBreathing: "3 或 5 分钟 · 吸、停、呼、停四段节拍"
-    case .diaphragmaticBreathing: "3 或 5 分钟 · 下肋和腹部轻柔呼吸"
-    case .alternateNostrilBreathing: "3 或 5 分钟 · 左右鼻孔交替，不屏息"
-    case .meditation: "5 或 10 分钟 · 安静地放松注意力"
-    case .nsdr: "10 或 20 分钟 · 躺下完成深度休息"
-    case .kegel: "3 分钟 · 盆底肌收紧与放松"
-    case .progressiveMuscleRelaxation: "10 分钟 · 轻轻收紧，再逐组松开"
+    case .physiologicalSigh: "1 min · Two gentle breaths in, one slow breath out"
+    case .pacedBreathing: "3 or 5 min · A gentle breathing rhythm"
+    case .balancedBreathing: "3 or 5 min · Equal time in and out"
+    case .boxBreathing: "3 or 5 min · In, pause, out, pause"
+    case .diaphragmaticBreathing: "3 or 5 min · Notice movement at your lower ribs"
+    case .alternateNostrilBreathing: "3 or 5 min · Alternate sides, without holds"
+    case .meditation: "5 or 10 min · Room for a quiet moment"
+    case .nsdr: "10 or 20 min · Lie down for guided rest"
+    case .kegel: "3 min · Pelvic floor lift and release"
+    case .progressiveMuscleRelaxation: "10 min · Gently tense and release"
     }
   }
 }
@@ -173,14 +173,14 @@ struct RecentPracticeRow: View {
         .foregroundStyle(InnerBalanceTheme.strongFill)
         .frame(width: 36, height: 44)
       VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
-        Text("今日完成")
+        Text("Today, you made time")
           .font(.caption.weight(.semibold))
           .foregroundStyle(InnerBalanceTheme.strongFill)
         Text(practice.practiceKind.title)
           .font(.headline)
         Text(changeText)
           .font(.subheadline.weight(.medium))
-        Text("练习了 \(PracticeDurationFormatter.clock(practice.actualDuration))")
+        Text("\(PracticeDurationFormatter.clock(practice.actualDuration)) of practice")
           .font(.caption2.monospacedDigit())
           .foregroundStyle(InnerBalanceTheme.mutedInk)
       }
@@ -200,10 +200,10 @@ struct RecentPracticeRow: View {
   }
 
   private var changeText: String {
-    guard practice.hasSubjectiveComparison else { return "已完成" }
+    guard practice.hasSubjectiveComparison else { return "Complete" }
     let change = practice.subjectiveChange
-    if change == 0 { return "主观感受持平" }
-    return "需要调节程度\(change < 0 ? "下降" : "上升") \(abs(change))"
+    if change == 0 { return "You felt about the same" }
+    return "Reported need for a pause \(change < 0 ? "decreased" : "increased") by \(abs(change))"
   }
 }
 
@@ -223,13 +223,13 @@ struct BodyEvidenceDisclosure: View {
           HealthEvidenceView(evidence: item)
         }
         if viewModel.recentWorkoutProtection {
-          Label("近期较长训练已从 HRV 与静息心率判断中单独处理", systemImage: "figure.run")
+          Label("Recent longer workouts are accounted for separately in HRV and resting heart rate assessment", systemImage: "figure.run")
             .font(.caption)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
         }
         if viewModel.sleepNeedsReview {
           Button(action: onReviewSleep) {
-            Label("核对睡眠数据", systemImage: "exclamationmark.bubble")
+            Label("Review sleep data", systemImage: "exclamationmark.bubble")
               .font(.subheadline.weight(.semibold))
           }
           .buttonStyle(.plain)
@@ -243,18 +243,18 @@ struct BodyEvidenceDisclosure: View {
           .font(.caption2)
           .foregroundStyle(InnerBalanceTheme.mutedInk)
         }
-        Text("方寸给出的是当下调节建议，不是医疗诊断。")
+        Text("These are everyday wellbeing suggestions, not a medical diagnosis.")
           .font(.caption2)
           .foregroundStyle(InnerBalanceTheme.mutedInk)
       }
       .padding(.top, FangcunLayout.spacing(5))
     } label: {
-      Label("为什么这样判断", systemImage: "waveform.path.ecg")
+      Label("What this is based on", systemImage: "waveform.path.ecg")
         .font(.subheadline.weight(.semibold))
         .foregroundStyle(InnerBalanceTheme.strongFill)
         .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
     }
-    .accessibilityHint("展开查看训练、数据来源、时间和可靠性")
+    .accessibilityHint("View exercise context, data sources, timestamps, and reliability")
     .accessibilityIdentifier("home.trainingSummary")
   }
 }
@@ -264,13 +264,13 @@ private struct TrainingContextSummary: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-      Text("训练背景").font(.subheadline.weight(.semibold))
+      Text("Exercise context").font(.subheadline.weight(.semibold))
       if let summary = viewModel.trainingSummary {
         Text(BodyLoadCardPresentation.trainingHeadline(summary)).font(.subheadline)
         Text(
-          "最近一次 \(summary.latestActivityName) · "
+          "Latest: \(summary.latestActivityName) · "
             + "\(PracticeDurationFormatter.text(summary.latestDuration)) · "
-            + "\(summary.latestEndDate.formatted(.relative(presentation: .named))) · "
+            + "\(summary.latestEndDate.formatted(.relative(presentation: .named).locale(Locale(identifier: "en")))) · "
             + summary.latestSourceName
         )
         .font(.caption)
@@ -278,7 +278,7 @@ private struct TrainingContextSummary: View {
       } else {
         Text(
           viewModel.unavailableKinds.contains(.workout)
-            ? "训练数据尚未可用" : BodyLoadCardPresentation.emptyTrainingMessage
+            ? "Exercise data isn't available yet" : BodyLoadCardPresentation.emptyTrainingMessage
         )
         .font(.caption)
         .foregroundStyle(InnerBalanceTheme.mutedInk)

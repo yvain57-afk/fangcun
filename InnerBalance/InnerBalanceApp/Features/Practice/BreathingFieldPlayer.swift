@@ -76,8 +76,8 @@ struct BreathingFieldPlayer: View {
   }
   var body: some View {
     PracticeStageScaffold(eyebrow: kind.outcomeTitle,
-      title: isPaused ? "已暂停" : snapshot.phase?.title ?? "自然呼吸",
-      instruction: isPaused ? "先自然呼吸，准备好再继续" : instruction,
+      title: isPaused ? "Paused" : snapshot.phase?.title ?? "Breathe naturally",
+      instruction: isPaused ? "Breathe naturally. Continue when you're ready." : instruction,
       remaining: sessionRemaining, accessibilityIdentifier: "practice.breathGuide",
       titleAccessibilityIdentifier: "practice.breathPhase", showsStageCard: false,
       compactLayout: kind == .alternateNostrilBreathing) {
@@ -87,11 +87,11 @@ struct BreathingFieldPlayer: View {
   }
   private var instruction: String {
     switch snapshot.phase {
-    case .inhale, .rightInhale, .leftInhale: "轻轻吸气，不必吸满"
-    case .topUp: "再补一小口，比刚才更轻"
-    case .exhale, .rightExhale, .leftExhale: kind == .pacedBreathing ? "让呼气比吸气更长" : "轻柔、慢慢地呼出"
-    case .holdAfterInhale, .holdAfterExhale: "轻松停留，不用忍耐憋气；不舒服就自然呼吸"
-    default: "跟随自己的舒适节奏"
+    case .inhale, .rightInhale, .leftInhale: "Gently in. No need to fill up."
+    case .topUp: "One small extra sip of air"
+    case .exhale, .rightExhale, .leftExhale: kind == .pacedBreathing ? "Let the out-breath take a little longer" : "Slowly out. No need to push."
+    case .holdAfterInhale, .holdAfterExhale: "A gentle pause. If it feels difficult, breathe normally."
+    default: "Find a pace that feels comfortable"
     }
   }
 }

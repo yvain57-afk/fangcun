@@ -1,0 +1,10 @@
+{
+  "base": "560d5790de175f8e5c7b4c9971b7a03f97220557",
+  "protectedParameterOrPermissionFilesChanged": [],
+  "removedAppStorageKeys": [],
+  "addedAppStorageKeys": [],
+  "legacyAudioFilesChecked": 226,
+  "legacyAudioChanged": [],
+  "schemaMigrationOrDeletionIntroduced": false,
+  "note": "Read-only diff/hash audit plus Core replay and App compatibility tests; not physical-device migration acceptance."
+}

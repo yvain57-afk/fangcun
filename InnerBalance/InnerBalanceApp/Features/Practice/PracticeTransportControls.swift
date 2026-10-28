@@ -9,7 +9,7 @@ struct PracticeTransportControls: View {
   var body: some View {
     HStack {
       Button(action: onFinish) {
-        Label("结束", systemImage: "xmark")
+        Label("End", systemImage: "xmark")
           .labelStyle(.titleAndIcon)
           .frame(minWidth: 76, minHeight: 52)
       }
@@ -19,7 +19,7 @@ struct PracticeTransportControls: View {
       Text(PracticeDurationFormatter.clock(remaining))
         .font(.footnote.monospacedDigit().weight(.medium))
         .foregroundStyle(InnerBalanceTheme.mutedInk)
-        .accessibilityLabel("剩余 \(PracticeDurationFormatter.clock(remaining))")
+        .accessibilityLabel("\(PracticeDurationFormatter.clock(remaining)) remaining")
         .accessibilityIdentifier("practice.remaining")
       Spacer(minLength: 8)
 
@@ -29,7 +29,7 @@ struct PracticeTransportControls: View {
           .frame(width: 68, height: 68)
       }
       .buttonStyle(PracticePrimaryControlStyle())
-      .accessibilityLabel(isPaused ? "继续练习" : "暂停练习")
+      .accessibilityLabel(isPaused ? "Continue practice" : "Pause practice")
     }
     .padding(.top, FangcunLayout.spacing(3))
     .padding(.bottom, FangcunLayout.spacing(4))

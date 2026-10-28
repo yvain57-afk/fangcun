@@ -1,0 +1,78 @@
+{
+  "runs": [
+    {
+      "bundle": "AppTestsR2.xcresult",
+      "result": "Passed",
+      "totalTestCount": 235,
+      "passedTests": 235,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "failureTests": []
+    },
+    {
+      "bundle": "PhoneRegression.xcresult",
+      "result": "Failed",
+      "totalTestCount": 19,
+      "passedTests": 18,
+      "failedTests": 1,
+      "skippedTests": 0,
+      "failureTests": [
+        "testSpecialMethodsExplainHumanMovementAndCorrectNostrilOrder()"
+      ]
+    },
+    {
+      "bundle": "final-motion/Motion.xcresult",
+      "result": "Failed",
+      "totalTestCount": 244,
+      "passedTests": 240,
+      "failedTests": 4,
+      "skippedTests": 0,
+      "failureTests": [
+        "testHistoryFailureAndLimitedEvidence()",
+        "testMeasurementTimeDoesNotBecomeQueryTime()",
+        "testPreviousSleepAndIncompleteBaselines()",
+        "testQualifiedEvidenceAndWorkoutProtection()"
+      ]
+    },
+    {
+      "bundle": "EvidenceFinalR2.xcresult",
+      "result": "Passed",
+      "totalTestCount": 5,
+      "passedTests": 5,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "failureTests": []
+    }
+  ],
+  "selectedUniqueUITests": 25,
+  "selectedLatestUIPassed": 25,
+  "unresolvedSelectedUIFailures": [],
+  "coverage": "Selected current native UI journeys, not every historical UI test.",
+  "tests": {
+    "BreathingHubV4UITests testAllNineMethodsStartPauseAndSaveWithoutHealth": "passed",
+    "BreathingHubV4UITests testDefaultHubHasTwoTabsAndNoHealthGate": "passed",
+    "BreathingHubV4UITests testEntryIsSkippableAndDoesNotStartTheActiveSessionEarly": "passed",
+    "BreathingHubV4UITests testPurposeFiltersDoNotRequireMoodInput": "passed",
+    "BreathingHubV4UITests testSaveFailureRetriesWithoutFalseSuccessOrDuplicateRecord": "passed",
+    "BreathingHubV4UITests testSpecialMethodsExplainHumanMovementAndCorrectNostrilOrder": "passed",
+    "LittleExhaleReviewUITests testAllTenRealPracticeStages": "passed",
+    "LittleExhaleReviewUITests testEnglishDailyAndDarkPracticeOnChineseSystem": "passed",
+    "OverhaulInteractionUITests testDrinkCompositeAndManageAreReachableOnInitialSheet": "passed",
+    "OverhaulInteractionUITests testExitOffersContinueAndRestoresRunningSession": "passed",
+    "OverhaulInteractionUITests testMaximumTypeKeepsPrimaryControlsReachable": "passed",
+    "OverhaulInteractionUITests testReducedMotionKeepsInstructionsWithoutContinuousResizing": "passed",
+    "PracticeGuidanceIntroUITests testNaturalIntroductionCompletionStartsTraining": "passed",
+    "PracticeGuidanceIntroUITests testPMRRealTensionAndReleaseBoundaries": "passed",
+    "PracticeGuidanceIntroUITests testPMRSleepEndingSavesWithoutForcingFeedback": "passed",
+    "PracticeGuidanceIntroUITests testSkipIntroductionStartsOnceWithFullTrainingTime": "passed",
+    "PracticeVisualRepairUITests testActualSessionShowsLargeBreathMovementAndStopsOnPause": "passed",
+    "PracticeVisualRepairUITests testFinalCoachAndRestingDogOverRealCycles": "passed",
+    "PracticeVisualRepairUITests testNaturalBreathingArtworkStaysVisibleWithItsExplanation": "passed",
+    "DrinkEditorUITests testCapacityEditingUndoAndQuickLogShareTheSameRecords": "passed",
+    "HomeEvidencePipelineUITests testHistoryFailureAndLimitedEvidence": "passed",
+    "HomeEvidencePipelineUITests testMeasurementTimeDoesNotBecomeQueryTime": "passed",
+    "HomeEvidencePipelineUITests testPreviousSleepAndIncompleteBaselines": "passed",
+    "HomeEvidencePipelineUITests testQualifiedEvidenceAndWorkoutProtection": "passed",
+    "MotionReviewUITests testTenNativeMotionClips": "passed"
+  }
+}

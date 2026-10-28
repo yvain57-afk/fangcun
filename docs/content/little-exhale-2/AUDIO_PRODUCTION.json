@@ -1,0 +1,1377 @@
+{
+  "voice": "en-US-AvaMultilingualNeural",
+  "rate": "-10%",
+  "source": "Edge TTS",
+  "commercialDistributionRights": "not independently verified; not an Azure licensed pack",
+  "assets": [
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_180_0",
+      "text": "Sit or lie comfortably. Rest a hand on your belly or lower ribs, without pressing. Notice one ordinary breath.",
+      "windowSeconds": 25,
+      "duration": 9.2,
+      "sha256": "2c712cd00821464fde369ed53d8a67b9228e36245cf64066fed9962ff5561678",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_180_1",
+      "text": "As your next breath arrives, notice a little expansion beneath your hand. It might be at your belly or lower ribs. Small is enough. Let your shoulders rest.",
+      "windowSeconds": 25,
+      "duration": 11.9,
+      "sha256": "96e29fb6193891ead35ef4921db7882487d7081cf6bced05d7b40be8807ca34e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_180_2",
+      "text": "When you breathe out, feel your hand settle back. No need to tighten your belly or push the air out. Let this breath finish in its own time.",
+      "windowSeconds": 35,
+      "duration": 10.2,
+      "sha256": "440b38ade2f70acc317260d15f35b67588301ecf7d20da3458a6d464c47b1c35",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_180_3",
+      "text": "Let your body choose the rhythm. Your hand is here to notice, not to move anything. If there is very little movement, you can leave it small.",
+      "windowSeconds": 35,
+      "duration": 9.5,
+      "sha256": "5a685c02455dd4798392a6de5834ff04832b5b839cccd96861c3c4d95e50efac",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_180_4",
+      "text": "Notice your jaw and shoulders. If they are working hard, see whether they can do a little less. Keep each breath comfortable.",
+      "windowSeconds": 35,
+      "duration": 8.4,
+      "sha256": "270bbd53985fa5fd4de28854c98a86c44cc9f0046fd8317ad73a3ad3d7c74815",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_180_5",
+      "text": "If you like, let your hand rest somewhere else. There is no movement to check now. Stay with a few ordinary breaths.",
+      "windowSeconds": 20,
+      "duration": 8.9,
+      "sha256": "31f516ae8f698db8243c5854270b6a8db2594883061a3bdbad411d29adb308b7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_180_6",
+      "text": "That is enough. Take your time.",
+      "windowSeconds": 5,
+      "duration": 2.88,
+      "sha256": "b9f448b39481be4d9eff6ab1543bf0c73892c128424a27e62b7f9f61a8f4c292",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_300_0",
+      "text": "Settle into your support. Rest a hand on your belly or lower ribs. Before changing anything, notice where your hand meets your body.",
+      "windowSeconds": 30,
+      "duration": 9.9,
+      "sha256": "ad667e38147bbe9a055d37940abdaf58cc587073bd4aff28ddc2b12dd12370b4",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_300_1",
+      "text": "With the next ordinary breath in, notice a little movement at your lower ribs or belly. Your hand stays light, and your shoulders can stay down.",
+      "windowSeconds": 30,
+      "duration": 10.1,
+      "sha256": "1c6c93ae1702a10574bf4b8756d6ae656cbd8641c57edde3ff90e76ba6122660",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_300_2",
+      "text": "As the breath leaves, feel the movement settle. There is no need to draw your belly in or empty your lungs. Let the next breath come by itself.",
+      "windowSeconds": 60,
+      "duration": 10.5,
+      "sha256": "047eebcdfeb02c7918575b2d30db954e67c821991e7e461ef207ce942afa3c05",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_300_3",
+      "text": "Allow your breathing to find its own rhythm. Notice an expansion and a release, then let go of checking whether it is right. Faint sensations count too.",
+      "windowSeconds": 65,
+      "duration": 11.0,
+      "sha256": "236eee1378824162bbe6e5c50756a64824aaed3e0c07c12dbd5870ee2f933ff0",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_300_4",
+      "text": "Bring a little attention to your jaw, shoulders, and chest. Is there any effort you could set down? You can also adjust your position to feel more supported.",
+      "windowSeconds": 60,
+      "duration": 9.7,
+      "sha256": "a0c9b509094287bcf05e34153f420209b8f3b06217251b6a496bb4dadd66711f",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_300_5",
+      "text": "Let your hand rest somewhere comfortable. For a while, there is no need to measure the movement. Let breathing happen, until you hear the next prompt.",
+      "windowSeconds": 40,
+      "duration": 10.3,
+      "sha256": "312937da75da964061d36c8588f8d1cdf6ad6ed639b748d24931db2d935514ed",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_diaphragmaticBreathing_300_6",
+      "text": "Notice the sounds around you. Gently move your hands. When you are ready, bring this practice to a close.",
+      "windowSeconds": 15,
+      "duration": 7.8,
+      "sha256": "64b9288699f2f4e3c6336c006af48a92604923e4ac22fd0613487429082ced64",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_alternateNostrilBreathing",
+      "text": "Lower your hand and breathe naturally through both nostrils. Let your arm and shoulder rest. There's no need to compare one side with the other. Take a moment to notice the space around you.",
+      "windowSeconds": null,
+      "duration": 13.1,
+      "sha256": "d876075782953e03c42f4c545cef0cb0a6419e7ef41256a54b94f2dd48bfa592",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_balancedBreathing",
+      "text": "Let go of the rhythm and allow your breathing to continue on its own. Notice the transition, without searching for a particular feeling. When you're ready, gently move your hands and feet.",
+      "windowSeconds": null,
+      "duration": 13.2,
+      "sha256": "637a446bf430182cb331f2b290c428372f54ba921e76c10dcbf914bf8f7db85d",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_boxBreathing",
+      "text": "The four-part rhythm ends here. Breathe naturally; there's no next hold to wait for. Let your eyes rest on something nearby, noticing its color or shape. When you're ready, choose just one thing to do next.",
+      "windowSeconds": null,
+      "duration": 15.4,
+      "sha256": "55c6e22619be70bc052ae8ebf0ea17f07a77256614878349dc4884c3e2707186",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_diaphragmaticBreathing",
+      "text": "You don't need to keep a special breathing shape now. Perhaps you noticed a little expansion and release. If not, that's okay too. Next time, you can begin with one ordinary breath.",
+      "windowSeconds": null,
+      "duration": 12.8,
+      "sha256": "f9f14a7d7f7ba4ef3202334c3fec2a49016f3f8fe4a64d964ba16d2ca74f8515",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_kegel",
+      "text": "Let your pelvic floor rest, and take a few ordinary breaths. There's no need for another set, or a squeeze to check whether you did enough. If the movement wasn't clear, get help finding it before your next practice.",
+      "windowSeconds": null,
+      "duration": 14.3,
+      "sha256": "494cd50b5e08208a33706cd5d66748eb34ca7de2c2283b0dd4f84245a6d2175d",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_meditation",
+      "text": "That's the end of this practice. You can notice how you feel without giving it a grade. If you'd like, leave a small note. If words don't come, you can leave it there.",
+      "windowSeconds": null,
+      "duration": 11.5,
+      "sha256": "59a371365ce1c3d267b3d6d1139928877ca464871126b9ef85fcb2d721279cf7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_nsdr",
+      "text": "Give yourself a little time to return. Sit or stand up slowly when you're ready. You can decide for yourself how this rest felt. You don't need a score to prove it.",
+      "windowSeconds": null,
+      "duration": 10.9,
+      "sha256": "f064b372c760d523628f0799629b5b42d6926e642a7d4286b7884a9979f2cb30",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_pacedBreathing",
+      "text": "Let the counting go. Your breath can be shorter or longer now, whatever comes naturally. Feel where the chair or bed supports you. If nothing feels different, there's nothing to make up for. Rest a little longer if you'd like, or give yourself time to get up.",
+      "windowSeconds": null,
+      "duration": 17.3,
+      "sha256": "06097ef5e5756e583aca6b32ea37b40be11e3b7b8e6e0ecb395bc06e943ec57a",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_physiologicalSigh",
+      "text": "Let your breathing find its own rhythm again. You don't need to decide whether it worked. Perhaps notice your shoulders, your jaw, or this next breath. A little easier, much the same, or something else: there's room for the honest answer. Take your time before moving on.",
+      "windowSeconds": null,
+      "duration": 20.0,
+      "sha256": "ebf69560fb49192fb2acb576673e83220d3a01fc935501c94e718d5aedcb86db",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_end_progressiveMuscleRelaxation",
+      "text": "Your practice is complete. Take a little time. When you're ready, move gently, or stay here and rest.",
+      "windowSeconds": null,
+      "duration": 8.0,
+      "sha256": "81733887cf9e0bec9ce0ad7a725df82856d8232e4cc7466600dc663124a3a888",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_alternateNostrilBreathing",
+      "text": "Sit comfortably. Support your arm if you can, so your hand can reach your nose without lifting your shoulder. Left and right always mean your own left and right.\nGently cover the right nostril and breathe in through the left. Switch, and breathe out through the right. Breathe in through the right, then switch and breathe out through the left. Each part lasts three seconds, with no holds.\nUse a light touch. Don't squeeze your nose or cover both sides together. If you're congested or your nose feels uncomfortable, choose another practice.\nYou'll hear a short cue for every change. If you lose your place, lower your hand and breathe normally. Pause, and come back when you're ready. There's no catching up to do.",
+      "windowSeconds": null,
+      "duration": 49.7,
+      "sha256": "a5bf10b1664e95d8706cfcaee07a9468b88867dbccf332e823b79089527138b3",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_balancedBreathing_easy_4_4",
+      "text": "Make yourself comfortable. Let your back be supported and your hands rest. Your shoulders don't have to hold you up.\nThis time we'll breathe in for four seconds and out for four. No holds, just an even rhythm. Each breath can stay small and easy. There's nothing to prove by breathing more deeply.\nNotice the air at your nose, or a small movement in your chest or belly. Choose whichever is easiest to feel. I'll guide the first two rounds, then leave some quiet space. If you feel dizzy, uncomfortable, or short of breath, stop and return to your usual breathing.",
+      "windowSeconds": null,
+      "duration": 40.8,
+      "sha256": "64603d7db5792580acf1753434093279b70594d2ee3d1bffb9d89e1c58ac639e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_balancedBreathing_equal_5_5",
+      "text": "Make yourself comfortable. Let your back be supported and your hands rest. Your shoulders don't have to hold you up.\nThis time we'll breathe in for five seconds and out for five. No holds, just an even rhythm. Each breath can stay small and easy. There's nothing to prove by breathing more deeply.\nNotice the air at your nose, or a small movement in your chest or belly. Choose whichever is easiest to feel. I'll guide the first two rounds, then leave some quiet space. If you feel dizzy, uncomfortable, or short of breath, stop and return to your usual breathing.",
+      "windowSeconds": null,
+      "duration": 41.4,
+      "sha256": "795ded2cdef40c58f94e323629ae17aa508d52829fcafa31a4d5ecbae9645d2a",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_boxBreathing",
+      "text": "Find a steady, comfortable seat. Let your hands and shoulders settle.\nThere are four parts: breathe in for three, pause for three, breathe out for three, and pause for three. The screen will show each change, so you don't need to count.\nA pause is a gentle moment without breathing in or out. It isn't a test of how long you can hold your breath. Keep your jaw and chest soft, and don't force a deep breath. If a pause feels uncomfortable, breathe normally and stop. You can choose Even breathing, which has no holds.\nI'll guide the first two rounds. If your attention wanders, just notice where we are now and join from there.",
+      "windowSeconds": null,
+      "duration": 44.9,
+      "sha256": "850c3ca153876283e7c78db87881dbe17a18035534da50b56d77e9f5415bee07",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_diaphragmaticBreathing",
+      "text": "Sit or lie somewhere comfortable, with your back and legs supported. There's no pace to keep up with here. We'll simply notice how breathing moves the body.\nRest a hand lightly on your belly or lower ribs. Don't press in, push your belly out, or lift your shoulders. Let the breath arrive in its own time.\nIf you can't feel much movement, that's fine. Notice your hand against your clothes instead. Ease matters more than size. Stop if you feel dizzy, uncomfortable, or short of breath, and return to your usual breathing.",
+      "windowSeconds": null,
+      "duration": 38.4,
+      "sha256": "3b72cec2a7aff27e32d5702baeebfdbbd48b13aff177d4e7711e20ced49eea26",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_kegel",
+      "text": "Sit or lie in a supported position. This is a pelvic floor practice, not a breathing exercise. Keep breathing naturally throughout.\nImagine gently holding back gas, then lifting your pelvic floor a little inward. Let your belly, bottom, and thighs stay relaxed. We'll use a gentle four-second lift, followed by eight seconds of rest. Don't push down when you release.\nIf you're unsure which muscles to use, get guidance from a qualified professional rather than squeezing your legs or tightening your belly. If four seconds is too long, release early and rest for the remainder of the round.\nDon't practice while urinating. For persistent pelvic tension or pain, bladder or bowel symptoms, or recovery after childbirth or surgery, follow your clinician's advice. I'll guide the first two rounds, then you can follow the visual and sound cues.",
+      "windowSeconds": null,
+      "duration": 59.0,
+      "sha256": "d1f35400c55974d09aca3971cd3c72680a0ae5451c6304e6cfbf7f7cc74713db",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_meditation",
+      "text": "Find somewhere you can settle for a few minutes. You don't need a perfect posture. Choose a position that feels steady and comfortable.\nClose your eyes if you like, or let your gaze rest softly in front of you. We'll notice the support beneath you, feel a few ordinary breaths, and give your thoughts some room.\nYou don't have to clear your mind. Noticing that you've wandered and coming back is the practice. Between prompts, there's time to simply be here. If it doesn't feel comfortable, open your eyes, look around, move your hands and feet, and stop whenever you need.",
+      "windowSeconds": null,
+      "duration": 38.3,
+      "sha256": "d522cd6ad099d0742a7c376a9dd5ed59301dfd158cf024c52e82f69c38fefec6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_nsdr",
+      "text": "Find a safe place to lie down, with your head, back, and legs supported. Adjust your position whenever you need to.\nThis is a guided rest. You don't have to fall asleep, or work hard to stay awake. I'll invite you to notice different parts of your body, while your breathing follows its own rhythm.\nThere's no need to make yourself feel heavy or warm, or check whether you're relaxed enough. Notice whatever is here. There will be quiet spaces. If you miss a sentence, just join the next one.\nUse this only where you can rest safely, never while driving or using equipment. This practice doesn't replace sleep.",
+      "windowSeconds": null,
+      "duration": 41.9,
+      "sha256": "c2f3ef5e6372a1a7d3921abe8f2b0bd8c81945b6fed13271a4e6d607ce7b8cb2",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_pacedBreathing",
+      "text": "Settle into a seat, or lean back somewhere supported. Let your hands rest wherever they feel comfortable. You can close your eyes, or keep them open.\nWe'll breathe in for four seconds and out for six, with no holds. These are gentle breaths. Four seconds doesn't mean taking in lots of air, and six doesn't mean emptying your lungs. Leave a little room.\nIf your mind is still busy, it can be busy. Just come along for this breath, then the next. I'll guide the first two rounds before giving you more quiet. If the pace feels difficult, or you feel dizzy, uncomfortable, or short of breath, stop and breathe normally.",
+      "windowSeconds": null,
+      "duration": 43.4,
+      "sha256": "c2803dc6fa5240165e4c7873f20d2ea66023987aa60c3a2eba43e7ef274088db",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_physiologicalSigh",
+      "text": "Find a comfortable seat, with something to support your back. You don't need to sort everything out before you begin. For now, there's just this breath.\nWe'll breathe in gently through the nose, take one small extra sip of air, then let it out slowly through the mouth. That second breath is only a little top-up. There's no need to fill your lungs to the limit, or push all the air out.\nI'll guide the first two rounds, then leave you some quiet space with the rhythm. If you feel dizzy, tight in the chest, in pain, or short of breath, stop and return to your usual breathing.",
+      "windowSeconds": null,
+      "duration": 38.2,
+      "sha256": "9c388c305173a0753a262982f5b40b1e2fc3c2e5df7c2fc18576ea56165c8340",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_intro_progressiveMuscleRelaxation",
+      "text": "Sit back or lie somewhere you can rest safely. Let your head, back, and legs be supported. You don't need to feel calm before we start.\nWe'll visit eight muscle groups, using a very gentle squeeze once, followed by a longer rest. Keep breathing normally. We're noticing the difference between effort and letting go, not building strength.\nSkip the tightening wherever you have pain, an injury, or a tendency to cramp. You can simply rest that part of your body. If you've recently had surgery or been advised to limit exertion, follow that advice.\nIf a movement hurts or feels uncomfortable, release straight away. You don't need to wait for my cue. You can stop the whole practice at any time.",
+      "windowSeconds": null,
+      "duration": 48.2,
+      "sha256": "adaa3e147bec533dbe5da37dd395c2950e326c3842c61daf90ade42aa16315e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_0",
+      "text": "Settle into a comfortable seat. Let your hands rest. Your eyes can close, or stay softly open. You do not have to feel calm yet.",
+      "windowSeconds": 25,
+      "duration": 10.4,
+      "sha256": "a0f1cb05d8549e51c1f00d98d6791e5cb7065d0c7f1652cf961a364566026a6a",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_1",
+      "text": "Notice where your body meets the chair or cushion. Let that support take some weight. Perhaps your jaw and shoulders can soften a little too.",
+      "windowSeconds": 30,
+      "duration": 9.5,
+      "sha256": "2570fe72109b9a3e10aa2f6c3f7e61da59948804f713f94f13bbd56a5fceea81",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_2",
+      "text": "Notice one natural breath. You might feel air at your nose, or a small movement in your chest or belly. Choose one place. No need to change the breath.",
+      "windowSeconds": 45,
+      "duration": 11.9,
+      "sha256": "33bcb65bcd82bca32f39a649b5dc1daad02a46e3c89b523163fb63820a7bb113",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_3",
+      "text": "Perhaps a thought carried your attention away. Once you notice, there is no need to criticize yourself. Feel the next ordinary breath, just as it is.",
+      "windowSeconds": 45,
+      "duration": 10.4,
+      "sha256": "faed773cf4833e90f9d1ff80023b9e3ece7222f72203a5216cadc1ec10aba8b1",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_4",
+      "text": "Thoughts may keep arriving, as words or pictures. You do not need to finish them. Notice that they are here, then come back to the body.",
+      "windowSeconds": 55,
+      "duration": 9.7,
+      "sha256": "ce826ad299cff92916d17d0aa17fbc2f2d1d4b5ffde4b4ae2b5db39cc7c084eb",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_5",
+      "text": "If focusing has become hard work, let it be lighter. Your body is still supported. Breathing is still happening. We will leave a little quiet here.",
+      "windowSeconds": 60,
+      "duration": 10.5,
+      "sha256": "3546261f16f6dc4ce585e5c79d41356d4ca867976931e93e866ded2850abadcd",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_6",
+      "text": "Notice the next few breaths. You do not need to catch every one. Each return is enough.",
+      "windowSeconds": 25,
+      "duration": 6.7,
+      "sha256": "a06b4817e0b73e6da1db6c704aeebb7b8975d6ed7662fba9a69207854d9c0c65",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_300_7",
+      "text": "Listen to the sounds around you. When you are ready, let your eyes open.",
+      "windowSeconds": 15,
+      "duration": 5.4,
+      "sha256": "74a5eaae1c6a9164f7613d9ecad9a0554397ae81c7a1511f744f79a062022927",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_0",
+      "text": "Find a position you can rest in. Let your hands settle, and close your eyes or lower your gaze. You can begin with the mood you have.",
+      "windowSeconds": 30,
+      "duration": 9.5,
+      "sha256": "c21f7ee8df7c4540d51ce492612fe66b167a3928b147df4ff1582283f3b7e29b",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_1",
+      "text": "Notice the chair or cushion beneath you. Perhaps your feet, your seat, or your back feels most clearly supported. Stay with one of those places for a moment.",
+      "windowSeconds": 40,
+      "duration": 11.0,
+      "sha256": "1bffe51b334e674eee650bc08f3ac3a75fc320cf67183bdd04a9e11afe7fcb2d",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_2",
+      "text": "Gently bring your attention to breathing. Air at your nose, or movement in your chest or belly. Your body can choose the length of each breath. Just notice it happening.",
+      "windowSeconds": 70,
+      "duration": 12.0,
+      "sha256": "22916ecb73809eafc7ec8cf73e78ddc7a5dfa72a88b6b65cfe0a154878cca9cf",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_3",
+      "text": "If you have been thinking about something else, you do not need to solve it before returning. Notice that you wandered, then feel your support or the next breath.",
+      "windowSeconds": 80,
+      "duration": 9.7,
+      "sha256": "bdcf51fcda17e1502ed6bbe761074b8de1ead260b1fe478387ad5bb4b1564a50",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_4",
+      "text": "Some thoughts return more than once. You do not have to push them away, or follow them further. You might quietly say, I noticed. Then bring a little attention back to your body.",
+      "windowSeconds": 80,
+      "duration": 12.5,
+      "sha256": "95692ba3ea4583bdc432d91a78061307189d4c4a3b1c57d14305e3dd45844f46",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_5",
+      "text": "Notice whether concentrating has tightened anything. Your forehead, jaw, and shoulders can do a little less. If your position is uncomfortable, feel free to adjust it.",
+      "windowSeconds": 100,
+      "duration": 12.3,
+      "sha256": "27849357261378a2186538577bd3ead84481fdf8e210069d1c7b53231a0d7e64",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_6",
+      "text": "For a while, we will simply practice returning. Wandering, noticing, coming back. No need to count. Even if most of this time has been busy, this moment is another place to begin.",
+      "windowSeconds": 100,
+      "duration": 13.4,
+      "sha256": "962e2f9fdfbad2c6ea265b144e2de58260819b07c78c1d99b89965d11cca4cdd",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_7",
+      "text": "Let the method become lighter now. Feel a few ordinary breaths. Hear sounds arrive and fade. There is room to be here without doing it perfectly.",
+      "windowSeconds": 65,
+      "duration": 11.5,
+      "sha256": "fd16ef15fb64d3558c83b5c1d0b271739c0005228fb9b267026799c5a8c23f49",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_meditation_600_8",
+      "text": "Notice the space around you. Hear sounds nearby and farther away. Move your fingers and toes. When you are ready, open your eyes. There is no hurry to get up.",
+      "windowSeconds": 35,
+      "duration": 12.7,
+      "sha256": "9fa9132cfc72d9d95993a1de2515b81c3cae4b310f633d2e6ca72d042443b52c",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_0",
+      "text": "Find a safe place to lie down, with your head, back, and legs supported. Adjust whenever you need to. For now, this time is for rest.",
+      "windowSeconds": 45,
+      "duration": 11.1,
+      "sha256": "db6e64d7b3084cec0e40687ff9d74336d54e0afc08b0980060750602d1156513",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_1",
+      "text": "Your eyes can close, or stay slightly open. You do not need to watch the screen, and you do not need to make yourself sleep. When you hear my voice, gently follow along.",
+      "windowSeconds": 45,
+      "duration": 11.9,
+      "sha256": "d5627b1bc6133806764ab3618329604e4c50c87ab44ba4250d7b0f61873811ea",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_10",
+      "text": "Bring attention to your ankles, feet, and toes. Is there any effort you could let go of? Your feet can rest in different directions. They do not need to match.",
+      "windowSeconds": 90,
+      "duration": 11.0,
+      "sha256": "e58efe090504b5d3f38bb669bbd8e651b18484e8e6eca2b70db7164972c8f8a1",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_11",
+      "text": "Now notice the whole body against its support. Some places may feel easier, and others may still be tense. You do not have to fix each one.",
+      "windowSeconds": 90,
+      "duration": 10.4,
+      "sha256": "a2fb9c373f666085b0cbe5a5a4a473ff19206d45827396426d46fa88014d95d6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_12",
+      "text": "Feel another ordinary breath. If your thoughts have wandered, there is no need to retrieve them. This breath, or this point of contact, is somewhere to return.",
+      "windowSeconds": 100,
+      "duration": 11.6,
+      "sha256": "2be24b75616b3542b016a60a70b416560457358c0d3766923e73baca08f096b6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_13",
+      "text": "We will leave some quiet time now. You do not need to concentrate throughout. If you miss something, that is okay. Join me again when you hear the next prompt.",
+      "windowSeconds": 100,
+      "duration": 9.9,
+      "sha256": "524d62b1005dda44c569bb6d68a4fd4861410942eec0585ce0c82ec78b28f3cd",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_14",
+      "text": "Notice your whole body once more. Is your position still comfortable? You can make a small adjustment. There is a little more time to rest, with nothing to finish.",
+      "windowSeconds": 70,
+      "duration": 10.9,
+      "sha256": "645a3ecf0d8404d1536b8eeaa7b084207efda2c6fe2a9b0e8e73a4a3efe1d1e9",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_15",
+      "text": "Notice the space around you. Gently move your fingers and toes. Open your eyes when you are ready. Stay lying down for a moment before deciding to get up.",
+      "windowSeconds": 30,
+      "duration": 11.1,
+      "sha256": "de5243d166f2ef885bf726433f8e5a81f6527da29fb9343e2d83d48fa7b94b04",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_2",
+      "text": "Notice the area around your eyes and between your eyebrows. See whether it can do a little less. Your teeth do not need to touch. Let your tongue rest naturally.",
+      "windowSeconds": 60,
+      "duration": 11.9,
+      "sha256": "01eb57556d763b66efddc98afb3182fab12c4d057a629b6d2e4e489d7f979771",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_3",
+      "text": "Bring attention to your shoulders, then the contact beneath your back. You do not need to press your shoulders down. Let the support receive a little weight, whatever feels possible.",
+      "windowSeconds": 80,
+      "duration": 11.2,
+      "sha256": "f68ad0553de0f404f7a1cf588c18b0a4acfd3a9a7341ecdf951113b7843d607f",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_4",
+      "text": "Notice your upper arms, then forearms, then hands. Your fingers can curl naturally. If something feels uncomfortable, adjust, or move your attention to an easier place.",
+      "windowSeconds": 80,
+      "duration": 13.0,
+      "sha256": "0053eaa71bee76cd6db54d6037252dcd879c7b42c3519dbca6dbb071f57f16ee",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_5",
+      "text": "Notice your palms against the bed or your clothes. Perhaps warmth, perhaps an ordinary texture, perhaps very little. Your hands do not have to hold anything now.",
+      "windowSeconds": 80,
+      "duration": 12.6,
+      "sha256": "61d2053bf5e52ab22fcad53fd77d734be7514df6627afaea3a6de4cb0e96b0dd",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_6",
+      "text": "Feel one natural breath. It does not need to deepen, or match the pace of my voice. Simply notice that your body is breathing in, and breathing out.",
+      "windowSeconds": 80,
+      "duration": 10.8,
+      "sha256": "3d54687d3e56db4c2c0fee2d6411bd697e7b802130acd7a3ee6582c2b237918a",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_7",
+      "text": "Bring attention to your belly and lower back. Your belly does not have to tighten. There is support beneath you. Let each breath make whatever small movement it makes.",
+      "windowSeconds": 80,
+      "duration": 10.8,
+      "sha256": "f038f43eebf0d776615fe3e0e8cea37fd0055d3f48a4059bfcd0778cb0ec3ebb",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_8",
+      "text": "Notice where your pelvis meets the bed or cushion. Let your bottom do a little less. You do not need to sink or press down. Stay with the feeling of being supported.",
+      "windowSeconds": 90,
+      "duration": 11.6,
+      "sha256": "9da2682aa8ed850be57dcc7fd1e6f9d7127685afa194de8c6aea1d1010150086",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_1200_9",
+      "text": "Notice your thighs, then your lower legs. Let your knees stay comfortable, without locking them straight. Your legs do not have to take you anywhere just now.",
+      "windowSeconds": 80,
+      "duration": 10.8,
+      "sha256": "ce489db131887e6df2fe2f0b5c4915a7541d087fdb3cc3871a0474b6aaa67842",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_0",
+      "text": "Find a safe place to lie down, with your head, back, and legs supported. Adjust whenever you need to. For now, this time is for rest.",
+      "windowSeconds": 30,
+      "duration": 11.1,
+      "sha256": "db6e64d7b3084cec0e40687ff9d74336d54e0afc08b0980060750602d1156513",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_1",
+      "text": "Your eyes can close, or stay slightly open. You do not need to watch the screen, and you do not need to make yourself sleep. When you hear my voice, gently follow along.",
+      "windowSeconds": 30,
+      "duration": 11.9,
+      "sha256": "d5627b1bc6133806764ab3618329604e4c50c87ab44ba4250d7b0f61873811ea",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_10",
+      "text": "Bring attention to your ankles, feet, and toes. Is there any effort you could let go of? Your feet can rest in different directions. They do not need to match.",
+      "windowSeconds": 45,
+      "duration": 11.0,
+      "sha256": "e58efe090504b5d3f38bb669bbd8e651b18484e8e6eca2b70db7164972c8f8a1",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_11",
+      "text": "Now notice the whole body against its support. Some places may feel easier, and others may still be tense. You do not have to fix each one.",
+      "windowSeconds": 45,
+      "duration": 10.4,
+      "sha256": "a2fb9c373f666085b0cbe5a5a4a473ff19206d45827396426d46fa88014d95d6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_12",
+      "text": "Feel another ordinary breath. If your thoughts have wandered, there is no need to retrieve them. This breath, or this point of contact, is somewhere to return.",
+      "windowSeconds": 50,
+      "duration": 11.6,
+      "sha256": "2be24b75616b3542b016a60a70b416560457358c0d3766923e73baca08f096b6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_13",
+      "text": "We will leave some quiet time now. You do not need to concentrate throughout. If you miss something, that is okay. Join me again when you hear the next prompt.",
+      "windowSeconds": 60,
+      "duration": 9.9,
+      "sha256": "524d62b1005dda44c569bb6d68a4fd4861410942eec0585ce0c82ec78b28f3cd",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_14",
+      "text": "Notice the space around you. Gently move your fingers and toes. Open your eyes when you are ready. Stay lying down for a moment before deciding to get up.",
+      "windowSeconds": 30,
+      "duration": 11.1,
+      "sha256": "de5243d166f2ef885bf726433f8e5a81f6527da29fb9343e2d83d48fa7b94b04",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_2",
+      "text": "Notice the area around your eyes and between your eyebrows. See whether it can do a little less. Your teeth do not need to touch. Let your tongue rest naturally.",
+      "windowSeconds": 30,
+      "duration": 11.9,
+      "sha256": "01eb57556d763b66efddc98afb3182fab12c4d057a629b6d2e4e489d7f979771",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_3",
+      "text": "Bring attention to your shoulders, then the contact beneath your back. You do not need to press your shoulders down. Let the support receive a little weight, whatever feels possible.",
+      "windowSeconds": 40,
+      "duration": 11.2,
+      "sha256": "f68ad0553de0f404f7a1cf588c18b0a4acfd3a9a7341ecdf951113b7843d607f",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_4",
+      "text": "Notice your upper arms, then forearms, then hands. Your fingers can curl naturally. If something feels uncomfortable, adjust, or move your attention to an easier place.",
+      "windowSeconds": 40,
+      "duration": 13.0,
+      "sha256": "0053eaa71bee76cd6db54d6037252dcd879c7b42c3519dbca6dbb071f57f16ee",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_5",
+      "text": "Notice your palms against the bed or your clothes. Perhaps warmth, perhaps an ordinary texture, perhaps very little. Your hands do not have to hold anything now.",
+      "windowSeconds": 40,
+      "duration": 12.6,
+      "sha256": "61d2053bf5e52ab22fcad53fd77d734be7514df6627afaea3a6de4cb0e96b0dd",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_6",
+      "text": "Feel one natural breath. It does not need to deepen, or match the pace of my voice. Simply notice that your body is breathing in, and breathing out.",
+      "windowSeconds": 40,
+      "duration": 10.8,
+      "sha256": "3d54687d3e56db4c2c0fee2d6411bd697e7b802130acd7a3ee6582c2b237918a",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_7",
+      "text": "Bring attention to your belly and lower back. Your belly does not have to tighten. There is support beneath you. Let each breath make whatever small movement it makes.",
+      "windowSeconds": 40,
+      "duration": 10.8,
+      "sha256": "f038f43eebf0d776615fe3e0e8cea37fd0055d3f48a4059bfcd0778cb0ec3ebb",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_8",
+      "text": "Notice where your pelvis meets the bed or cushion. Let your bottom do a little less. You do not need to sink or press down. Stay with the feeling of being supported.",
+      "windowSeconds": 40,
+      "duration": 11.6,
+      "sha256": "9da2682aa8ed850be57dcc7fd1e6f9d7127685afa194de8c6aea1d1010150086",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_nsdr_600_9",
+      "text": "Notice your thighs, then your lower legs. Let your knees stay comfortable, without locking them straight. Your legs do not have to take you anywhere just now.",
+      "windowSeconds": 40,
+      "duration": 10.8,
+      "sha256": "ce489db131887e6df2fe2f0b5c4915a7541d087fdb3cc3871a0474b6aaa67842",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_0_0",
+      "text": "Left, breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.896009,
+      "sha256": "7e4487859c36cf0816a3865ed29d7ea7aa8928bf114f435adbfdd2c5d8c89650",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_0_1",
+      "text": "Right, breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.56,
+      "sha256": "f42a5b8f448ed7d6332abcde98b719fc83780a888285bed725aadbcf7968f5c3",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_0_2",
+      "text": "Right, breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.608005,
+      "sha256": "07125ebd54ee120383b76ed5879fd51b217a3064172fdb4d96515b56a2c61b0d",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_0_3",
+      "text": "Left, breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.8,
+      "sha256": "6f08ec8cdb90bb054338f58a2a1a1281213449c57b695b99a85f4db1a0e902d6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_1_0",
+      "text": "Left, breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.896009,
+      "sha256": "7e4487859c36cf0816a3865ed29d7ea7aa8928bf114f435adbfdd2c5d8c89650",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_1_1",
+      "text": "Right, breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.56,
+      "sha256": "f42a5b8f448ed7d6332abcde98b719fc83780a888285bed725aadbcf7968f5c3",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_1_2",
+      "text": "Right, breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.608005,
+      "sha256": "07125ebd54ee120383b76ed5879fd51b217a3064172fdb4d96515b56a2c61b0d",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_alternateNostrilBreathing_1_3",
+      "text": "Left, breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.8,
+      "sha256": "6f08ec8cdb90bb054338f58a2a1a1281213449c57b695b99a85f4db1a0e902d6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_balancedBreathing_0_0",
+      "text": "Gently in.",
+      "windowSeconds": 4,
+      "duration": 1.271995,
+      "sha256": "7351aaf25bfedfed3e33e9ac9afc10456e0e2e376c59dd9d24bec2664c6810a7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_balancedBreathing_0_1",
+      "text": "Gently out.",
+      "windowSeconds": 4,
+      "duration": 1.271995,
+      "sha256": "75101e89ee99c8075385fd171b2ebe0946da8b2c6501847270fe512187ebc0e5",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_balancedBreathing_1_0",
+      "text": "Breathe in. No need to fill up.",
+      "windowSeconds": 4,
+      "duration": 2.831995,
+      "sha256": "03dd8c134fc02e1644560305d9b560ce7d304d7a374b487ca88f814404d0953c",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_balancedBreathing_1_1",
+      "text": "Breathe out. Let it go.",
+      "windowSeconds": 4,
+      "duration": 2.52,
+      "sha256": "c10941fc8acc846726f597b629b83b30a1cde62031b2942b79bb6a4d899506c6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_0_0",
+      "text": "Breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.223991,
+      "sha256": "61ec03c3ccbefd9a1de776e8ef5caf59cb2000f4190956cc4157e12ab41edf4b",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_0_1",
+      "text": "Gently pause.",
+      "windowSeconds": 3,
+      "duration": 1.656009,
+      "sha256": "6ba29def0e322955bbc40a43b0bd85ce01a2313a769fbd69ad6e6c362ac09987",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_0_2",
+      "text": "Breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.2,
+      "sha256": "329d50037f30c27fc3bf4c36e76e42754708752d6fa30bb61dd25c0d1ec4dc46",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_0_3",
+      "text": "Gently pause.",
+      "windowSeconds": 3,
+      "duration": 1.656009,
+      "sha256": "6ba29def0e322955bbc40a43b0bd85ce01a2313a769fbd69ad6e6c362ac09987",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_1_0",
+      "text": "Breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.223991,
+      "sha256": "61ec03c3ccbefd9a1de776e8ef5caf59cb2000f4190956cc4157e12ab41edf4b",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_1_1",
+      "text": "Pause here.",
+      "windowSeconds": 3,
+      "duration": 1.32,
+      "sha256": "c810fad836a22e0f4cca88ffaf42569d30781963c58558b6f07ff186fd94020c",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_1_2",
+      "text": "Breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.2,
+      "sha256": "329d50037f30c27fc3bf4c36e76e42754708752d6fa30bb61dd25c0d1ec4dc46",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_boxBreathing_1_3",
+      "text": "Pause here.",
+      "windowSeconds": 3,
+      "duration": 1.296009,
+      "sha256": "d40f0045bb7570d3b8f5662d22c264d80fcf896d9c88d08a73c440424004bd8c",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_kegel_0_0",
+      "text": "Gently lift inward.",
+      "windowSeconds": 4,
+      "duration": 1.896009,
+      "sha256": "389df18e80da643365cb44e43583564f3908f27502049ee682c796d8c31156b2",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_kegel_0_1",
+      "text": "Release. Let these muscles rest.",
+      "windowSeconds": 8,
+      "duration": 3.2,
+      "sha256": "b3a7e3be46b22481f05fff480d13dfbf49ab54dc4d81d3cf1331bff872a1f183",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_kegel_1_0",
+      "text": "A gentle lift.",
+      "windowSeconds": 4,
+      "duration": 1.583991,
+      "sha256": "a180abbff19e18870c13fc79f81bb28194599e822817a8c5452d6e21f6e3508e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_kegel_1_1",
+      "text": "Relax. Keep breathing naturally.",
+      "windowSeconds": 8,
+      "duration": 3.4,
+      "sha256": "2a89c24991a312e23e745c0e70c6a83449d0f305b859e8a35c6c8451912edf6e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_pacedBreathing_0_0",
+      "text": "Gently in.",
+      "windowSeconds": 4,
+      "duration": 1.271995,
+      "sha256": "7351aaf25bfedfed3e33e9ac9afc10456e0e2e376c59dd9d24bec2664c6810a7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_pacedBreathing_0_1",
+      "text": "Slowly out. Leave a little room.",
+      "windowSeconds": 6,
+      "duration": 2.856009,
+      "sha256": "75333f0713c694af9aca98e3577d88fdf732ec2af1591f91c6183adfaa95ae87",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_pacedBreathing_1_0",
+      "text": "Breathe in.",
+      "windowSeconds": 4,
+      "duration": 1.223991,
+      "sha256": "61ec03c3ccbefd9a1de776e8ef5caf59cb2000f4190956cc4157e12ab41edf4b",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_pacedBreathing_1_1",
+      "text": "Breathe out. Let this breath finish.",
+      "windowSeconds": 6,
+      "duration": 3.2,
+      "sha256": "55bab89d2f3bee7ca823b61b99a96e983ee1bbf6132803a6744ceb07aabd9b92",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_physiologicalSigh_0_0",
+      "text": "Breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.223991,
+      "sha256": "61ec03c3ccbefd9a1de776e8ef5caf59cb2000f4190956cc4157e12ab41edf4b",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_physiologicalSigh_0_1",
+      "text": "And in.",
+      "windowSeconds": 2,
+      "duration": 1.223991,
+      "sha256": "4c9a576c6b9e00d47efd4a6c276d16c1f307cf8c8ecf6da9adbbdb181ffb9c4a",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_physiologicalSigh_0_2",
+      "text": "Breathe out. Let your shoulders rest.",
+      "windowSeconds": 7,
+      "duration": 3.0,
+      "sha256": "4fc3fa52bc5c2079c38c23ac03f5c056d2c0c89a863d7a2798593f6a66dd139d",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_physiologicalSigh_1_0",
+      "text": "Breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.223991,
+      "sha256": "61ec03c3ccbefd9a1de776e8ef5caf59cb2000f4190956cc4157e12ab41edf4b",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_physiologicalSigh_1_1",
+      "text": "And in.",
+      "windowSeconds": 2,
+      "duration": 1.223991,
+      "sha256": "4c9a576c6b9e00d47efd4a6c276d16c1f307cf8c8ecf6da9adbbdb181ffb9c4a",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_phase_physiologicalSigh_1_2",
+      "text": "Slowly out. No need to push.",
+      "windowSeconds": 7,
+      "duration": 2.88,
+      "sha256": "839ccae4542f2c204624d366bfef6e296ffc380301714b0a6197dec4b3e99607",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_d01",
+      "text": "Gently notice sounds around you and the space you are in. Move your fingers and toes a little. See whether your body would like a different position.",
+      "windowSeconds": 30,
+      "duration": 9.9,
+      "sha256": "be17f2a8a7d396bd38104d73ce7c05fc8e39e09d17c7c19671cc6ee5166e4e19",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_d02",
+      "text": "Open your eyes when you are ready. Settle in your seat, or roll onto your side before getting up at your own pace. The practice is finished. There is no need to judge it yet.",
+      "windowSeconds": 30,
+      "duration": 11.6,
+      "sha256": "000d0b5afd883da4c3fb45f0242da2df28cd1611629572c5bd6a88da7d8a10e2",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_i01",
+      "text": "Let your body settle. You can sit back or lie down. Notice whether your head, back, and legs feel supported. Adjust your position whenever you need.",
+      "windowSeconds": 30,
+      "duration": 11.2,
+      "sha256": "afdff67c074d520387d53b148f4478eaf06687404673ef9d695e07c234f6c90c",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_i02",
+      "text": "You do not need to feel calm or clear your thoughts. We will use a little gentle effort, then notice letting go. Keep breathing naturally, without holding or forcing.",
+      "windowSeconds": 25,
+      "duration": 11.6,
+      "sha256": "f56d16b63e3c80bd02c2dd03c3e03713a6013c1ae3c57a0e90ab01463addb6d4",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_i03",
+      "text": "If a part of your body is injured, painful, or not suited to effort, skip the tightening. Just feel its support. When you are ready, we will begin with your hands.",
+      "windowSeconds": 25,
+      "duration": 12.0,
+      "sha256": "8c6922519bc420dae5c636f770ef8dcb0f81a5dd14b97cf83b43386f358b9d8c",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m01_a",
+      "text": "Let your hands rest and keep your wrists comfortable. In a moment, gently curl your fingers, without pressing your nails into your palms.",
+      "windowSeconds": 20,
+      "duration": 10.3,
+      "sha256": "c49efd979d9f7779ebb876c1d2384e0234f87b829147fb8b2280fa532920d592",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m01_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m01_c",
+      "text": "Release. Let your fingers open naturally. Notice your palms and the backs of your hands. Warmth, lightness, or no clear change: any of those is okay. Stay here for a while.",
+      "windowSeconds": 25,
+      "duration": 14.0,
+      "sha256": "8c9eba78f827e492e325da19ea7156f39bcfbcd79120a16a9e9d7235db62525f",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m02_a",
+      "text": "Notice your upper arms. Support your elbows in a comfortable bend. In a moment, gently flex your upper arms. Keep your hands loose, without pressing down.",
+      "windowSeconds": 20,
+      "duration": 12.4,
+      "sha256": "1680d20e5f83fa468018dea29014397bb6b9fe8236e1bba1c03b75848d3ff654",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m02_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m02_c",
+      "text": "Release. Let your arms return to their support. Your forearms and hands do not need to hold a position. Give the muscles that were working a little time to rest.",
+      "windowSeconds": 25,
+      "duration": 11.4,
+      "sha256": "eb893aaf920e0680ecb2fa06655c69b6b5f28f084c75ba976a9a6ca87ae23cce",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m03_a",
+      "text": "Bring attention to your forehead. In a moment, raise your eyebrows just a little, as if mildly surprised. Do not squeeze your eyes or tip your head back.",
+      "windowSeconds": 20,
+      "duration": 11.3,
+      "sha256": "822a7d0a37d7fd5bcadd748ce0e294cf7b3e3943401cf6bcfa6d0819b4c4d8af",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m03_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m03_c",
+      "text": "Release. Let your eyebrows return to their natural position. Your forehead has nothing to hold up. Your eyes can stay gently closed or comfortably open.",
+      "windowSeconds": 25,
+      "duration": 11.2,
+      "sha256": "f62efbf36f1ec5f00dca2d6087641b896506f1ac985257fdc9ccb19ebc0c69ea",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m04_a",
+      "text": "Notice your lips and cheeks. In a moment, gently bring your lips together. Keep your teeth apart. There is no need to clench your jaw or scrunch your whole face.",
+      "windowSeconds": 20,
+      "duration": 11.6,
+      "sha256": "ef88b939f0b15adde29bad6aa3a597bd10b3d8d0234a4c559b212f8fc25b9116",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m04_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m04_c",
+      "text": "Release. Let your lips rest naturally. Your teeth do not need to touch, and your tongue does not need to press. There is no expression you need to make.",
+      "windowSeconds": 25,
+      "duration": 10.4,
+      "sha256": "de03f0a910ccf920100b78c0edc8f658d2991d69f962a8bd341853a50a7413f5",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m05_a",
+      "text": "Notice your shoulders. In a moment, lift them just a little toward your ears. Keep your neck still, without twisting or tipping back. A small movement is enough.",
+      "windowSeconds": 20,
+      "duration": 12.2,
+      "sha256": "8e131623f84086112e918fcca2dc811eb1fc940e67db3e5999af6d2b5bfdd63e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m05_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m05_c",
+      "text": "Release. Let your shoulders return to a comfortable position, without pushing them down. Feel the weight of your arms. There is nothing to add for a little while.",
+      "windowSeconds": 25,
+      "duration": 10.9,
+      "sha256": "32a1a6b921239f28f4f289559631e716fae7d526f53cebf917b110dec961b578",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m06_a",
+      "text": "Bring attention to your thighs. Let your knees stay comfortable, with a slight bend if you like. In a moment, gently tense the front of your thighs. Do not lift or lock your legs.",
+      "windowSeconds": 20,
+      "duration": 12.9,
+      "sha256": "a152da2e3570ec078a800979cccf5d50cd880354f093d1b923697154225a07c2",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m06_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m06_c",
+      "text": "Release. Let your thighs rest in their support. Keep your knees comfortable and let your bottom rest too. Notice any difference, without searching for one.",
+      "windowSeconds": 25,
+      "duration": 11.2,
+      "sha256": "1fb684bcc165158c95297b53bfc0c7977821955c7c01532a787676a23474cb05",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m07_a",
+      "text": "Notice your lower legs. In a moment, draw your toes a little toward you, without reaching the limit. Skip this movement if you are prone to cramps.",
+      "windowSeconds": 20,
+      "duration": 10.1,
+      "sha256": "df2bc2fbce251ce83989317b8377d2cb05f7850d341c6717c055c41a9412d4d0",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m07_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m07_c",
+      "text": "Release. Let your ankles return to a natural angle. Your lower legs can stop pulling. Notice the contact beneath them. There is time before the next movement.",
+      "windowSeconds": 25,
+      "duration": 11.8,
+      "sha256": "3224cdef72af63a7ef3dd184f88e68d901f628a5401fef9d27325e2928459f82",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m08_a",
+      "text": "Finally, your toes. In a moment, curl them very gently, without gripping hard or pointing your feet. If this tends to cause cramp, skip the tightening.",
+      "windowSeconds": 20,
+      "duration": 12.2,
+      "sha256": "ca94260a0d70fb97a65e1456890ee4fcad1276847295d295e0147cdbf014dd05",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m08_b",
+      "text": "Gently tense.",
+      "windowSeconds": 5,
+      "duration": 1.536009,
+      "sha256": "c87f599af0efa4a0ef1a7bbc6a41e4cc3de7b66c6b71d1f21e8d2f17825e10e7",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_m08_c",
+      "text": "Release. Let your toes rest without trying to straighten them. Your feet can fall in a comfortable direction. All the tightening is finished now.",
+      "windowSeconds": 25,
+      "duration": 9.9,
+      "sha256": "0e1f08b8394c084f2ea516e06c054f12bc9328cb1105fe533aad7e02e246d4a0",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_n01",
+      "text": "If you are getting ready for sleep, stay in a comfortable position. Sleepy or not, there is nothing else you need to do. Let your hands and feet rest, and breathe naturally.",
+      "windowSeconds": 30,
+      "duration": 12.2,
+      "sha256": "d04b11281ca9d30f0a539aac60fdc80d4ba045acfe81b933f85db92e2059bad9",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_n02",
+      "text": "My voice will settle into quiet now. You do not need to respond or open your eyes to check. You can stay here, and leave the remaining time for rest.",
+      "windowSeconds": 30,
+      "duration": 10.7,
+      "sha256": "4beb91b7fbe8e0144d787fb70d1275f4cdc49bc6f621a71ed3614bd6af8798ac",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_w01",
+      "text": "All the tightening is finished now. Notice your hands, face, shoulders, and legs. Some places may feel easier, others much the same. You do not need to change anything else.",
+      "windowSeconds": 30,
+      "duration": 13.6,
+      "sha256": "869638e95dd304019b62f1b08cfcb0ec186eec04fab36dcbf044dded99fc02ab",
+      "decoded": true
+    },
+    {
+      "resource": "le2_guide20_pmr_w02",
+      "text": "Let your attention widen to your whole body. Breathing follows its own rhythm. There are no more movements to complete. For now, simply rest here.",
+      "windowSeconds": 30,
+      "duration": 10.7,
+      "sha256": "4d102341047ef20fb604a80a8057b21037a2c2d02813cb5de8caf45502f1d8b0",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_kegel_contract",
+      "text": "Gently lift. Keep breathing.",
+      "windowSeconds": 4,
+      "duration": 2.928005,
+      "sha256": "9c71b95f057b2ea424504616c3925472b04bfcd806f7daad6f2024e4b992244b",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_meditation_breath",
+      "text": "Notice this ordinary breath.",
+      "windowSeconds": 30,
+      "duration": 2.568005,
+      "sha256": "784e5b4375ef6d2d858dc9c746d1796dfef450002efdcc96a727a4ac1966817e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_meditation_return",
+      "text": "It's okay to wander. Gently come back.",
+      "windowSeconds": 30,
+      "duration": 3.2,
+      "sha256": "0f9cab78d07a4bdca24c3dd898ef62e824d6cc7d511ee0896112ae155b73b651",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_meditation_support",
+      "text": "Feel the support beneath you.",
+      "windowSeconds": 30,
+      "duration": 2.183991,
+      "sha256": "e0b16fd7d3890b6abbe53b07bba46a7b2fb236018fe606c0a53adca3f2ceec73",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_nsdr_belly",
+      "text": "Let your belly rest. Breathing can happen on its own.",
+      "windowSeconds": 30,
+      "duration": 4.1,
+      "sha256": "bce6f8a4f27ff1f656a5ae49883d43e36cf1006130bb15000036ddd4fb3318d4",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_nsdr_breath",
+      "text": "Gently in. Slowly out. Let your weight be supported.",
+      "windowSeconds": 30,
+      "duration": 4.8,
+      "sha256": "d8d85be73ac81fc5776992d86a8020fd16c59c1e915f6fd42659307e3ad571fb",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_nsdr_face",
+      "text": "Soften your eyes and your jaw.",
+      "windowSeconds": 30,
+      "duration": 2.448005,
+      "sha256": "6911fca6c1102f6d13e4fde0de1e24c879a50bb249c612660776c26b5d0f5610",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_nsdr_legs",
+      "text": "Let your legs and feet rest.",
+      "windowSeconds": 30,
+      "duration": 2.328005,
+      "sha256": "9551887b62aff6ac95d99a3e991671107d899e60c7fccec28bc91d48624be25e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_nsdr_return",
+      "text": "Move your fingers and toes. Open your eyes when you're ready.",
+      "windowSeconds": 30,
+      "duration": 4.5,
+      "sha256": "305400fa132462fc664d8d3361316bc16f219ccf92e311fc343348440593b2f1",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_nsdr_shoulders",
+      "text": "Let your shoulders rest.",
+      "windowSeconds": 30,
+      "duration": 1.896009,
+      "sha256": "9128698bcab36f13fbb6ec049c7307f7c8c0cb0d31c3aceff725aa931c9c2682",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_sigh_exhale",
+      "text": "Slowly breathe out.",
+      "windowSeconds": 7,
+      "duration": 1.871995,
+      "sha256": "f3dbf2ae3e9294b3e19f70b2dc3c438683e1468e9eb1101e02947589f2d67e8e",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_sigh_inhale",
+      "text": "Gently breathe in through your nose.",
+      "windowSeconds": 3,
+      "duration": 2.616009,
+      "sha256": "c4d05cb76d65af253002147b30b618f8cca29b6cbc238fec14941796ebf7ede0",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_sigh_top_up",
+      "text": "A little more.",
+      "windowSeconds": 2,
+      "duration": 1.368005,
+      "sha256": "0d959b64858cc8e4ffff3cf5405a15497db5c08569780e9deea2d52f4e997444",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_hold",
+      "text": "Gently pause.",
+      "windowSeconds": 3,
+      "duration": 1.656009,
+      "sha256": "6ba29def0e322955bbc40a43b0bd85ce01a2313a769fbd69ad6e6c362ac09987",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_kegel_release",
+      "text": "Let go completely.",
+      "windowSeconds": 8,
+      "duration": 1.68,
+      "sha256": "9b80fae95521e8c7ea3e6e8b3040c54a8750b7df79a1a33725ebc174c4d2c8e1",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_left_exhale",
+      "text": "Left, breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.8,
+      "sha256": "6f08ec8cdb90bb054338f58a2a1a1281213449c57b695b99a85f4db1a0e902d6",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_left_inhale",
+      "text": "Left, breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.896009,
+      "sha256": "7e4487859c36cf0816a3865ed29d7ea7aa8928bf114f435adbfdd2c5d8c89650",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_paced_exhale",
+      "text": "Let the out-breath be longer.",
+      "windowSeconds": 6,
+      "duration": 2.28,
+      "sha256": "dae3fb15ba7089591ad4f88584083ed9ed1453375745bb1db7614dded911ddc5",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_paced_inhale",
+      "text": "Gently breathe in.",
+      "windowSeconds": 4,
+      "duration": 1.703991,
+      "sha256": "a274a28f72ef546a40ec8bd3899fe6935c14ff2e2061214338887e6a175cd44c",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_right_exhale",
+      "text": "Right, breathe out.",
+      "windowSeconds": 3,
+      "duration": 1.56,
+      "sha256": "f42a5b8f448ed7d6332abcde98b719fc83780a888285bed725aadbcf7968f5c3",
+      "decoded": true
+    },
+    {
+      "resource": "le2_practice_v4_right_inhale",
+      "text": "Right, breathe in.",
+      "windowSeconds": 3,
+      "duration": 1.608005,
+      "sha256": "07125ebd54ee120383b76ed5879fd51b217a3064172fdb4d96515b56a2c61b0d",
+      "decoded": true
+    }
+  ],
+  "failures": []
+}

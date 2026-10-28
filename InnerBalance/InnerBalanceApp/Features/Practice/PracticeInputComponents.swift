@@ -9,7 +9,7 @@ struct PracticeChangePicker: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
-      Text("和刚才比")
+      Text("Compared with before")
         .font(.headline)
       Group {
         if dynamicTypeSize.isAccessibilitySize {
@@ -52,11 +52,11 @@ struct PracticeChangePicker: View {
 
 enum PostPracticeFeelingNames {
   static let choices: [(String, String, Double, Double)] = [
-    ("低落", "cloud.rain", -0.7, -0.7),
-    ("紧绷", "bolt", -0.7, 0.8),
-    ("平平", "minus", 0, 0),
-    ("平和", "water.waves", 0.7, -0.7),
-    ("有劲", "sparkles", 0.7, 0.8),
+    ("Low", "cloud.rain", -0.7, -0.7),
+    ("Tense", "bolt", -0.7, 0.8),
+    ("Neutral", "minus", 0, 0),
+    ("At ease", "water.waves", 0.7, -0.7),
+    ("Energized", "sparkles", 0.7, 0.8),
   ]
   static func title(valence: Double, arousal: Double) -> String? {
     choices.first { abs($0.2-valence) < 0.0001 && abs($0.3-arousal) < 0.0001 }?.0
@@ -72,7 +72,7 @@ struct PostPracticeCompassPicker: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
-      Text("现在更接近")
+      Text("What feels closest right now?")
         .font(.headline)
       LazyVGrid(
         columns: [GridItem(.adaptive(minimum: 92), spacing: FangcunLayout.spacing(2))],

@@ -1,0 +1,215 @@
+记录此刻	A small check-in
+轻点或拖到最接近的位置	Tap or drag to the place that feels closest
+现在怎样？	How is it right now?
+往右更愉快，往上更有劲。找到最接近你的地方。	Right feels more pleasant; up feels more energized. Find a place that feels like you.
+哪个词最接近？	Does a word fit?
+选择后立即保存	Your choice saves right away
+都不像 / 不知道	None of these / Not sure
+这次没存上。位置还在，重新点一个词即可。	Couldn't save. Your position is still here. Choose a word again to retry.
+肩颈紧	Tight shoulders or neck
+胸口紧	Chest tightness
+胃部不适	Stomach discomfort
+呼吸浅	Shallow breathing
+头沉	Heavy-headed
+疲惫	Worn out
+无明显感觉	Nothing noticeable
+压力主要来自哪里（选一个即可）	What's on your mind? One is enough.
+身体有什么感觉（可选）	Anything in your body? (Optional)
+补充信息暂时无法安全保存；主记录已经保留，不受影响。	Couldn't safely save the extra details. Your main check-in is already saved.
+正在保存补充…	Saving the extra details…
+保存补充	Save details
+先这样	Leave it here
+这一刻，已留住	A small moment, saved
+已记录此刻	Check-in saved
+都不像，也已保留罗盘位置	No label needed. Your position is saved.
+已保存在本机，将在健康权限可用时重试。下面都可以跳过。	Saved on this device. We'll retry when Health access is available. Everything below is optional.
+主记录已经保存。下面都可以跳过，不会阻塞完成。	Your check-in is saved. You can skip everything below.
+不用独自承受	You don't have to carry this alone
+如果这份绝望很难独自承受，请现在联系一位你信任的人，或寻求当地的专业或紧急支持。	If this hopelessness feels hard to carry alone, reach out to someone you trust now, or seek local professional or emergency support.
+主要	Primary
+其次	Secondary
+\(association.displayName)，\($0)来源	\(association.displayName), \($0) source
+先取消一个已选来源	Deselect a source first
+任务	Tasks
+健康	Health
+训练	Exercise
+惊叹	Amazed
+愉快	Pleasant
+生气	Angry
+焦虑	Anxious
+羞愧	Ashamed
+勇敢	Brave
+知足	Content
+失望	Disappointed
+泄气	Discouraged
+厌恶	Disgusted
+尴尬	Embarrassed
+兴奋	Excited
+挫败	Frustrated
+感激	Grateful
+内疚	Guilty
+开心	Happy
+绝望	Hopeless
+烦躁	Irritated
+嫉妒	Jealous
+喜悦	Joyful
+孤独	Lonely
+热情	Passionate
+安宁	Peaceful
+自豪	Proud
+如释重负	Relieved
+难过	Sad
+害怕	Scared
+紧张	Stressed
+惊讶	Surprised
+担心	Worried
+恼火	Annoyed
+自信	Confident
+充满希望	Hopeful
+无所谓	Indifferent
+不堪重负	Overwhelmed
+满意	Satisfied
+情绪罗盘	Feeling compass
+轻点或拖动选择位置，也可使用四个方向操作	Tap or drag to choose a position, or use the four directional actions
+向愉快	More pleasant
+向不愉快	Less pleasant
+向有劲	More energized
+向低缓	Less energized
+尚未选择	No selection yet
+低缓	Low energy
+不愉快	Unpleasant
+未能保存	Couldn't save
+未能写入 Apple 健康，也未能留在本地队列。请检查健康权限和可用空间。	Couldn't save to Apple Health or the local queue. Check Health access and available storage.
+先照顾好自己	Take care of yourself first
+此刻在哪里？	Where are you right now?
+最接近哪个？	What feels closest?
+记录已保存	Entry saved
+你不必独自处理。现在可以联系一位你信任的人。	You don't have to manage this alone. Reach out to someone you trust now.
+如果你有立即伤害自己的危险，请联系当地急救或紧急支持。	If you're in immediate danger of harming yourself, contact local emergency or crisis support.
+我知道了	Got it
+上方更激活·右侧更愉快	Up: more energy · Right: more pleasant
+不知道	Not sure
+振奋	Uplifted
+松弛	Relaxed
+中间	In between
+中性	Neutral
+低激活	Lower energy
+高激活	Higher energy
+中等激活	Moderate energy
+释然	Relieved
+希望	Hopeful
+身体数据状态	Health data status
+基线进度	Baseline progress
+\(snapshot.baselineDays) / 5 天	\(snapshot.baselineDays) / 5 days
+可用证据	Available measures
+\(snapshot.availableEvidenceCount) 项	\(snapshot.availableEvidenceCount) measures
+当前判断	Current assessment
+不可用类型	Unavailable types
+无	None
+本地写入状态	Local write status
+等待 HealthKit	Waiting for HealthKit
+\(snapshot.pendingHealthWriteCount) 条	\(snapshot.pendingHealthWriteCount) entries
+情绪登记	Check-ins
+\(snapshot.checkInCount) 次	\(snapshot.checkInCount) times
+未分类登记	Unlabeled check-ins
+\(snapshot.unclassifiedCheckInCount) 次	\(snapshot.unclassifiedCheckInCount) times
+已完成练习	Completed practices
+\(snapshot.practiceCompletionCount) 次	\(snapshot.practiceCompletionCount) times
+登记中位用时	Median check-in time
+登记 P90 用时	P90 check-in time
+本地漏斗	On-device flow counts
+打开登记	Opened check-in
+\(snapshot.checkInOpenedCount) 次	\(snapshot.checkInOpenedCount) times
+完成罗盘	Completed compass
+\(snapshot.compassCompletedCount) 次	\(snapshot.compassCompletedCount) times
+选择情绪词	Selected a feeling word
+\(snapshot.emotionWordSelectedCount) 次	\(snapshot.emotionWordSelectedCount) times
+完成可选补充	Completed optional details
+\(snapshot.optionalSupplementCompletedCount) 次	\(snapshot.optionalSupplementCompletedCount) times
+接受推荐	Accepted suggestion
+\(snapshot.recommendationAcceptedCount) 次	\(snapshot.recommendationAcceptedCount) times
+开始练习	Started practice
+\(snapshot.practiceStartedCount) 次	\(snapshot.practiceStartedCount) times
+主观对比可用	Subjective comparison available
+\(snapshot.subjectiveComparisonAvailableCount) 次	\(snapshot.subjectiveComparisonAvailableCount) times
+Watch 心率窗口	Watch heart-rate windows
+提醒响应	Reminder responses
+同步错误	Sync errors
+导出诊断信息	Export diagnostics
+导出只含权限状态、数据可用性、计数和用时；不含心率、HRV、睡眠时段、情绪词或罗盘坐标。	The export contains permission status, data availability, counts, and timings only. No heart rate, HRV, sleep periods, feeling words, or compass coordinates.
+正在整理本地状态…	Preparing local status…
+诊断	Diagnostics
+刷新	Refresh
+暂无	Not available
+\(duration.formatted(.number.precision(.fractionLength(1)))) 秒	\(duration.formatted(.number.precision(.fractionLength(1)))) seconds
+留意	Worth noticing
+建立基线中	Building baseline
+跑步	Running
+步行	Walking
+骑行	Cycling
+徒步	Hiking
+游泳	Swimming
+力量训练	Strength training
+间歇训练	Interval training
+瑜伽	Yoga
+身心训练	Mind and body
+核心训练	Core training
+划船	Rowing
+椭圆机	Elliptical
+普拉提	Pilates
+舞蹈	Dance
+网球	Tennis
+篮球	Basketball
+羽毛球	Badminton
+乒乓球	Table tennis
+足球	Soccer
+排球	Volleyball
+高尔夫	Golf
+爬楼	Stair climbing
+跳绳	Jump rope
+拳击	Boxing
+武术	Martial arts
+攀岩	Climbing
+滑雪	Skiing
+单板滑雪	Snowboarding
+滑冰	Skating
+冲浪	Surfing
+桨板	Paddleboarding
+水中健身	Water fitness
+太极	Tai chi
+拉伸	Stretching
+综合有氧	Mixed cardio
+今日一句	A thought for today
+选一个短练习	Choose a small pause
+同步状态	Sync status
+已写入 Apple 健康	Saved to Apple Health
+\(pendingCount) 条等待重试	\(pendingCount) waiting to retry
+照料方寸之间的自己	A little room to breathe
+点两次，记下此刻	Two taps to check in
+情绪罗盘，点两次记下此刻	Feeling compass. Check in with two taps.
+吸气	Breathe in
+再轻吸一口	A little more
+呼气	Breathe out
+轻松停留	Gently pause
+左侧吸气	Left, breathe in
+右侧吸气	Right, breathe in
+左侧呼气	Left, breathe out
+右侧呼气	Right, breathe out
+轻轻收紧	Gently lift
+完全放松	Release fully
+自然呼吸	Breathe naturally
+轻松停留。	Gently pause.
+左侧吸气。	Left, breathe in.
+右侧呼气。	Right, breathe out.
+右侧吸气。	Right, breathe in.
+左侧呼气。	Left, breathe out.
+先松开，呼吸照常。不需要补做刚才的收紧。	Let go and breathe naturally. You don't need to repeat the last contraction.
+继续练习	Continue practice
+无等待写入	No pending writes
+\(summary.totalCount) 条等待写入	\(summary.totalCount) pending writes
+跨设备以 Apple 健康为事实源，不上传到任何服务器。	Apple Health is the shared record across devices. No data is sent to an app server.
+请在手表「设置 > 健康 > App > 方寸」中允许心境或正念写入。	On your Watch, open Settings > Health > Apps > Little Exhale to allow mood or mindful-session writes.
+\(summary.terminalCount) 条本地数据已损坏，无法重试。	\(summary.terminalCount) local entries are damaged and can't be retried.
+移除损坏记录	Remove damaged entries
+正在重试…	Trying again…
+现在重试	Try now

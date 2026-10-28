@@ -1,0 +1,322 @@
+近 24 小时未读到训练记录	No workouts found in the past 24 hours
+\(minutes) 分	\(minutes) min
+\(minutes / 60) 小时 \(minutes % 60) 分	\(minutes / 60) hr \(minutes % 60) min
+近 24 小时 · \(summary.count) 次 · \(duration)	Past 24 hours · \(summary.count) workouts · \(duration)
+训练后先恢复	Room to recover
+照常安排	Keep your usual plans
+可以推进	Within your usual range
+今天收着一点	Take it a little easier
+优先恢复	Make room for recovery
+近期训练正在扰动训练敏感指标。今天先恢复，晚些再看。	Recent exercise may affect these readings. Give yourself time to recover and check again later.
+目前没有足够证据改变今天的安排。	There isn't enough information here to suggest a change to your plans.
+现有读数先用于建立个人参考；今天按原计划进行。	These readings are helping build your personal baseline. They don't yet support a personalized assessment.
+近期可靠指标在个人参考范围内，今天的安排可以照常推进。	The recent reliable readings are within your personal reference range.
+有一项可靠指标偏离近期参考。降低今天的强度，留出恢复时间。	One reliable measure differs from your recent baseline. Consider an easier day with time to recover.
+至少两项独立可靠指标偏离个人参考。今天先减量，再安排恢复。	At least two independent reliable measures differ from your baseline. Consider reducing effort and making time to recover.
+当前压力	Reported pressure
+当前感受	How you feel
+愿意的话，看看身体数据	Connect a little more context
+读取哪些内容，由你来选。方寸不把健康数据上传到自己的或第三方服务器；Apple 健康是否通过 iCloud 同步，由你的系统设置决定。	You choose what to share from Apple Health. Little Exhale doesn't send health data to its own or third-party servers. Apple Health's iCloud sync follows your system settings.
+正在打开 Apple 健康…	Opening Apple Health…
+选择健康权限	Choose Health access
+打开系统健康权限表，可分别允许或拒绝每一项	Opens system Health permissions. Allow or decline each item separately.
+已记下	Noted
+这次没存上，请再试一次	Couldn't save this time. Please try again.
+此刻	Right now
+近 36 小时中位数 	Past 36 hours, median: 
+ · 来源 \(assessmentSourceName(from: currentHRV))	 · Source: \(assessmentSourceName(from: currentHRV))
+\(latestResting.value.formatted(.number.precision(.fractionLength(0)))) 次/分	\(latestResting.value.formatted(.number.precision(.fractionLength(0)))) bpm
+\($0.value.formatted(.number.precision(.fractionLength(0)))) 次/分	\($0.value.formatted(.number.precision(.fractionLength(0)))) bpm
+ · 来源 \(assessmentSourceName(from: currentResting))	 · Source: \(assessmentSourceName(from: currentResting))
+\(totalMinutes / 60) 小时 \(totalMinutes % 60) 分	\(totalMinutes / 60) hr \(totalMinutes % 60) min
+轻轻记一下，就好。	Just a quick note.
+今天喝了什么？	What have you been sipping?
+咖啡是甜拿铁（同时记糖饮）	Sweetened latte (also log as a sweet drink)
+按杯预估，实际含量会因品牌与杯量变化。酒精不折算为补水建议。	Cup estimates vary by brand and serving size. Alcohol isn't treated as a hydration recommendation.
+ · 约 \(coffeeMg) mg	 · About \(coffeeMg) mg
+减少\(kind.title)	Remove one \(kind.title)
+增加\(kind.title)	Add one \(kind.title)
+撤销	Undo
+还没有过去的状态	No earlier check-ins yet
+过去的状态	Earlier check-ins
+这次睡眠未参与判断	This sleep wasn't included
+睡眠阶段可能来自多个来源。方寸已经去除重叠并拆分午睡；如果主睡眠仍少于 2 小时或超过 12 小时，会标记为需要确认，而不会把它解释成身体负荷。	Sleep stages can come from several sources. Overlaps are removed and naps separated. Main sleep under 2 or over 12 hours is marked for review, rather than interpreted as body load.
+去重后睡眠	Sleep after deduplication
+阶段样本	Stage samples
+\(details.sampleCount) 条	\(details.sampleCount) samples
+来源	Source
+包含	Included
+未识别到	Not identified
+你可以在 Apple 健康中查看和修正睡眠记录，之后回到方寸下拉刷新。	Review or correct your sleep in Apple Health, then return here and pull to refresh.
+知道了	Got it
+看看这一周的节奏	Your week, gently
+每一天，都有自己的起伏。	Every day has its own rhythm.
+未记录	No entry
+这一天没有身体状态快照，不推测过去的状态。	No body-status snapshot for this day. We won't guess what it was.
+睡眠	Sleep
+活动	Activity
+暂无记录	Nothing here yet
+总液体	Drinks logged
+咖啡因 / 酒精	Caffeine / Alcohol
+含糖饮品	Sweet drinks
+\(totals.sugar) 份	\(totals.sugar) servings
+补记今天的饮品	Add a drink for today
+身体状态从本次改版开始按日保存；已有练习记录继续保留。柱高只区分状态，不代表医学评分。	Daily snapshots begin when this feature was enabled. Earlier practice records are retained. Bar heights distinguish categories, not medical scores.
+历史与趋势	History and patterns
+照常进行，不需要额外练习。	You don't need an extra practice to keep going.
+想直接弄清压力和来源，用十秒做一次判断。	Take a moment to note what you're feeling and what may be on your mind.
+判断压力与来源	Check in with yourself
+调整状态与来源	Update your check-in
+现在做这个	Try this now
+现在怎么做	What might help now?
+下一步	Next
+开始 · \(practice.title)	Begin · \(practice.title)
+先缓 1 分钟	Take one minute
+呼吸 3 分钟	Breathe for 3 minutes
+呼吸 5 分钟	Breathe for 5 minutes
+开始 3 分钟	Begin · 3 min
+安静 5 分钟	A quiet 5 minutes
+躺下休息 10 分钟	Rest for 10 minutes
+放松 10 分钟	Unwind for 10 minutes
+1 分钟 · 双重吸气后延长呼气	1 min · Two gentle breaths in, one slow breath out
+3 或 5 分钟 · 跟随节奏呼吸	3 or 5 min · A gentle breathing rhythm
+3 或 5 分钟 · 均匀吸气和呼气	3 or 5 min · Equal time in and out
+3 或 5 分钟 · 吸、停、呼、停四段节拍	3 or 5 min · In, pause, out, pause
+3 或 5 分钟 · 下肋和腹部轻柔呼吸	3 or 5 min · Notice movement at your lower ribs
+3 或 5 分钟 · 左右鼻孔交替，不屏息	3 or 5 min · Alternate sides, without holds
+5 或 10 分钟 · 安静地放松注意力	5 or 10 min · Room for a quiet moment
+10 或 20 分钟 · 躺下完成深度休息	10 or 20 min · Lie down for guided rest
+3 分钟 · 盆底肌收紧与放松	3 min · Pelvic floor lift and release
+10 分钟 · 轻轻收紧，再逐组松开	10 min · Gently tense and release
+今日完成	Today, you made time
+练习了 \(PracticeDurationFormatter.clock(practice.actualDuration))	\(PracticeDurationFormatter.clock(practice.actualDuration)) of practice
+已完成	Complete
+主观感受持平	You felt about the same
+近期较长训练已从 HRV 与静息心率判断中单独处理	Recent longer workouts are accounted for separately in HRV and resting heart rate assessment
+核对睡眠数据	Review sleep data
+方寸给出的是当下调节建议，不是医疗诊断。	These are everyday wellbeing suggestions, not a medical diagnosis.
+为什么这样判断	What this is based on
+展开查看训练、数据来源、时间和可靠性	View exercise context, data sources, timestamps, and reliability
+训练背景	Exercise context
+最近一次 \(summary.latestActivityName) · 	Latest: \(summary.latestActivityName) · 
+训练数据尚未可用	Exercise data isn't available yet
+身体状态	Body context
+重试同步	Retry sync
+正在更新	Updating
+方寸状态分	Daily index
+补记一次睡眠	Add sleep manually
+\(Int(part.score.rounded())) 分	\(Int(part.score.rounded())) points
+看看分数构成	What goes into this number?
+水、咖啡，或是别的什么	Water, coffee, or something else
+已记 \(diary.entries().count) 杯 · 已记录饮品 \(FangcunDrinkTotals(diary.entries()).fluid) ml	\(diary.entries().count) entries · \(FangcunDrinkTotals(diary.entries()).fluid) ml logged
+今天，已经为自己留了片刻。	You made a little space for yourself today.
+你最近记录：	Your latest check-in: 
+未分类的感受	A feeling without a label
+也给自己留一分钟	A minute for you, too
+跟随双吸一呼，试试此刻的感受。你也可以什么都不做。	Try a little sigh, if it feels right. You can also leave things as they are.
+想补充一下自己的感受	Leave a small check-in
+轻行动	Small acts of care
+休息 · 舒展	Rest · Stretch
+不必把每一天，都过得很用力。	You don't have to make every day a big effort.
+请立即寻求身边人的帮助或联系当地急救。不要独处或驾车。	Seek help from someone nearby or contact local emergency services now. Don't stay alone or drive.
+关闭	Close
+日常	Daily
+照顾身体，也留意自己的感受。	Small things that make up your day.
+设置	Settings
+今日状态	Today's body context
+状态分析已暂停	Body context is paused
+暂未获得可用数据	No usable data yet
+已同步今日记录	Today's entries are synced
+暂无睡眠记录	No sleep record yet
+近 24 小时 \($0.count) 次 · \(Int($0.totalDuration / 60)) 分钟	Past 24 hours: \($0.count) workouts · \(Int($0.totalDuration / 60)) min
+近 24 小时暂无训练记录	No workouts in the past 24 hours
+现在的环境	Where are you right now?
+这次想做什么	What would feel useful?
+这次不做呼吸练习	Skip breathing suggestions this time
+状态良好时优先	When things look steady, prefer
+呼吸	Breathe
+安静休息	Quiet rest
+开始 5 分钟呼吸	Breathe for 5 minutes
+换个方式	Try another way
+判断有依据，也有边界。	Useful context, with limits.
+与自己的近期基线比较，综合恢复指标和睡眠。身体负荷不等于你的主观感受；数据不足时保留未知。	Recovery measures and sleep are compared with your recent baseline. Body load isn't the same as how you feel. Missing data stays unknown.
+还没有可用的健康数据。你可以检查授权，或等待设备同步。	No usable health data yet. Check access or wait for your device to sync.
+近 24 小时活动	Activity in the past 24 hours
+\(training.count) 次训练 · \(Int(training.totalDuration / 60)) 分钟	\(training.count) workouts · \(Int(training.totalDuration / 60)) min
+最近：\(training.latestActivityName) · \(training.latestSourceName)	Latest: \(training.latestActivityName) · \(training.latestSourceName)
+没有可用的近期训练记录	No recent workout data available
+基线积累：\(model.baselineDays)/5 天。饮品记录作为生活线索展示，不会凭几杯饮品改写健康结论。	Building your baseline: \(model.baselineDays)/5 days. Drinks add everyday context; they don't change the health assessment.
+正在连接…	Connecting…
+检查 Apple 健康授权	Check Apple Health access
+身体数据还在读取。	Health data is still loading.
+目前没有可用的身体数据，这次只按你的状态推荐。	No usable health data yet. This suggestion uses only your check-in.
+个人参考还在建立，这次先按你的状态推荐。	Your baseline is still building. For now, this suggestion uses your check-in.
+现有身体数据还不够，暂时不判断身体负荷。	There isn't enough health data to assess body load yet.
+近期身体指标大致在你的个人范围内。	Recent measures are broadly within your personal range.
+有一项身体指标偏离近期水平，今天别把强度拉满。	One measure differs from your recent level. Consider leaving room for an easier day.
+有两项以上身体指标偏离近期水平，今天先把恢复放前面。	Two or more measures differ from your recent level. Consider prioritizing recovery today.
+目前没有可用的身体数据。	No usable health data yet.
+个人参考还在建立。	Your personal baseline is still building.
+现有身体数据还不够。	There isn't enough health data yet.
+有一项身体指标偏离近期水平。	One measure differs from your recent level.
+有两项以上身体指标偏离近期水平。	Two or more measures differ from your recent level.
+还没判断	No check-in yet
+来源待确认	Source not specified
+选一下现在的状态，我马上给你结论。	Start with how you feel right now.
+罗盘已记录	Check-in saved
+压力较低	Lower reported pressure
+压力中等	Some reported pressure
+压力较高	Higher reported pressure
+没有明显来源	No clear source
+工作	Work
+待办太多	Too much to do
+身体不适	Physical discomfort
+家庭	Family
+关系	Relationships
+金钱	Money
+训练恢复	Exercise recovery
+睡眠不足	Not enough sleep
+身体持续紧绷	Physical tension
+思绪和情绪	Thoughts and feelings
+精力消耗	Low energy
+身体恢复	Recovery
+主要来自	Mostly connected to
+主要表现	Showing up as
+压力来源	What's on your mind
+此刻的一句	A thought for this moment
+给此刻紧绷的一句	A thought for a tense moment
+给纷乱思绪的一句	A thought for a busy mind
+给疲惫的一句	A thought for a tired day
+给身体恢复的一句	A thought for recovery
+给「\(stressSourceTitle(for: profile.source))」的一句	A thought about \(stressSourceTitle(for: profile.source))
+现在状态稳，照常往下走。	Things feel steady. There's no need to add anything.
+睡眠正在拖累恢复，先补一段休息。	Sleep may be affecting recovery. A little rest could be useful.
+训练后的恢复还没跟上，今天先减量。	You may still be recovering from exercise. Consider an easier day.
+精力已经掉下来，先躺下休息一会儿。	Your energy feels low. You might like to lie down for a while.
+紧绷已经很明显，现在先停一分钟。	You're feeling tense. Start with a small pause.
+事情正在占满注意力，先把呼吸慢下来。	There's a lot on your mind. A gentle breathing break might help.
+这件事正在牵动你，先留几分钟给自己。	This matters to you. Make a few minutes for yourself, if you can.
+身体的紧绷已经很明显，现在先停一下。	You're noticing tension in your body. Take a small pause.
+身体正在持续用力，先把节奏放慢。	Your body feels busy. You might try slowing the pace.
+思绪有点满，先把呼吸慢下来。	Your mind feels full. Try a few easier breaths.
+压力已经有些累积，先缓三分钟。	Things have been building up. You might like three minutes to unwind.
+心率变异性	Heart rate variability
+静息心率	Resting heart rate
+呼吸频率	Breathing rate
+偏离近期参考	Outside your recent range
+在近期参考内	Within your recent range
+原始读数 · 基线尚未完成	Raw reading · Baseline still building
+数据需要确认	Data needs a check
+现在怎样	How is it right now?
+不用解释，选最接近的	No explanation needed. Pick what's closest.
+过去	Earlier
+点一下即保存当下状态	Tap to save how you feel now
+个人基线	Your baseline
+\(min(completedDays, requiredDays))/\(requiredDays) 天	\(min(completedDays, requiredDays))/\(requiredDays) days
+个人基线进度	Personal baseline progress
+已获得 \(min(completedDays, requiredDays)) 天，共需 \(requiredDays) 天	\(min(completedDays, requiredDays)) of \(requiredDays) days collected
+计入睡眠规律	Include sleep regularity
+轮班或旅行时，可以关闭规律项。	You can turn this off for shift work or travel.
+上次状态	Previous body context
+今天给自己留点余地。	Leave a little room in your day.
+达到了你的睡眠目标。	You met your sleep goal.
+心率变异性与近期个人水平的变化计入了分数。	The index includes how your HRV compares with your recent level.
+静息心率与近期个人水平的变化计入了分数。	The index includes how your resting heart rate compares with your recent level.
+日间评估	 · Daytime assessment
+晨间评估	 · Morning assessment
+睡后评估	 · After-sleep assessment
+方寸状态分，\(score.displayScore)分	Daily index, \(score.displayScore) out of 100
+今晚早点收尾。	Consider an earlier wind-down tonight.
+开始 2 分钟安静休息	Take 2 minutes of quiet rest
+\(DailyStatusPresentation.componentName(part.name)) · \(Int(part.score.rounded())) 分	\(DailyStatusPresentation.componentName(part.name)) · \(Int(part.score.rounded())) points
+占本次评分 \(Int((part.normalizedWeight*100).rounded()))%	\(Int((part.normalizedWeight*100).rounded()))% of this assessment
+查看这项数据	View this measure
+实际睡眠 \(Int(value.rounded())) 分钟	Time asleep: \(Int(value.rounded())) min
+系统静息心率 \(value.formatted(.number.precision(.fractionLength(1)))) 次/分	System resting heart rate: \(value.formatted(.number.precision(.fractionLength(1)))) bpm
+测量：	Measured: 
+个人目标 \(Int(score.configuration.sleepGoalMinutes)) 分钟	Your goal: \(Int(score.configuration.sleepGoalMinutes)) min
+你补记的睡眠	Sleep you added
+本次 \(score.features.input.hrvSamples) 个样本，覆盖 \(score.features.input.hrvHours) 个小时桶	\(score.features.input.hrvSamples) samples across \(score.features.input.hrvHours) hourly windows
+所选主睡眠内，同源 SDNN 的对数中位数。	Log median of SDNN from the same source during the selected main sleep.
+当日系统静息心率；同源过去 28 天每日代表值作个人比较。	Today's system resting heart rate, compared with daily values from the same source over the past 28 days.
+晨间窗口内系统静息心率；同源过去 28 天每日代表值作个人比较。	System resting heart rate in the morning window, compared with daily values from the same source over the past 28 days.
+计入项目已更新	Included measures have changed
+评分说明	About this index
+本次计入：	Included this time: 
+方寸状态分是睡眠及可用心率变化的日常指数，高分表示这些输入在本规则中表现较好。它不是测得的心理压力百分比或运动安全许可。缺失项目不参与加权。	This everyday index combines sleep with available heart-rate measures. A higher number means those inputs scored more favorably under these rules. It isn't a measured stress percentage or clearance to exercise. Missing measures are excluded from weighting.
+计算版本：\(score.modelVersion)	Model version: \(score.modelVersion)
+睡眠由你补记。	Sleep was added by you.
+数据来自所选健康来源。	Data comes from the selected health sources.
+评估基准：	Assessment as of: 
+本次计算：	Calculated: 
+最近查询：	Last checked: 
+每一天，都有自己的节奏	Every day has its own rhythm
+回看已有记录，不必追求每天相同。	Look back without expecting every day to be the same.
+时间范围	Time range
+7 天	7 days
+28 天	28 days
+，\($0.displayScore)分，\($0.band.title)	, \($0.displayScore) points, \($0.band.title)
+，没有状态分	, no index available
+查看分数构成	See what's included
+此周期的修订记录	Revisions for this period
+修订 \(prior.revision) · \(prior.displayScore)分	Revision \(prior.revision) · \(prior.displayScore) points
+这一天还没有状态分。	No index for this day yet.
+没有记录，也不代表这一天不好。	An empty day isn't a bad day.
+状态分从 v3 开始记录，旧版记录保持原样。	Index history starts with version 3. Earlier records are preserved.
+查看旧版记录（无状态分）	View earlier records (without an index)
+这一周的节奏	This week's rhythm
+最近四周的节奏	The past four weeks
+补记这次主睡眠的实际时长和结束时间。记录保存在方寸，标注为你补记的睡眠。	Add the time you actually slept and when you woke. This stays in Little Exhale and is marked as manually added.
+实际睡眠 \(Int(minutes)/60) 小时 \(Int(minutes)%60) 分	Time asleep: \(Int(minutes)/60) hr \(Int(minutes)%60) min
+结束时间	End time
+正在保存	Saving
+保存并查看状态	Save and view body context
+暂时未能保存，请重试。	Couldn't save right now. Please try again.
+取消	Cancel
+深色模式	Dark appearance
+较大字号	Larger text
+减少动态效果	Reduce motion
+舒服的方式，由你决定	Make yourself comfortable
+声音引导	Voice guidance
+每杯咖啡因约 \(coffeeMg) mg	About \(coffeeMg) mg caffeine per cup
+只影响之后新增的咖啡记录	Applies only to coffee logged from now on
+记录与预设	Logging preferences
+隐私与数据	Privacy and data
+管理 Apple 健康权限	Manage Apple Health access
+数据掌握在你手中	Your data, your choice
+支持	Support
+诊断与导出	Diagnostics and export
+方寸 Fangcun	Little Exhale
+版本	Version
+关于	About
+本地优先	At home on your device
+方寸不创建账号，不使用服务器、广告、第三方分析或遥测。	No account, app server, ads, third-party analytics, or telemetry.
+Apple 健康	Apple Health
+仅在你授权后读取身体恢复、睡眠和训练数据；记录感受和适用练习时才写入。	With your permission, reads recovery, sleep, and workout data. Writes only when you log feelings or eligible practices.
+删除的边界	What deletion includes
+删除本地数据不会自动删除 Apple 健康中的记录；后者需在「健康」App 中管理。	Deleting local data doesn't delete Apple Health records. Manage those in the Health app.
+完整隐私政策	Read the privacy policy
+使用支持与联系	Help and contact
+白水	Water
+美式	Black coffee
+甜拿铁	Sweetened latte
+啤酒	Beer
+含糖饮料	Sweet drink
+茶	Tea
+牛奶	Milk
+其他酒饮	Other alcohol
+其他饮品	Other drink
+平稳	Steady
+偏高	Elevated
+数据不足	Not enough data
+平静	Calm
+清醒	Clear-headed
+有触动	Moved
+绷着	Tense
+有点累	Tired
+说不清	Hard to say
+已记录 · 未分类	Saved · Without a label
+还有一段未处理的练习	A practice is still open
+先处理上次练习	Return to the open practice
+暂时不开始	Not now
+你已练过的时间仍然保留。先继续或结束上次练习，再开始新的方法。	Your practiced time is safe. Continue or finish the open practice before starting another.

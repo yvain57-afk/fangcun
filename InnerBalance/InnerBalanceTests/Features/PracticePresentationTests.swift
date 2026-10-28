@@ -54,17 +54,17 @@ struct PracticePresentationTests {
       healthNeedsAttention: false,
       hasSubjectiveComparison: false
     )
-    #expect(detail.contains("此刻的感受"))
-    #expect(!detail.contains("变化"))
+    #expect(detail.contains("Your feeling"))
+    #expect(!detail.contains("change"))
   }
 
   @Test("V4练习库先说明训练用途，旧评分模型不参与首页选择")
   func practiceLibraryUsesSituationLanguage() {
-    #expect(PracticeKind.physiologicalSigh.outcomeTitle == "舒缓紧张")
-    #expect(PracticeKind.pacedBreathing.outcomeTitle == "睡前放松")
-    #expect(PracticeKind.meditation.outcomeTitle == "减少分心")
-    #expect(PracticeKind.nsdr.outcomeTitle == "恢复精力")
-    #expect(PracticeKind.kegel.outcomeTitle == "盆底控制")
+    #expect(PracticeKind.physiologicalSigh.outcomeTitle == "Let the tension ease")
+    #expect(PracticeKind.pacedBreathing.outcomeTitle == "Wind down")
+    #expect(PracticeKind.meditation.outcomeTitle == "Make room for your thoughts")
+    #expect(PracticeKind.nsdr.outcomeTitle == "A place to rest")
+    #expect(PracticeKind.kegel.outcomeTitle == "Build gentle control")
   }
 
   @Test("五种练习都有完整且可读的功能说明")
@@ -76,15 +76,15 @@ struct PracticePresentationTests {
       #expect(!kind.preparation.isEmpty)
     }
 
-    #expect(PracticeKind.physiologicalSigh.steps.contains("再补一小口"))
-    #expect(PracticeKind.pacedBreathing.steps.contains("4 秒"))
-    #expect(PracticeKind.nsdr.preparation.contains("不能代替正常睡眠"))
+    #expect(PracticeKind.physiologicalSigh.steps.contains("small top-up"))
+    #expect(PracticeKind.pacedBreathing.steps.contains("4 seconds"))
+    #expect(PracticeKind.nsdr.preparation.contains("doesn't replace sleep"))
   }
 
   @Test("准备页用三个可理解的起点代替数字滑杆")
   func startingChoicesHaveStableEvidenceValues() {
     #expect(PracticeStartingChoice.allCases.map(\.rating) == [2, 5, 8])
-    #expect(PracticeStartingChoice.allCases.map(\.title) == ["还好", "有点需要", "很需要"])
+    #expect(PracticeStartingChoice.allCases.map(\.title) == ["Doing okay", "Could use a pause", "Really need a pause"])
   }
 
   @Test("静心、身体扫描和凯格尔都有独立的可视节奏")
@@ -197,12 +197,12 @@ struct PracticePresentationTests {
 
   @Test("提前结束文案不承诺尚未发生的保存，也不要求凯格尔评价感受")
   func finishDialogCopyMatchesTheNextStep() {
-    #expect(PracticeSessionDialogCopy.finishActionTitle == "结束练习")
+    #expect(PracticeSessionDialogCopy.finishActionTitle == "End practice")
     #expect(PracticeSessionDialogCopy.finishActionID == "practice.finish.confirm")
     #expect(PracticeSessionDialogCopy.finishMessage != PracticeSessionDialogCopy.finishMessageKey)
     #expect(!PracticeSessionDialogCopy.finishMessage.isEmpty)
-    #expect(!PracticeSessionDialogCopy.finishMessage.contains("已保存"))
-    #expect(!PracticeSessionDialogCopy.finishMessage.contains("主观变化"))
+    #expect(!PracticeSessionDialogCopy.finishMessage.contains("already saved"))
+    #expect(!PracticeSessionDialogCopy.finishMessage.contains("subjective change"))
   }
 
   @Test("凯格尔只说明练习本身，不解释它和压力的关系")
@@ -210,11 +210,11 @@ struct PracticePresentationTests {
     // V4 separates the card's purpose from its actionable 4/8 training instructions.
     #expect(
       PracticeKind.kegel.summary
-        == "练习盆底肌的收紧、保持与放松，逐步增强盆底控制。"
+        == "Practice a gentle pelvic floor lift, with plenty of time to release."
     )
-    #expect(PracticeKind.kegel.steps == "轻收 4 秒 → 完全放松 8 秒，始终自然呼吸。")
-    #expect(!PracticeKind.kegel.summary.contains("压力"))
-    #expect(!PracticeKind.kegel.steps.contains("屏息"))
+    #expect(PracticeKind.kegel.steps == "Gently lift for 4 seconds → fully release for 8. Keep breathing naturally.")
+    #expect(!PracticeKind.kegel.summary.contains("stress"))
+    #expect(!PracticeKind.kegel.steps.contains("hold your breath"))
   }
 
   @Test("凯格尔使用完成记录而不是主观调节证据")
@@ -226,11 +226,11 @@ struct PracticePresentationTests {
   @Test("凯格尔准备页包含完整的安全提醒")
   func kegelSafetyCopyCoversThePlannedConditions() {
     let copy = PracticeKind.kegel.preparation
-    #expect(copy.contains("盆底持续紧张"))
-    #expect(copy.contains("排尿排便异常"))
-    #expect(copy.contains("产后"))
-    #expect(copy.contains("术后"))
-    #expect(copy.contains("专业人员"))
+    #expect(copy.contains("ongoing pelvic tension"))
+    #expect(copy.contains("bladder or bowel symptoms"))
+    #expect(copy.contains("after childbirth"))
+    #expect(copy.contains("surgery"))
+    #expect(copy.contains("clinician"))
   }
 
   @Test("声音模式明确控制语音、节奏与环境声层")
@@ -301,7 +301,7 @@ struct PracticePresentationTests {
   func nsdrGuidanceIncludesBreathing() {
     let nsdrCues = PracticeAudioCue.allCases.filter { $0.rawValue.hasPrefix("nsdr") }
 
-    #expect(nsdrCues.contains { $0.spokenText.contains("呼气") })
+    #expect(nsdrCues.contains { $0.spokenText.contains("Slowly out") })
     #expect(PracticeAudioTimeline.cue(for: .nsdr, elapsed: 215) == .nsdrBreath)
   }
 
@@ -309,7 +309,7 @@ struct PracticePresentationTests {
   func nsdrGuidanceClosesBeforeTheSessionEnds() {
     let closing = PracticeAudioTimeline.moment(for: .nsdr, elapsed: 575, duration: 600)
 
-    #expect(closing.cue.spokenText.contains("睁开眼睛"))
+    #expect(closing.cue.spokenText.contains("Open your eyes"))
   }
 
   @Test(
@@ -390,9 +390,9 @@ struct PracticePresentationTests {
 
   @Test("声音选项直接说明用户会听到什么")
   func soundModesHavePlainLanguageCopy() {
-    #expect(PracticeSoundMode.guided.title == "语音引导")
-    #expect(PracticeSoundMode.rhythmOnly.title == "仅节奏")
-    #expect(PracticeSoundMode.silent.title == "静音")
+    #expect(PracticeSoundMode.guided.title == "Guided")
+    #expect(PracticeSoundMode.rhythmOnly.title == "Cues only")
+    #expect(PracticeSoundMode.silent.title == "Silent")
     #expect(PracticeSoundMode.guided.supportsAmbience)
     #expect(!PracticeSoundMode.silent.supportsAmbience)
   }
@@ -603,9 +603,10 @@ struct PracticePresentationTests {
 
   @Test("语音文案短而可以离屏理解")
   func voiceScriptsAreBriefAndActionable() {
-    #expect(PracticeAudioCue.sighTopUp.spokenText == "再补一小口。")
-    #expect(PracticeAudioCue.meditationReturn.spokenText.contains("回来就好"))
-    #expect(PracticeAudioCue.allCases.allSatisfy { $0.spokenText.count <= 20 })
+    // English words replace the former Chinese-character copy budget; timing is tested against actual audio windows.
+    #expect(PracticeAudioCue.sighTopUp.spokenText == "A little more.")
+    #expect(PracticeAudioCue.meditationReturn.spokenText.contains("Gently come back"))
+    #expect(PracticeAudioCue.allCases.allSatisfy { $0.spokenText.split(whereSeparator: \.isWhitespace).count <= 12 })
   }
 
   @Test("只有持续环境声开启时才允许锁屏继续")

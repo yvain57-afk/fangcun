@@ -37,7 +37,7 @@ struct PracticeVisualGuide: View {
       ZStack {
         VolumeAuraView(phase: state.phase, amount: expansion)
           .accessibilityElement(children: .ignore)
-          .accessibilityLabel(kind == .kegel ? "轻收与放松引导" : "呼吸起伏引导")
+          .accessibilityLabel(kind == .kegel ? "Lift and release guide" : "Breathing guide")
           .accessibilityIdentifier(kind == .kegel ? "practice.contractionGuide" : "practice.breathEnvelope")
         PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: duration,
           variantID: variantID, isActive: !isPaused, reduceMotionOverride: reduced)
@@ -46,23 +46,23 @@ struct PracticeVisualGuide: View {
       .frame(maxWidth: .infinity).frame(height: 290)
       if kind == .alternateNostrilBreathing {
         HStack {
-          sideLabel("你的左侧", active: motion.side == -1)
+          sideLabel("Your left", active: motion.side == -1)
           Spacer(minLength: 12)
-          sideLabel("你的右侧", active: motion.side == 1)
+          sideLabel("Your right", active: motion.side == 1)
         }
       }
       if !isPaused {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
           Text(motion.instruction).font(.subheadline.weight(.medium))
           Spacer(minLength: 4)
-          Text("\(motion.phaseSeconds) 秒").font(.title3.monospacedDigit().weight(.semibold))
+          Text("\(motion.phaseSeconds) sec").font(.title3.monospacedDigit().weight(.semibold))
             .contentTransition(.identity).accessibilityIdentifier("practice.phaseSeconds")
         }.foregroundStyle(InnerBalanceTheme.ink)
 
       }
       ProportionalPhaseBar(kind: kind, variantID: variantID, elapsed: elapsed, duration: duration, paused: isPaused)
       if !isPaused {
-        Text("第 \(state.cycleIndex + 1) 轮引导")
+        Text("Round \(state.cycleIndex + 1)")
           .font(.caption.monospacedDigit()).foregroundStyle(InnerBalanceTheme.mutedInk)
       }
     }.frame(maxWidth: 360)

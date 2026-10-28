@@ -6,9 +6,9 @@ final class FangcunRedesignUITests: XCTestCase {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
     openDailySettings(app)
-    let labels = ["深色模式", "较大字号", "减少动态效果"]
+    let labels = ["Dark appearance", "Larger text", "Reduce motion"]
     for label in labels {
       let toggle = app.switches[label]
       for _ in 0..<5 where !toggle.isHittable { app.scrollViews.firstMatch.swipeUp() }
@@ -19,7 +19,7 @@ final class FangcunRedesignUITests: XCTestCase {
       XCTAssertEqual(toggle.value as? String, "1", "Immediate value: \(label)")
     }
     app.terminate()
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
     openDailySettings(app)
     for label in labels { XCTAssertEqual(app.switches[label].value as? String, "1", "Relaunch value: \(label)") }
     capture("preferences-relaunch", app)
@@ -37,7 +37,7 @@ final class FangcunRedesignUITests: XCTestCase {
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "YES"]
     app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
     XCTAssertTrue(app.staticTexts["status.band"].waitForExistence(timeout: 15))
     XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
     XCTAssertTrue(app.buttons["today.start"].isHittable)
@@ -49,10 +49,10 @@ final class FangcunRedesignUITests: XCTestCase {
     addWater.tap()
     app.buttons["增加美式"].tap()
     XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("550"))
-    app.buttons["撤销"].tap()
+    app.buttons["Undo"].tap()
     XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("250"))
     capture("redesign-drinks", app)
-    app.buttons["完成"].tap()
+    app.buttons["Done"].tap()
     reveal(app.buttons["today.trends"], app)
     app.buttons["today.trends"].tap()
     XCTAssertTrue(app.buttons["status.history.score"].waitForExistence(timeout: 5))
@@ -60,14 +60,14 @@ final class FangcunRedesignUITests: XCTestCase {
     app.navigationBars.buttons.firstMatch.tap()
     for _ in 0..<4 where !app.buttons["today.start"].isHittable { app.scrollViews.firstMatch.swipeDown() }
     app.buttons["today.start"].tap()
-    let pause = app.buttons["暂停练习"]
+    let pause = app.buttons["Pause practice"]
     XCTAssertTrue(pause.waitForExistence(timeout: 10))
     capture("redesign-breathing", app)
     pause.tap()
-    XCTAssertTrue(app.staticTexts["已暂停"].waitForExistence(timeout: 4))
-    app.buttons["继续练习"].tap()
+    XCTAssertTrue(app.staticTexts["Paused"].waitForExistence(timeout: 4))
+    app.buttons["Continue practice"].tap()
     XCTAssertTrue(pause.waitForExistence(timeout: 4))
-    app.buttons["结束"].tap()
+    app.buttons["End"].tap()
     app.buttons["practice.finish.confirm"].firstMatch.tap()
     let finish = app.buttons["practice.feedback.skip"]
     XCTAssertTrue(finish.waitForExistence(timeout: 6))
@@ -78,7 +78,7 @@ final class FangcunRedesignUITests: XCTestCase {
     capture("redesign-completion", app)
     done.tap()
     openDailySettings(app)
-    XCTAssertTrue(app.switches["深色模式"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.switches["Dark appearance"].waitForExistence(timeout: 5))
     capture("redesign-settings", app)
   }
 
@@ -88,20 +88,20 @@ final class FangcunRedesignUITests: XCTestCase {
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
     app.launchArguments += ["-status-v3.avoidBreathing", "NO", "-status-v3.favorite", "breath"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
     XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout: 12))
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
     app.buttons["today.start"].tap()
-    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 10))
-    XCTAssertTrue(app.staticTexts["舒缓紧张"].exists)
-    let exhale = NSPredicate(format: "label == %@", "呼气")
+    XCTAssertTrue(app.buttons["Pause practice"].waitForExistence(timeout: 10))
+    XCTAssertTrue(app.staticTexts["Let the tension ease"].exists)
+    let exhale = NSPredicate(format: "label == %@", "Breathe out")
     expectation(for: exhale, evaluatedWith: app.staticTexts["practice.breathPhase"])
     waitForExpectations(timeout: 12)
     capture("redesign-breathing-live", app)
-    app.buttons["暂停练习"].tap()
-    XCTAssertTrue(app.staticTexts["已暂停"].waitForExistence(timeout: 5))
+    app.buttons["Pause practice"].tap()
+    XCTAssertTrue(app.staticTexts["Paused"].waitForExistence(timeout: 5))
     capture("redesign-breathing-paused", app)
-    app.buttons["结束"].tap()
+    app.buttons["End"].tap()
     app.buttons["practice.finish.confirm"].firstMatch.tap()
     XCTAssertTrue(app.buttons["practice.feedback.skip"].waitForExistence(timeout: 5))
   }
@@ -112,7 +112,7 @@ final class FangcunRedesignUITests: XCTestCase {
     let app = XCUIApplication()
     for state in ["480", "240", "45"] {
       app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep\(state)", "-fangcun.dark", state == "240" ? "YES" : "NO", "-fangcun.largeType", state == "45" ? "YES" : "NO", "-fangcun.reduceMotion", "YES"]
-      app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+      app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
       XCTAssertTrue(app.staticTexts["status.band"].waitForExistence(timeout: 10))
       XCTAssertEqual(app.staticTexts["status.band"].label, state == "480" ? "良好" : state == "240" ? "偏低" : "优先休息")
       capture("redesign-\(state)", app)

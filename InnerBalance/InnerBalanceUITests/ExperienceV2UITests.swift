@@ -6,7 +6,7 @@ final class ExperienceV2UITests: XCTestCase {
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=scoreSleep480", "-AppleLanguages", "(zh-Hans)",
       "-AppleLocale", "zh_CN", "-fangcun.dark", "NO", "-fangcun.largeType", "NO", "-fangcun.reduceMotion", "NO"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
     let conclusion = app.staticTexts["status.band"]
     XCTAssertTrue(conclusion.waitForExistence(timeout: 12))
     expectation(for: NSPredicate(format: "label == %@", "良好"), evaluatedWith: conclusion)
@@ -29,15 +29,15 @@ final class ExperienceV2UITests: XCTestCase {
     app.buttons["drinks.add.water"].tap()
     Thread.sleep(forTimeInterval: 2)
     capture("v2-drinks", app)
-    app.buttons["完成"].tap()
+    app.buttons["Done"].tap()
     for _ in 0..<5 where !app.buttons["today.start"].isHittable { app.swipeDown() }
     app.buttons["today.start"].tap()
-    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 8))
+    XCTAssertTrue(app.buttons["Pause practice"].waitForExistence(timeout: 8))
     print("V2_CLIP_BREATH")
     Thread.sleep(forTimeInterval: 12)
     capture("v2-breathing", app)
-    app.buttons["暂停练习"].tap()
-    XCTAssertTrue(app.buttons["继续练习"].exists)
+    app.buttons["Pause practice"].tap()
+    XCTAssertTrue(app.buttons["Continue practice"].exists)
   }
   @MainActor private func capture(_ name: String, _ app: XCUIApplication) {
     let a = XCTAttachment(screenshot: app.screenshot()); a.name = name; a.lifetime = .keepAlways; add(a)

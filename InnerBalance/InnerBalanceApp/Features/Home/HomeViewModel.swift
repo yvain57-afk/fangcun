@@ -202,9 +202,9 @@ final class HomeViewModel {
           reliability: reliability(for: recentHRV, baseline: hrvBaseline),
           deviation: isElevated ? .elevated : .withinRange,
           assessmentValueText: recentHRV.map {
-            "近 36 小时中位数 "
+            "Past 36 hours, median: "
               + "\($0.value.formatted(.number.precision(.fractionLength(0)))) ms"
-              + " · 来源 \(assessmentSourceName(from: currentHRV))"
+              + " · Source: \(assessmentSourceName(from: currentHRV))"
           },
           assessmentMeasuredAt: recentHRV?.latestDate
         )
@@ -228,15 +228,15 @@ final class HomeViewModel {
       items.append(
         HomeHealthEvidence(
           kind: .restingHeartRate,
-          valueText: "\(latestResting.value.formatted(.number.precision(.fractionLength(0)))) 次/分",
+          valueText: "\(latestResting.value.formatted(.number.precision(.fractionLength(0)))) bpm",
           sourceName: latestResting.source.name,
           measuredAt: latestResting.date,
           reliability: reliability(for: recentResting, baseline: restingBaseline),
           deviation: isElevated ? .elevated : .withinRange,
           assessmentValueText: recentResting.map {
-            "近 36 小时中位数 "
-              + "\($0.value.formatted(.number.precision(.fractionLength(0)))) 次/分"
-              + " · 来源 \(assessmentSourceName(from: currentResting))"
+            "Past 36 hours, median: "
+              + "\($0.value.formatted(.number.precision(.fractionLength(0)))) bpm"
+              + " · Source: \(assessmentSourceName(from: currentResting))"
           },
           assessmentMeasuredAt: recentResting?.latestDate
         )
@@ -418,6 +418,6 @@ final class HomeViewModel {
 
   static func durationText(_ duration: TimeInterval) -> String {
     let totalMinutes = Int(duration / 60)
-    return "\(totalMinutes / 60) 小时 \(totalMinutes % 60) 分"
+    return "\(totalMinutes / 60) hr \(totalMinutes % 60) min"
   }
 }

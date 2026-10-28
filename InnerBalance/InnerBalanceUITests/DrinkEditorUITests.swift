@@ -4,9 +4,9 @@ final class DrinkEditorUITests: XCTestCase {
   @MainActor func testCapacityEditingUndoAndQuickLogShareTheSameRecords() {
     continueAfterFailure = false
     let app = XCUIApplication(); app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-disabled", "-fangcun.dark", "NO"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
     let drinks = app.buttons["today.drinks"]
-    XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 10))
+    XCTAssertTrue(drinks.waitForExistence(timeout: 10))
     reveal(drinks, app); drinks.tap()
     XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5)); app.buttons["drinks.add.water"].tap()
     let manage = app.buttons["drinks.manage"]; reveal(manage, app); manage.tap()
@@ -20,8 +20,8 @@ final class DrinkEditorUITests: XCTestCase {
     reveal(volume, app); volume.tap()
     volume.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 10)+"750")
     reveal(save, app); save.tap()
-    let undo = app.buttons["撤销上一笔"]; reveal(undo, app); undo.tap()
-    app.navigationBars.buttons["完成"].tap()
+    let undo = app.buttons["Undo last entry"]; reveal(undo, app); undo.tap()
+    app.navigationBars.buttons["Done"].tap()
     let totals = app.descendants(matching: .any)["drinks.totals"].firstMatch
     XCTAssertTrue(totals.waitForExistence(timeout: 5))
     XCTAssertTrue(totals.label.contains("750")) // 250 quick log + 500 edited entry after undo.

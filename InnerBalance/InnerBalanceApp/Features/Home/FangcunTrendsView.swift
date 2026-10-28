@@ -16,8 +16,8 @@ struct FangcunTrendsView: View {
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 24) {
-        Text("看看这一周的节奏").font(.title2.weight(.semibold))
-        Text("每一天，都有自己的起伏。").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+        Text("Your week, gently").font(.title2.weight(.semibold))
+        Text("Every day has its own rhythm.").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
         HStack(alignment: .bottom, spacing: 8) {
           ForEach(days, id: \.self) { date in
             let daySnapshot = diary.snapshot(on: date)
@@ -32,7 +32,7 @@ struct FangcunTrendsView: View {
                 Circle().fill(Calendar.current.isDate(date, inSameDayAs: selected) ? InnerBalanceTheme.strongFill : .clear).frame(width: 5, height: 5)
               }.frame(maxWidth: .infinity).frame(minHeight: 130).contentShape(Rectangle())
             }.buttonStyle(.plain)
-              .accessibilityLabel("\(date.formatted(.dateTime.month().day()))，\(daySnapshot?.displayStateTitle ?? "未记录")")
+              .accessibilityLabel("\(date.formatted(.dateTime.month().day().locale(Locale(identifier: "en")))), \(daySnapshot?.displayStateTitle ?? "No entry")")
               .accessibilityAddTraits(Calendar.current.isDate(date, inSameDayAs: selected) ? .isSelected : [])
           }
         }.fangcunPaperCard()
@@ -45,19 +45,19 @@ struct FangcunTrendsView: View {
           Text(FangcunCopy.text("body.history.unknownLegend")).foregroundStyle(InnerBalanceTheme.mutedInk)
         }.font(.caption2)
         VStack(alignment: .leading, spacing: 18) {
-          HStack { Text(selected, format: .dateTime.month().day()).font(.headline); Spacer(); Text(snapshot?.displayStateTitle ?? "未记录").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk) }
+          HStack { Text(selected, format: .dateTime.month().day()).font(.headline); Spacer(); Text(snapshot?.displayStateTitle ?? "No entry").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk) }
           if snapshot?.isLegacy == true {
             Text(FangcunCopy.text("body.history.legacy")).font(.caption).accessibilityIdentifier("trends.legacy")
           }
-          Text(snapshot?.summary ?? "这一天没有身体状态快照，不推测过去的状态。")
+          Text(snapshot?.summary ?? "No body-status snapshot for this day. We won't guess what it was.")
             .font(.subheadline).accessibilityIdentifier("trends.snapshot")
           Divider()
-          row("睡眠", snapshot?.sleep ?? "未记录", "moon")
-          row("活动", snapshot?.training ?? "未记录", "figure.walk")
-          row("练习", minutes > 0 ? "\(minutes) 分钟" : "暂无记录", "wind")
-          row("总液体", "\(totals.fluid) ml", "drop")
-          row("咖啡因 / 酒精", "\(totals.caffeine) mg / \(totals.alcohol) g", "cup.and.saucer")
-          row("含糖饮品", "\(totals.sugar) 份", "takeoutbag.and.cup.and.straw")
+          row("Sleep", snapshot?.sleep ?? "No entry", "moon")
+          row("Activity", snapshot?.training ?? "No entry", "figure.walk")
+          row("Practice", minutes > 0 ? "\(minutes) min" : "Nothing here yet", "wind")
+          row("Drinks logged", "\(totals.fluid) ml", "drop")
+          row("Caffeine / Alcohol", "\(totals.caffeine) mg / \(totals.alcohol) g", "cup.and.saucer")
+          row("Sweet drinks", "\(totals.sugar) servings", "takeoutbag.and.cup.and.straw")
           if snapshot?.isLegacy == false {
             ForEach(diary.legacySnapshots(on: selected)) { legacy in
               VStack(alignment: .leading, spacing: 6) {
@@ -67,12 +67,12 @@ struct FangcunTrendsView: View {
             }
           }
         }.fangcunPaperCard()
-        if Calendar.current.isDateInToday(selected) { Button("补记今天的饮品") { drinks = true }.buttonStyle(InnerBalancePrimaryButtonStyle()) }
-        Text("身体状态从本次改版开始按日保存；已有练习记录继续保留。柱高只区分状态，不代表医学评分。")
+        if Calendar.current.isDateInToday(selected) { Button("Add a drink for today") { drinks = true }.buttonStyle(InnerBalancePrimaryButtonStyle()) }
+        Text("Daily snapshots begin when this feature was enabled. Earlier practice records are retained. Bar heights distinguish categories, not medical scores.")
           .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
       }.padding(20)
     }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)
-      .navigationTitle("历史与趋势").navigationBarTitleDisplayMode(.inline)
+      .navigationTitle("History and patterns").navigationBarTitleDisplayMode(.inline)
       .sheet(isPresented: $drinks) { FangcunDrinkSheet() }
   }
   private func color(_ state: FangcunDayState?) -> Color {

@@ -102,7 +102,7 @@ struct HomeViewModelTests {
   @Test("没有可靠身体证据时仍给出明确且保守的日程动作")
   func steadyWithoutCurrentEvidenceKeepsTheDayOnCourse() {
     #expect(
-      BodyLoadCardPresentation.actionTitle(for: .steady, evidence: []) == "照常安排"
+      BodyLoadCardPresentation.actionTitle(for: .steady, evidence: []) == "Keep your usual plans"
     )
     #expect(!BodyLoadCardPresentation.hasReliableEvidence([]))
   }
@@ -120,7 +120,7 @@ struct HomeViewModelTests {
 
     #expect(
       BodyLoadCardPresentation.actionTitle(for: .steady, evidence: [evidence])
-        == "照常安排"
+        == "Keep your usual plans"
     )
     #expect(!BodyLoadCardPresentation.hasReliableEvidence([evidence]))
   }
@@ -148,7 +148,7 @@ struct HomeViewModelTests {
         for: .steady,
         evidence: [evidence],
         recentWorkoutProtection: true
-      ) == "训练后先恢复"
+      ) == "Room to recover"
     )
   }
 
@@ -186,7 +186,7 @@ struct HomeViewModelTests {
         for: .watch,
         evidence: evidence,
         recentWorkoutProtection: true
-      ) == "今天收着一点"
+      ) == "Take it a little easier"
     )
   }
 
@@ -213,7 +213,7 @@ struct HomeViewModelTests {
 
     #expect(
       BodyLoadCardPresentation.actionTitle(for: .elevated, evidence: evidence)
-        == "优先恢复"
+        == "Make room for recovery"
     )
   }
 
@@ -326,7 +326,7 @@ struct HomeViewModelTests {
     let hrv = try #require(viewModel.evidence.first(where: { $0.kind == .heartRateVariability }))
     #expect(hrv.valueText == "64 ms")
     #expect(hrv.measuredAt == latestDate)
-    #expect(hrv.assessmentValueText == "近 36 小时中位数 53 ms · 来源 Apple Watch")
+    #expect(hrv.assessmentValueText == "Past 36 hours, median: 53 ms · Source: Apple Watch")
   }
 
   @Test("超过当前评估窗口的 Watch 最新读数仍显示真实测量时间")
@@ -435,7 +435,7 @@ struct HomeViewModelTests {
     #expect(hrv.valueText == "48 ms")
     #expect(hrv.sourceName == "Apple Watch")
     #expect(hrv.reliability == .buildingBaseline)
-    #expect(hrv.assessmentValueText == "近 36 小时中位数 80 ms · 来源 第三方 App")
+    #expect(hrv.assessmentValueText == "Past 36 hours, median: 80 ms · Source: 第三方 App")
   }
 
   @Test("Four baseline days show progress and raw evidence without an elevated conclusion")
@@ -531,14 +531,14 @@ struct HomeViewModelTests {
         endDate: now.addingTimeInterval(-11.5 * 3_600),
         duration: 1_800,
         source: watch,
-        activityName: "力量训练"
+        activityName: "Strength training"
       ),
       HealthWorkoutRecord(
         startDate: now.addingTimeInterval(-31 * 3_600),
         endDate: now.addingTimeInterval(-30 * 3_600),
         duration: 3_600,
         source: watch,
-        activityName: "步行"
+        activityName: "Walking"
       ),
     ]
     let snapshot = BodyHealthDataSnapshot(
@@ -581,14 +581,14 @@ struct HomeViewModelTests {
         endDate: now.addingTimeInterval(-300),
         duration: 3_600,
         source: thirdParty,
-        activityName: "跑步"
+        activityName: "Running"
       ),
       HealthWorkoutRecord(
         startDate: now.addingTimeInterval(-3_890),
         endDate: now.addingTimeInterval(-290),
         duration: 3_600,
         source: watch,
-        activityName: "跑步"
+        activityName: "Running"
       ),
     ]
     let snapshot = BodyHealthDataSnapshot(
@@ -620,12 +620,12 @@ struct HomeViewModelTests {
       latestSourceName: "Apple Watch"
     )
 
-    #expect(BodyLoadCardPresentation.trainingHeadline(summary) == "近 24 小时 · 2 次 · 1 小时 30 分")
+    #expect(BodyLoadCardPresentation.trainingHeadline(summary) == "Past 24 hours · 2 workouts · 1 hr 30 min")
   }
 
   @Test("空训练查询只说明未读到记录")
   func emptyTrainingCopyDoesNotClaimThereWasNoWorkout() {
-    #expect(BodyLoadCardPresentation.emptyTrainingMessage == "近 24 小时未读到训练记录")
+    #expect(BodyLoadCardPresentation.emptyTrainingMessage == "No workouts found in the past 24 hours")
   }
 
   @Test("今日推荐和练习结果只使用当前自然日记录")

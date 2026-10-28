@@ -34,9 +34,9 @@ struct HealthEvidenceView: View {
 
   private var title: String {
     switch evidence.kind {
-    case .heartRateVariability: "心率变异性"
-    case .restingHeartRate: "静息心率"
-    case .respiratoryRate: "呼吸频率"
+    case .heartRateVariability: "Heart rate variability"
+    case .restingHeartRate: "Resting heart rate"
+    case .respiratoryRate: "Breathing rate"
     case .sleep: FangcunCopy.text("body.sleep.title")
     }
   }
@@ -62,9 +62,9 @@ struct HealthEvidenceView: View {
   private var detailText: String {
     let reliability =
       switch evidence.reliability {
-      case .reliable: evidence.deviation == .elevated ? "偏离近期参考" : "在近期参考内"
-      case .buildingBaseline: "原始读数 · 基线尚未完成"
-      case .needsReview: "数据需要确认"
+      case .reliable: evidence.deviation == .elevated ? "Outside your recent range" : "Within your recent range"
+      case .buildingBaseline: "Raw reading · Baseline still building"
+      case .needsReview: "Data needs a check"
       case .stale: FangcunCopy.text("body.source.stale")
       }
     let time = FangcunCopy.timestamp(evidence.measuredAt)

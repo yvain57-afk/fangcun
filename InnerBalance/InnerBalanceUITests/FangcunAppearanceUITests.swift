@@ -10,7 +10,7 @@ final class FangcunAppearanceUITests: XCTestCase {
       "-UIPreferredContentSizeCategoryName",
       "UICTContentSizeCategoryLarge",
     ]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
 
     XCTAssertTrue(app.descendants(matching: .any).matching(identifier:"daily.title").firstMatch.waitForExistence(timeout: 3))
     capture("home-initial", from: app)
@@ -21,7 +21,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     XCTAssertGreaterThanOrEqual(action.frame.height,44)
     XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
 
-    app.tabBars.buttons["呼吸"].tap()
+    app.tabBars.buttons["Breathe"].tap()
     let practice = app.buttons["practice.physiologicalSigh.60"]
     XCTAssertTrue(practice.waitForExistence(timeout: 3))
     capture("practice-library", from: app)
@@ -30,7 +30,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     let preparation = app.scrollViews["practice.preparation"]
     XCTAssertTrue(preparation.waitForExistence(timeout: 3))
     capture("practice-overview", from: app)
-    let ambience = app.switches["环境声·锁屏继续"]
+    let ambience = app.switches["Background sound · Keep playing when locked"]
     XCTAssertTrue(ambience.waitForExistence(timeout: 3))
     for _ in 0..<5 where !ambience.isHittable {
       preparation.swipeUp()
@@ -53,7 +53,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     )
     capture("practice-active", from: app)
 
-    app.buttons["结束"].tap()
+    app.buttons["End"].tap()
     let finish = app.buttons["practice.finish.confirm"].firstMatch
     XCTAssertTrue(finish.waitForExistence(timeout: 3))
     finish.tap()
@@ -69,7 +69,7 @@ final class FangcunAppearanceUITests: XCTestCase {
     capture("practice-complete", from: app)
     app.buttons["practice.saved.done"].tap()
 
-    app.tabBars.buttons["日常"].tap()
+    app.tabBars.buttons["Daily"].tap()
     revealAndTapCheckIn(in: app)
     XCTAssertTrue(app.otherElements["checkIn.emotionField"].waitForExistence(timeout: 3))
     capture("check-in-compass", from: app)
@@ -81,19 +81,19 @@ final class FangcunAppearanceUITests: XCTestCase {
     capture("check-in-words", from: app)
 
     app.buttons["emotionWord.unclassified"].tap()
-    let done = app.buttons["先这样"]
+    let done = app.buttons["Leave it here"]
     XCTAssertTrue(done.waitForExistence(timeout: 3))
     done.tap()
 
     openDailySettings(app)
-    XCTAssertTrue(app.staticTexts["设置"].waitForExistence(timeout: 3))
+    XCTAssertTrue(app.staticTexts["Settings"].waitForExistence(timeout: 3))
     capture("settings", from: app)
 
-    let privacy = app.buttons["隐私与数据"]
+    let privacy = app.buttons["Privacy and data"]
     for _ in 0..<6 where !privacy.isHittable { app.swipeUp() }
     XCTAssertTrue(privacy.isHittable)
     privacy.tap()
-    XCTAssertTrue(app.staticTexts["本地优先"].waitForExistence(timeout: 3))
+    XCTAssertTrue(app.staticTexts["At home on your device"].waitForExistence(timeout: 3))
     capture("privacy", from: app)
   }
 

@@ -18,8 +18,8 @@ struct PracticeGuidance20261020Tests {
       #expect(segments.map(\.start) + [segments.last!.end] == bounds)
       #expect(segments.allSatisfy { !$0.text.isEmpty })
     }
-    #expect(PracticeGuidanceContent.introduction(for: .balancedBreathing, variantID: "easy_4_4").contains("吸气四秒"))
-    #expect(!PracticeGuidanceContent.introduction(for: .balancedBreathing, variantID: "easy_4_4").contains("吸气五秒"))
+    #expect(PracticeGuidanceContent.introduction(for: .balancedBreathing, variantID: "easy_4_4").contains("four seconds"))
+    #expect(!PracticeGuidanceContent.introduction(for: .balancedBreathing, variantID: "easy_4_4").contains("five seconds"))
   }
 
   @Test("PMR is separate, not a new recommended dose or a Watch exercise")

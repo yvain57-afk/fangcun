@@ -1,0 +1,45 @@
+{
+  "locale": "en-US",
+  "device": "iPhone 16 Pro Max simulator",
+  "status": "prepared_not_uploaded",
+  "source": "unaltered native screenshots; synthetic data",
+  "deliveryFolder": "Little-Exhale-2.0-发布更新-20261028",
+  "screenshots": [
+    {
+      "file": "screenshots/LE2-home-light.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "01c466d1edecdfe78d72a3440493482a41e226d97d5eb24bfbe50534c31b2471"
+    },
+    {
+      "file": "screenshots/LE2-physiologicalSigh-start.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "483cd4d45fc1f4f4292d9409d6746bff500c845c651388907c9a19323f606c24"
+    },
+    {
+      "file": "screenshots/LE2-balancedBreathing-next-phase.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "a453a422161a43aa0363779f39b5ee04717f5a0fbe2c8ae700108eaa1189fb7c"
+    },
+    {
+      "file": "screenshots/LE2-nsdr-start.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "df44bb87e0e64b30675fd6e0b8911358b9f77ef2264c334c148f089731a3db17"
+    },
+    {
+      "file": "screenshots/LE2-daily-dark.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "9aa2c8a84ae8ef1fd6d990aa3b1c6d0fb5d34e45735daee6429d823666add858"
+    },
+    {
+      "file": "screenshots/LE2-drinks-dark.png",
+      "width": 1320,
+      "height": 2868,
+      "sha256": "8b31eeb328a196ed1f3d48d4acb4cca4c2a8ed779e48928a6dbe04975e7eedd1"
+    }
+  ]
+}

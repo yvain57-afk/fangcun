@@ -12,15 +12,15 @@ struct SettlingStagePlayer: View {
   private var state: PracticeTimelineSnapshot { PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: duration) }
   var body: some View {
     PracticeStageScaffold(eyebrow: kind.outcomeTitle,
-      title: isPaused ? "已暂停" : kind == .diaphragmaticBreathing ? "按自己的节奏呼吸" : "让注意力落下来",
-      instruction: isPaused ? "先自然呼吸，准备好再继续" : state.segment?.text ?? kind.steps,
+      title: isPaused ? "Paused" : kind == .diaphragmaticBreathing ? "Breathe at your own pace" : "Let your attention settle",
+      instruction: isPaused ? "Breathe naturally. Continue when you're ready." : state.segment?.text ?? kind.steps,
       remaining: remaining, accessibilityIdentifier: "practice.settlingStage", showsStageCard: false) {
         VStack(spacing: 16) {
           PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: duration, variantID: variantID,
             isActive: !isPaused, reduceMotionOverride: reduceMotion).frame(maxWidth: 320).frame(height: 250)
           PracticeGuidedProgress(kind: kind, elapsed: elapsed, duration: duration)
           if kind == .diaphragmaticBreathing {
-            Text("腹部起伏为动作示范 · 按自己的节奏")
+            Text("A movement guide · Follow your own breath")
               .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
           }
         }
@@ -39,8 +39,8 @@ struct BodyScanStagePlayer: View {
   private var state: PracticeTimelineSnapshot { PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: duration) }
   var body: some View {
     PracticeStageScaffold(eyebrow: kind.outcomeTitle,
-      title: isPaused ? "已暂停" : state.segment?.focus == "return" ? "慢慢回到此刻" : "把重量交给支撑面",
-      instruction: isPaused ? "先自然呼吸，准备好再继续" : state.segment?.text ?? kind.steps,
+      title: isPaused ? "Paused" : state.segment?.focus == "return" ? "Gently return" : "Let the support take your weight",
+      instruction: isPaused ? "Breathe naturally. Continue when you're ready." : state.segment?.text ?? kind.steps,
       remaining: remaining, accessibilityIdentifier: "practice.bodyScanStage", showsStageCard: false) {
         VStack(spacing: 16) {
           PracticeCompanionV4(kind: kind, elapsed: elapsed, duration: duration, variantID: variantID,
@@ -62,8 +62,8 @@ struct PelvicFloorStagePlayer: View {
   private var state: PracticeTimelineSnapshot { PracticeTimeline.snapshot(kind: kind, elapsed: elapsed, duration: duration) }
   var body: some View {
     PracticeStageScaffold(eyebrow: kind.outcomeTitle,
-      title: isPaused ? "已暂停" : state.phase?.title ?? "完全放松",
-      instruction: isPaused ? "完全放松，先自然呼吸" : "始终自然呼吸，肩膀、腹部和大腿不用帮忙",
+      title: isPaused ? "Paused" : state.phase?.title ?? "Release fully",
+      instruction: isPaused ? "Release fully. Breathe naturally." : "Keep breathing. Your shoulders, belly, and thighs can rest.",
       remaining: remaining, accessibilityIdentifier: "practice.pelvicFloorStage", showsStageCard: false) {
         PracticeVisualGuide(kind: kind, elapsed: elapsed, duration: duration,
           variantID: variantID, isPaused: isPaused, reduceMotion: reduceMotion)

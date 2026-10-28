@@ -33,7 +33,7 @@ struct EmotionCompassView: View {
       ScrollViewReader { proxy in
         ScrollView {
           VStack(spacing: FangcunLayout.spacing(6)) {
-            CheckInHeader(step: "记录此刻", onClose: onClose)
+            CheckInHeader(step: "A small check-in", onClose: onClose)
             HStack(spacing: 12) {
               introduction
               PracticeCompanionV4(kind: .meditation, elapsed: 0, duration: 300, isActive: false)
@@ -53,7 +53,7 @@ struct EmotionCompassView: View {
                 .id("checkIn.words")
                 .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
             } else {
-              Label("轻点或拖到最接近的位置", systemImage: "hand.draw")
+              Label("Tap or drag to the place that feels closest", systemImage: "hand.draw")
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(InnerBalanceTheme.mutedInk)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -72,7 +72,7 @@ struct EmotionCompassView: View {
       }
 
       if viewModel.saveState == .saving {
-        ProgressView("正在保存…")
+        ProgressView("Saving…")
           .padding(20)
           .background(
             InnerBalanceTheme.elevatedSurface,
@@ -97,8 +97,8 @@ struct EmotionCompassView: View {
 
   private var introduction: some View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(2)) {
-      Text("现在怎样？").font(.title.weight(.semibold))
-      Text("往右更愉快，往上更有劲。找到最接近你的地方。")
+      Text("How is it right now?").font(.title.weight(.semibold))
+      Text("Right feels more pleasant; up feels more energized. Find a place that feels like you.")
         .font(.subheadline)
         .foregroundStyle(InnerBalanceTheme.mutedInk)
     }

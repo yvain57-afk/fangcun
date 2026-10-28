@@ -1,0 +1,376 @@
+方寸	Little Exhale
+照料方寸之间的自己	A little room to breathe
+body.state.steady.title	Within your usual range
+body.state.steady.short	Within range
+body.state.steady.summary	Available measures are close to your usual levels. Take today at your own pace.
+body.state.steady.evidence	At least two reliable recent measures, including a cardiovascular measure
+body.state.watch.title	One measure to keep an eye on
+body.state.watch.short	Worth noticing
+body.state.watch.summary	One measure differs from your baseline. Leave room for recovery and notice how you feel.
+body.state.watch.evidence	One reliable measure differs; this alone doesn't establish elevated overall load
+body.state.elevated.title	Higher body load today
+body.state.elevated.short	Elevated
+body.state.elevated.summary	Several measures differ from your baseline. Consider a little more breathing room today.
+body.state.elevated.evidence	At least two reliable measures differ from your baseline; this isn't a diagnosis of psychological stress
+body.state.limited.title	A few clues, not the whole picture
+body.state.limited.short	Limited context
+body.state.limited.summary	There isn't enough for an overall assessment. You can still rest or take a gentle breathing break.
+body.state.limited.evidence	A single measure or unreliable data can't establish that everything is steady
+body.state.insufficient.title	A little more context is needed
+body.state.insufficient.short	Not enough data
+body.state.insufficient.summary	No usable recent data yet. Earlier records don't tell us how things are right now.
+body.state.insufficient.evidence	Unknown stays unknown when data is missing
+body.baseline.summary	Recent readings are available. Your baseline has %ld/5 days; no overall assessment yet.
+body.workout.summary	Recent exercise may affect these measures. Give yourself recovery time and keep noticing how you feel.
+body.workout.evidence	Some measures differ during the exercise protection window; they aren't being labeled normal
+body.workout.detail	A workout of at least 45 minutes falls within the earlier model's 18-hour protection window. Cardiovascular differences may reflect exercise and remain visible above. This window doesn't mean every measure is normal.
+body.time.measured	Last measured · %@
+body.time.noMeasurement	No measurement to show yet
+body.time.fetched	Checked · %@
+body.time.computed	Calculated · %@
+body.time.explanation	Checking and calculation times aren't new measurements. Each measure's date is shown below.
+body.time.assessmentLatest	 · Latest sample used: %@
+body.sleep.title	Latest main sleep
+body.sleep.value	Ended %@\n%@
+body.metric.hrv	Heart rate variability
+body.metric.rhr	Resting heart rate
+body.metric.unavailable	No usable data yet
+body.source.stale	Over 36 hours old · Excluded from current assessment
+body.source.detail	%@ · Measured %@%@%@ · %@
+body.query.unavailable	Some data couldn't be read. Only successful reads are included. This doesn't tell us whether access was granted.
+body.history.legacy	Earlier record · Original assessment retained; not a new readiness sample
+body.history.unknownLegend	Pale line: limited context, insufficient data, or no entry
+practice.finish.action	End practice
+practice.finish.message	Here is a fine place to stop. You can save the time you've already spent.
+diary.storage.readFailure	Your local entries couldn't be read. The original data is preserved.
+diary.storage.writeFailure	Couldn't save. Unconfirmed changes weren't written. Please try again.
+diary.manage	Add or edit an entry
+diary.time	Time of drink
+diary.volume	Volume (ml)
+diary.add	Add a drink
+diary.save	Save changes
+diary.records	Drink history
+diary.estimate	Cup-based estimates. Unknown sugar stays unknown. Editing volume doesn't change other entries.
+diary.range	Add entries for today or the previous 6 days. Drink time and entry time are stored separately.
+diary.retry	Reload and try again
+diary.unknownAlcohol	Some alcohol amounts are unknown
+diary.done	Done
+diary.kind	Drink type
+diary.undo	Undo last entry
+diary.entry	%@ · About %d ml
+readiness.state.assessable	Enough context
+readiness.state.provisional	An early reference
+readiness.state.limited	Limited context
+readiness.state.insufficient	Not enough data yet
+readiness.state.awaitingData	Waiting for data
+readiness.state.failed	Couldn't read data this time
+readiness.state.stopped	Reading is paused
+readiness.state.historical	Previous period
+readiness.state.stale	Waiting for fresh recovery data
+readiness.level.usual	Recovery close to your usual level
+readiness.level.reduced	Consider an easier pace today
+readiness.level.low	Make more room for rest today
+readiness.summary.assessable	A view of this recovery period, using main sleep and your personal baseline.
+readiness.summary.provisional	Some early data is available. Your personal baseline is still building.
+readiness.summary.limited	Some measures are available, but not enough for an overall assessment.
+readiness.summary.insufficient	You can take a gentle breathing break without waiting for more data.
+readiness.summary.awaitingData	Sleep has just ended. Allow some time for data to arrive.
+readiness.summary.failed	Data couldn't be read this time. You can refresh again later.
+readiness.summary.stopped	You can restart reading in Settings at any time.
+readiness.summary.historical	This assessment belongs to a previous valid period, not this moment.
+readiness.summary.stale	The old data has expired, so its conclusion isn't carried forward.
+readiness.boundary	Readiness is recovery context, not a diagnosis of psychological stress. Initial software thresholds still need calibration.
+readiness.storageError	The local assessment archive is unavailable. Original data is preserved.
+readiness.refreshError	Refresh didn't finish. Existing data keeps its original measurement time.
+readiness.evidence	Clues from your body
+readiness.why	What this is based on
+readiness.unknown	Unknown
+readiness.metric	%@: %@ %@ · %d valid baseline days
+readiness.metric.hrvSDNN	Median HRV SDNN during main sleep
+readiness.metric.restingHeartRate	Resting heart rate
+readiness.metric.sleep	Sleep source
+readiness.sleepEnd	Main sleep ended: %@
+readiness.measured	Measured: %@
+readiness.queried	Checked: %@
+readiness.computed	Calculated: %@
+readiness.validUntil	Reference valid until: %@
+readiness.attempt	Last refresh attempt: %@
+readiness.success	Last successful check: %@
+readiness.identity	Assessment and revision
+readiness.freshness.current	Current recovery period
+readiness.freshness.historical	Historical reference, not current status
+readiness.freshness.stale	Outside the valid period
+readiness.settings	Recovery context and sources
+readiness.range	History range
+readiness.seven	7 days
+readiness.twentyEight	28 days
+readiness.history	Recovery and history
+readiness.history.blank	No new assessment was saved for this day.
+readiness.history.legacy	Earlier assessment · Original wording retained
+readiness.history.drinks	Drinks logged: %d ml · About %d mg caffeine
+readiness.refresh	Refresh data
+readiness.enabled	Use recovery context
+readiness.target	Sleep goal: %.1f hours
+readiness.sources	Primary sources
+readiness.mainSleep	Choose main sleep
+readiness.stop	Stop reading
+readiness.resume	Resume reading
+readiness.clear	Clear local readiness data
+readiness.clearExplanation	Stops reading and clears the local readiness cache and assessments. Drinks, practices, and original Apple Health records stay. Reading restarts only when you choose.
+readiness.reason.currentDataMissing	Current measurements missing
+readiness.reason.sleepMissing	Main sleep missing
+readiness.reason.hrvMissing	HRV missing
+readiness.reason.rhrMissing	Resting heart rate missing
+readiness.reason.baselineBuilding	Personal baseline still building
+readiness.reason.sparseHRV	Few HRV samples
+readiness.reason.narrowHRVCoverage	Limited HRV time coverage
+readiness.reason.invalidValue	Invalid value found
+readiness.reason.extremeValue	A value needs review
+readiness.reason.unitMismatch	Units don't match
+readiness.reason.sourceUnknown	Unknown source
+readiness.reason.sourceAmbiguous	Sources are hard to distinguish
+readiness.reason.sourceIdentityIncomplete	Source device identity is incomplete
+readiness.reason.manuallyEntered	Manual data excluded from measurement assessment
+readiness.reason.interventionExcluded	Practice-affected periods excluded
+readiness.reason.restingSampleReused	Resting heart rate already used in the previous period
+readiness.reason.shortSleep	Short sleep segment
+readiness.reason.excessiveSleep	Sleep duration needs review
+readiness.reason.futureSleep	Unexpected sleep time
+readiness.reason.conflictingSleep	Conflicting sleep stages
+readiness.reason.ambiguousSleep	Main sleep unclear
+readiness.reason.ambiguousRevision	Sleep revision needs review
+readiness.reason.awaitingArrival	Waiting for data to arrive
+readiness.reason.manualSleepSelection	Using the main sleep you selected
+readiness.reason.hrvAtypicallyHigh	Atypically high HRV; no overall assessment yet
+readiness.reason.hrvBelowBaseline	HRV below your baseline
+readiness.reason.rhrAboveBaseline	Resting heart rate above your baseline
+readiness.reason.sleepBelowTarget	Sleep below your goal
+readiness.reason.dataStale	Data has expired
+readiness.reason.invalidConfiguration	Settings need review
+readiness.reason.refreshFailed	Refresh unsuccessful
+readiness.reason.sourceChanged	Source changed
+readiness.reason.sourceDeleted	Related source or data deleted
+diary.alcoholUnknown	Some alcohol amounts are unknown. The total includes known estimates only.
+recovery.title.movementBreak	A 2-minute movement break
+recovery.title.seatedReset	A 1-minute seated stretch
+recovery.title.quietRest	2 minutes of quiet rest
+recovery.title.practice.physiologicalSigh	A little sigh
+recovery.title.practice.pacedBreathing	Longer exhale
+recovery.title.practice.meditation	A quiet moment
+recovery.title.practice.nsdr	Guided rest
+recovery.title.practice.kegel	Pelvic floor
+recovery.movementBreak.prepare	Check that your surroundings are safe. Walk gently or change position within your abilities. If standing isn't suitable, choose the seated stretch.
+recovery.movementBreak.stage1	Change position gently, or take a short walk. No need to watch the screen or count steps.
+recovery.movementBreak.stage2	Breathe naturally and slow down at your own pace.
+recovery.seatedReset.prepare	Sit steadily. Gently move your shoulders and wrists within a comfortable range. Don't twist your neck or stretch into pain.
+recovery.seatedReset.stage1	Let your shoulders soften and gently adjust your seat.
+recovery.seatedReset.stage2	Move your wrists gently and find a comfortable position.
+recovery.quietRest.prepare	Find a safe seat. You can keep your eyes open. There's no breathing pace to follow.
+recovery.quietRest.stage1	Let your attention rest here. Breathe naturally.
+recovery.quietRest.stage2	Nothing to finish. Stay quietly for a moment.
+recovery.breath.prepare	Sit comfortably. Keep breathing easy, without holds or forced deep breaths.
+recovery.safety	Choose a safe setting. Stay comfortable and stop if you feel unwell. If driving or unavailable, wait until later. For severe or persistent symptoms, stop and seek appropriate help.
+recovery.unavailable	You can leave practice for a more convenient moment.
+recovery.change	Try a different small action
+recovery.goal	What kind of moment would you like?
+recovery.goal.rest	A little rest
+recovery.goal.calm	A calmer moment
+recovery.goal.tired	Feeling tired
+recovery.goal.workBreak	A break from work
+recovery.environment	Your surroundings
+recovery.environment.seated	Somewhere to sit
+recovery.environment.canMove	Safe to move around
+recovery.environment.driving	Driving
+recovery.environment.unavailable	Not a good time
+recovery.seconds	Available time: %d seconds
+recovery.start	I'm ready
+recovery.remaining	%d seconds remaining
+recovery.pause	Pause
+recovery.resume	Continue
+recovery.finish	Leave it here
+recovery.retry	Try saving again
+recovery.saved	A little moment, saved
+recovery.storageError	Couldn't finish saving. Earlier records are preserved. Please try again.
+recovery.feedback.helpful	Helpful
+recovery.feedback.unchanged	No clear change
+recovery.feedback.uncomfortable	Uncomfortable
+recovery.feedback.skipped	Not answered
+recovery.feedback.current	Your response: %@
+recovery.skip	Skip for now
+recovery.done	Back to Daily
+recovery.close	Close
+recovery.history	Small actions and reflections
+recovery.duration	Time practiced: %d seconds
+recovery.reason.completed	Finished as planned
+recovery.reason.endedEarly	Finished early; you still made a little space
+recovery.reason.interrupted	Known practice time saved after interruption; time away excluded
+recovery.reason.legacyUnknown	Earlier practice; finish reason wasn't recorded separately
+recovery.counts	Responses for this action: helpful %d, no clear change %d, uncomfortable %d. A description of your entries, not proof of effectiveness.
+sync.title	Device sync status
+sync.queued	%d events waiting for the other device to confirm
+sync.explanation	Records save locally first. A scheduled transfer isn't confirmed delivery. An item leaves the queue after the other device confirms it has saved it.
+sync.unavailable	Device sync is unavailable. Local records are preserved.
+sync.queueError	Couldn't add this to the sync queue. You can try again.
+sync.pending	No confirmation yet. Retry when the connection is restored.
+sync.groupUnavailable	The shared container isn't configured. Widget cache sharing is unavailable.
+sync.retry	Retry transfer
+readiness.sleepActual	Time asleep: %.1f hours · Goal: %.1f hours
+readiness.stat.hrv	Median SDNN during main sleep · %d samples across %d hourly windows
+readiness.stat.rhr	Latest resting heart rate in the window · %d samples across %d hourly windows
+readiness.baseline.reference	Personal center: %.1f · Variation reference: %.1f–%.1f %@ (one robust scale each side; not a medical normal range)
+readiness.window	Sample window: %@ — %@
+readiness.context	Context for this day
+readiness.contextBoundary	These are the background records available so far. Missing records don't mean no activity. Drinks and completed actions don't directly raise readiness.
+readiness.context.workouts	%d workout records read
+readiness.context.workout	%@ · %d-minute workout · %@
+readiness.context.drink	%@ · %@ · About %d ml
+readiness.recordedLevel	Assessment at the time: %@
+guidance.usual	Recovery close to your usual level
+guidance.reduced	Consider an easier pace today
+guidance.low	Give recovery more room today
+guidance.sleepAdvice	A suggestion based on sleep
+guidance.facts	Start with what we know
+guidance.notYet	Not enough for today's assessment yet
+guidance.paused	Health reading is paused
+guidance.service	Body context couldn't be updated this time
+guidance.reason.sleep	You slept about %.1f hours in this main sleep.
+guidance.reason.bodyLower	Recovery measures are lower than your recent personal levels.
+guidance.reason.bodyUsual	Comparable measures are close to your recent personal levels.
+guidance.reason.sleepShort	Sleep was shorter than your goal. Consider making more room for rest today.
+guidance.reason.sleepOnly	Sleep duration is available, but other data isn't sufficient for an overall assessment.
+guidance.reason.facts	Some measurements are available, but not enough for a reliable personal comparison.
+guidance.reason.notYet	There isn't enough current data yet. You can still take five gentle minutes for yourself.
+guidance.reason.paused	You can still practice, log drinks, or resume reading in Settings.
+guidance.reason.service	Try again later. This doesn't mean your body status has worsened.
+guidance.action.pause	Take five gentle minutes
+guidance.action.rhythm	Let today follow your own rhythm
+guidance.action.ease	Make a little more room for rest
+guidance.action.retry	Return to Daily and refresh later
+guidance.scoped	This suggestion uses the available clues only, not an overall recovery assessment.
+guidance.provisional	Early comparison
+guidance.cached	This update didn't finish. The previous assessment remains valid for now.
+guidance.kind.recoveryAssessment	Today's recovery
+guidance.kind.scopedAdvice	Limited context
+guidance.kind.onboarding	Getting to know your rhythm
+guidance.kind.serviceIssue	Waiting for an update
+guidance.method	Sources and assessment method
+guidance.method.explanation	Sleep sums actual asleep segments. Measurements are compared with personal records from the same source. Missing data stays unknown. These are default software rules that still need calibration.
+guidance.baselineLearning	Your baseline is still building, so no personal range is shown yet.
+guidance.metric.sleep	Time asleep
+guidance.hours	About %.1f hours
+guidance.diagnostics	Advanced data diagnostics
+motion.mode	Companion movement
+motion.standard	Standard
+motion.gentle	Gentle
+motion.static	Still
+drink.recordedFluid	Drinks logged: %d ml · Non-alcoholic: %d ml
+drink.recordedDose	Known caffeine: about %.0f mg · Alcohol: about %.0f g
+drink.unknownCaffeine	Some caffeine amounts are unknown. The total includes known amounts only.
+drink.saved	That drink is noted.
+drink.removed	One drink removed.
+drink.undone	Last entry undone.
+drink.rejected	Couldn't add this entry. Check the time and serving size.
+drink.failed	Not saved yet. Check the details and try again.
+drink.name	Drink name
+drink.legacy	This is an earlier entry. Changing its volume won't recalculate the original caffeine or alcohol estimate.
+drink.caffeinePresence	Contains caffeine?
+drink.alcoholPresence	Contains alcohol?
+drink.presence.yes	Yes
+drink.presence.no	No
+drink.presence.unknown	Not sure
+drink.doseMethod	How to enter the amount
+drink.dose.perServing	Per serving
+drink.dose.per100ML	Per 100 ml
+drink.dose.unknown	Amount unknown
+drink.doseMG	Caffeine (mg)
+drink.abvKnown	I know the alcohol percentage
+drink.abv	Alcohol (% ABV)
+drink.delete	Delete this entry
+care.settings	Drinks and gentle reminders
+care.inApp	Show gentle reminders in the app
+care.fluidRestrictionSetting	My clinician has advised a fluid limit
+care.adult	General adult guidance applies to me
+care.referenceBoundary	The reference applies only to logged non-alcoholic drinks. Needs vary. Children, pregnancy, and specific health conditions call for personal professional guidance. The available settings aren't medical safety limits.
+care.reference	Non-alcoholic drink reference: %d ml
+care.referenceAccept	Use this reference
+care.cup	Default glass of water
+care.customCup	Custom glass size (ml)
+care.sleepPlan	Your sleep schedule
+care.confirmSleep	Use my confirmed sleep schedule
+care.sleep	Expected bedtime
+care.wake	Expected wake time
+care.window	Notice caffeine %.0f hours before bed
+care.shift	A different schedule this time
+care.manualCutoff	Set only a caffeine cutoff time
+care.cutoff	Caffeine cutoff
+care.caffeineReference	Caffeine reference: %.0f mg / 24 hours
+care.notifications	On-device reminders
+care.push.water	Gentle drink reminders
+care.push.caffeine	Caffeine wind-down reminders
+care.push.alcohol	Allow me to schedule care after drinking
+care.lockDetails	Show reminder category on the lock screen
+care.authorization.unknown	Notification status hasn't been checked
+care.authorization.notAsked	Notification permission hasn't been requested
+care.authorization.enabled	System notifications are allowed
+care.authorization.denied	Notifications are off. You can change this in system Settings.
+care.authorization.unavailable	System notification permission isn't requested in this test environment.
+care.plannedThrough	Scheduled through %@. Updated next time you open the app.
+care.notificationBoundary	Silent by default, with no health numbers. At most two reminders per day and rolling 24 hours, at least four hours apart. Quiet at night and during confirmed sleep. Scheduled doesn't mean delivered or read.
+care.record	Log a drink
+care.view	View entries
+care.ack	I've had a drink; no entry needed
+care.snooze	In an hour
+care.mute	No more today
+care.dismiss	Put this reminder away
+care.laterAlcohol	Remind me to check on myself in 30 minutes
+care.tooMuch	I think I've had too much
+care.severe	Know the warning signs
+care.severeConfirm	I'm having these symptoms now
+care.alcoholHelp	When you need extra care
+care.clear	Clear care preferences and reminders
+care.clearExplanation	Clears care settings, receipts, and this app's care notifications only. Drink and practice records stay.
+care.storageError	Care settings couldn't be saved. New reminders have been stopped.
+care.notificationError	This reminder couldn't be scheduled. Reopen the app later to try again.
+care.W01.title	No drinks logged today yet
+care.W01.body	Had something already? You can add it whenever you like.
+care.W02.title	Coffee counts toward logged fluid too
+care.W02.body	If you'd like a change for your next drink, water is an option.
+care.W03.title	A busy stretch. Time to refill your glass?
+care.W03.body	Follow your own needs. It's okay if you drank without logging it.
+care.W04.title	You've logged today's reference amount
+care.W04.body	Follow your needs from here. There's no target to chase.
+care.water.recordsOnly	No entry doesn't mean you haven't had a drink.
+care.water.coffeeCounts	This shows logged drinks, not your actual total intake.
+care.C01.title	A moment to notice the timing
+care.C01.body	You're in your chosen caffeine wind-down window. A caffeine-free option might suit your next drink.
+care.C02.title	Known caffeine has reached your reference
+care.C02.body	Consider pausing caffeinated drinks for the rest of today and noticing how you feel.
+care.C03.title	Both the amount and timing are worth noticing
+care.C03.body	Known caffeine has reached your reference, and your wind-down window has begun. Consider a caffeine-free option next.
+care.caffeine.partial	Some amounts are unknown. This reference sums known amounts only; it doesn't establish a safe amount remaining.
+care.caffeine.reference	General adult guidance isn't your personal safety limit and can't predict whether you'll sleep well tonight.
+care.A01.title	Near bedtime, leave the next drink
+care.A01.body	Make a little quiet space for tonight, and arrange a safe way home.
+care.A02.title	Stop drinking and take care of yourself
+care.A02.body	Please don't drive. Stay with someone you trust and ask for help when needed.
+care.A03.title	The alcohol amount isn't clear yet
+care.A03.body	Notice how you feel, avoid further alcohol, and don't drive. An unknown amount can't tell us whether you've had too much or are okay.
+care.A04.title	You logged alcohol before your last rest
+care.A04.body	Consider an easier pace based on how you feel. This entry alone doesn't establish a hangover or explain every symptom.
+care.A05.title	These symptoms need immediate help
+care.A05.body	If someone is difficult to wake, breathing slowly or irregularly, having seizures, repeatedly vomiting, or very confused, contact local emergency services now. Don't leave them alone. Sleep, exercise, or breathing practice cannot replace emergency care.
+care.emergency	Ask someone nearby to contact local emergency services immediately. Don't drive yourself.
+care.alcohol.boundary	Water, coffee, and breathing exercises don't cancel out alcohol or tell you when it's safe to drive.
+care.fluidRestricted	You've set a fluid restriction. Follow your clinician's drinking plan.
+care.notification.title	Little Exhale
+care.notification.generic	A little room for yourself.
+care.notification.water	A busy stretch. Refill your glass if it suits your needs.
+care.notification.caffeine	Your chosen caffeine wind-down time is coming up.
+care.notification.alcohol	Time for the check-in you scheduled. Rest, and arrange a safe way home.
+drink.logCup	Log a drink\n%d ml
+care.progress	Non-alcoholic drinks logged: %d / %d ml
+care.acceptDraft	Use %d ml as my daily logging reference
+care.safetyResolved	I've received help. Close this notice.
+guidance.revisions	View %d earlier revisions
+guidance.expanded	Expanded
+guidance.collapsed	Collapsed

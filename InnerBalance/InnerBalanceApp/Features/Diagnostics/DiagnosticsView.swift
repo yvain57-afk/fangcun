@@ -11,56 +11,56 @@ struct DiagnosticsView: View {
   var body: some View {
     List {
       if let snapshot {
-        Section("身体数据状态") {
-          LabeledContent("基线进度", value: "\(snapshot.baselineDays) / 5 天")
-          LabeledContent("可用证据", value: "\(snapshot.availableEvidenceCount) 项")
-          LabeledContent("当前判断", value: bodyLoadText)
+        Section("Health data status") {
+          LabeledContent("Baseline progress", value: "\(snapshot.baselineDays) / 5 days")
+          LabeledContent("Available measures", value: "\(snapshot.availableEvidenceCount) measures")
+          LabeledContent("Current assessment", value: bodyLoadText)
           LabeledContent(
-            "不可用类型",
+            "Unavailable types",
             value: snapshot.unavailableDataKinds.isEmpty
-              ? "无" : snapshot.unavailableDataKinds.joined(separator: "、")
+              ? "None" : snapshot.unavailableDataKinds.joined(separator: "、")
           )
         }
         .listRowBackground(InnerBalanceTheme.surface)
         .listRowSeparatorTint(InnerBalanceTheme.hairline)
-        Section("本地写入状态") {
-          LabeledContent("等待 HealthKit", value: "\(snapshot.pendingHealthWriteCount) 条")
-          LabeledContent("情绪登记", value: "\(snapshot.checkInCount) 次")
-          LabeledContent("未分类登记", value: "\(snapshot.unclassifiedCheckInCount) 次")
-          LabeledContent("已完成练习", value: "\(snapshot.practiceCompletionCount) 次")
-          LabeledContent("登记中位用时", value: durationText(snapshot.medianCheckInDuration))
-          LabeledContent("登记 P90 用时", value: durationText(snapshot.p90CheckInDuration))
+        Section("Local write status") {
+          LabeledContent("Waiting for HealthKit", value: "\(snapshot.pendingHealthWriteCount) entries")
+          LabeledContent("Check-ins", value: "\(snapshot.checkInCount) times")
+          LabeledContent("Unlabeled check-ins", value: "\(snapshot.unclassifiedCheckInCount) times")
+          LabeledContent("Completed practices", value: "\(snapshot.practiceCompletionCount) times")
+          LabeledContent("Median check-in time", value: durationText(snapshot.medianCheckInDuration))
+          LabeledContent("P90 check-in time", value: durationText(snapshot.p90CheckInDuration))
         }
         .listRowBackground(InnerBalanceTheme.surface)
         .listRowSeparatorTint(InnerBalanceTheme.hairline)
-        Section("本地漏斗") {
-          LabeledContent("打开登记", value: "\(snapshot.checkInOpenedCount) 次")
-          LabeledContent("完成罗盘", value: "\(snapshot.compassCompletedCount) 次")
-          LabeledContent("选择情绪词", value: "\(snapshot.emotionWordSelectedCount) 次")
+        Section("On-device flow counts") {
+          LabeledContent("Opened check-in", value: "\(snapshot.checkInOpenedCount) times")
+          LabeledContent("Completed compass", value: "\(snapshot.compassCompletedCount) times")
+          LabeledContent("Selected a feeling word", value: "\(snapshot.emotionWordSelectedCount) times")
           LabeledContent(
-            "完成可选补充",
-            value: "\(snapshot.optionalSupplementCompletedCount) 次"
+            "Completed optional details",
+            value: "\(snapshot.optionalSupplementCompletedCount) times"
           )
-          LabeledContent("接受推荐", value: "\(snapshot.recommendationAcceptedCount) 次")
-          LabeledContent("开始练习", value: "\(snapshot.practiceStartedCount) 次")
+          LabeledContent("Accepted suggestion", value: "\(snapshot.recommendationAcceptedCount) times")
+          LabeledContent("Started practice", value: "\(snapshot.practiceStartedCount) times")
           LabeledContent(
-            "主观对比可用",
-            value: "\(snapshot.subjectiveComparisonAvailableCount) 次"
+            "Subjective comparison available",
+            value: "\(snapshot.subjectiveComparisonAvailableCount) times"
           )
           LabeledContent(
-            "Watch 心率窗口",
+            "Watch heart-rate windows",
             value:
               "\(snapshot.watchHeartRateAvailableCount) / \(snapshot.watchHeartRateEligibleCount)"
           )
           LabeledContent(
-            "提醒响应",
+            "Reminder responses",
             value:
               "\(snapshot.notificationRespondedCount) / \(snapshot.notificationScheduledCount)"
           )
           LabeledContent(
-            "同步错误",
+            "Sync errors",
             value: snapshot.syncErrorCounts.isEmpty
-              ? "无"
+              ? "None"
               : snapshot.syncErrorCounts.map { "\($0.key): \($0.value)" }.sorted()
                 .joined(separator: "、")
           )
@@ -70,17 +70,17 @@ struct DiagnosticsView: View {
         Section {
           if let exportText = exportText(snapshot) {
             ShareLink(item: exportText) {
-              Label("导出诊断信息", systemImage: "square.and.arrow.up")
+              Label("Export diagnostics", systemImage: "square.and.arrow.up")
             }
           }
-          Text("导出只含权限状态、数据可用性、计数和用时；不含心率、HRV、睡眠时段、情绪词或罗盘坐标。")
+          Text("The export contains permission status, data availability, counts, and timings only. No heart rate, HRV, sleep periods, feeling words, or compass coordinates.")
             .font(.caption)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
         }
         .listRowBackground(InnerBalanceTheme.surface)
         .listRowSeparatorTint(InnerBalanceTheme.hairline)
       } else {
-        ProgressView("正在整理本地状态…")
+        ProgressView("Preparing local status…")
           .tint(InnerBalanceTheme.emphasis)
           .listRowBackground(InnerBalanceTheme.surface)
       }
@@ -89,10 +89,10 @@ struct DiagnosticsView: View {
     .tint(InnerBalanceTheme.strongFill)
     .scrollContentBackground(.hidden)
     .background(InnerBalanceTheme.canvas)
-    .navigationTitle("诊断")
+    .navigationTitle("Diagnostics")
     .toolbarBackground(InnerBalanceTheme.canvas, for: .navigationBar)
     .toolbar {
-      Button("刷新") { Task { await refresh() } }
+      Button("Refresh") { Task { await refresh() } }
     }
     .task { await refresh() }
   }
@@ -113,16 +113,16 @@ struct DiagnosticsView: View {
   }
 
   private func durationText(_ duration: TimeInterval?) -> String {
-    guard let duration else { return "暂无" }
-    return "\(duration.formatted(.number.precision(.fractionLength(1)))) 秒"
+    guard let duration else { return "Not available" }
+    return "\(duration.formatted(.number.precision(.fractionLength(1)))) seconds"
   }
 
   private var bodyLoadText: String {
     switch homeViewModel.assessment.level {
-    case .steady: "平稳"
-    case .watch: "留意"
-    case .elevated: "偏高"
-    case .buildingBaseline: "建立基线中"
+    case .steady: "Steady"
+    case .watch: "Worth noticing"
+    case .elevated: "Elevated"
+    case .buildingBaseline: "Building baseline"
     }
   }
 }

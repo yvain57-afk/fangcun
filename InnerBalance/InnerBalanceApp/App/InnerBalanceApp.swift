@@ -37,6 +37,7 @@ struct InnerBalanceApp: App {
   var body: some Scene {
     WindowGroup {
       RootView()
+        .environment(\.locale, Locale(identifier: "en"))
         .environment(\.careOwner, care)
         .environment(\.readinessOwner, readiness)
         .environment(\.recoveryOwner, recovery)

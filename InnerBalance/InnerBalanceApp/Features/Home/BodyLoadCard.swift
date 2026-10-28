@@ -2,12 +2,12 @@ import InnerBalanceCore
 import SwiftUI
 
 enum BodyLoadCardPresentation {
-  static let emptyTrainingMessage = "近 24 小时未读到训练记录"
+  static let emptyTrainingMessage = "No workouts found in the past 24 hours"
 
   static func trainingHeadline(_ summary: HomeTrainingSummary) -> String {
     let minutes = max(1, Int(summary.totalDuration / 60))
-    let duration = minutes < 60 ? "\(minutes) 分" : "\(minutes / 60) 小时 \(minutes % 60) 分"
-    return "近 24 小时 · \(summary.count) 次 · \(duration)"
+    let duration = minutes < 60 ? "\(minutes) min" : "\(minutes / 60) hr \(minutes % 60) min"
+    return "Past 24 hours · \(summary.count) workouts · \(duration)"
   }
 
   static func hasReliableEvidence(_ evidence: [HomeHealthEvidence]) -> Bool {
@@ -56,13 +56,13 @@ enum BodyLoadCardPresentation {
       recentWorkoutProtection: recentWorkoutProtection,
       evidence: evidence
     ) {
-      return "训练后先恢复"
+      return "Room to recover"
     }
     return switch level {
-    case .buildingBaseline: "照常安排"
-    case .steady: hasReliableEvidence(evidence) ? "可以推进" : "照常安排"
-    case .watch: "今天收着一点"
-    case .elevated: "优先恢复"
+    case .buildingBaseline: "Keep your usual plans"
+    case .steady: hasReliableEvidence(evidence) ? "Within your usual range" : "Keep your usual plans"
+    case .watch: "Take it a little easier"
+    case .elevated: "Make room for recovery"
     }
   }
 
@@ -76,17 +76,17 @@ enum BodyLoadCardPresentation {
       recentWorkoutProtection: recentWorkoutProtection,
       evidence: evidence
     ) {
-      return "近期训练正在扰动训练敏感指标。今天先恢复，晚些再看。"
+      return "Recent exercise may affect these readings. Give yourself time to recover and check again later."
     }
     return switch level {
     case .buildingBaseline:
-      evidence.isEmpty ? "目前没有足够证据改变今天的安排。" : "现有读数先用于建立个人参考；今天按原计划进行。"
+      evidence.isEmpty ? "There isn't enough information here to suggest a change to your plans." : "These readings are helping build your personal baseline. They don't yet support a personalized assessment."
     case .steady:
       hasReliableEvidence(evidence)
-        ? "近期可靠指标在个人参考范围内，今天的安排可以照常推进。"
-        : "目前没有足够证据改变今天的安排。"
-    case .watch: "有一项可靠指标偏离近期参考。降低今天的强度，留出恢复时间。"
-    case .elevated: "至少两项独立可靠指标偏离个人参考。今天先减量，再安排恢复。"
+        ? "The recent reliable readings are within your personal reference range."
+        : "There isn't enough information here to suggest a change to your plans."
+    case .watch: "One reliable measure differs from your recent baseline. Consider an easier day with time to recover."
+    case .elevated: "At least two independent reliable measures differ from your baseline. Consider reducing effort and making time to recover."
     }
   }
 }
@@ -104,7 +104,7 @@ struct BodyLoadCard: View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(4)) {
       VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
         VStack(alignment: .leading, spacing: FangcunLayout.spacing(3)) {
-          Text("当前压力")
+          Text("Reported pressure")
             .font(.caption2.weight(.bold))
             .tracking(1.1)
             .foregroundStyle(InnerBalanceTheme.emphasis)
@@ -132,7 +132,7 @@ struct BodyLoadCard: View {
 
           if let currentStateTitle = today.currentStateTitle {
             HStack(spacing: FangcunLayout.spacing(2)) {
-              Text("当前感受")
+              Text("How you feel")
                 .foregroundStyle(InnerBalanceTheme.mutedInk)
               Text(currentStateTitle)
                 .fontWeight(.semibold)

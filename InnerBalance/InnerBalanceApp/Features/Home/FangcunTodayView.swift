@@ -22,6 +22,7 @@ struct FangcunTodayView: View {
   @AppStorage("fangcun.dark") private var dark = false
   @AppStorage("fangcun.largeType") private var largeType = false
   @State private var drinks = false
+  @State private var bodyContextExpanded = false
   @State private var askingHealth = false
   @State private var localAction: StatusLocalLaunch?
   @State private var safety = false
@@ -63,31 +64,17 @@ struct FangcunTodayView: View {
       ScrollView {
         VStack(spacing: 20) {
           header
-          Text("身体状态").font(.headline).frame(maxWidth: .infinity, alignment: .leading)
-          HStack {
-            Text(statusNow, format: .dateTime.month().day().weekday(.wide)).font(.caption)
-            Spacer()
-            if status != nil && readiness?.errorKey != nil {
-              Button("重试同步") { Task { await readiness?.refresh() } }.font(.caption).accessibilityIdentifier("status.refresh")
-            } else { Text(readiness?.loading == true ? "正在更新" : "方寸状态分").font(.caption2) }
-          }.foregroundStyle(InnerBalanceTheme.mutedInk)
-          hero
-          if !typeSize.isAccessibilitySize { primaryButton }
-          if status == nil, readiness?.enabled == true, readiness?.reading == true {
-            Button("补记一次睡眠") { manualSleep = true }.font(.subheadline).accessibilityIdentifier("status.manual")
-          }
-          if let status {
-            NavigationLink { DailyStatusDetailView(score: status, onStart: startPrimary, actionTitle: primaryAction.title, lastQueryAt: readiness?.snapshot.lastRefreshAttemptAt) } label: {
-              VStack(alignment: .leading, spacing: 12) {
-                ForEach(status.components, id: \.name) { part in
-                  HStack { Text(DailyStatusPresentation.componentName(part.name)); Spacer(); Text("\(Int(part.score.rounded())) 分").monospacedDigit() }.font(.subheadline)
-                }
-                HStack { Text("看看分数构成"); Spacer(); Image(systemName: "chevron.right") }.font(.caption)
-              }.fangcunPaperCard()
-            }.buttonStyle(.plain).accessibilityIdentifier("today.evidence")
-          }
+          Button(action: onCheckIn) {
+            VStack(alignment: .leading, spacing: 8) {
+              Text("How has your day felt?").font(.title2.weight(.medium))
+              Text("A small check-in, in your own time.").font(.subheadline)
+                .foregroundStyle(InnerBalanceTheme.mutedInk)
+              Label("Leave a note", systemImage: "plus").font(.subheadline.weight(.semibold))
+                .padding(.top, 4)
+            }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
+          }.buttonStyle(.plain).accessibilityIdentifier("home.checkIn")
           Button(action: onRecords) {
-            HStack { Label("练习记录", systemImage: "clock.arrow.circlepath"); Spacer(); Image(systemName: "chevron.right") }
+            HStack { Label("Your practice", systemImage: "clock.arrow.circlepath"); Spacer(); Image(systemName: "chevron.right") }
               .font(.headline).fangcunPaperCard()
           }.buttonStyle(.plain).accessibilityIdentifier("daily.records")
           VStack(alignment: .leading, spacing: 12) {
@@ -95,8 +82,8 @@ struct FangcunTodayView: View {
             HStack(spacing: 14) {
               Image(systemName: "drop").font(.title2).foregroundStyle(InnerBalanceTheme.strongFill)
               VStack(alignment: .leading, spacing: 5) {
-                Text("今天喝了什么？").font(.headline)
-                Text(diary.entries().isEmpty ? "水、咖啡，或是别的什么" : "已记 \(diary.entries().count) 杯 · 已记录饮品 \(FangcunDrinkTotals(diary.entries()).fluid) ml")
+                Text("What have you been sipping?").font(.headline)
+                Text(diary.entries().isEmpty ? "Water, coffee, or something else" : "\(diary.entries().count) entries · \(FangcunDrinkTotals(diary.entries()).fluid) ml logged")
                   .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
               }
               Spacer(minLength: 0)
@@ -106,16 +93,47 @@ struct FangcunTodayView: View {
           if let care { BeverageCareCard(owner: care).padding(.horizontal, 12) }
           }
           if let latestPractice, Calendar.current.isDateInToday(latestPractice.endedAt) {
-            Label("今天，已经为自己留了片刻。", systemImage: "checkmark.circle")
+            Label("You made a little space for yourself today.", systemImage: "checkmark.circle")
               .accessibilityIdentifier("today.latestPractice")
               .accessibilityValue(latestPractice.sessionID)
               .font(.subheadline).foregroundStyle(InnerBalanceTheme.strongFill)
           }
+          DisclosureGroup(isExpanded: $bodyContextExpanded) {
+          Text("Body context").font(.headline).frame(maxWidth: .infinity, alignment: .leading)
+          HStack {
+            Text(statusNow, format: .dateTime.month().day().weekday(.wide)).font(.caption)
+            Spacer()
+            if status != nil && readiness?.errorKey != nil {
+              Button("Retry sync") { Task { await readiness?.refresh() } }.font(.caption).accessibilityIdentifier("status.refresh")
+            } else { Text(readiness?.loading == true ? "Updating" : "Daily index").font(.caption2) }
+          }.foregroundStyle(InnerBalanceTheme.mutedInk)
+          hero
+          if !typeSize.isAccessibilitySize { primaryButton }
+          if status == nil, readiness?.enabled == true, readiness?.reading == true {
+            Button("Add sleep manually") { manualSleep = true }.font(.subheadline).accessibilityIdentifier("status.manual")
+          }
+          if let status {
+            NavigationLink { DailyStatusDetailView(score: status, onStart: startPrimary, actionTitle: primaryAction.title, lastQueryAt: readiness?.snapshot.lastRefreshAttemptAt) } label: {
+              VStack(alignment: .leading, spacing: 12) {
+                ForEach(status.components, id: \.name) { part in
+                  HStack { Text(DailyStatusPresentation.componentName(part.name)); Spacer(); Text("\(Int(part.score.rounded())) points").monospacedDigit() }.font(.subheadline)
+                }
+                HStack { Text("What goes into this number?"); Spacer(); Image(systemName: "chevron.right") }.font(.caption)
+              }.fangcunPaperCard()
+            }.buttonStyle(.plain).accessibilityIdentifier("today.evidence")
+          }
+          } label: {
+            VStack(alignment: .leading, spacing: 4) {
+              Text("Body context").font(.headline)
+              Text("Optional clues from sleep and Apple Health").font(.caption)
+                .foregroundStyle(InnerBalanceTheme.mutedInk)
+            }.accessibilityIdentifier("daily.bodyContext")
+          }.tint(InnerBalanceTheme.ink).padding(.vertical, 12)
           NavigationLink { if let readiness, readiness.enabled { DailyStatusHistoryView(owner: readiness) } else { FangcunTrendsView() } } label: {
-            HStack { Text("看看这一周的节奏"); Spacer(); Image(systemName: "arrow.right") }.font(.subheadline).padding(.vertical, 10)
+            HStack { Text("Your week, gently"); Spacer(); Image(systemName: "arrow.right") }.font(.subheadline).padding(.vertical, 10)
           }.accessibilityIdentifier("today.trends")
           if let recentFeeling, Calendar.current.isDateInToday(recentFeeling.date) {
-            Text("你最近记录：" + (recentFeeling.labels.first?.displayName ?? (recentFeeling.phase == .post ? PostPracticeFeelingNames.title(valence:recentFeeling.valence,arousal:recentFeeling.arousal) : nil) ?? "未分类的感受")
+            Text("Your latest check-in: " + (recentFeeling.labels.first?.displayName ?? (recentFeeling.phase == .post ? PostPracticeFeelingNames.title(valence:recentFeeling.valence,arousal:recentFeeling.arousal) : nil) ?? "A feeling without a label")
               + (recentFeeling.associations.isEmpty ? "" : " · " + recentFeeling.associations.map(\.displayName).joined(separator:"、")))
               .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
               .accessibilityIdentifier("today.feeling").accessibilityValue(recentFeeling.syncIdentifier)
@@ -126,21 +144,18 @@ struct FangcunTodayView: View {
               HStack(spacing: 12) {
                 Image(systemName: "wind")
                 VStack(alignment: .leading, spacing: 5) {
-                  Text("也给自己留一分钟").font(.headline)
-                  Text("跟随双吸一呼，试试此刻的感受。你也可以什么都不做。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+                  Text("A minute for you, too").font(.headline)
+                  Text("Try a little sigh, if it feels right. You can also leave things as they are.").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "arrow.up.right")
               }.fangcunPaperCard()
             }.buttonStyle(.plain).accessibilityIdentifier("daily.feeling.practice")
           }
-          Button("想补充一下自己的感受") { onCheckIn() }
-            .accessibilityIdentifier("home.checkIn")
-            .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).frame(minHeight: 44)
           Button { choosing = true } label: {
-            HStack { Label("轻行动", systemImage: "leaf"); Spacer(); Text("休息 · 舒展").font(.caption); Image(systemName: "chevron.right") }.fangcunPaperCard()
+            HStack { Label("Small acts of care", systemImage: "leaf"); Spacer(); Text("Rest · Stretch").font(.caption); Image(systemName: "chevron.right") }.fangcunPaperCard()
           }.buttonStyle(.plain).accessibilityIdentifier("daily.lightActions")
-          Text("不必把每一天，都过得很用力。")
+          Text("You don't have to make every day a big effort.")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk).padding(.bottom, 18)
         }.padding(.horizontal, 20).padding(.top, 14)
           .accessibilityHidden(hasOngoingPractice || localAction != nil)
@@ -148,7 +163,7 @@ struct FangcunTodayView: View {
       .background(InnerBalanceTheme.canvas)
       .foregroundStyle(InnerBalanceTheme.ink)
       .safeAreaInset(edge: .bottom) {
-        if typeSize.isAccessibilitySize {
+        if typeSize.isAccessibilitySize && bodyContextExpanded {
           primaryButton.padding(.horizontal, 20).padding(.vertical, 8).background(InnerBalanceTheme.canvas)
         }
       }
@@ -167,7 +182,7 @@ struct FangcunTodayView: View {
         if let recovery, let plan = RecoveryProtocol.local(launch.action) { RecoverySessionView(owner: recovery, plan: plan, environment: recovery.environment) }
       }
       .sheet(isPresented: $safety) {
-        VStack(spacing: 20) { Text("请立即寻求身边人的帮助或联系当地急救。不要独处或驾车。").font(.title3); Button("关闭") { safety = false } }.padding(24)
+        VStack(spacing: 20) { Text("Seek help from someone nearby or contact local emergency services now. Don't stay alone or drive.").font(.title3); Button("Close") { safety = false } }.padding(24)
       }
 
     }
@@ -187,7 +202,7 @@ struct FangcunTodayView: View {
             HStack(spacing: 14) {
               if !typeSize.isAccessibilitySize { Image(systemName: "wind").font(.title2) }
               VStack(alignment: .leading, spacing: 5) {
-                Text(primaryAction == .sync && readiness?.errorKey != nil ? "重试同步" : primaryAction.title).font(.headline)
+                Text(primaryAction == .sync && readiness?.errorKey != nil ? "Retry sync" : primaryAction.title).font(.headline)
               }
               Spacer(minLength: 0)
               if !typeSize.isAccessibilitySize { Image(systemName: "arrow.up.right") }
@@ -199,12 +214,12 @@ struct FangcunTodayView: View {
   private var header: some View {
     HStack {
       VStack(alignment: .leading, spacing: 4) {
-        Text("日常").font(typeSize.isAccessibilitySize ? .headline : .title.weight(.semibold)).accessibilityIdentifier("daily.title")
-        Text("照顾身体，也留意自己的感受。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        Text("Daily").font(typeSize.isAccessibilitySize ? .headline : .title.weight(.semibold)).accessibilityIdentifier("daily.title")
+        Text("Small things that make up your day.").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
       }
       Spacer()
       Button(action: onSettings) { Image(systemName: "gearshape").frame(width: 44, height: 44) }
-        .accessibilityLabel("设置").accessibilityIdentifier("daily.settings")
+        .accessibilityLabel("Settings").accessibilityIdentifier("daily.settings")
     }.foregroundStyle(InnerBalanceTheme.strongFill)
   }
   private var hero: some View {
@@ -212,8 +227,8 @@ struct FangcunTodayView: View {
       if let status { DailyStatusHero(score: status, now: statusNow, night: isNight, covered: drinks || localAction != nil) }
       else {
         VStack(alignment: .leading, spacing: 12) {
-          Text("今日状态").font(.subheadline)
-          Text(primaryAction == .resumeReading ? "状态分析已暂停" : "暂未获得可用数据")
+          Text("Today's body context").font(.subheadline)
+          Text(primaryAction == .resumeReading ? "Body context is paused" : "No usable data yet")
             .font(.title2.weight(.semibold)).accessibilityIdentifier("status.empty")
           FangcunCompanion(scene: .curious, paused: drinks).frame(width: 96, height: 80)
         }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
@@ -224,29 +239,29 @@ struct FangcunTodayView: View {
     if let readiness, readiness.enabled { await readiness.refresh(); return }
     await model.refresh()
     guard !isUITesting else { return }
-    diary.record(FangcunDaySnapshot(date: .now, state: state, summary: "已同步今日记录", sleep: model.evidence.first(where: { $0.kind == .sleep })?.valueText ?? "暂无睡眠记录",
-      training: model.trainingSummary.map { "近 24 小时 \($0.count) 次 · \(Int($0.totalDuration / 60)) 分钟" } ?? "近 24 小时暂无训练记录"))
+    diary.record(FangcunDaySnapshot(date: .now, state: state, summary: "Today's entries are synced", sleep: model.evidence.first(where: { $0.kind == .sleep })?.valueText ?? "No sleep record yet",
+      training: model.trainingSummary.map { "Past 24 hours: \($0.count) workouts · \(Int($0.totalDuration / 60)) min" } ?? "No workouts in the past 24 hours"))
   }
   private var actionChoices: some View {
     NavigationStack {
       Form {
         if let recovery {
-          Picker("现在的环境",selection:Binding(get:{ recovery.environment },set:{ recovery.environment = $0 })) {
+          Picker("Where are you right now?",selection:Binding(get:{ recovery.environment },set:{ recovery.environment = $0 })) {
             ForEach(RecoveryEnvironment.allCases,id:\.self) { Text(FangcunCopy.text("recovery.environment."+$0.rawValue)).tag($0) }
           }.accessibilityIdentifier("status.environment")
-          Picker("这次想做什么",selection:$goal) {
+          Picker("What would feel useful?",selection:$goal) {
             ForEach(RecoveryGoal.allCases,id:\.self) { Text(FangcunCopy.text("recovery.goal."+$0.rawValue)).tag($0) }
           }
-          Toggle("这次不做呼吸练习",isOn:$avoidBreathing)
-          Picker("状态良好时优先",selection:$favorite) { Text("呼吸").tag("breath"); Text("安静休息").tag("rest") }
-          Button("开始 5 分钟呼吸") { choosing = false; onStart() }.disabled(!recovery.canStart || avoidBreathing)
+          Toggle("Skip breathing suggestions this time",isOn:$avoidBreathing)
+          Picker("When things look steady, prefer",selection:$favorite) { Text("Breathe").tag("breath"); Text("Quiet rest").tag("rest") }
+          Button("Breathe for 5 minutes") { choosing = false; onStart() }.disabled(!recovery.canStart || avoidBreathing)
           ForEach(RecoveryActionKind.localActions,id:\.id) { action in
             Button(FangcunCopy.text("recovery.title."+action.id)) { choosing = false; localAction = .init(action:action) }
               .disabled(!recovery.canStart || (action == .movementBreak && recovery.environment != .canMove))
               .accessibilityIdentifier("recovery.choose."+action.id)
           }
         }
-      }.navigationTitle("换个方式").toolbar { Button("完成") { choosing = false } }
+      }.navigationTitle("Try another way").toolbar { Button("Done") { choosing = false } }
     }.presentationDetents([.medium,.large])
   }
   private func startPrimary() {
@@ -272,8 +287,8 @@ struct FangcunEvidenceDetail: View {
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 22) {
-        Text("判断有依据，也有边界。").font(.title2.weight(.semibold))
-        Text("与自己的近期基线比较，综合恢复指标和睡眠。身体负荷不等于你的主观感受；数据不足时保留未知。")
+        Text("Useful context, with limits.").font(.title2.weight(.semibold))
+        Text("Recovery measures and sleep are compared with your recent baseline. Body load isn't the same as how you feel. Missing data stays unknown.")
           .font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
         VStack(alignment: .leading, spacing: 8) {
           if let fetchedAt = model.fetchedAt {
@@ -287,25 +302,25 @@ struct FangcunEvidenceDetail: View {
           Text(FangcunCopy.text("body.time.explanation"))
           if !model.unavailableKinds.isEmpty { Text(FangcunCopy.text("body.query.unavailable")) }
         }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
-        if model.evidence.isEmpty { Text("还没有可用的健康数据。你可以检查授权，或等待设备同步。").fangcunPaperCard() }
+        if model.evidence.isEmpty { Text("No usable health data yet. Check access or wait for your device to sync.").fangcunPaperCard() }
         ForEach(model.evidence) { evidence in HealthEvidenceView(evidence: evidence).fangcunPaperCard() }
         VStack(alignment: .leading, spacing: 10) {
-          Label("近 24 小时活动", systemImage: "figure.walk").font(.headline)
+          Label("Activity in the past 24 hours", systemImage: "figure.walk").font(.headline)
           if let training = model.trainingSummary {
-            Text("\(training.count) 次训练 · \(Int(training.totalDuration / 60)) 分钟")
-            Text("最近：\(training.latestActivityName) · \(training.latestSourceName)").font(.caption)
-          } else { Text("没有可用的近期训练记录").font(.subheadline) }
+            Text("\(training.count) workouts · \(Int(training.totalDuration / 60)) min")
+            Text("Latest: \(training.latestActivityName) · \(training.latestSourceName)").font(.caption)
+          } else { Text("No recent workout data available").font(.subheadline) }
           if model.recentWorkoutProtection {
             Text(FangcunCopy.text("body.workout.detail")).font(.caption).accessibilityIdentifier("evidence.workoutProtection")
           }
         }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
-        Text("基线积累：\(model.baselineDays)/5 天。饮品记录作为生活线索展示，不会凭几杯饮品改写健康结论。")
+        Text("Building your baseline: \(model.baselineDays)/5 days. Drinks add everyday context; they don't change the health assessment.")
           .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
-        Button(requesting ? "正在连接…" : "检查 Apple 健康授权") {
+        Button(requesting ? "Connecting…" : "Check Apple Health access") {
           Task { requesting = true; _ = await authorization.request(.initialBodyStatus); await model.refresh(); requesting = false }
         }.buttonStyle(InnerBalancePrimaryButtonStyle()).disabled(requesting)
       }.padding(20)
     }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)
-      .navigationTitle("为什么这样判断").navigationBarTitleDisplayMode(.inline)
+      .navigationTitle("What this is based on").navigationBarTitleDisplayMode(.inline)
   }
 }

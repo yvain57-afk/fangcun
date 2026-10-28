@@ -264,12 +264,12 @@ struct PracticeSessionView: View {
 
   private var savedDetail: String {
     if viewModel.plan.kind == .progressiveMuscleRelaxation, viewModel.variantID == "pmr_sleep" {
-      return "这段练习已保存在本机。可以继续安静躺着，无需填写感受。"
+      return "Saved on this device. You can keep resting, with nothing to fill in."
     }
     guard saving.hasSavedFeedback else {
       return saving.healthWriteNeedsAttention
-        ? "本次练习已经保存在本机，Apple 健康稍后再试。"
-        : "本次练习已经保存在本机。"
+        ? "Saved on this device. We'll retry Apple Health later."
+        : "Saved on this device."
     }
     return PracticeSavedCopy.detail(
       kind: viewModel.plan.kind,

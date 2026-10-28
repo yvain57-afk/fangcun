@@ -111,14 +111,14 @@ final class PracticeCompletionSaveController {
 
   func saveSelectedFeedback(viewModel: PracticeSessionViewModel, feedback: String) async {
     guard !isSaving, !hasSavedFeedback,
-      ["更舒服", "差不多", "不舒服"].contains(feedback),
+      let storedFeedback = PracticeFeedbackCopy.storedValue(feedback),
       let record = viewModel.makeCompletion(sessionID: sessionID ?? viewModel.sessionID) else { return }
     isSaving = true
     saveErrorMessage = nil
     defer { isSaving = false }
     do {
-      let outcome = try await coordinator.saveSelectedFeedback(record, feedback: feedback)
-      viewModel.setFeedback(feedback)
+      let outcome = try await coordinator.saveSelectedFeedback(record, feedback: storedFeedback)
+      viewModel.setFeedback(storedFeedback)
       acceptCompletion(record, outcome: outcome)
       hasSavedFeedback = true
       viewModel.markSaved()
@@ -139,5 +139,5 @@ final class PracticeCompletionSaveController {
   }
 
   private static let localSaveError =
-    "本地存储失败，方寸没有把本次练习标记为已保存。请释放设备空间后重试。"
+    "This practice hasn't been saved. Free up some device storage, then try again."
 }

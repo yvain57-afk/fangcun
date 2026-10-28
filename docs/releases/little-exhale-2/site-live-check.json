@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://yvain57-afk.github.io/fangcun/index.html",
+    "status": 200,
+    "matchesPrepared": true,
+    "sha256": "838e3799a5ff6766e6d7ea5e271fa18d89e9316a8b277ce11aac93355fff7ce4"
+  },
+  {
+    "url": "https://yvain57-afk.github.io/fangcun/support.html",
+    "status": 200,
+    "matchesPrepared": true,
+    "sha256": "5ac3628fa07a4c2bcb27f1f5585f80b9faa5b9895b42898e4554566b46a53ebe"
+  },
+  {
+    "url": "https://yvain57-afk.github.io/fangcun/privacy.html",
+    "status": 200,
+    "matchesPrepared": true,
+    "sha256": "5970b8c08ed0c40ecffca9d4eeb70bb83c03e1c923b8f263c43b425854112280"
+  }
+]

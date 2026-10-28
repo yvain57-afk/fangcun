@@ -18,7 +18,7 @@ struct EmotionWordSuggestions: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 12) {
-      Text("哪个词最接近？").font(.title3.weight(.semibold))
+      Text("Does a word fit?").font(.title3.weight(.semibold))
       LazyVGrid(columns: columns, spacing: FangcunLayout.spacing(3)) {
         ForEach(viewModel.suggestedLabels, id: \.self) { label in
           Button {
@@ -46,13 +46,13 @@ struct EmotionWordSuggestions: View {
           .foregroundStyle(InnerBalanceTheme.ink)
           .disabled(viewModel.saveState == .saving)
           .accessibilityIdentifier("emotionWord.\(label.rawValue)")
-          .accessibilityHint("选择后立即保存")
+          .accessibilityHint("Your choice saves right away")
         }
       }
       Button {
         Task { await viewModel.selectUnclassified() }
       } label: {
-        Text("都不像 / 不知道")
+        Text("None of these / Not sure")
           .font(.subheadline.weight(.semibold))
           .frame(maxWidth: .infinity, minHeight: 48)
           .background(
@@ -77,7 +77,7 @@ struct EmotionWordSuggestions: View {
 
       if viewModel.saveState == .failed {
         Label(
-          "这次没存上。位置还在，重新点一个词即可。",
+          "Couldn't save. Your position is still here. Choose a word again to retry.",
           systemImage: "exclamationmark.circle"
         )
         .font(.caption)
@@ -107,7 +107,7 @@ struct CheckInHeader: View {
       }
       .buttonStyle(.plain)
       .foregroundStyle(InnerBalanceTheme.ink)
-      .accessibilityLabel("关闭")
+      .accessibilityLabel("Close")
     }
   }
 }

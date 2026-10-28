@@ -5,7 +5,7 @@ struct PracticeMuscleRelaxationState: Equatable {
   enum Action: Equatable { case settle, prepare, tense, release, rest, returning, sleep }
   let action: Action
   let muscleIndex: Int?
-  static let muscles = ["双手", "上臂", "额头", "嘴唇与面颊", "肩膀", "大腿", "小腿", "双脚与脚趾"]
+  static let muscles = ["Hands", "Upper arms", "Forehead", "Lips and cheeks", "Shoulders", "Thighs", "Lower legs", "Feet and toes"]
   init(snapshot: PracticeTimelineSnapshot) {
     let focus = snapshot.segment?.focus ?? ""
     let pieces = focus.split(separator: "_")
@@ -22,13 +22,13 @@ struct PracticeMuscleRelaxationState: Equatable {
   }
   var title: String {
     switch action {
-    case .tense: "轻轻收紧"
-    case .release: "现在松开"
-    case .prepare: "先听动作说明"
-    case .returning: "慢慢回到此刻"
-    case .sleep: "继续安静休息"
-    case .rest: "不用再做动作"
-    case .settle: "先让身体安顿下来"
+    case .tense: "Gently tense"
+    case .release: "Let go now"
+    case .prepare: "Listen before moving"
+    case .returning: "Gently return"
+    case .sleep: "Stay resting"
+    case .rest: "Nothing more to do"
+    case .settle: "Let yourself settle"
     }
   }
 }
@@ -49,19 +49,19 @@ struct MuscleRelaxationStagePlayer: View {
   private var muscle: PracticeMuscleRelaxationState { .init(snapshot: state) }
 
   var body: some View {
-    PracticeStageScaffold(eyebrow: "渐进式肌肉放松 · 自然呼吸",
-      title: isPaused ? "已暂停，先松开" : muscle.title,
-      instruction: isPaused ? "保持舒服的姿势，不需要继续收紧" : state.segment?.text ?? "呼吸照自己的节奏。",
+    PracticeStageScaffold(eyebrow: "Muscle relaxation · Breathe naturally",
+      title: isPaused ? "Paused. Let go for now." : muscle.title,
+      instruction: isPaused ? "Stay comfortable. There's no need to hold the tension." : state.segment?.text ?? "Keep breathing at your own pace.",
       remaining: remaining, accessibilityIdentifier: "practice.muscleRelaxationStage", showsStageCard: false) {
         VStack(spacing: 18) {
           HStack {
             if let index = muscle.muscleIndex {
               Text("\(index + 1) / 8 · " + PracticeMuscleRelaxationState.muscles[index])
                 .font(.headline).accessibilityIdentifier("practice.pmr.muscle")
-            } else { Text("给身体一点休息的时间").font(.subheadline) }
+            } else { Text("Give your body a little time to rest").font(.subheadline) }
             Spacer()
             if muscle.action == .tense || muscle.action == .release {
-              Text("\(max(1, Int(ceil(state.phaseDuration - state.elapsedInPhase)))) 秒")
+              Text("\(max(1, Int(ceil(state.phaseDuration - state.elapsedInPhase)))) sec")
                 .font(.title3.monospacedDigit().weight(.semibold))
                 .accessibilityIdentifier("practice.pmr.phaseRemaining")
             }
@@ -71,15 +71,15 @@ struct MuscleRelaxationStagePlayer: View {
             .frame(height: 185).frame(maxWidth: 300)
           if muscle.muscleIndex != nil {
             HStack(spacing: 10) {
-              phase("听说明", action: .prepare)
-              phase("轻收 5 秒", action: .tense)
-              phase("松开 25 秒", action: .release)
+              phase("Listen", action: .prepare)
+              phase("Gently tense · 5 sec", action: .tense)
+              phase("Release · 25 sec", action: .release)
             }.accessibilityIdentifier("practice.pmr.actions")
             ProgressView(value: state.phaseProgress, total: 1)
               .tint(muscle.action == .tense ? InnerBalanceTheme.emphasis : Color("FangcunExhale"))
-              .accessibilityLabel("当前动作进度")
+              .accessibilityLabel("Current movement progress")
           }
-          Text("随时可以松开或跳过用力 · 不要屏住呼吸")
+          Text("Release or skip any time · Keep breathing")
             .font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
           PracticeGuidedProgress(kind: .progressiveMuscleRelaxation, elapsed: elapsed, duration: duration, variantID: variantID)
         }.padding(.horizontal, 8)

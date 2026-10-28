@@ -10,7 +10,7 @@ final class FangcunResponseLoopUITests: XCTestCase {
     // Compare at the same scroll offset: reaching the relocated Daily entry is intentional scrolling.
     let frame = score.frame
     actions.tap()
-    XCTAssertTrue(app.buttons["完成"].waitForExistence(timeout:5)); app.buttons["完成"].tap()
+    XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout:5)); app.buttons["Done"].tap()
     XCTAssertEqual(score.frame.minY,frame.minY,accuracy:2)
     for _ in 0..<12 where !app.buttons["today.start"].isHittable { app.swipeDown() }
     XCTAssertTrue(app.buttons["today.start"].isHittable)
@@ -20,7 +20,7 @@ final class FangcunResponseLoopUITests: XCTestCase {
     let app = launchApp(); finishPractice(app)
     let comfortable = app.buttons["practice.feedback.更舒服"]
     reveal(comfortable, app); comfortable.tap()
-    XCTAssertFalse(app.staticTexts["和刚才比"].exists)
+    XCTAssertFalse(app.staticTexts["Compared with before"].exists)
     let keep = app.buttons["practice.feedback.save"]; reveal(keep, app); XCTAssertTrue(keep.isEnabled); keep.tap()
     XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout:6)); app.buttons["practice.saved.done"].tap()
     openV4Records(app)
@@ -28,14 +28,14 @@ final class FangcunResponseLoopUITests: XCTestCase {
     XCTAssertTrue(record.waitForExistence(timeout: 5))
     XCTAssertTrue(record.label.contains("这次感受：更舒服"))
     app.buttons["practice.history.done"].tap()
-    app.tabBars.buttons["日常"].tap()
+    app.tabBars.buttons["Daily"].tap()
     XCTAssertFalse(app.staticTexts["today.feeling"].exists)
     assertScore(app)
   }
   @MainActor func testDetailedFeelingRemainsSeparateFromScore() {
     let app = launchApp(); checkIn(app,label:"emotionWord.anxious")
     reveal(app.staticTexts["today.feeling"],app)
-    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("焦虑"))
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("Anxious"))
     XCTAssertFalse(app.buttons["home.echo.state.calm"].exists)
     assertScore(app)
   }
@@ -45,18 +45,18 @@ final class FangcunResponseLoopUITests: XCTestCase {
     let identity = app.staticTexts["today.feeling"].value as? String
     // A display preference or opening practice selection must not overwrite the saved feeling.
     openDailySettings(app)
-    let appearance = app.switches["深色模式"]
+    let appearance = app.switches["Dark appearance"]
     appearance.tap(); appearance.tap()
     app.buttons["settings.done"].tap()
     reveal(app.staticTexts["today.feeling"],app)
     XCTAssertEqual(app.staticTexts["today.feeling"].value as? String,identity)
-    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("焦虑")); assertScore(app)
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("Anxious")); assertScore(app)
   }
   @MainActor func testFinishThenSkipFeedbackReturnsHomeWithCompletedOnly() {
     let app = launchApp(); finishPractice(app)
     reveal(app.buttons["practice.feedback.skip"], app); app.buttons["practice.feedback.skip"].tap()
     XCTAssertTrue(app.buttons["practice.saved.done"].waitForExistence(timeout:6)); app.buttons["practice.saved.done"].tap()
-    app.tabBars.buttons["日常"].tap()
+    app.tabBars.buttons["Daily"].tap()
     reveal(app.staticTexts["today.latestPractice"],app)
     XCTAssertFalse((app.staticTexts["today.latestPractice"].value as? String ?? "").isEmpty)
     XCTAssertFalse(app.staticTexts["today.feeling"].exists)
@@ -65,18 +65,18 @@ final class FangcunResponseLoopUITests: XCTestCase {
   @MainActor func testSelectedPressureSourceImmediatelyUpdatesTheWholeHomeResponse() {
     let app = launchApp(); openCheckIn(app)
     app.buttons["emotionWord.anxious"].tap()
-    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout:5))
-    reveal(app.buttons["工作"],app); app.buttons["工作"].tap()
-    reveal(app.buttons["保存补充"],app); app.buttons["保存补充"].tap()
+    XCTAssertTrue(app.staticTexts["Check-in saved"].waitForExistence(timeout:5))
+    reveal(app.buttons["Work"],app); app.buttons["Work"].tap()
+    reveal(app.buttons["Save details"],app); app.buttons["Save details"].tap()
     reveal(app.staticTexts["today.feeling"],app)
-    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("工作"))
-    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("焦虑")); assertScore(app)
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("Work"))
+    XCTAssertTrue(app.staticTexts["today.feeling"].label.contains("Anxious")); assertScore(app)
   }
   @MainActor private func launchApp()->XCUIApplication {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture=scoreSleep480","-fangcun.dark","NO","-fangcun.largeType","NO","-status-v3.avoidBreathing","NO","-status-v3.favorite","breath","-UIPreferredContentSizeCategoryName","UICTContentSizeCategoryLarge"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap(); XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:12)); return app
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap(); XCTAssertTrue(app.staticTexts["100"].waitForExistence(timeout:12)); return app
   }
   @MainActor private func openCheckIn(_ app:XCUIApplication) {
     reveal(app.buttons["home.checkIn"],app); app.buttons["home.checkIn"].tap()
@@ -85,13 +85,13 @@ final class FangcunResponseLoopUITests: XCTestCase {
   }
   @MainActor private func checkIn(_ app:XCUIApplication,label:String) {
     openCheckIn(app); app.buttons[label].tap()
-    XCTAssertTrue(app.staticTexts["已记录此刻"].waitForExistence(timeout:5))
-    reveal(app.buttons["先这样"],app); app.buttons["先这样"].tap()
+    XCTAssertTrue(app.staticTexts["Check-in saved"].waitForExistence(timeout:5))
+    reveal(app.buttons["Leave it here"],app); app.buttons["Leave it here"].tap()
   }
   @MainActor private func finishPractice(_ app:XCUIApplication) {
     app.buttons["today.start"].tap()
-    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout:8))
-    app.buttons["结束"].tap(); app.buttons["practice.finish.confirm"].firstMatch.tap()
+    XCTAssertTrue(app.buttons["Pause practice"].waitForExistence(timeout:8))
+    app.buttons["End"].tap(); app.buttons["practice.finish.confirm"].firstMatch.tap()
     XCTAssertTrue(app.buttons["practice.feedback.skip"].waitForExistence(timeout:6))
   }
   @MainActor private func assertScore(_ app:XCUIApplication) {

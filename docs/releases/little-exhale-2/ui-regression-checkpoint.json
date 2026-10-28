@@ -1,0 +1,84 @@
+{
+  "resultBundle": ".build/little-exhale-2/PhoneRegression.xcresult",
+  "passed": [
+    {
+      "test": "InnerBalanceUITests.BreathingHubV4UITests testAllNineMethodsStartPauseAndSaveWithoutHealth",
+      "seconds": 263.827
+    },
+    {
+      "test": "InnerBalanceUITests.BreathingHubV4UITests testDefaultHubHasTwoTabsAndNoHealthGate",
+      "seconds": 11.538
+    },
+    {
+      "test": "InnerBalanceUITests.BreathingHubV4UITests testEntryIsSkippableAndDoesNotStartTheActiveSessionEarly",
+      "seconds": 16.646
+    },
+    {
+      "test": "InnerBalanceUITests.BreathingHubV4UITests testPurposeFiltersDoNotRequireMoodInput",
+      "seconds": 6.849
+    },
+    {
+      "test": "InnerBalanceUITests.BreathingHubV4UITests testSaveFailureRetriesWithoutFalseSuccessOrDuplicateRecord",
+      "seconds": 27.514
+    },
+    {
+      "test": "InnerBalanceUITests.LittleExhaleReviewUITests testAllTenRealPracticeStages",
+      "seconds": 258.134
+    },
+    {
+      "test": "InnerBalanceUITests.LittleExhaleReviewUITests testEnglishDailyAndDarkPracticeOnChineseSystem",
+      "seconds": 36.099
+    },
+    {
+      "test": "InnerBalanceUITests.OverhaulInteractionUITests testDrinkCompositeAndManageAreReachableOnInitialSheet",
+      "seconds": 15.384
+    },
+    {
+      "test": "InnerBalanceUITests.OverhaulInteractionUITests testExitOffersContinueAndRestoresRunningSession",
+      "seconds": 22.343
+    },
+    {
+      "test": "InnerBalanceUITests.OverhaulInteractionUITests testMaximumTypeKeepsPrimaryControlsReachable",
+      "seconds": 22.298
+    },
+    {
+      "test": "InnerBalanceUITests.OverhaulInteractionUITests testReducedMotionKeepsInstructionsWithoutContinuousResizing",
+      "seconds": 30.614
+    },
+    {
+      "test": "InnerBalanceUITests.PracticeGuidanceIntroUITests testNaturalIntroductionCompletionStartsTraining",
+      "seconds": 55.074
+    },
+    {
+      "test": "InnerBalanceUITests.PracticeGuidanceIntroUITests testPMRRealTensionAndReleaseBoundaries",
+      "seconds": 133.851
+    },
+    {
+      "test": "InnerBalanceUITests.PracticeGuidanceIntroUITests testPMRSleepEndingSavesWithoutForcingFeedback",
+      "seconds": 47.268
+    },
+    {
+      "test": "InnerBalanceUITests.PracticeGuidanceIntroUITests testSkipIntroductionStartsOnceWithFullTrainingTime",
+      "seconds": 20.151
+    },
+    {
+      "test": "InnerBalanceUITests.PracticeVisualRepairUITests testActualSessionShowsLargeBreathMovementAndStopsOnPause",
+      "seconds": 54.203
+    },
+    {
+      "test": "InnerBalanceUITests.PracticeVisualRepairUITests testFinalCoachAndRestingDogOverRealCycles",
+      "seconds": 139.908
+    },
+    {
+      "test": "InnerBalanceUITests.PracticeVisualRepairUITests testNaturalBreathingArtworkStaysVisibleWithItsExplanation",
+      "seconds": 68.814
+    }
+  ],
+  "failed": [
+    {
+      "test": "InnerBalanceUITests.BreathingHubV4UITests testSpecialMethodsExplainHumanMovementAndCorrectNostrilOrder",
+      "seconds": 58.067
+    }
+  ],
+  "failureCause": "Legacy Chinese expected substring in nostril instruction assertion; final recheck pending."
+}

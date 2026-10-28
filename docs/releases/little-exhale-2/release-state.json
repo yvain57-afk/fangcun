@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-28T03:55:12.871333+00:00",
+  "appID": "6818437987",
+  "version": "2.0.0",
+  "build": "2026102801",
+  "localArchive": "development_signed_final_archive_verified",
+  "distributionExport": "blocked_no_xcode_account_or_distribution_identity",
+  "upload": "not_attempted",
+  "testFlight": "not_uploaded",
+  "appStoreReview": "not_submitted",
+  "publicRelease": "existing_version_unchanged",
+  "requiredAction": "Restore the original Apple developer account in Xcode and App Store Connect. No new release-scope approval required.",
+  "archive": ".build/little-exhale-2/LittleExhale-2026102801-release.xcarchive",
+  "verification": {
+    "corePassed": 173,
+    "appPassed": 235,
+    "selectedNativeUILatestPassed": 25,
+    "nativeVideoClips": 10
+  }
+}

@@ -45,13 +45,13 @@ struct PracticeVisualMotion {
 
   var instruction: String {
     switch snapshot.phase {
-    case .inhale, .leftInhale, .rightInhale: "轻轻展开"
-    case .topUp: "再轻补一口"
-    case .exhale, .leftExhale, .rightExhale: "缓缓回落"
-    case .holdAfterInhale, .holdAfterExhale: "保持，不用用力"
-    case .contract: "向内轻收 · 呼吸照常"
-    case .release: "舒展开来 · 完全放松"
-    default: "按自己的节奏，不必跟拍"
+    case .inhale, .leftInhale, .rightInhale: "Gently open"
+    case .topUp: "One small extra breath"
+    case .exhale, .leftExhale, .rightExhale: "Slowly soften"
+    case .holdAfterInhale, .holdAfterExhale: "Rest here. No effort needed."
+    case .contract: "Lift gently · Keep breathing"
+    case .release: "Let go completely"
+    default: "Your own rhythm. No pace to follow."
     }
   }
 }

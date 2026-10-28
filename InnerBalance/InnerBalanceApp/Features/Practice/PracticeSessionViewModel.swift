@@ -105,7 +105,7 @@ final class PracticeSessionViewModel {
   }
 
   func setFeedback(_ feedback: String?) {
-    selectedFeedback = feedback
+    selectedFeedback = PracticeFeedbackCopy.storedValue(feedback) ?? feedback
   }
 
   func start(beforeRating: Int?) {

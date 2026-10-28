@@ -31,7 +31,7 @@ enum FangcunDayState: String, Codable, CaseIterable {
 enum FangcunDrink: String, Codable, CaseIterable, Identifiable {
   case water, coffee, sweetCoffee, beer, soda, tea, milk, alcohol, other
   var id: String { rawValue }
-  var title: String { switch self { case .water: "白水"; case .coffee: "美式"; case .sweetCoffee: "甜拿铁"; case .beer: "啤酒"; case .soda: "含糖饮料"; case .tea: "茶"; case .milk: "牛奶"; case .alcohol: "其他酒饮"; case .other: "其他饮品" } }
+  var title: String { switch self { case .water: "Water"; case .coffee: "Black coffee"; case .sweetCoffee: "Sweetened latte"; case .beer: "Beer"; case .soda: "Sweet drink"; case .tea: "Tea"; case .milk: "Milk"; case .alcohol: "Other alcohol"; case .other: "Other drink" } }
   var symbol: String { switch self { case .water: "drop"; case .coffee, .sweetCoffee: "cup.and.saucer"; case .beer: "wineglass"; case .soda, .tea, .milk, .alcohol, .other: "takeoutbag.and.cup.and.straw" } }
   var fluid: Int { switch self { case .water: 250; case .coffee, .sweetCoffee: 300; case .beer, .soda: 330; case .tea, .milk, .other: 250; case .alcohol: 150 } }
   var alcohol: Int { self == .beer ? 10 : 0 }
@@ -113,9 +113,9 @@ struct FangcunDaySnapshot: Codable, Identifiable {
   var displayStateTitle: String {
     guard semanticsVersion == nil else { return state.shortTitle }
     return switch state {
-    case .steady: "平稳"
-    case .elevated: "偏高"
-    case .insufficient: "数据不足"
+    case .steady: "Steady"
+    case .elevated: "Elevated"
+    case .insufficient: "Not enough data"
     case .watch, .limited: state.shortTitle
     }
   }

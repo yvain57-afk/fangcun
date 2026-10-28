@@ -21,7 +21,7 @@ struct WatchPracticeLibraryView: View {
         }
       }
     }
-    .navigationTitle("开始调节")
+    .navigationTitle("Take a pause")
   }
 }
 
@@ -36,12 +36,12 @@ private struct WatchPracticeDurationView: View {
           .font(.footnote)
           .foregroundStyle(.secondary)
         if plan.kind == .kegel {
-          Label("疼痛或不适立即停止", systemImage: "exclamationmark.triangle")
+          Label("Stop if painful or uncomfortable", systemImage: "exclamationmark.triangle")
             .font(.caption2)
             .foregroundStyle(.yellow)
         }
       }
-      Section("选择时长") {
+      Section("Choose your time") {
         ForEach(plan.durationOptions, id: \.self) { duration in
           NavigationLink {
             WatchPracticeSessionView(
@@ -50,7 +50,7 @@ private struct WatchPracticeDurationView: View {
               coordinator: coordinator
             )
           } label: {
-            Label("开始 \(max(1, Int(duration / 60))) 分钟", systemImage: "play.fill")
+            Label("Begin · \(max(1, Int(duration / 60))) min", systemImage: "play.fill")
           }
         }
       }
@@ -87,10 +87,10 @@ private struct WatchPracticeSessionView: View {
         Image(systemName: "checkmark.circle.fill")
           .font(.largeTitle)
           .foregroundStyle(.mint)
-        Text("已保留本次练习")
+        Text("Practice saved")
           .font(.headline)
           .multilineTextAlignment(.center)
-        Button("完成") { dismiss() }
+        Button("Done") { dismiss() }
           .buttonStyle(.borderedProminent)
           .tint(.mint)
       } else if startedAt == nil {
@@ -103,24 +103,24 @@ private struct WatchPracticeSessionView: View {
               .font(.footnote)
               .multilineTextAlignment(.center)
               .foregroundStyle(.secondary)
-            Toggle("触觉节奏", isOn: $hapticCadenceEnabled)
+            Toggle("Haptic rhythm", isOn: $hapticCadenceEnabled)
               .tint(.mint)
-              .accessibilityHint("在节奏切换时轻触提示")
+              .accessibilityHint("Gentle taps at transitions")
               .accessibilityIdentifier("watch.practice.haptics")
             if isEvidenceEligible {
-              Toggle("身体证据", isOn: $evidenceRequested)
+              Toggle("Heart rate during practice", isOn: $evidenceRequested)
                 .tint(.mint)
-              Text("开启后使用训练会话取得心率；结束时丢弃训练，不产生训练记录。")
+              Text("Uses a workout session to read heart rate. The workout is discarded at the end; no workout record is created.")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
             }
             if evidenceUnavailable {
-              Text("心率证据不可用，本次已退化为普通练习。")
+              Text("Heart rate is unavailable. Your practice can continue without it.")
                 .font(.caption2)
                 .foregroundStyle(.yellow)
                 .multilineTextAlignment(.center)
             }
-            Button(isStarting ? "正在准备…" : "开始") {
+            Button(isStarting ? "Getting ready…" : "Start") {
               Task { await startPractice() }
             }
             .buttonStyle(.borderedProminent)
@@ -139,16 +139,16 @@ private struct WatchPracticeSessionView: View {
                 Text(clock(remaining(at: context.date)))
                   .font(.system(.title, design: .rounded, weight: .semibold))
                   .monospacedDigit()
-                Text(pausedAt == nil ? cue(at: context.date) : "已暂停")
+                Text(pausedAt == nil ? cue(at: context.date) : "Paused")
                   .font(.headline)
                   .multilineTextAlignment(.center)
                   .frame(minHeight: 42)
               }
               if let heartRate = evidenceSession.latestBeatsPerMinute {
-                Label("\(Int(heartRate.rounded())) 次/分", systemImage: "heart.fill")
+                Label("\(Int(heartRate.rounded())) bpm", systemImage: "heart.fill")
                   .font(.caption2.monospacedDigit())
                   .foregroundStyle(.mint)
-                  .accessibilityLabel("实时心率 \(Int(heartRate.rounded())) 次每分钟")
+                  .accessibilityLabel("Current heart rate, \(Int(heartRate.rounded())) beats per minute")
               }
             }
           }
@@ -159,13 +159,13 @@ private struct WatchPracticeSessionView: View {
           } label: {
             Image(systemName: pausedAt == nil ? "pause.fill" : "play.fill")
           }
-          .accessibilityLabel(pausedAt == nil ? "暂停" : "继续")
+          .accessibilityLabel(pausedAt == nil ? "Pause" : "Continue")
           Button {
             Task { await finish() }
           } label: {
             Image(systemName: "stop.fill")
           }
-          .accessibilityLabel("结束并保存")
+          .accessibilityLabel("End and save")
           .disabled(isSaving)
         }
       }
@@ -199,19 +199,19 @@ private struct WatchPracticeSessionView: View {
       Task { _ = await evidenceSession.stopAndDiscard() }
     }
     .alert(
-      "未能完成保存",
+      "Couldn't save",
       isPresented: Binding(
         get: { saveErrorMessage != nil },
         set: { if !$0 { saveErrorMessage = nil } }
       )
     ) {
-      Button("重试") {
+      Button("Try again") {
         saveErrorMessage = nil
         Task { await finish() }
       }
-      Button("稍后", role: .cancel) {}
+      Button("Later", role: .cancel) {}
     } message: {
-      Text(saveErrorMessage ?? "请重试。")
+      Text(saveErrorMessage ?? "Please try again.")
     }
   }
 
@@ -229,7 +229,7 @@ private struct WatchPracticeSessionView: View {
     let elapsed = duration - remaining(at: date)
     let state = PracticeBreathGuide.state(for: plan.kind, elapsed: elapsed)
     VStack(spacing: 5) {
-      Text(pausedAt == nil ? state.phase.title : "已暂停")
+      Text(pausedAt == nil ? state.phase.title : "Paused")
         .font(.title2.weight(.semibold))
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
@@ -244,13 +244,13 @@ private struct WatchPracticeSessionView: View {
           )
           .rotationEffect(.degrees(-90))
         if pausedAt == nil {
-          Text("\(state.remainingWholeSeconds) 秒")
+          Text("\(state.remainingWholeSeconds) sec")
             .font(.caption2.monospacedDigit())
             .foregroundStyle(.secondary)
         }
       }
       .frame(width: 82, height: 82)
-      Text("整段还有 \(clock(remaining(at: date)))")
+      Text("\(clock(remaining(at: date))) remaining")
         .font(.caption2.monospacedDigit())
         .foregroundStyle(.secondary)
     }
@@ -267,15 +267,15 @@ private struct WatchPracticeSessionView: View {
     switch plan.kind {
     case .physiologicalSigh:
       return switch Int(elapsed) % 12 {
-      case 0..<3: "轻吸一口"
-      case 3..<5: "再补一小口"
-      default: "缓慢呼出"
+      case 0..<3: "Gently in"
+      case 3..<5: "A little more"
+      default: "Slowly out"
       }
-    case .pacedBreathing: return Int(elapsed) % 10 < 4 ? "慢慢吸气" : "更慢地呼气"
-    case .meditation: return "注意一次自然呼吸"
-    case .nsdr: return "感受身体的支撑"
-    case .kegel: return Int(elapsed) % 12 < 4 ? "轻轻收紧" : "完全放松"
-    default: return "请在 iPhone 上进行这项练习"
+    case .pacedBreathing: return Int(elapsed) % 10 < 4 ? "Breathe in" : "A longer exhale"
+    case .meditation: return "Notice an ordinary breath"
+    case .nsdr: return "Feel your support"
+    case .kegel: return Int(elapsed) % 12 < 4 ? "Gently lift" : "Release fully"
+    default: return "Try this practice on your iPhone"
     }
   }
 
@@ -324,7 +324,7 @@ private struct WatchPracticeSessionView: View {
       snapshot = completionFreezer.completeHeartRateEvidenceCapture(evidence) ?? snapshot
     }
     guard snapshot.activeDuration > 0 else {
-      saveErrorMessage = "练习时间太短，请继续后再保存。"
+      saveErrorMessage = "Keep going a little longer before saving."
       isSaving = false
       return
     }
@@ -334,7 +334,7 @@ private struct WatchPracticeSessionView: View {
         healthWriteStatus: plan.kind == .kegel ? "local_only" : "local_pending"
       )
     else {
-      saveErrorMessage = "本地存储失败，方寸没有把本次练习标记为已保存。"
+      saveErrorMessage = "This practice hasn't been saved because device storage failed."
       isSaving = false
       return
     }
@@ -360,7 +360,7 @@ private struct WatchPracticeSessionView: View {
         snapshot,
         healthWriteStatus: "health_attention"
       )
-      saveErrorMessage = "练习已保存在手表，但 Apple 健康写入未能加入重试队列。请在「同步状态」中重试。"
+      saveErrorMessage = "Saved on your Watch. Apple Health couldn't be queued for retry. Try again in Sync status."
       return
     }
     _ = persistLocalCompletion(
@@ -413,38 +413,38 @@ private struct WatchPracticeSessionView: View {
 extension PracticeKind {
   fileprivate var watchTitle: String {
     switch self {
-    case .physiologicalSigh: "生理性叹息"
-    case .pacedBreathing: "节律呼吸"
-    case .meditation: "冥想放松"
+    case .physiologicalSigh: "A little sigh"
+    case .pacedBreathing: "Longer exhale"
+    case .meditation: "A quiet moment"
     case .nsdr: "NSDR"
-    case .kegel: "凯格尔"
-    case .balancedBreathing: "均衡慢呼吸"
-    case .boxBreathing: "方块呼吸"
-    case .diaphragmaticBreathing: "膈肌呼吸"
-    case .alternateNostrilBreathing: "交替鼻孔呼吸"
-    case .progressiveMuscleRelaxation: "渐进式肌肉放松"
+    case .kegel: "Pelvic floor"
+    case .balancedBreathing: "Even breathing"
+    case .boxBreathing: "Box breathing"
+    case .diaphragmaticBreathing: "Belly breathing"
+    case .alternateNostrilBreathing: "Alternate nostril"
+    case .progressiveMuscleRelaxation: "Muscle relaxation"
     }
   }
 
   fileprivate var watchDetail: String {
     switch self {
-    case .physiologicalSigh: "1 分钟·高激活"
-    case .pacedBreathing: "3 / 5 分钟"
-    case .meditation: "5 / 10 分钟"
-    case .nsdr: "10 / 20 分钟·疲惫"
-    case .kegel: "盆底肌收紧与放松·3 分钟"
-    default: "在 iPhone 上练习"
+    case .physiologicalSigh: "1 min · A little pause"
+    case .pacedBreathing: "3 / 5 min"
+    case .meditation: "5 / 10 min"
+    case .nsdr: "10 / 20 min · Rest"
+    case .kegel: "Pelvic floor lift and release · 3 min"
+    default: "Practice on iPhone"
     }
   }
 
   fileprivate var watchPreparation: String {
     switch self {
-    case .physiologicalSigh: "站稳或坐稳，呼吸不用很深。"
-    case .pacedBreathing: "找到不费力的呼吸节律。"
-    case .meditation: "把注意力放在呼吸和支撑感上。"
-    case .nsdr: "请躺下或半躺，确保暂时不需要驾驶。"
-    case .kegel: "保持自然呼吸，不在排尿时练习。"
-    default: "这项新方法请在 iPhone 上进行。"
+    case .physiologicalSigh: "Sit or stand steadily. Keep each breath gentle."
+    case .pacedBreathing: "Find an easy breathing rhythm."
+    case .meditation: "Notice your breath and the support beneath you."
+    case .nsdr: "Lie down or recline safely. Never practice while driving."
+    case .kegel: "Breathe naturally. Don't practice while urinating."
+    default: "This practice is available on your iPhone."
     }
   }
 

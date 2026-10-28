@@ -20,10 +20,7 @@ struct BeverageCareCard: View {
           Text(FangcunCopy.text("care.emergency")).font(.headline)
           Button(FangcunCopy.text("care.safetyResolved")) { owner.action("care.safetyResolved") }.frame(minHeight: 44)
         } else {
-          ViewThatFits(in: .horizontal) {
-            HStack { actions(candidate) }
-            VStack(alignment: .leading) { actions(candidate) }
-          }
+          VStack(alignment: .leading, spacing: 6) { actions(candidate) }
         }
       }.accessibilityIdentifier("care.card").accessibilityValue(candidate.ruleID)
         .padding(.top, 6)
@@ -31,7 +28,12 @@ struct BeverageCareCard: View {
   }
   @ViewBuilder private func actions(_ c: CareCandidate) -> some View {
     ForEach(c.actionKeys, id: \.self) { key in
-      Button(FangcunCopy.text(key)) { owner.action(key) }.font(.caption).frame(minHeight: 44)
+      Button { owner.action(key) } label: {
+        Text(FangcunCopy.text(key)).font(.subheadline)
+          .multilineTextAlignment(.leading).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+          .padding(.horizontal, 12)
+          .background(InnerBalanceTheme.subtleFill, in: RoundedRectangle(cornerRadius: 12))
+      }
     }
   }
 }

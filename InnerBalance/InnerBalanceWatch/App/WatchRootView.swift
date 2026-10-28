@@ -11,8 +11,42 @@ struct WatchRootView: View {
     NavigationStack {
       List {
         Section {
+          NavigationLink {
+            WatchPracticeLibraryView(coordinator: coordinator)
+          } label: {
+            WatchHomeRow(
+              title: "Take a pause",
+              detail: "Choose a small pause",
+              systemImage: "waveform.path"
+            )
+          }
+          NavigationLink {
+            WatchCheckInView(coordinator: coordinator)
+          } label: {
+            WatchCompassHomeTile()
+          }
+          NavigationLink {
+            WatchSyncStatusView(coordinator: coordinator)
+          } label: {
+            WatchHomeRow(
+              title: "Sync status",
+              detail: pendingCount == 0 ? "Saved to Apple Health" : "\(pendingCount) waiting to retry",
+              systemImage: pendingCount == 0 ? "checkmark.icloud" : "arrow.triangle.2.circlepath"
+            )
+          }
+        } header: {
+          VStack(alignment: .leading, spacing: 3) {
+            Text("Little Exhale")
+              .font(.title3.weight(.semibold))
+            Text("A little room to breathe")
+              .font(.caption2)
+              .foregroundStyle(.secondary)
+          }
+          .textCase(nil)
+        }
+        Section {
           VStack(alignment: .leading, spacing: 7) {
-            Text("今日一句")
+            Text("A thought for today")
               .font(.caption2.weight(.semibold))
               .foregroundStyle(FangcunWatchColor.jade)
             Text(dailyReflection.text)
@@ -27,41 +61,6 @@ struct WatchRootView: View {
           .padding(.vertical, 4)
           .accessibilityElement(children: .combine)
         }
-
-        Section {
-          NavigationLink {
-            WatchCheckInView(coordinator: coordinator)
-          } label: {
-            WatchCompassHomeTile()
-          }
-          NavigationLink {
-            WatchPracticeLibraryView(coordinator: coordinator)
-          } label: {
-            WatchHomeRow(
-              title: "开始调节",
-              detail: "选一个短练习",
-              systemImage: "waveform.path"
-            )
-          }
-          NavigationLink {
-            WatchSyncStatusView(coordinator: coordinator)
-          } label: {
-            WatchHomeRow(
-              title: "同步状态",
-              detail: pendingCount == 0 ? "已写入 Apple 健康" : "\(pendingCount) 条等待重试",
-              systemImage: pendingCount == 0 ? "checkmark.icloud" : "arrow.triangle.2.circlepath"
-            )
-          }
-        } header: {
-          VStack(alignment: .leading, spacing: 3) {
-            Text("方寸")
-              .font(.title3.weight(.semibold))
-            Text("照料方寸之间的自己")
-              .font(.caption2)
-              .foregroundStyle(.secondary)
-          }
-          .textCase(nil)
-        }
       }
       .listStyle(.carousel)
       .navigationTitle("")
@@ -74,7 +73,7 @@ struct WatchRootView: View {
   }
 
   private var dailyReflection: DailyReflection {
-    DailyReflectionSelector.reflection(on: .now, echo: nil)
+    DailyReflectionSelector.reflection(on: .now, echo: nil).englishPresentation
   }
 
   private var coordinator: WatchHealthWriteCoordinator {
@@ -89,9 +88,9 @@ private struct WatchCompassHomeTile: View {
         .frame(width: 68, height: 68)
         .accessibilityHidden(true)
       VStack(alignment: .leading, spacing: 4) {
-        Text("情绪罗盘")
+        Text("Feeling compass")
           .font(.headline)
-        Text("点两次，记下此刻")
+        Text("Two taps to check in")
           .font(.caption2)
           .foregroundStyle(.secondary)
           .fixedSize(horizontal: false, vertical: true)
@@ -99,7 +98,7 @@ private struct WatchCompassHomeTile: View {
     }
     .padding(.vertical, 4)
     .accessibilityElement(children: .combine)
-    .accessibilityLabel("情绪罗盘，点两次记下此刻")
+    .accessibilityLabel("Feeling compass. Check in with two taps.")
     .accessibilityIdentifier("watch.compass.home")
   }
 }

@@ -61,14 +61,14 @@ struct SpatialEmotionField: View {
           .onEnded { onPositionCommitted($0.location, size) }
       )
       .accessibilityElement(children: .ignore)
-      .accessibilityLabel("情绪罗盘")
+      .accessibilityLabel("Feeling compass")
       .accessibilityValue(accessibilityPosition)
-      .accessibilityHint("轻点或拖动选择位置，也可使用四个方向操作")
+      .accessibilityHint("Tap or drag to choose a position, or use the four directional actions")
       .accessibilityIdentifier("checkIn.emotionField")
-      .accessibilityAction(named: "向愉快") { onAdjust(0.35, 0) }
-      .accessibilityAction(named: "向不愉快") { onAdjust(-0.35, 0) }
-      .accessibilityAction(named: "向有劲") { onAdjust(0, 0.35) }
-      .accessibilityAction(named: "向低缓") { onAdjust(0, -0.35) }
+      .accessibilityAction(named: "More pleasant") { onAdjust(0.35, 0) }
+      .accessibilityAction(named: "Less pleasant") { onAdjust(-0.35, 0) }
+      .accessibilityAction(named: "More energized") { onAdjust(0, 0.35) }
+      .accessibilityAction(named: "Less energized") { onAdjust(0, -0.35) }
     }
     .aspectRatio(1, contentMode: .fit)
   }
@@ -101,8 +101,8 @@ struct SpatialEmotionField: View {
   }
 
   private var accessibilityPosition: String {
-    guard hasSelectedPosition else { return "尚未选择" }
-    return "\(valence >= 0 ? "较愉快" : "较不愉快")，\(arousal >= 0 ? "较有劲" : "较低缓")"
+    guard hasSelectedPosition else { return "No selection yet" }
+    return "\(valence >= 0 ? "More pleasant" : "Less pleasant"), \(arousal >= 0 ? "more energized" : "lower energy")"
   }
 }
 
@@ -112,15 +112,15 @@ private struct CompassAxes: View {
       Rectangle().fill(InnerBalanceTheme.hairline).frame(height: 1)
       Rectangle().fill(InnerBalanceTheme.hairline).frame(width: 1)
       VStack {
-        Text("有劲")
+        Text("Energized")
         Spacer()
-        Text("低缓")
+        Text("Low energy")
       }
       .padding(.vertical, 16)
       HStack {
-        Text("不愉快")
+        Text("Unpleasant")
         Spacer()
-        Text("愉快")
+        Text("Pleasant")
       }
       .padding(.horizontal, 16)
     }

@@ -13,8 +13,8 @@ struct PracticeSoundControls: View {
     VStack(alignment: .leading, spacing: FangcunLayout.spacing(4)) {
       Label {
         VStack(alignment: .leading, spacing: FangcunLayout.spacing(1)) {
-          Text("不用盯着屏幕").font(.headline)
-          Text("语音只提示下一步")
+          Text("You can look away").font(.headline)
+          Text("Gentle prompts, with room for quiet")
             .font(.caption)
             .foregroundStyle(InnerBalanceTheme.mutedInk)
         }
@@ -32,22 +32,22 @@ struct PracticeSoundControls: View {
       }
 
       if !voiceAvailable {
-        Label("完整语音尚未就绪，可跟随文字练习", systemImage: "text.bubble")
+        Label("Voice guidance is unavailable. You can follow the text.", systemImage: "text.bubble")
           .font(.footnote)
           .foregroundStyle(InnerBalanceTheme.mutedInk)
           .accessibilityIdentifier("practice.sound.voiceUnavailable")
       }
       if mode.supportsAmbience {
-        if mode == .guided { volumeSlider("语音音量", value: $voiceVolume) }
-        volumeSlider("节拍音量", value: $cueVolume)
-        if ambienceEnabled { volumeSlider("环境声音量", value: $ambienceVolume) }
-        Toggle("环境声·锁屏继续", isOn: $ambienceEnabled)
+        if mode == .guided { volumeSlider("Voice volume", value: $voiceVolume) }
+        volumeSlider("Cue volume", value: $cueVolume)
+        if ambienceEnabled { volumeSlider("Background volume", value: $ambienceVolume) }
+        Toggle("Background sound · Keep playing when locked", isOn: $ambienceEnabled)
           .font(.subheadline.weight(.semibold))
           .tint(InnerBalanceTheme.strongFill)
           .padding(.vertical, FangcunLayout.spacing(2))
-          .accessibilityHint("有可用且开启的环境声时可锁屏继续；声音中断会暂停")
+          .accessibilityHint("With background sound on, practice continues when locked. Audio interruptions pause it.")
       } else {
-        Label("声音已关闭", systemImage: "speaker.slash.fill")
+        Label("Sound is off", systemImage: "speaker.slash.fill")
           .font(.subheadline.weight(.semibold))
           .foregroundStyle(InnerBalanceTheme.mutedInk)
       }
@@ -62,7 +62,7 @@ struct PracticeSoundControls: View {
     VStack(alignment: .leading, spacing: 4) {
       Text(label).font(.caption)
       Slider(value: value, in: 0...1).accessibilityLabel(label)
-        .accessibilityValue(value.wrappedValue == 0 ? "静音" : "\(Int(value.wrappedValue * 100))%")
+        .accessibilityValue(value.wrappedValue == 0 ? "Silent" : "\(Int(value.wrappedValue * 100))%")
     }
   }
 

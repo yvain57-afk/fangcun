@@ -10,12 +10,12 @@ enum FangcunCompanionScene: String {
   var ratio: CGFloat { self == .calm || self == .complete ? 1.5 : 1 }
   var label: String {
     switch self {
-    case .calm: "猫咪和小狗安静相伴"
-    case .rest: "小狗趴下陪你休息"
-    case .curious: "猫咪好奇地观察"
-    case .drink: "小狗在水杯旁陪你记录"
-    case .breathe: "猫咪跟随节拍呼吸"
-    case .complete: "猫咪和小狗轻轻碰爪"
+    case .calm: "Cat and dog keeping you company"
+    case .rest: "Dog resting beside you"
+    case .curious: "Cat looking around curiously"
+    case .drink: "Dog beside a glass of water"
+    case .breathe: "Cat following the breathing rhythm"
+    case .complete: "Cat and dog celebrating a small pause"
     }
   }
 }
@@ -73,14 +73,34 @@ struct FangcunCompanion: View {
       gesture = nil; coordinator.stop()
     }
   }
-  private func artwork(time: Float, amount: Float, intensity: Float) -> some View {
-    Image("Companion-\(scene.rawValue)").resizable().aspectRatio(contentMode: .fit)
-      .colorEffect(ShaderLibrary.fangcunPaperAlpha())
-      .visualEffect { content, geometry in
-        content.distortionEffect(ShaderLibrary.fangcunCompanionWarp(.float2(geometry.size), .float(scene.mode),
-          .float(time), .float(amount), .float(staticMode ? 1 : 0), .float(eventValue), .float(intensity)),
-          maxSampleOffset: CGSize(width: 10, height: 10))
+  @ViewBuilder private func artwork(time: Float, amount: Float, intensity: Float) -> some View {
+    if scene == .breathe {
+      LittleExhaleCat(opening: Double(amount))
+    } else if scene == .rest {
+      LittleExhaleRestingDog(lift: 0)
+    } else {
+      let acknowledgement = staticMode ? 0 : sin(min(Double(time), 1) * .pi) * Double(intensity)
+      // Native transparent layers retain their cream fill in both appearances.
+      // White-keying the old illustrations erased the characters in dark mode.
+      switch scene {
+      case .drink:
+        GeometryReader { geometry in
+          LittleExhaleSeatedDog(leftLift: 0, rightLift: acknowledgement * 0.3)
+          Image(systemName: "mug.fill")
+            .font(.system(size: geometry.size.width * 0.17))
+            .foregroundStyle(Color("FangcunInhale"))
+            .position(x: geometry.size.width * 0.13, y: geometry.size.height * 0.77)
+        }
+      case .curious:
+        LittleExhaleCat(opening: 0.2).rotationEffect(.degrees(-1.2 * acknowledgement))
+      default:
+        HStack(alignment: .bottom, spacing: 0) {
+          LittleExhaleCat(opening: scene == .complete ? 0.35 + acknowledgement * 0.2 : 0.1)
+          LittleExhaleSeatedDog(leftLift: scene == .complete ? 0.5 : 0, rightLift: 0)
+        }
       }
+
+    }
   }
 }
 

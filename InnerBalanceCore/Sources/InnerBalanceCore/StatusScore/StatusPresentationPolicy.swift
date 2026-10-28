@@ -4,11 +4,11 @@ public enum StatusPrimaryAction: String, Codable, Sendable {
   case resume, safety, seatedStretch, quietRest, shortBreathing, breathing, unavailable, sync, connect, resumeReading
   public var title: String {
     switch self {
-    case .resumeReading: "恢复状态分析"
-    case .resume: "继续练习"; case .safety: "查看安全帮助"; case .quietRest: "开始 2 分钟安静休息"
-    case .seatedStretch: "开始 1 分钟座位舒展"
-    case .shortBreathing: "开始 2 分钟放松"; case .breathing: "开始 5 分钟呼吸"
-    case .unavailable: "先停靠到安全位置"; case .sync: "同步今日数据"; case .connect: "连接 Apple 健康"
+    case .resumeReading: "Resume body context"
+    case .resume: "Continue practice"; case .safety: "Get safety help"; case .quietRest: "Take 2 minutes of quiet rest"
+    case .seatedStretch: "A 1-minute seated stretch"
+    case .shortBreathing: "Unwind for 2 minutes"; case .breathing: "Breathe for 5 minutes"
+    case .unavailable: "Stop somewhere safe first"; case .sync: "Sync today's data"; case .connect: "Connect Apple Health"
     }
   }
 }

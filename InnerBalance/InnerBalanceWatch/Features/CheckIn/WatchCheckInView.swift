@@ -23,30 +23,30 @@ struct WatchCheckInView: View {
     }
     .navigationTitle(navigationTitle)
     .navigationBarTitleDisplayMode(.inline)
-    .alert("未能保存", isPresented: $saveFailed) {
-      Button("知道了", role: .cancel) {}
+    .alert("Couldn't save", isPresented: $saveFailed) {
+      Button("Got it", role: .cancel) {}
     } message: {
-      Text("未能写入 Apple 健康，也未能留在本地队列。请检查健康权限和可用空间。")
+      Text("Couldn't save to Apple Health or the local queue. Check Health access and available storage.")
     }
   }
 
   private var navigationTitle: String {
-    if showsSupportGuidance { return "先照顾好自己" }
-    return selectedPoint == nil ? "此刻在哪里？" : "最接近哪个？"
+    if showsSupportGuidance { return "Take care of yourself first" }
+    return selectedPoint == nil ? "Where are you right now?" : "What feels closest?"
   }
 
   private var supportGuidance: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 10) {
-        Label("记录已保存", systemImage: "checkmark.circle.fill")
+        Label("Entry saved", systemImage: "checkmark.circle.fill")
           .font(.headline)
           .foregroundStyle(.mint)
-        Text("你不必独自处理。现在可以联系一位你信任的人。")
+        Text("You don't have to manage this alone. Reach out to someone you trust now.")
           .font(.footnote)
-        Text("如果你有立即伤害自己的危险，请联系当地急救或紧急支持。")
+        Text("If you're in immediate danger of harming yourself, contact local emergency or crisis support.")
           .font(.caption)
           .foregroundStyle(.secondary)
-        Button("我知道了") { dismiss() }
+        Button("Got it") { dismiss() }
           .buttonStyle(.borderedProminent)
           .tint(.mint)
       }
@@ -56,7 +56,7 @@ struct WatchCheckInView: View {
   private var compassStep: some View {
     ScrollView {
       VStack(spacing: 7) {
-        Text("上方更激活·右侧更愉快")
+        Text("Up: more energy · Right: more pleasant")
           .font(.caption2)
           .foregroundStyle(.secondary)
         LazyVGrid(columns: compassColumns, spacing: 5) {
@@ -98,7 +98,7 @@ struct WatchCheckInView: View {
           .tint(.mint)
           .disabled(isSaving)
         }
-        Button("不知道") {
+        Button("Not sure") {
           Task { await save(point: point, label: nil) }
         }
         .buttonStyle(.borderless)
@@ -144,11 +144,11 @@ struct WatchCheckInView: View {
 extension WatchCompassRegion {
   var shortName: String {
     switch (valence, arousal) {
-    case (...(-0.1), 0.1...): "紧绷"
-    case (0.1..., 0.1...): "振奋"
-    case (...(-0.1), ...(-0.1)): "低落"
-    case (0.1..., ...(-0.1)): "松弛"
-    default: "中间"
+    case (...(-0.1), 0.1...): "Tense"
+    case (0.1..., 0.1...): "Uplifted"
+    case (...(-0.1), ...(-0.1)): "Low"
+    case (0.1..., ...(-0.1)): "Relaxed"
+    default: "In between"
     }
   }
 
@@ -165,8 +165,8 @@ extension WatchCompassRegion {
   }
 
   var accessibilityLabel: String {
-    let pleasure = valence < -0.1 ? "不愉快" : valence > 0.1 ? "愉快" : "中性"
-    let activation = arousal < -0.1 ? "低激活" : arousal > 0.1 ? "高激活" : "中等激活"
+    let pleasure = valence < -0.1 ? "Unpleasant" : valence > 0.1 ? "Pleasant" : "Neutral"
+    let activation = arousal < -0.1 ? "Lower energy" : arousal > 0.1 ? "Higher energy" : "Moderate energy"
     return "\(pleasure)，\(activation)"
   }
 
@@ -188,44 +188,44 @@ extension Array where Element: Hashable {
 extension EmotionLabel {
   fileprivate var watchDisplayName: String {
     switch self {
-    case .amazed: "惊叹"
-    case .amused: "愉快"
-    case .angry: "生气"
-    case .anxious: "焦虑"
-    case .ashamed: "羞愧"
-    case .brave: "勇敢"
-    case .calm: "平静"
-    case .content: "知足"
-    case .disappointed: "失望"
-    case .discouraged: "泄气"
-    case .disgusted: "厌恶"
-    case .embarrassed: "尴尬"
-    case .excited: "兴奋"
-    case .frustrated: "挫败"
-    case .grateful: "感激"
-    case .guilty: "内疚"
-    case .happy: "开心"
-    case .hopeless: "绝望"
-    case .irritated: "烦躁"
-    case .jealous: "嫉妒"
-    case .joyful: "喜悦"
-    case .lonely: "孤独"
-    case .passionate: "热情"
-    case .peaceful: "安宁"
-    case .proud: "自豪"
-    case .relieved: "释然"
-    case .sad: "难过"
-    case .scared: "害怕"
-    case .stressed: "紧张"
-    case .surprised: "惊讶"
-    case .worried: "担心"
-    case .annoyed: "恼火"
-    case .confident: "自信"
-    case .drained: "疲惫"
-    case .hopeful: "希望"
-    case .indifferent: "无所谓"
-    case .overwhelmed: "不堪重负"
-    case .satisfied: "满意"
+    case .amazed: "Amazed"
+    case .amused: "Pleasant"
+    case .angry: "Angry"
+    case .anxious: "Anxious"
+    case .ashamed: "Ashamed"
+    case .brave: "Brave"
+    case .calm: "Calm"
+    case .content: "Content"
+    case .disappointed: "Disappointed"
+    case .discouraged: "Discouraged"
+    case .disgusted: "Disgusted"
+    case .embarrassed: "Embarrassed"
+    case .excited: "Excited"
+    case .frustrated: "Frustrated"
+    case .grateful: "Grateful"
+    case .guilty: "Guilty"
+    case .happy: "Happy"
+    case .hopeless: "Hopeless"
+    case .irritated: "Irritated"
+    case .jealous: "Jealous"
+    case .joyful: "Joyful"
+    case .lonely: "Lonely"
+    case .passionate: "Passionate"
+    case .peaceful: "Peaceful"
+    case .proud: "Proud"
+    case .relieved: "Relieved"
+    case .sad: "Sad"
+    case .scared: "Scared"
+    case .stressed: "Stressed"
+    case .surprised: "Surprised"
+    case .worried: "Worried"
+    case .annoyed: "Annoyed"
+    case .confident: "Confident"
+    case .drained: "Worn out"
+    case .hopeful: "Hopeful"
+    case .indifferent: "Indifferent"
+    case .overwhelmed: "Overwhelmed"
+    case .satisfied: "Satisfied"
     }
   }
 }

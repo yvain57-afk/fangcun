@@ -13,9 +13,9 @@ struct DailyStatusHistoryView: View {
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 20) {
-        Text("每一天，都有自己的节奏").font(.title2.weight(.semibold))
-        Text("回看已有记录，不必追求每天相同。").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
-        Picker("时间范围", selection: $span) { Text("7 天").tag(7); Text("28 天").tag(28) }
+        Text("Every day has its own rhythm").font(.title2.weight(.semibold))
+        Text("Look back without expecting every day to be the same.").font(.subheadline).foregroundStyle(InnerBalanceTheme.mutedInk)
+        Picker("Time range", selection: $span) { Text("7 days").tag(7); Text("28 days").tag(28) }
           .pickerStyle(.segmented).accessibilityIdentifier("readiness.history.range")
         LazyVGrid(columns:Array(repeating:GridItem(.flexible()),count:7)) {
           ForEach(dates,id:\.self) { day in
@@ -30,7 +30,7 @@ struct DailyStatusHistoryView: View {
                 Text(value.map { String($0.displayScore) } ?? "—").font(.caption.monospacedDigit())
               }.frame(maxWidth:.infinity).padding(.vertical,8)
                 .background(Calendar.current.isDate(day,inSameDayAs:selected ?? owner.now) ? InnerBalanceTheme.subtleFill : .clear,in:RoundedRectangle(cornerRadius:12))
-            }.buttonStyle(.plain).accessibilityLabel(day.formatted(.dateTime.month().day()) + (value.map { "，\($0.displayScore)分，\($0.band.title)" } ?? "，没有状态分"))
+            }.buttonStyle(.plain).accessibilityLabel(day.formatted(.dateTime.month().day().locale(Locale(identifier: "en"))) + (value.map { ", \($0.displayScore) points, \($0.band.englishTitle)" } ?? ", no index available"))
               .accessibilityIdentifier("status.history.day.\(Calendar.current.component(.day,from:day))")
           }
         }
@@ -39,35 +39,35 @@ struct DailyStatusHistoryView: View {
         if let score = scores(day).first {
           NavigationLink { DailyStatusDetailView(score:score) } label: {
             VStack(alignment:.leading,spacing:8) {
-              Text("\(score.displayScore) /100 · \(score.band.title)").font(.title2.weight(.semibold))
-              Text("本次计入："+score.components.map { DailyStatusPresentation.componentName($0.name) }.joined(separator:"、")).font(.subheadline)
-              Text("查看分数构成").font(.caption)
+              Text("\(score.displayScore) /100 · \(score.band.englishTitle)").font(.title2.weight(.semibold))
+              Text("Included this time: "+score.components.map { DailyStatusPresentation.componentName($0.name) }.joined(separator:"、")).font(.subheadline)
+              Text("See what's included").font(.caption)
             }.frame(maxWidth:.infinity,alignment:.leading).fangcunPaperCard()
           }.buttonStyle(.plain).accessibilityIdentifier("status.history.score")
           let preceding = (owner.snapshot.statusScores ?? []).filter { $0.asOf < score.asOf }.max { $0.asOf < $1.asOf }
           if score.compositionUpdated || preceding.map({ $0.scoreBasisProfile != score.scoreBasisProfile }) == true {
-            Text("计入项目已更新").font(.caption).accessibilityIdentifier("status.history.composition")
+            Text("Included measures have changed").font(.caption).accessibilityIdentifier("status.history.composition")
           }
           let revisions = scores(day).filter { $0.cycleID == score.cycleID && $0.scoreID != score.scoreID }
           if !revisions.isEmpty {
-            DisclosureGroup("此周期的修订记录") {
+            DisclosureGroup("Revisions for this period") {
               ForEach(revisions,id:\.scoreID) { prior in
-                NavigationLink("修订 \(prior.revision) · \(prior.displayScore)分") { DailyStatusDetailView(score:prior) }
+                NavigationLink("Revision \(prior.revision) · \(prior.displayScore) points") { DailyStatusDetailView(score:prior) }
               }
             }
           }
         } else {
           VStack(alignment: .leading, spacing: 10) {
-            Label("这一天还没有状态分。", systemImage: "leaf")
-            Text("没有记录，也不代表这一天不好。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+            Label("No index for this day yet.", systemImage: "leaf")
+            Text("An empty day isn't a bad day.").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
           }.frame(maxWidth: .infinity, alignment: .leading).fangcunPaperCard()
         }
-        Text("状态分从 v3 开始记录，旧版记录保持原样。").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
-        NavigationLink("查看旧版记录（无状态分）") { ReadinessHistoryView(owner:owner) }
+        Text("Index history starts with version 3. Earlier records are preserved.").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        NavigationLink("View earlier records (without an index)") { ReadinessHistoryView(owner:owner) }
           .accessibilityIdentifier("status.history.legacy")
       }.padding(20)
     }.background(InnerBalanceTheme.canvas).foregroundStyle(InnerBalanceTheme.ink)
-      .fangcunCleanList().navigationTitle(span == 7 ? "这一周的节奏" : "最近四周的节奏").navigationBarTitleDisplayMode(.inline)
+      .fangcunCleanList().navigationTitle(span == 7 ? "This week's rhythm" : "The past four weeks").navigationBarTitleDisplayMode(.inline)
   }
 }
 
@@ -82,16 +82,16 @@ struct ManualStatusSleepView: View {
   var body: some View {
     NavigationStack {
       Form {
-        Text("补记这次主睡眠的实际时长和结束时间。记录保存在方寸，标注为你补记的睡眠。")
-        Stepper("实际睡眠 \(Int(minutes)/60) 小时 \(Int(minutes)%60) 分",value:$minutes,in:0...1440,step:15).accessibilityIdentifier("status.manual.minutes")
-        DatePicker("结束时间",selection:$end,in:owner.now.addingTimeInterval(-23*3600)...owner.now)
-        Button(saving ? "正在保存" : "保存并查看状态") {
+        Text("Add the time you actually slept and when you woke. This stays in Little Exhale and is marked as manually added.")
+        Stepper("Time asleep: \(Int(minutes)/60) hr \(Int(minutes)%60) min",value:$minutes,in:0...1440,step:15).accessibilityIdentifier("status.manual.minutes")
+        DatePicker("End time",selection:$end,in:owner.now.addingTimeInterval(-23*3600)...owner.now)
+        Button(saving ? "Saving" : "Save and view body context") {
           Task { saving = true; await owner.saveManualSleep(minutes:minutes,end:end); saving = false
             if owner.statusScore?.features.manual == true { dismiss() } else { failed = true }
           }
         }.disabled(saving).accessibilityIdentifier("status.manual.save")
-        if failed { Text("暂时未能保存，请重试。") }
-      }.fangcunCleanList().navigationTitle("补记一次睡眠").toolbar { Button("取消") { dismiss() } }
+        if failed { Text("Couldn't save right now. Please try again.") }
+      }.fangcunCleanList().navigationTitle("Add sleep manually").toolbar { Button("Cancel") { dismiss() } }
     }
   }
 }

@@ -18,7 +18,7 @@ final class HomeEvidencePipelineUITests: XCTestCase {
     let old = launch("scoreExpired")
     XCTAssertTrue(old.staticTexts["status.empty"].waitForExistence(timeout:10))
     XCTAssertFalse(old.staticTexts["status.score"].exists)
-    XCTAssertFalse(old.staticTexts["昨晚"].exists)
+    XCTAssertFalse(old.staticTexts["Last night"].exists)
     old.terminate()
     verify("oneDay",score:"100")
     verify("scoreHRVOnly",score:nil)
@@ -28,7 +28,9 @@ final class HomeEvidencePipelineUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["78"].waitForExistence(timeout:10))
     let asOf = app.staticTexts["status.cycle"].value as? String
     XCTAssertNotNil(asOf)
-    app.buttons["today.evidence"].tap(); app.buttons["status.method"].tap()
+    XCTAssertTrue(app.staticTexts["status.cycle"].label.contains("Sep"))
+    reveal(app.buttons["today.evidence"], in: app); app.buttons["today.evidence"].tap()
+    reveal(app.buttons["status.method"], in: app); app.buttons["status.method"].tap()
     let time = app.staticTexts["status.time.asOf"]
     for _ in 0..<6 where !time.isHittable { app.swipeUp() }
     XCTAssertEqual(time.value as? String,asOf)
@@ -40,15 +42,24 @@ final class HomeEvidencePipelineUITests: XCTestCase {
     let app = launch(fixture)
     if let score { XCTAssertTrue(app.staticTexts[score].waitForExistence(timeout:12)) }
     else { XCTAssertTrue(app.staticTexts["status.empty"].waitForExistence(timeout:12)); XCTAssertFalse(app.staticTexts["status.score"].exists) }
-    XCTAssertFalse(app.staticTexts["有限线索"].exists)
-    XCTAssertTrue(app.buttons["today.start"].exists)
+    XCTAssertFalse(app.staticTexts["Limited context"].exists)
+    reveal(app.buttons["today.start"], in: app)
+    XCTAssertTrue(app.buttons["today.start"].isHittable)
     let a = XCTAttachment(screenshot:app.screenshot()); a.name = "v3-raw-"+fixture; a.lifetime = .keepAlways; add(a)
     app.terminate()
+  }
+  @MainActor private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
+    for _ in 0..<7 where !element.isHittable { app.swipeUp() }
+    XCTAssertTrue(element.isHittable)
   }
   @MainActor private func launch(_ fixture:String)->XCUIApplication {
     continueAfterFailure = false
     let app = XCUIApplication()
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction","--readiness-fixture="+fixture,"-fangcun.dark","NO","-fangcun.largeType","NO","-fangcun.reduceMotion","YES"]
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap(); return app
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
+    let context = app.staticTexts.matching(identifier: "daily.bodyContext").matching(NSPredicate(format: "label == %@", "Body context")).firstMatch
+    for _ in 0..<8 where !context.isHittable { app.swipeUp() }
+    XCTAssertTrue(context.isHittable); context.tap()
+    return app
   }
 }

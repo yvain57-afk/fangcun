@@ -77,19 +77,19 @@ struct EchoArcSelector: View {
   }
 
   private var headingTitle: some View {
-    Text("现在怎样")
+    Text("How is it right now?")
       .font(.title3.weight(.semibold))
       .foregroundStyle(InnerBalanceTheme.ink)
   }
 
   private var instruction: some View {
-    Text("不用解释，选最接近的")
+    Text("No explanation needed. Pick what's closest.")
       .font(.subheadline)
       .foregroundStyle(InnerBalanceTheme.mutedInk)
   }
 
   private var historyButton: some View {
-    Button("过去", action: onShowHistory)
+    Button("Earlier", action: onShowHistory)
       .font(.caption.weight(.semibold))
       .foregroundStyle(InnerBalanceTheme.strongFill)
       .frame(minWidth: 44, minHeight: 44)
@@ -175,7 +175,7 @@ struct EchoArcSelector: View {
     }
     .buttonStyle(FangcunPressButtonStyle())
     .accessibilityAddTraits(isSelected ? .isSelected : [])
-    .accessibilityHint("点一下即保存当下状态")
+    .accessibilityHint("Tap to save how you feel now")
     .accessibilityIdentifier("home.echo.state.\(state.rawValue)")
   }
 

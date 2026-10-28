@@ -21,6 +21,7 @@ struct InnerBalanceWatchApp: App {
   var body: some Scene {
     WindowGroup {
       WatchRootView()
+        .environment(\.locale, Locale(identifier: "en"))
         .task { await WatchSyncLifecycle.shared.start(context: modelContainer.mainContext) }
     }
     .modelContainer(modelContainer)

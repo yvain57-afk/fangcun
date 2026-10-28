@@ -12,14 +12,14 @@ enum FangcunPhaseStyle {
   }
   static func title(_ phase: PracticeBreathPhase) -> String {
     switch phase {
-    case .topUp: "补吸"
-    case .holdAfterInhale, .holdAfterExhale: "停留"
-    case .leftInhale: "左吸"
-    case .rightInhale: "右吸"
-    case .leftExhale: "左呼"
-    case .rightExhale: "右呼"
-    case .contract: "轻收"
-    case .release: "放松"
+    case .topUp: "A little more"
+    case .holdAfterInhale, .holdAfterExhale: "Pause"
+    case .leftInhale: "In · left"
+    case .rightInhale: "In · right"
+    case .leftExhale: "Out · left"
+    case .rightExhale: "Out · right"
+    case .contract: "Gently lift"
+    case .release: "Unwind"
     default: phase.title
     }
   }
@@ -54,19 +54,19 @@ struct ProportionalPhaseBar: View {
               .offset(x: max(0, min(proxy.size.width - 3, proxy.size.width * progress)), y: -4)
           }
         }.frame(height: compact ? 7 : 17)
-        Text(steps.map { "\(FangcunPhaseStyle.title($0.phase)) \(Int($0.duration))" }.joined(separator: " · ") + " 秒")
+        Text(steps.map { "\(FangcunPhaseStyle.title($0.phase)) \(Int($0.duration))" }.joined(separator: " · ") + " sec")
           .font(compact ? .caption2.monospacedDigit() : .caption.monospacedDigit())
           .foregroundStyle(InnerBalanceTheme.mutedInk).fixedSize(horizontal: false, vertical: true)
       } else {
         HStack(spacing: 6) {
           Image(systemName: kind == .nsdr ? "moon" : "leaf")
-          Text(kind == .progressiveMuscleRelaxation ? "八组肌肉 · 轻收再松开 · 自然呼吸" : kind == .nsdr ? "身体扫描 · 安静休息 · 慢慢回来" : "自然呼吸 · 不必跟拍")
+          Text(kind == .progressiveMuscleRelaxation ? "8 muscle groups · Gently tense, then release" : kind == .nsdr ? "Body scan · Quiet rest · Gently return" : "Your own breath · No pace to follow")
         }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
       }
     }
     .accessibilityElement(children: .ignore)
-    .accessibilityLabel("引导顺序")
-    .accessibilityValue(steps.isEmpty ? "自然呼吸，不必跟拍" : steps.map { "\(FangcunPhaseStyle.title($0.phase))\(Int($0.duration))秒" }.joined(separator: "，"))
+    .accessibilityLabel("Practice sequence")
+    .accessibilityValue(steps.isEmpty ? "Breathe naturally. No pace to follow." : steps.map { "\(FangcunPhaseStyle.title($0.phase)), \(Int($0.duration)) seconds" }.joined(separator: "，"))
     .accessibilityIdentifier("practice.phaseTrack")
   }
 }
@@ -89,25 +89,25 @@ struct VolumeAuraView: View {
 extension PracticeKind {
   var useContext: String {
     switch self {
-    case .physiologicalSigh: "紧绷时，先缓一缓"
-    case .pacedBreathing: "忙碌之后，慢下来"
-    case .balancedBreathing: "找回均匀的节奏"
-    case .boxBreathing: "开始工作前，收回注意力"
-    case .diaphragmaticBreathing: "练习轻松、不费力的呼吸"
-    case .alternateNostrilBreathing: "跟随左右，专注当下"
-    case .meditation: "给纷乱的念头一点空间"
-    case .nsdr: "躺下来，让身体休息"
-    case .kegel: "练习盆底的轻收与放松"
-    case .progressiveMuscleRelaxation: "轻轻用力，再让身体歇一歇"
+    case .physiologicalSigh: "For when everything feels a little much"
+    case .pacedBreathing: "An easier end to a busy day"
+    case .balancedBreathing: "Find a steady rhythm"
+    case .boxBreathing: "A moment before your next task"
+    case .diaphragmaticBreathing: "Let breathing feel a little easier"
+    case .alternateNostrilBreathing: "One side, then the other"
+    case .meditation: "A little room for a busy mind"
+    case .nsdr: "Lie down. Let yourself rest."
+    case .kegel: "A gentle lift, with time to release"
+    case .progressiveMuscleRelaxation: "Notice the difference when you let go"
     }
   }
   var positionNote: String {
     switch self {
-    case .nsdr: "舒适躺卧"
-    case .progressiveMuscleRelaxation: "舒服坐靠或躺卧"
-    case .diaphragmaticBreathing: "坐姿或躺卧"
-    case .kegel: "坐稳或躺好"
-    default: "放松坐稳"
+    case .nsdr: "Lie down comfortably"
+    case .progressiveMuscleRelaxation: "Sit back or lie down"
+    case .diaphragmaticBreathing: "Seated or lying down"
+    case .kegel: "Sit or lie comfortably"
+    default: "Sit comfortably"
     }
   }
 }
@@ -129,9 +129,9 @@ struct FangcunDataConfirmation: View {
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 20) {
-        Label("由你决定", systemImage: "hand.raised").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
+        Label("Your choice", systemImage: "hand.raised").font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
         Text(title).font(.title3.weight(.semibold)).fixedSize(horizontal: false, vertical: true)
-        Button("取消，保留数据", action: onCancel).buttonStyle(InnerBalancePrimaryButtonStyle())
+        Button("Cancel and keep my data", action: onCancel).buttonStyle(InnerBalancePrimaryButtonStyle())
           .accessibilityIdentifier("data.clear.cancel")
         Button(actionTitle, action: onConfirm).font(.headline).frame(maxWidth: .infinity, minHeight: 44)
           .accessibilityIdentifier("data.clear.confirm")
@@ -154,9 +154,9 @@ struct PracticeGuidedProgress: View {
       ProgressView(value: min(max(0, elapsed), duration), total: max(1, duration))
         .tint(Color("FangcunExhale"))
       HStack {
-        Text(kind == .progressiveMuscleRelaxation ? "分组收放 · 自然呼吸" : kind == .nsdr ? "身体扫描与休息" : "自然呼吸，不必跟拍")
+        Text(kind == .progressiveMuscleRelaxation ? "Tense and release · Breathe naturally" : kind == .nsdr ? "Body scan and rest" : "Breathe naturally. No pace to follow.")
         Spacer(minLength: 8)
-        if !segments.isEmpty { Text("引导 \(index + 1) / \(segments.count)").monospacedDigit() }
+        if !segments.isEmpty { Text("Step \(index + 1) of \(segments.count)").monospacedDigit() }
       }.font(.caption).foregroundStyle(InnerBalanceTheme.mutedInk)
     }.padding(.horizontal, 8).accessibilityIdentifier("practice.guidedProgress")
   }

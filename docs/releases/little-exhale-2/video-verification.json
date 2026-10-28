@@ -1,0 +1,56 @@
+{
+  "source": "native simulator recordings",
+  "clips": [
+    {
+      "file": "alternateNostrilBreathing.mp4",
+      "sha256": "eaf2e6150f9dac993e0a7bb0fe7d77aa03912b7dc5c54b6cb9dbc9d2f36aa5c0",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "balancedBreathing.mp4",
+      "sha256": "9b188b4be1e41ffc6307db565e44c98d690617e3f3a3adb70454b6cc793c846c",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "boxBreathing.mp4",
+      "sha256": "ddf345d176dba4f6652d351b9e19b09a791f220010c8842eff62b760672d14d8",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "diaphragmaticBreathing.mp4",
+      "sha256": "a8092f4069aa9fa7330c826431c01e290cacbfdad84f20defac4619ac1e646cb",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "kegel.mp4",
+      "sha256": "db68faca289c4de425cb524d2067ff4f3730fd77f52f913b162b8fef20a7b070",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "meditation.mp4",
+      "sha256": "58e1b3b1fbe1806d4752d4df98f1daa0a36f8e149e12e9d657228524242893b7",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "nsdr.mp4",
+      "sha256": "9c033728415e5b44a65ed1ef9b9b31a20ea515f0241b8fe2d708f3d97587a2f5",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "pacedBreathing.mp4",
+      "sha256": "079bb5dd36b1b6e614027adb6da43ca5c338ec0512c878ab12b88b51be4d7f26",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "physiologicalSigh.mp4",
+      "sha256": "432a674043fd1feac393acd9e788586334325ac3bb879033171d1d6f4d3eab7c",
+      "fullDecode": "passed"
+    },
+    {
+      "file": "progressiveMuscleRelaxation.mp4",
+      "sha256": "bccd8cbf1429d442ca0e034878d29ee9115a668ec62fc1657f65d1de33291eb8",
+      "fullDecode": "passed"
+    }
+  ],
+  "limits": "Visual evidence only; no hardware audio/haptics acceptance."
+}

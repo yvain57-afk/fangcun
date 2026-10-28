@@ -5,12 +5,12 @@ import SwiftData
 extension DailyEchoState {
   var title: String {
     switch self {
-    case .calm: "平静"
-    case .clear: "清醒"
-    case .moved: "有触动"
-    case .tense: "绷着"
-    case .tired: "有点累"
-    case .uncertain: "说不清"
+    case .calm: "Calm"
+    case .clear: "Clear-headed"
+    case .moved: "Moved"
+    case .tense: "Tense"
+    case .tired: "Tired"
+    case .uncertain: "Hard to say"
     }
   }
 

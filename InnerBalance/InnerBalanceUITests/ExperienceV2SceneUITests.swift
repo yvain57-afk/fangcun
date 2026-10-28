@@ -7,7 +7,7 @@ final class ExperienceV2SceneUITests: XCTestCase {
     app.launchArguments = ["--ui-testing", "--ui-testing-skip-introduction", "--readiness-fixture=" + scenario, "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN",
       "-fangcun.dark", dark ? "YES" : "NO", "-fangcun.largeType", large ? "YES" : "NO", "-fangcun.reduceMotion", "NO", "-fangcun.motionMode", motion]
     if large { app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"] }
-    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["日常"].tap()
+    app.launchArguments += ["-fangcun.practice.v4.quickKind", "physiologicalSigh"]; app.launch(); app.tabBars.buttons["Daily"].tap()
     XCTAssertTrue(app.buttons["today.start"].waitForExistence(timeout: 12))
     return app
   }
@@ -28,23 +28,23 @@ final class ExperienceV2SceneUITests: XCTestCase {
     XCTAssertTrue(app.buttons["drinks.add.water"].waitForExistence(timeout: 5))
     for (button, scene) in [("drinks.add.water", "water"), ("drinks.add.coffee", "coffee"), ("drinks.add.beer", "alcohol")] {
       reveal(app.buttons[button], app); app.buttons[button].tap()
-      XCTAssertEqual(app.staticTexts["drinks.feedback"].label, "这杯已经记好。")
+      XCTAssertEqual(app.staticTexts["drinks.feedback"].label, "That drink is noted.")
       Thread.sleep(forTimeInterval: 1.5)
       capture("scene-drink-" + scene, app)
     }
-    app.buttons["撤销"].tap()
-    XCTAssertEqual(app.staticTexts["drinks.feedback"].label, "已撤销上一笔。")
+    app.buttons["Undo"].tap()
+    XCTAssertEqual(app.staticTexts["drinks.feedback"].label, "Last entry undone.")
     Thread.sleep(forTimeInterval: 1)
     capture("scene-drink-undo", app)
     XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("550"))
   }
   @MainActor func testActualMinuteCompletesBeforePawTouchSaveScreen() {
     let app = launch("assessable")
-    app.tabBars.buttons["呼吸"].tap()
+    app.tabBars.buttons["Breathe"].tap()
     app.buttons["practice.physiologicalSigh.60"].tap()
     XCTAssertTrue(app.buttons["practice.prepare.start"].waitForExistence(timeout: 5))
     app.buttons["practice.prepare.start"].tap()
-    XCTAssertTrue(app.buttons["暂停练习"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["Pause practice"].waitForExistence(timeout: 5))
     let finish = app.buttons["practice.feedback.skip"]
     XCTAssertTrue(finish.waitForExistence(timeout: 70))
     reveal(finish, app); finish.tap()
@@ -69,7 +69,7 @@ final class ExperienceV2SceneUITests: XCTestCase {
     XCTAssertTrue(app.buttons["drinks.add.water"].isHittable)
     capture("scene-dark-large-drinks", app)
     app.buttons["drinks.add.water"].tap()
-    let undo = app.buttons["撤销"]
+    let undo = app.buttons["Undo"]
     reveal(undo, app)
     XCTAssertTrue(app.descendants(matching: .any)["drinks.totals"].firstMatch.label.contains("250"))
     capture("scene-dark-large-drink-summary", app)
