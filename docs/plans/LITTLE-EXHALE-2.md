@@ -29,7 +29,7 @@ Approved references:
 - [x] Test local data compatibility, Core (173), App (235), selected UI flows (25 latest passes) and Watch compilation. Physical upgrade/Watch acceptance remains unverified.
 - [x] Capture native screenshots and motion evidence; archive and validate the development-signed release archive.
 - [ ] Export an App Store distribution IPA (blocked: Xcode has no developer account / distribution identity).
-- [ ] Upload once, reconcile processing and TestFlight availability; prepare English store assets and submit the same app's new version for review.
+- [x] Upload once, reconcile processing and internal TestFlight availability; upload English store assets and submit the same app's new version for review. External Beta submission has a separately recorded Apple server error.
 
 Remote upload, TestFlight processing, review submission and public release are separate states. Record their actual receipts rather than infer success from a local build.
 

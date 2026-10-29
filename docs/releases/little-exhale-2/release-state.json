@@ -1,15 +1,15 @@
 {
-  "checkedAt": "2026-10-29T03:39:13.536582+00:00",
+  "checkedAt": "2026-10-29T05:06:03.723836+00:00",
   "appID": "6818437987",
   "version": "2.0.0",
   "build": "2026102801",
   "localArchive": "development_signed_final_archive_verified",
   "distributionExport": "app_store_ipa_verified",
   "upload": "xcode_upload_completed_exit_0",
-  "testFlight": "processed_build_selectable_for_App_Store_review_test_groups_not_yet_verified",
-  "appStoreReview": "2.0.0_draft_created_not_submitted",
-  "publicRelease": "existing_version_unchanged",
-  "requiredAction": "Unlock Mac. First read back TestFlight processing and group availability, then finish required screenshots, English primary locale and App Store review. Do not duplicate binary upload or repeat ineffective GoTo-folder attempts.",
+  "testFlight": "internal_testing_available_external_review_not_submitted_server_error",
+  "appStoreReview": "submitted_waiting_for_review",
+  "publicRelease": "2.0_waiting_for_review_existing_1.0_remains_live",
+  "requiredAction": "No user action needed for current internal TestFlight and submitted App Store review. External group remains unavailable due Apple server error; no automatic retry/monitoring configured.",
   "archive": ".build/little-exhale-2/LittleExhale-2026102801-release.xcarchive",
   "verification": {
     "corePassed": 173,
@@ -22,12 +22,25 @@
     "enUSStoreCopy": "saved",
     "zhHansCopy": "updated_to_disclose_English_only_experience",
     "brandName": "Little Exhale_saved",
-    "primaryEnglishLocale": "pending_required_screenshots",
-    "watchScreenshotUpload": "not_confirmed",
+    "primaryEnglishLocale": "Apple_rejected_primary_locale_change_even_after_both_current_locale_screenshots_complete_primary_zh-Hans_retained",
+    "watchScreenshotUpload": "native_416x496_1_of_10_remote_confirmed_in_both_locales",
     "storePhoneScreenshots": "six_native_1206x2622_captures_passed_and_reviewed",
     "safariPasskey": "owner_verified_logged_in",
     "selectedBuild": "2.0.0_2026102801_selected_and_save_clicked",
-    "storeScreenshotUpload": "not_completed_native_file_picker_directory_confirmation_failed",
-    "nativeBrowserBlock": "Mac_locked_during_continuation"
-  }
+    "storeScreenshotUpload": "en-US_6_and_zh-Hans_6_remote_confirmed",
+    "nativeBrowserBlock": "resolved_after_Mac_unlock_normal_folder_navigation",
+    "agreementNotice": "resolved_by_same_team_session_refresh_no_agreement_accepted"
+  },
+  "testFlightDetails": {
+    "buildID": "859841c2-d7e1-40ae-bfc1-57807247c0a9",
+    "internalGroup": "开发自测",
+    "internalTesterCount": 1,
+    "externalGroup": "朋友体验",
+    "externalReview": "not_submitted: generic Apple server error persisted after same-team session refresh and saved updated test information/privacy URLs; external group has 0 testers and 0 builds",
+    "internalGroupStatus": "正在测试",
+    "internalGroupURL": "https://appstoreconnect.apple.com/teams/b559eccd-0a8d-45d8-8c70-3661c545c546/apps/6818437987/testflight/groups/c04313f1-e9f4-4cf7-b208-35c1403a0bc0/builds",
+    "deviceInstallThisBuild": "not_verified"
+  },
+  "reviewSubmissionID": "5fe3a7f4-812c-42a7-898c-513b019d22c0",
+  "reviewSubmissionURL": "https://appstoreconnect.apple.com/apps/6818437987/distribution/reviewsubmissions/details/5fe3a7f4-812c-42a7-898c-513b019d22c0"
 }

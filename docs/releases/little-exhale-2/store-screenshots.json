@@ -1,7 +1,7 @@
 {
   "locale": "en-US",
   "device": "iPhone 16 Pro simulator",
-  "status": "prepared_not_uploaded",
+  "status": "uploaded_remote_confirmed_6_of_10_both_en-US_and_zh-Hans",
   "source": "unaltered native screenshots; synthetic data",
   "deliveryFolder": "Little-Exhale-2.0-发布更新-20261028",
   "screenshots": [
@@ -41,5 +41,10 @@
       "height": 2622,
       "sha256": "84e3c9f397de9c1de22223b938efdfe655e861abbdfbf9e9979c928c3977514a"
     }
+  ],
+  "remoteReadbackAt": "2026-10-29T04:33:11.608481+00:00",
+  "locales": [
+    "en-US",
+    "zh-Hans"
   ]
 }

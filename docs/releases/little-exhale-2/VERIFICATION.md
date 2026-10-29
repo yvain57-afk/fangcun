@@ -91,3 +91,25 @@ Copy-table note: the TSV exact-literal source/target columns intentionally retai
 - English screenshot set showed **0/10** with inherited earlier screenshots, confirming no previous screenshot upload success. The normal Safari Upload button opened macOS Open Panel successfully; no extension permission was changed.
 - The native GoTo-folder interaction repeatedly reset its field instead of reaching the file list. This attempt did **not** upload screenshots. Named-key/selection/focus retries did not resolve it; no root cause is asserted. Do not repeat that same sequence. A fresh ordinary Safari window was opened while retaining the existing window; it reused the authenticated session. The next directory navigation was interrupted by macOS locking (`The Mac is locked and automatic unlock could not unlock it`).
 - No formal App Store review submission, no confirmed new screenshot asset, no TestFlight group assignment, no second binary upload. Resume by checking TestFlight availability first; ordinary file-panel folder navigation may be used after restoring the unlocked screen, without changing browser security or using a denied URL.
+
+
+## 2026-10-29 ASC continuation after owner unlock
+
+- No duplicate binary upload. Existing processed `2.0.0 (2026102801)` build ID `859841c2-d7e1-40ae-bfc1-57807247c0a9` was read back.
+- TestFlight build details showed group `开发自测`, internal, 1 tester after assignment. External `朋友体验` submission returned `处理你的请求时出错。请稍后再试。` twice; external approval/installability is not claimed.
+- en-US iPhone screenshot upload: six exact native 1206×2622 images, remote list and `6/10` confirmed. zh-Hans uses same six in explicit 01–06 order via asset library. Old references removed only after Apple confirmed originals remain recoverable in asset library. No permanent asset deletion.
+- Native picker navigation via Downloads → delivery → StoreUpload worked. GoTo-folder and keyboard Select All attempts were ineffective; native Edit → Select All succeeded.
+- Watch screenshot uploaded at native 416×496, old reference replaced from recoverable asset library. Remote list confirms only `01-Little-Exhale-Watch.png`, `1/10`.
+- No production code/data/schema changes during this release continuation.
+
+- English Watch locale initially inherited the primary screenshot (`0/10`); explicitly associated the new Watch asset and read back `1/10`. English-primary change still returned the required-screenshots validation; existing primary zh-Hans retained, US English store localization preserved.
+- Add for Review displayed a blank `协议更新` notice; no agreement was accepted by the agent. Read-only Business page showed Free Apps Agreement active through 2027-10-02, DSA active; Developer account showed current Program License Agreement issued 2026-10-14 and accepted 2026-10-16. Paid Apps Agreement is new/unaccepted and was not touched, since app remains free without IAP. Refreshing the same-team App Store session to distinguish stale session from an actual contractual blocker.
+
+- Same-team Developer → App Store Connect session switch resolved the blank Agreement Update notice. Add for Review then reached the explicit new-localization confirmation and draft submission containing exactly `2.0.0 (2026102801)`. Final Submit for Review clicked; remote receipt pending readback. No new contract was accepted and no paid agreement changed.
+
+- **Final App Store review submitted and remotely verified**: page showed `已提交 1 个项目`, version `正在等待审核`; review details showed `等待审核`, build `2.0.0 (2026102801)`. Submission ID `5fe3a7f4-812c-42a7-898c-513b019d22c0`. Proof: `app-store-review-submitted-20261029.png` (visually inspected; no private contact or health data visible). Existing 1.0 remains live; 2.0 is not yet public. No withdrawal, no re-upload, no monitoring created.
+
+- **TestFlight internal availability verified in group Builds tab**: `开发自测`, one tester (existing owner account), exactly one build `2.0.0 (2026102801)`, status **正在测试**, 90-day expiration. Device still last reports old 1.0; no claim user already installed new build. Proof `testflight-internal-testing-20261029.png`.
+- External submission still returned generic server error after refreshed session. Test Information inspection found outdated Fangcun description/review notes and empty optional marketing/privacy URLs; updated for approved 2.0 and existing public URLs, with no contact changes or new terms. This is a distinct configuration fix, not a claimed error root cause.
+
+- External-group retry after updating test information and privacy URLs still returned the same generic server error. Cancelled failed dialog; group remains 0 testers/0 builds. External testing is not claimed available; no further background retries or monitoring. Internal owner testing and formal App Store review are independently verified successful.
