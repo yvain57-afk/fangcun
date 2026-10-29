@@ -1,15 +1,15 @@
 {
-  "checkedAt": "2026-10-28T16:30:08.149953+00:00",
+  "checkedAt": "2026-10-29T03:39:13.536582+00:00",
   "appID": "6818437987",
   "version": "2.0.0",
   "build": "2026102801",
   "localArchive": "development_signed_final_archive_verified",
   "distributionExport": "app_store_ipa_verified",
   "upload": "xcode_upload_completed_exit_0",
-  "testFlight": "apple_processing_not_yet_read_back",
+  "testFlight": "processed_build_selectable_for_App_Store_review_test_groups_not_yet_verified",
   "appStoreReview": "2.0.0_draft_created_not_submitted",
   "publicRelease": "existing_version_unchanged",
-  "requiredAction": "Apple web session expired overnight. Complete the offered native Safari passkey Touch ID prompt, then continue ordinary file-picker upload, verify TestFlight and submit review. No browser-security change or duplicate binary upload.",
+  "requiredAction": "Unlock Mac. First read back TestFlight processing and group availability, then finish required screenshots, English primary locale and App Store review. Do not duplicate binary upload or repeat ineffective GoTo-folder attempts.",
   "archive": ".build/little-exhale-2/LittleExhale-2026102801-release.xcarchive",
   "verification": {
     "corePassed": 173,
@@ -25,6 +25,9 @@
     "primaryEnglishLocale": "pending_required_screenshots",
     "watchScreenshotUpload": "not_confirmed",
     "storePhoneScreenshots": "six_native_1206x2622_captures_passed_and_reviewed",
-    "safariPasskey": "awaiting_owner_Touch_ID"
+    "safariPasskey": "owner_verified_logged_in",
+    "selectedBuild": "2.0.0_2026102801_selected_and_save_clicked",
+    "storeScreenshotUpload": "not_completed_native_file_picker_directory_confirmation_failed",
+    "nativeBrowserBlock": "Mac_locked_during_continuation"
   }
 }
